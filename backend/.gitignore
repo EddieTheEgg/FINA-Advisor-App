@@ -1,0 +1,61 @@
+# Environment variables
+.env
+.env.*
+
+# Python virtual environment
+venv/
+env/
+ENV/
+
+# Python byte-compiled files
+__pycache__/
+*.py[cod]
+*$py.class
+*.so
+.Python
+
+# Distribution / packaging
+dist/
+build/
+*.egg-info/
+
+# Unit test / coverage reports
+htmlcov/
+.tox/
+.coverage
+.coverage.*
+.cache
+nosetests.xml
+coverage.xml
+*.cover
+.hypothesis/
+.pytest_cache/
+
+# IDE specific files
+.idea/
+.vscode/
+*.swp
+*.swo
+.DS_Store
+
+# PostgreSQL data
+data/
+
+# Logs
+logs/
+*.log
+
+# OpenAI API keys and sensitive data
+*api_key*
+*secret*
+
+# Alembic SQLite databases for testing
+*.db
+*.sqlite
+*.sqlite3
+
+# Jupyter Notebook
+.ipynb_checkpoints
+
+# Project specific
+.pytest_cache/
