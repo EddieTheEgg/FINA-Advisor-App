@@ -6,7 +6,6 @@ from app.database import Base
 from dotenv import load_dotenv
 import os
 
-# Load environment variables from .env file
 load_dotenv(os.path.join(os.path.dirname(__file__), '../.env'))
 
 # Get the database URL from environment variables
