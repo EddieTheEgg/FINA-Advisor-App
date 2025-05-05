@@ -9,7 +9,7 @@ from app.database import Base
 class Category(Base):
     __tablename__ = "categories"
     
-    category_id = Column(UUID(as_uuid=True), primary_key = True, default = uuid.uuid7)
+    category_id = Column(UUID(as_uuid=True), primary_key = True, default = uuid.uuid4)
     category_name = Column(String, nullable = False)
     icon = Column(String, nullable = True)
     color = Column(String, nullable = True)

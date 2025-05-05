@@ -9,7 +9,7 @@ from app.database import Base
 class Transaction(Base):
     __tablename__ = "transactions"
 
-    transaction_id = Column(UUID(as_uuid=True), primary_key = True, default = uuid.uuid7)
+    transaction_id = Column(UUID(as_uuid=True), primary_key = True, default = uuid.uuid4)
     amount = Column(Float, nullable=False)
     description = Column(String, nullable=True)
     transaction_date = Column(DateTime(timezone=True), nullable=False)
