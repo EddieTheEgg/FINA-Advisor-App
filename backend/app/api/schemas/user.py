@@ -6,7 +6,7 @@ from sqlalchemy import UUID
 class UserCreate(BaseModel):   
     email: EmailStr
     password: str
-    full_name: Optional[str] = None
+    full_name: Str | None = None
     
     
 # Used for authentication
@@ -17,7 +17,7 @@ class UserLogin(BaseModel):
 class UserResponse(BaseModel):
     user_id: UUID
     email: EmailStr
-    full_name: Optional[str] = None
+    full_name: Str | None = None
     
     class Config:
         orm_mode = True
