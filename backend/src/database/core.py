@@ -1,10 +1,13 @@
+from typing import Annotated
+from fastapi import Depends
+from pytest import Session
 from sqlalchemy import create_engine
 from sqlalchemy.orm import sessionmaker, DeclarativeBase
 import os
 from dotenv import load_dotenv
 
 # Load environment variables
-load_dotenv(os.path.join(os.path.dirname(__file__), '../.env'))
+load_dotenv()
 
 DATABASE_URL = os.getenv("DATABASE_URL")
 
@@ -21,3 +24,6 @@ def get_db():
         yield db
     finally:
         db.close()
+        
+#Used for routes and functions to access db (commented out for now since error)
+# DbSession = Annotated(Session, Depends(get_db))

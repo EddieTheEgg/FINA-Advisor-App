@@ -4,7 +4,7 @@ from sqlalchemy.orm import relationship
 from sqlalchemy.sql import func
 import uuid
 
-from app.database import Base
+from backend.src.database.core import Base
 
 class Transaction(Base):
     __tablename__ = "transactions"

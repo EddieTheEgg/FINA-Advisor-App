@@ -1,13 +1,11 @@
-from typing import Optional
-from pydantic import BaseModel, EmailStr, Field, field_validator
-from sqlalchemy import UUID
+from pydantic import BaseModel, EmailStr, Field
+from sqlalchemy.dialects.postgresql import UUID
 
 # Used for user creation/registration
 class UserCreate(BaseModel):   
     email: EmailStr
     password: str
-    full_name: Str | None = None
-    
+    full_name: str | None = None
     
 # Used for authentication
 class UserLogin(BaseModel):
@@ -17,9 +15,10 @@ class UserLogin(BaseModel):
 class UserResponse(BaseModel):
     user_id: UUID
     email: EmailStr
-    full_name: Str | None = None
+    full_name: str | None = None
     
     class Config:
-        orm_mode = True
+        from_attributes = True
+        arbitrary_types_allowed = True 
     
     

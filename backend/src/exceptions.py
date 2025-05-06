@@ -1,0 +1,1 @@
+#Here we create custom exceptions, especially useful in service layer for our schemas
