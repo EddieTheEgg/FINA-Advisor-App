@@ -18,7 +18,7 @@ import logging
 load_dotenv()
 
 SECRET_KEY = os.getenv("SECRET_KEY")
-ALGORITHM = "HS256"
+ALGORITHM = os.getenv("ALGORITHM")
 ACCESS_TOKEN_EXPIRE_MINUTES = 30
 
 oauth2_bearer = OAuth2PasswordBearer(tokenUrl='auth/token')
@@ -81,7 +81,9 @@ def register_user(db: Session, register_user_request: RegisterUserRequest) -> No
         logging.error(f"failed to register user: {register_user_request.email}. Error: {str(e)}")
         raise
 
-# When user logs in, provide a token if login is valid
+# When a user logs in, validate the credentials (username and password) 
+# provided in the request. If the credentials are valid, generate and 
+# return a JWT token that grants access to protected routes
 def login_for_access_token(form_data: Annotated[OAuth2PasswordRequestForm, Depends()], 
                                                 db: Session) -> Token:
     user = authenticate_user(form_data.username, form_data.password, db)
@@ -93,6 +95,7 @@ def login_for_access_token(form_data: Annotated[OAuth2PasswordRequestForm, Depen
 
 # Checks if the given token is valid, and if so returns TokenData object which represents
 # the authenticated user (via id)
+# Uses the function oauth2_bearer to grab the token string if it exists
 def get_current_user(token: Annotated[str, Depends(oauth2_bearer)]) -> TokenData:
     return verify_token(token)
 
