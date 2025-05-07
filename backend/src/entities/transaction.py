@@ -21,9 +21,9 @@ class Transaction(Base):
     subscription_frequency = Column(String, nullable=True)  # monthly, quarterly, yearly, etc.
     created_at = Column(DateTime(timezone=True), server_default=func.now())
     updated_at = Column(DateTime(timezone=True), onupdate=func.now())
-    user_id = Column(UUID(as_uuid=True), ForeignKey("users.user_id"))
-    category_id = Column(UUID(as_uuid=True), ForeignKey("categories.category_id"), nullable=True)
+    user_id = Column(UUID(as_uuid=True), ForeignKey("users.user_id"), index = True)
+    category_id = Column(UUID(as_uuid=True), ForeignKey("categories.category_id"), index=True, nullable=True)
 
     # Relationships
-    user = relationship("User", back_populates="transactions", cascade="all, delete-orphan")
-    category = relationship("Category", back_populates="transactions", cascade="all, delete-orphan")
+    user = relationship("User", back_populates="transactions")
+    category = relationship("Category", back_populates="transactions")
