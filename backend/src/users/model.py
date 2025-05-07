@@ -1,24 +1,24 @@
 from pydantic import BaseModel, EmailStr, Field
 from sqlalchemy.dialects.postgresql import UUID
 
-# Used for user creation/registration
-class UserCreate(BaseModel):   
-    email: EmailStr
-    password: str
-    full_name: str | None = None
-    
-# Used for authentication
-class UserLogin(BaseModel):
-    email: EmailStr
-    password: str
-    
+#Information that can be returned upon valid login/register using token
 class UserResponse(BaseModel):
     user_id: UUID
     email: EmailStr
-    full_name: str | None = None
+    username: str
+    first_name: str
+    last_name: str
     
     class Config:
         from_attributes = True
         arbitrary_types_allowed = True 
+        
+#When user wants to change password, we need current and the new password to be accurately confirmed to change
+class PasswordChange(BaseModel):
+    current_password: str
+    new_password: str
+    new_password_confirm: str
+    
+    
     
     
