@@ -1,4 +1,5 @@
 from fastapi import FastAPI
+from backend.src import auth
 from backend.src.database.core import engine, Base
 from backend.src.entities.user import User
 from backend.src.entities.category import Category
@@ -9,6 +10,7 @@ from backend.src.logging import configure_logging, LogLevels
 configure_logging(LogLevels.info)
 
 app = FastAPI()
+register_routes(app)
 
 #Root route test
 @app.get("/")
