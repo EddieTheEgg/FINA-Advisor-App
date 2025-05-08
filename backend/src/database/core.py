@@ -25,5 +25,5 @@ def get_db():
     finally:
         db.close()
         
-#Used for routes and functions to access db (commented out for now since error)
-# DbSession = Annotated(Session, Depends(get_db))
+#Used for routes and functions to access db 
+DbSession = Annotated[Session, Depends(get_db)]
