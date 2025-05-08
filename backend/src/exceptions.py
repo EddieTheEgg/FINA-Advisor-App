@@ -2,7 +2,30 @@
 from starlette import status
 from fastapi import HTTPException
 
+class UserError(HTTPException):
+    """Base exception for user-related errors"""
+    pass
 
-def AuthenticationError():
-    raise HTTPException(status_code=status.HTTP_401_UNAUTHORIZED,
-                        detail="Could not validate user.")
+class UserNotFoundError(UserError):
+    def __init__(self, user_id=None):
+        if user_id is None:
+            message = "User not found"
+        else:
+            message = f"User with id {user_id} was not found"
+        super().__init__(status_code=404, detail=message)
+
+class InvalidPasswordError(UserError):
+    def __init__(self):
+        super().__init__(status_code = 401, detail = "Current password is incorrect")
+
+class PasswordMismatchError(UserError):
+    def __init__(self):
+        super().__init__(status_code = 400, detail = "New passwords do not match")
+
+
+
+class AuthenticationError(HTTPException):
+    def __init__(self):
+        super().__init__(status_code=401, detail = "Could not validate user")
+
+        
