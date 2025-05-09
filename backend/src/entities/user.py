@@ -23,4 +23,8 @@ class User(Base):
     transactions = relationship("Transaction", back_populates="user", cascade="all, delete-orphan")
     categories = relationship("Category", back_populates="user", cascade="all, delete-orphan")
     
-    
+    def __repr__(self):
+        return (f"<User(user_id={self.user_id}, "
+                f"email='{self.email}', "
+                f"username='{self.username}', "
+                f"is_active_account={self.is_active_account})>")
