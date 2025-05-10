@@ -1,5 +1,5 @@
 from pydantic import BaseModel, EmailStr, Field
-from sqlalchemy.dialects.postgresql import UUID
+from uuid import UUID
 
 #Information that can be returned upon valid login/register using token
 class UserResponse(BaseModel):
