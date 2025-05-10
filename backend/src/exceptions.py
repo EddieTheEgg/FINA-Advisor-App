@@ -1,4 +1,5 @@
 #Here we create custom exceptions, especially useful in service layer for our schemasd
+from uuid import UUID
 from starlette import status
 from fastapi import HTTPException
 
@@ -28,4 +29,16 @@ class AuthenticationError(HTTPException):
     def __init__(self):
         super().__init__(status_code=401, detail = "Could not validate user")
 
+
+class CategoryError(HTTPException):
+    """Base exception for category-related errors"""
+    pass
+
+class CategoryNotFoundError(CategoryError):
+    def __init__(self, category_id: UUID):
+        super().__init__(status_code=404, detail=f"Category with id {category_id} not found")
+
+class InvalidUserForCategoryError(CategoryError):
+    def __init__(self, category_id: UUID):
+        super().__init__(status_code=401, detail=f"Could not validate user for the category id {category_id} ")
         

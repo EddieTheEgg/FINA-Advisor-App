@@ -13,7 +13,7 @@ class CategoryUpdate(BaseModel):
     category_name: str
     icon: str | None = None
     color: str | None = None
-    is_income: bool | None = None
+    is_income: bool = False
 
 class CategoryResponse(BaseModel):
     category_id: UUID
@@ -30,4 +30,8 @@ class CategoryResponse(BaseModel):
         from_attributes = True
         arbitrary_types_allowed = True
 
-    
+class UpdateCategoryRequest(BaseModel):
+    category_name: str | None = None
+    icon: str | None = None
+    color: str | None = None
+    is_income: bool | None = None   
