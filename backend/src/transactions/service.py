@@ -16,6 +16,7 @@ def create_transaction(db: Session, transaction_create_request: TransactionCreat
         raise CategoryNotFoundError(transaction_create_request.category_id)
     
     if category.user_id != user_id:
+        logging.warning(f"Category with id {transaction_create_request.category_id} not valid for this user")
         raise InvalidUserForCategoryError(transaction_create_request.category_id)
     
     #Ensures that the transaction's is_income matches the category is_income
@@ -24,7 +25,7 @@ def create_transaction(db: Session, transaction_create_request: TransactionCreat
     
     new_transaction = Transaction(
         amount=transaction_create_request.amount,
-        description=transaction_create_request.description,
+        title=transaction_create_request.title,
         transaction_date=transaction_create_request.transaction_date,
         is_income=transaction_create_request.is_income,
         notes=transaction_create_request.notes,
@@ -42,7 +43,7 @@ def create_transaction(db: Session, transaction_create_request: TransactionCreat
     db.add(new_transaction)
     db.commit()
     db.refresh(new_transaction)
-    logging.info(f"Created new transaction for user {user_id} : {new_transaction.description}")
+    logging.info(f"Created new transaction for user {user_id} : {new_transaction.title}")
     return new_transaction
 
 #Acquires a single transaction by id (transaction_id), helper for update and delete
@@ -64,10 +65,10 @@ def update_transaction(db: Session, transaction_id: UUID, transaction_update_req
     transaction = get_transaction_by_id(db, transaction_id, user_id)
     
     # Check if the category (could be new or existing) exists and belongs to the user
-    category = service.get_category_by_id(db, transaction_update_request.category_id, user_id)
+    new_existing_category = service.get_category_by_id(db, transaction_update_request.category_id, user_id)
     
     transaction.amount = transaction_update_request.amount
-    transaction.description = transaction_update_request.description
+    transaction.title = transaction_update_request.title
     transaction.transaction_date = transaction_update_request.transaction_date
     transaction.is_income = transaction_update_request.is_income
     transaction.notes = transaction_update_request.notes
@@ -76,7 +77,7 @@ def update_transaction(db: Session, transaction_id: UUID, transaction_update_req
     transaction.subscription_frequency = transaction_update_request.subscription_frequency
     transaction.subscription_start_date = transaction_update_request.subscription_start_date
     transaction.subscription_end_date = transaction_update_request.subscription_end_date
-    transaction.category_id = category.category_id
+    transaction.category_id = new_existing_category.category_id
     transaction.payment_type = transaction_update_request.payment_type
     transaction.merchant = transaction_update_request.merchant
     transaction.payment_account = transaction_update_request.payment_account
@@ -88,4 +89,6 @@ def update_transaction(db: Session, transaction_id: UUID, transaction_update_req
 
 def delete_transaction(db: Session, transaction_id: UUID, user_id: UUID) -> None:
     transaction = get_transaction_by_id(db, transaction_id, user_id)
-    
+    db.delete(transaction)
+    db.commit()
+    logging.info(f"Deleted transaction {transaction_id} for user {user_id}")

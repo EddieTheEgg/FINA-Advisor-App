@@ -35,3 +35,10 @@ def update_transactions(
 ):
     return service.update_transaction(db, transaction_id, transaction_update_request, current_user.get_uuid())    
 
+@router.delete("/delete-transaction", status_code = status.HTTP_204_NO_CONTENT)
+def delete_transactions(
+    db: DbSession,
+    transaction_id: UUID,
+    current_user: CurrentUser
+):
+    return service.delete_transaction(db, transaction_id, current_user.get_uuid())

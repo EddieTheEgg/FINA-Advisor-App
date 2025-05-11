@@ -26,7 +26,7 @@ class SubscriptionFrequency(str, Enum):
 
 class TransactionCreate(BaseModel):
     amount: float = Field(..., ge=0)
-    description: str | None = None
+    title: str
     transaction_date: datetime
     is_income: bool = False
     notes: str | None = None
@@ -44,7 +44,7 @@ class TransactionCreate(BaseModel):
 
 class TransactionUpdate(BaseModel):
     amount: float | None = Field(None, ge = 0)
-    description: str | None = None
+    title: str | None = None
     transaction_date: datetime | None = None
     is_income: bool | None = None
     notes: str | None = None
@@ -61,7 +61,7 @@ class TransactionUpdate(BaseModel):
 class TransactionResponse(BaseModel):
     transaction_id: UUID
     amount: float
-    description: str | None = None
+    title: str | None = None
     transaction_date: datetime
     is_income: bool
     notes: str | None = None

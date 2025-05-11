@@ -48,7 +48,7 @@ class CategoryNotFoundError(CategoryError):
 
 class InvalidUserForCategoryError(CategoryError):
     def __init__(self, category_id: UUID):
-        super().__init__(status_code=401, detail=f"Could not validate user for the category id {category_id} ")
+        super().__init__(status_code=403, detail=f"Category {category_id} does not belong to this user")
 
 class InvalidCategoryForDeletionError(CategoryError):
     def __init__(self, category_id: UUID):
@@ -64,7 +64,7 @@ class TransactionNotFoundError(TransactionError):
 
 class InvalidUserForTransactionError(TransactionError):
     def __init__(self, transaction_id: UUID):
-        super().__init__(status_code=401, detail=f"Could not validate user for the transaction id {transaction_id} ")   
+        super().__init__(status_code=403, detail=f"Transaction {transaction_id} does not belong to this user")   
 
 class TransactionNotFoundError(TransactionError):
     def __init__(self, transaction_id: UUID):
