@@ -15,14 +15,19 @@ class Transaction(Base):
     transaction_date = Column(DateTime(timezone=True), nullable=False)
     is_income = Column(Boolean, default=False)
     notes = Column(String, nullable=True)
-    merchant = Column(String, nullable=True)
     location = Column(String, nullable=True)
     is_subscription = Column(Boolean, default=False)
     subscription_frequency = Column(String, nullable=True)  # monthly, quarterly, yearly, etc.
+    subscription_start_date = Column(DateTime(timezone=True), nullable=True)
+    subscription_end_date = Column(DateTime(timezone=True), nullable=True)
     created_at = Column(DateTime(timezone=True), server_default=func.now())
     updated_at = Column(DateTime(timezone=True), onupdate=func.now())
     user_id = Column(UUID(as_uuid=True), ForeignKey("users.user_id"), index = True)
-    category_id = Column(UUID(as_uuid=True), ForeignKey("categories.category_id"), index=True, nullable=True)
+    category_id = Column(UUID(as_uuid=True), ForeignKey("categories.category_id"), index=True, nullable=False)
+    merchant = Column(String, nullable=True) # Describe where or who the transaction is with
+    payment_type = Column(String, nullable=True) # Credit, Debit, Cash, bank_transfer...
+    payment_account = Column(String, nullable=True) # Describes which actual account the payment came from or went to
+
 
     # Relationships
     user = relationship("User", back_populates="transactions")
