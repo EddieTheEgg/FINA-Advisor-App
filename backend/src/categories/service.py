@@ -87,22 +87,22 @@ def delete_category(db: Session, category_id: UUID, user_id: UUID) -> None:
     delete_category = get_category_by_id(db, category_id, user_id)
     
     # For now we don't allow users to delete the default General Expense/Income category
-    if delete_category.category_name == "General Expense" or "General Income" and delete_category.is_custom == False:
-        logging.warning(f"Not allowed: User {user_id} attempted to delete General Expense/Income category")
+    if delete_category.category_name in {"Uncategorized Expense", "Uncategorized Income"} and not delete_category.is_custom:
+        logging.warning(f"Not allowed: User {user_id} attempted to delete Uncategorized Expense/Income category")
         raise InvalidCategoryForDeletionError(category_id)
 
     # Get the General/Uncategorized category for this user
     if delete_category.is_income:
         general_category = db.query(Category).filter(
             Category.user_id == user_id,
-            Category.category_name == "General Income",
+            Category.category_name == "Uncategorized Income",
             Category.is_income == delete_category.is_income,
             Category.is_custom == False
         ).first()
     else:
         general_category = db.query(Category).filter(
             Category.user_id == user_id,
-            Category.category_name == "General Expense",
+            Category.category_name == "Uncategorized Expense",
             Category.is_income == delete_category.is_income,
             Category.is_custom == False
         ).first()
@@ -110,7 +110,7 @@ def delete_category(db: Session, category_id: UUID, user_id: UUID) -> None:
     # In the scenario that the default General Expense/Income category does not exist, we create it
     if not general_category and not delete_category.is_income:
         general_category = Category(
-            category_name="General Expense",
+            category_name="Uncategorized Expense",
             icon="📦",
             color="#808080",
             is_income=delete_category.is_income,
@@ -119,7 +119,7 @@ def delete_category(db: Session, category_id: UUID, user_id: UUID) -> None:
         )
     else:
          general_category = Category(
-            category_name="General Income",
+            category_name="Uncategorized Income",
             icon="📦",
             color="#808080",
             is_income=delete_category.is_income,
@@ -139,14 +139,14 @@ def delete_category(db: Session, category_id: UUID, user_id: UUID) -> None:
     
     db.delete(delete_category)
     db.commit()
-    logging.info(f"Deleted category {category_id} for user {user_id} and moved transactions to a General Expense/Income category")
+    logging.info(f"Deleted category {category_id} for user {user_id} and moved transactions to a Uncategorized Expense/Income category")
     
 # Create default categories for a user (typically new registered user) if they don't exist
 def create_default_categories(db: Session, user_id : UUID) -> List[CategoryResponse]:
     default_categories = [
-        # General/Uncategorized Category (Helpful when categories get deleted but keep transactions in those categories)
-        {"category_name": "General Expense", "icon": "📦", "color": "#808080", "is_income": False, "is_custom": False, "user_id": user_id},
-        {"category_name": "General Income", "icon": "💰", "color": "#808080", "is_income": True, "is_custom": False, "user_id": user_id},
+        # Uncategorized Categories (Helpful when categories get deleted but keep transactions in those categories)
+        {"category_name": "Uncategorized Expense", "icon": "📦", "color": "#808080", "is_income": False, "is_custom": False, "user_id": user_id},
+        {"category_name": "Uncategorized Income", "icon": "💰", "color": "#808080", "is_income": True, "is_custom": False, "user_id": user_id},
         
         # Default Expense Categories
         {"category_name": "Food & Dining", "icon": "🍔", "color": "#FF5733", "is_income": False, "is_custom": False, "user_id": user_id},
