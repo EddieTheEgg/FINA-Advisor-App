@@ -11,7 +11,7 @@ class Transaction(Base):
 
     transaction_id = Column(UUID(as_uuid=True), primary_key = True, default = uuid.uuid4)
     amount = Column(Float, nullable=False)
-    description = Column(String, nullable=True)
+    title = Column(String, nullable=False)
     transaction_date = Column(DateTime(timezone=True), nullable=False)
     is_income = Column(Boolean, default=False)
     notes = Column(String, nullable=True)
