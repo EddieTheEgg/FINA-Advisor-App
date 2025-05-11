@@ -9,10 +9,10 @@ import jwt
 from jwt import PyJWTError
 from sqlalchemy.orm import Session
 from backend.src.entities.user import User
-from backend.src.auth.model import Token, TokenData, RegisterUserRequest
+from backend.src.auth.model import NewRegisteredUserResponse, Token, TokenData, RegisterUserRequest
 from fastapi.security import OAuth2PasswordRequestForm, OAuth2PasswordBearer
 from jose import jwt
-from backend.src.exceptions import AuthenticationError
+from backend.src.exceptions import AuthenticationError, DuplicateEmailError, DuplicateUsernameError
 import logging
 
 load_dotenv()
@@ -64,8 +64,18 @@ def verify_token(token: str) -> TokenData:
         logging.warning(f"Token verification failed: {str(e)}")
         raise AuthenticationError()
 
-# Attempting to register as a new user adding to the db, hashing password as part of the request.
-def register_user(db: Session, register_user_request: RegisterUserRequest) -> None:
+# Attempting to register as a new user (unique email and username) adding to the db, hashing password as part of the request.
+def register_user(db: Session, register_user_request: RegisterUserRequest) -> NewRegisteredUserResponse:
+    existing_email = db.query(User).filter(User.email == register_user_request.email).first()
+    if existing_email:
+        logging.warning(f"Registration attempt with existing email: {register_user_request.email}")
+        raise DuplicateEmailError(register_user_request.email)
+    
+    existing_username = db.query(User).filter(User.username == register_user_request.username).first()
+    if existing_username:
+        logging.warning(f"Registration attempt with existing username: {register_user_request.username}")
+        raise DuplicateUsernameError(register_user_request.username)
+    
     try:
         create_new_user = User(
             user_id = uuid4(),
@@ -77,6 +87,8 @@ def register_user(db: Session, register_user_request: RegisterUserRequest) -> No
         )
         db.add(create_new_user)
         db.commit()
+        logging.info(f"New user registered: {register_user_request.email}")
+        return create_new_user
     except Exception as e:
         logging.error(f"failed to register user: {register_user_request.email}. Error: {str(e)}")
         raise

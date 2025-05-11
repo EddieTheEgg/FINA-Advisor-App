@@ -19,6 +19,14 @@ class InvalidPasswordError(UserError):
     def __init__(self):
         super().__init__(status_code = 401, detail = "Current password is incorrect")
 
+class DuplicateEmailError(UserError):
+    def __init__(self, email: str):
+        super().__init__(status_code=400, detail=f"Email {email} is already registered")
+
+class DuplicateUsernameError(UserError):
+    def __init__(self, username: str):
+        super().__init__(status_code=400, detail=f"Username {username} is already taken")
+
 class PasswordMismatchError(UserError):
     def __init__(self):
         super().__init__(status_code = 400, detail = "New passwords do not match")

@@ -9,6 +9,17 @@ class RegisterUserRequest(BaseModel):
     last_name: str
     password: str
     
+class NewRegisteredUserResponse(BaseModel):
+    user_id: UUID
+    email: EmailStr
+    username: str
+    first_name: str
+    last_name: str
+    
+    class Config:
+        from_attributes = True
+        arbitrary_types_allowed = True 
+    
 #The token itself that we return and use between server and client
 class Token(BaseModel):
     access_token: str

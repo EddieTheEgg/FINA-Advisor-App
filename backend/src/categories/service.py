@@ -85,6 +85,47 @@ def delete_category(db: Session, category_id: UUID, user_id: UUID) -> None:
     category = get_category_by_id(db, category_id, user_id)
     db.delete(category)
     db.commit()
+    logging.info(f"Deleted category {category_id} for user {user_id}")
+    
+# Create default categories for a user (typically new registered user) if they don't exist
+def create_default_categories(db: Session, user_id : UUID) -> List[CategoryResponse]:
+    default_categories = [
+        # Default Expense Categories
+        {"category_name": "Food & Dining", "icon": "🍔", "color": "#FF5733", "is_income": False, "is_custom": False, "user_id": user_id},
+        {"category_name": "Transportation", "icon": "🚗", "color": "#33FF57", "is_income": False, "is_custom": False, "user_id": user_id},
+        {"category_name": "Entertainment", "icon": "🎉", "color": "#3357FF", "is_income": False, "is_custom": False, "user_id": user_id},
+        {"category_name": "Shopping", "icon": "🛍️", "color": "#FF33A1", "is_income": False, "is_custom": False, "user_id": user_id},
+        {"category_name": "Housing", "icon": "🏠", "color": "#FF3333", "is_income": False, "is_custom": False, "user_id": user_id},
+        {"category_name": "Utilities", "icon": "⚡", "color": "#33A1FF", "is_income": False, "is_custom": False, "user_id": user_id},
+        {"category_name": "Healthcare", "icon": "🏥", "color": "#A133FF", "is_income": False, "is_custom": False, "user_id": user_id},
+        {"category_name": "Personal Care", "icon": "💆‍♂️", "color": "#33FFA1", "is_income": False, "is_custom": False, "user_id": user_id},
+        {"category_name": "Education", "icon": "🎓", "color": "#FFA133", "is_income": False, "is_custom": False, "user_id": user_id},
+        {"category_name": "Gifts & Donations", "icon": "🎁", "color": "#A1FF33", "is_income": False, "is_custom": False, "user_id": user_id},
 
+        # Default Income/Inflow Categories
+        {"category_name": "Salary", "icon": "💰", "color": "#33FFA1", "is_income": True, "is_custom": False, "user_id": user_id},
+        {"category_name": "Investments", "icon": "📈", "color": "#FFA133", "is_income": True, "is_custom": False, "user_id": user_id},
+        {"category_name": "Rental Income", "icon": "🏠", "color": "#3357FF", "is_income": True, "is_custom": False, "user_id": user_id},
+        {"category_name": "Interest Income", "icon": "💸", "color": "#FF33A1", "is_income": True, "is_custom": False, "user_id": user_id},
+        {"category_name": "Dividends", "icon": "💸", "color": "#FF33A1", "is_income": True, "is_custom": False, "user_id": user_id},
+        {"category_name": "Bonus", "icon": "💸", "color": "#FF33A1", "is_income": True, "is_custom": False, "user_id": user_id},
+    ]
+
+    for default_category in default_categories:
+        # Check if category with same name and is_income status already exists for this user
+        existing_category = db.query(Category).filter(
+            Category.user_id == user_id,
+            Category.category_name == default_category["category_name"],
+            Category.is_income == default_category["is_income"]
+        ).first()
+        
+        if not existing_category:
+            category = Category(**default_category)
+            db.add(category)
+            db.commit()
+            db.refresh(category)
+    
+    logging.info(f"Successfully added default categories for user {user_id}")
+    return db.query(Category).filter(Category.user_id == user_id).all()
 
 

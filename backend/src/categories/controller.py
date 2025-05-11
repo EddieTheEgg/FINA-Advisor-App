@@ -51,3 +51,10 @@ def delete_category(
         current_user: CurrentUser
 ):
     return service.delete_category(db, category_id, current_user.get_uuid())
+
+@router.put("/add-default-categories", response_model = List[CategoryResponse])
+def add_default_categories(
+    db: DbSession,
+    current_user: CurrentUser
+):
+    return service.create_default_categories(db, current_user.get_uuid())
