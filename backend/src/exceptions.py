@@ -62,3 +62,11 @@ class TransactionNotFoundError(TransactionError):
     def __init__(self, transaction_id: UUID):
         super().__init__(status_code=404, detail=f"Transaction with id {transaction_id} not found")
 
+class InvalidUserForTransactionError(TransactionError):
+    def __init__(self, transaction_id: UUID):
+        super().__init__(status_code=401, detail=f"Could not validate user for the transaction id {transaction_id} ")   
+
+class TransactionNotFoundError(TransactionError):
+    def __init__(self, transaction_id: UUID):
+        super().__init__(status_code=404, detail=f"Transaction with id {transaction_id} not found")
+
