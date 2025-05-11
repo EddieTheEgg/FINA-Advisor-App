@@ -49,4 +49,16 @@ class CategoryNotFoundError(CategoryError):
 class InvalidUserForCategoryError(CategoryError):
     def __init__(self, category_id: UUID):
         super().__init__(status_code=401, detail=f"Could not validate user for the category id {category_id} ")
-        
+
+class InvalidCategoryForDeletionError(CategoryError):
+    def __init__(self, category_id: UUID):
+        super().__init__(status_code=401, detail=f"Could not delete the category id {category_id} because it is a system default category")
+
+class TransactionError(HTTPException):
+    """Base exception for transaction-related errors"""
+    pass
+
+class TransactionNotFoundError(TransactionError):
+    def __init__(self, transaction_id: UUID):
+        super().__init__(status_code=404, detail=f"Transaction with id {transaction_id} not found")
+

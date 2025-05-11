@@ -5,7 +5,8 @@ from backend.src.categories.model import CategoryResponse, CreateCategoryRequest
 from sqlalchemy.orm import Session
 
 from backend.src.entities.category import Category
-from backend.src.exceptions import CategoryNotFoundError, InvalidUserForCategoryError
+from backend.src.entities.transaction import Transaction
+from backend.src.exceptions import CategoryNotFoundError, InvalidCategoryForDeletionError, InvalidUserForCategoryError
 
 # This is when a user makes a new category besides the default ones, which is custom
 def create_category(db: Session, create_category_request: CreateCategoryRequest, user_id: UUID) -> CategoryResponse:
@@ -52,10 +53,11 @@ def get_category_by_id(db: Session, category_id: UUID, user_id: UUID) -> Categor
     if not category:
         logging.warning(f"Category with id {category_id} not found")
         raise CategoryNotFoundError(category_id)
-    logging.warning(f"category.user_id: {category.user_id} ({type(category.user_id)}), user_id: {user_id} ({type(user_id)})")
+    
     if category.user_id != user_id:
-        logging.warning(f"User {user_id} does not have access to category {category_id}")
+        logging.warning(f"Access denied: User {user_id} attempted to access category {category_id} which belongs to user {category.user_id}")
         raise InvalidUserForCategoryError(category_id)
+    
     return category
 
 # This updates a specific category that is associated with the current active user
@@ -82,14 +84,70 @@ def update_category(db: Session, category_id: UUID, update_category_request: Upd
 
 # This deletes a specific category that is associated with the current active user
 def delete_category(db: Session, category_id: UUID, user_id: UUID) -> None:
-    category = get_category_by_id(db, category_id, user_id)
-    db.delete(category)
+    delete_category = get_category_by_id(db, category_id, user_id)
+    
+    # For now we don't allow users to delete the default General Expense/Income category
+    if delete_category.category_name == "General Expense" or "General Income" and delete_category.is_custom == False:
+        logging.warning(f"Not allowed: User {user_id} attempted to delete General Expense/Income category")
+        raise InvalidCategoryForDeletionError(category_id)
+
+    # Get the General/Uncategorized category for this user
+    if delete_category.is_income:
+        general_category = db.query(Category).filter(
+            Category.user_id == user_id,
+            Category.category_name == "General Income",
+            Category.is_income == delete_category.is_income,
+            Category.is_custom == False
+        ).first()
+    else:
+        general_category = db.query(Category).filter(
+            Category.user_id == user_id,
+            Category.category_name == "General Expense",
+            Category.is_income == delete_category.is_income,
+            Category.is_custom == False
+        ).first()
+    
+    # In the scenario that the default General Expense/Income category does not exist, we create it
+    if not general_category and not delete_category.is_income:
+        general_category = Category(
+            category_name="General Expense",
+            icon="📦",
+            color="#808080",
+            is_income=delete_category.is_income,
+            is_custom=False,
+            user_id=user_id
+        )
+    else:
+         general_category = Category(
+            category_name="General Income",
+            icon="📦",
+            color="#808080",
+            is_income=delete_category.is_income,
+            is_custom=False,
+            user_id=user_id
+        )
+    db.add(general_category)
     db.commit()
-    logging.info(f"Deleted category {category_id} for user {user_id}")
+    db.refresh(general_category)
+    
+    # Move all transactions in to be deleted category into the general expense/income category
+    db.query(Transaction).filter(
+        Transaction.category_id == category_id
+    ).update({
+        Transaction.category_id: general_category.category_id
+    })
+    
+    db.delete(delete_category)
+    db.commit()
+    logging.info(f"Deleted category {category_id} for user {user_id} and moved transactions to a General Expense/Income category")
     
 # Create default categories for a user (typically new registered user) if they don't exist
 def create_default_categories(db: Session, user_id : UUID) -> List[CategoryResponse]:
     default_categories = [
+        # General/Uncategorized Category (Helpful when categories get deleted but keep transactions in those categories)
+        {"category_name": "General Expense", "icon": "📦", "color": "#808080", "is_income": False, "is_custom": False, "user_id": user_id},
+        {"category_name": "General Income", "icon": "💰", "color": "#808080", "is_income": True, "is_custom": False, "user_id": user_id},
+        
         # Default Expense Categories
         {"category_name": "Food & Dining", "icon": "🍔", "color": "#FF5733", "is_income": False, "is_custom": False, "user_id": user_id},
         {"category_name": "Transportation", "icon": "🚗", "color": "#33FF57", "is_income": False, "is_custom": False, "user_id": user_id},
