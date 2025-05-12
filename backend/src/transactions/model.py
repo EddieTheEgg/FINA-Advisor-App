@@ -86,12 +86,9 @@ class TransactionListResponse(BaseModel):
     transactions: list[TransactionResponse]
     total: int
 
-
-
-
-
-
-
+    class Config:
+        from_attributes = True
+        arbitrary_types_allowed = True
 
 class CategorySummary(BaseModel):
     category_id: UUID

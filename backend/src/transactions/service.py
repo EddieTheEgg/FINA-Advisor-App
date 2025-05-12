@@ -2,12 +2,15 @@
 import logging
 from uuid import UUID
 from pytest import Session
+from typing import List, Tuple
+from datetime import datetime
+from sqlalchemy import desc
 
 from backend.src.categories import service
 from backend.src.entities.category import Category
 from backend.src.entities.transaction import Transaction
 from backend.src.exceptions import CategoryNotFoundError, InvalidUserForCategoryError, InvalidUserForTransactionError, TransactionNotFoundError
-from backend.src.transactions.model import TransactionCreate, TransactionResponse, TransactionUpdate
+from backend.src.transactions.model import TransactionCreate, TransactionResponse, TransactionUpdate, TransactionListResponse
 
 # Creates a new transaction entry in the database
 def create_transaction(db: Session, transaction_create_request: TransactionCreate, user_id: UUID) -> TransactionResponse:
@@ -59,6 +62,104 @@ def get_transaction_by_id(db: Session, transaction_id: UUID, user_id: UUID) -> T
         raise InvalidUserForTransactionError(transaction_id)
     
     return transaction
+
+# Get transactions with filtering and pagination
+def get_transactions_with_filters(
+        db: Session, 
+        user_id: UUID, 
+        skip: int = 0, 
+        limit: int = 100,
+        category_id: UUID | None = None,
+        start_date: datetime | None = None,
+        end_date: datetime | None = None,
+        is_income: bool | None = None,
+        is_subscription: bool | None = None,
+        subscription_frequency: str | None = None,
+        search: str | None = None,
+        min_amount: float | None = None,
+        max_amount: float | None = None,
+        merchant: str | None = None,
+        location: str | None = None,
+        payment_type: str | None = None,
+        payment_account: str | None = None,
+        sort_by: str = "transaction_date",
+        sort_order: str = "desc"
+    ) -> TransactionListResponse:
+    try:
+        possible_transactions = db.query(Transaction).filter(Transaction.user_id == user_id)
+        
+        if category_id:
+            category = db.query(Category).filter(
+                Category.category_id == category_id,
+                Category.user_id == user_id
+            ).first()
+            if not category:
+                logging.warning(f"Category {category_id} not found or doesn't belong to user {user_id}")
+                raise InvalidUserForCategoryError(category_id)
+            possible_transactions = possible_transactions.filter(Transaction.category_id == category_id)
+        
+        if start_date:
+            possible_transactions = possible_transactions.filter(Transaction.transaction_date >= start_date)
+        
+        if end_date:
+            possible_transactions = possible_transactions.filter(Transaction.transaction_date <= end_date)
+        
+        if is_income is not None:
+            possible_transactions = possible_transactions.filter(Transaction.is_income == is_income)
+            
+        if is_subscription is not None:
+            possible_transactions = possible_transactions.filter(Transaction.is_subscription == is_subscription)
+            
+        if subscription_frequency:
+            possible_transactions = possible_transactions.filter(Transaction.subscription_frequency == subscription_frequency)
+            
+        if search:
+            search_term = f"%{search}%"
+            possible_transactions = possible_transactions.filter(
+                (Transaction.title.ilike(search_term)) | 
+                (Transaction.notes.ilike(search_term)) |
+                (Transaction.merchant.ilike(search_term))
+            )
+            
+        if min_amount is not None:
+            possible_transactions = possible_transactions.filter(Transaction.amount >= min_amount)
+            
+        if max_amount is not None:
+            possible_transactions = possible_transactions.filter(Transaction.amount <= max_amount)
+            
+        if merchant:
+            possible_transactions = possible_transactions.filter(Transaction.merchant.ilike(f"%{merchant}%"))
+            
+        if location:
+            possible_transactions = possible_transactions.filter(Transaction.location.ilike(f"%{location}%"))
+            
+        if payment_type:
+            possible_transactions = possible_transactions.filter(Transaction.payment_type == payment_type)
+            
+        if payment_account:
+            possible_transactions = possible_transactions.filter(Transaction.payment_account.ilike(f"%{payment_account}%"))
+        
+        total_count = possible_transactions.count()
+        
+        # Sorting column process, sort by transaction_date by default
+        sort_column = {
+            "transaction_date": Transaction.transaction_date,
+            "amount": Transaction.amount,
+            "created_at": Transaction.created_at,
+        }.get(sort_by, Transaction.transaction_date)
+            
+        if sort_order.lower() == "asc":
+            possible_transactions = possible_transactions.order_by(sort_column)
+        else:
+            possible_transactions = possible_transactions.order_by(desc(sort_column))
+            
+        final_transactions = possible_transactions.offset(skip).limit(limit).all()
+        
+        logging.info(f"Retrieved current page of {len(final_transactions)} transactions for user {user_id}")
+        return TransactionListResponse(transactions=final_transactions, total=total_count)
+    except Exception as e:
+        logging.error(f"Error retrieving transactions for user {user_id}: {str(e)}")
+        raise
 
 # Updates a transaction entry in the database
 def update_transaction(db: Session, transaction_id: UUID, transaction_update_request: TransactionUpdate, user_id: UUID) -> TransactionResponse:
