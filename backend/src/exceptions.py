@@ -70,3 +70,13 @@ class TransactionNotFoundError(TransactionError):
     def __init__(self, transaction_id: UUID):
         super().__init__(status_code=404, detail=f"Transaction with id {transaction_id} not found")
 
+class OpenAIError(HTTPException):
+    pass
+
+class OpenAIResponseError(OpenAIError):
+    def __init__(self):
+        super().__init__(status_code=400, detail="OpenAI response error, could not format response")
+
+class OpenAICallError(OpenAIError):
+    def __init__(self):
+        super().__init__(status_code=400, detail="OpenAI call error, could not call OpenAI")
