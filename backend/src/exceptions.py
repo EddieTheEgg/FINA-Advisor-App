@@ -33,9 +33,15 @@ class PasswordMismatchError(UserError):
 
 
 
+
+
 class AuthenticationError(HTTPException):
     def __init__(self):
         super().__init__(status_code=401, detail = "Could not validate user")
+
+
+
+
 
 
 class CategoryError(HTTPException):
@@ -70,13 +76,49 @@ class TransactionNotFoundError(TransactionError):
     def __init__(self, transaction_id: UUID):
         super().__init__(status_code=404, detail=f"Transaction with id {transaction_id} not found")
 
+
+
+
+
+class AICategorizationError(HTTPException):
+    """Base exception for AI categorization errors"""
+    pass
+
+class TransactionNotSuitableForCategorizationError(AICategorizationError):
+    def __init__(self, transaction_id: UUID = None):
+        detail = f"Transaction {transaction_id} is not suitable for categorization" if transaction_id else "Transaction is not suitable for categorization"
+        super().__init__(status_code=400, detail=detail)
+
+class CategoryApplicationError(AICategorizationError):
+    def __init__(self, message: str = "Error applying category to transaction"):
+        super().__init__(status_code=400, detail=message)
+
+class InvalidCategoryDataError(AICategorizationError):
+    def __init__(self):
+        super().__init__(
+            status_code=400, 
+            detail="Must provide either category_id or category_name with is_new_category=True"
+        )
+
+
+
+class TrainingDataError(AICategorizationError):
+    def __init__(self, message: str = "Error logging training data"):
+        super().__init__(status_code=500, detail=message)
+
+
+
+
+
+
 class OpenAIError(HTTPException):
     pass
 
 class OpenAIResponseError(OpenAIError):
     def __init__(self):
-        super().__init__(status_code=400, detail="OpenAI response error, could not format response")
+        super().__init__(status_code=422, detail="Could not process OpenAI response")
 
+# Could have other reasons for this error, but default common is error connecting to OpenAI service
 class OpenAICallError(OpenAIError):
-    def __init__(self):
-        super().__init__(status_code=400, detail="OpenAI call error, could not call OpenAI")
+    def __init__(self, message: str = "Error connecting to OpenAI service"):
+        super().__init__(status_code=503, detail=message)
