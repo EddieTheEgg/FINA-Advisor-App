@@ -102,6 +102,7 @@ class InvalidCategoryDataError(AICategorizationError):
 
 
 
+
 class TrainingDataError(AICategorizationError):
     def __init__(self, message: str = "Error logging training data"):
         super().__init__(status_code=500, detail=message)
@@ -122,3 +123,11 @@ class OpenAIResponseError(OpenAIError):
 class OpenAICallError(OpenAIError):
     def __init__(self, message: str = "Error connecting to OpenAI service"):
         super().__init__(status_code=503, detail=message)
+
+class DatabaseError(HTTPException):
+    def __init__(self, message: str = "Database error"):
+        super().__init__(status_code=500, detail=message)
+
+
+
+

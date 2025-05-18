@@ -3,7 +3,6 @@ from pydantic import BaseModel
 from typing import List
 from datetime import datetime
 
-
 class SuggestCategoryRequest(BaseModel):
     amount: float
     title: str
@@ -18,17 +17,34 @@ class SuggestCategoryRequest(BaseModel):
     merchant: str | None = None
     payment_type: str | None = None
     payment_account: str | None = None
+    client_reference: str | None = None
 
     class Config:
         from_attributes = True
         arbitrary_types_allowed = True
 
 class CategorySuggestionResponse(BaseModel):
-    transaction_id: UUID | None = None
+    suggestion_id: UUID
     category_id: UUID | None = None
     suggested_category_name: str | None = None
     confidence: float
     method: str = "openai"
+    client_reference: str | None = None
+
+    class Config:
+        from_attributes = True
+        arbitrary_types_allowed = True
+
+# Track when a suggestion is applied
+class ApplySuggestionRequest(BaseModel):
+    suggestion_id: UUID
+    transaction_id: UUID  
+    was_applied: bool = True
+
+class ApplySuggestionResponse(BaseModel):
+    success: bool
+    transaction_id: UUID
+    suggestion_id: UUID
 
     class Config:
         from_attributes = True
