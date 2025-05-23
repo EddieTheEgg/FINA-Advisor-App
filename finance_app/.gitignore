@@ -2,6 +2,12 @@
 #
 .DS_Store
 
+# Eclipse
+.project
+.classpath
+.settings/
+.factorypath
+
 # Xcode
 #
 build/
