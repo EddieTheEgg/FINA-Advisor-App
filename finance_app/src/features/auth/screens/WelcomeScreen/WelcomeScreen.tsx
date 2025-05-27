@@ -3,11 +3,12 @@ import { View, Image, Text, SafeAreaView } from 'react-native';
 import { WelcomeScreenStyles } from './WelcomeScreen.styles';
 import SignInButton from '../../components/SignInButton/SignInButton';
 import CreateAccountButton from '../../components/CreateAccountButton/CreateAccountButton';
+import { NavigationProps } from '../../../../navigation/types/AuthNavigatorTypes';
 
-const WelcomeScreen = () => {
+const WelcomeScreen = ({ navigation }: NavigationProps<'Welcome'>) => {
+
   const navLoginScreen = () => {
-    console.log('Login pressed!');
-    // We'll add navigation later
+    navigation.navigate('Login');
   };
 
   const navCreateAccScreen = () => {
@@ -28,11 +29,6 @@ const WelcomeScreen = () => {
           Your Personal Financial Tracking Advisor
         </Text>
 
-        {/* Buttons */}
-        <Image
-            source={require('../../assets/images/button_rectangle.png')}
-            style={WelcomeScreenStyles.imageBackground}
-        />
         <View style={WelcomeScreenStyles.buttonContainer}>
          <SignInButton onPress={navLoginScreen}/>
          <CreateAccountButton onPress={navCreateAccScreen} />

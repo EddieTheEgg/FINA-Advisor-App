@@ -1,8 +1,14 @@
 import React from 'react';
-import WelcomeScreen from './src/features/auth/screens/WelcomeScreen/WelcomeScreen.tsx';
+import { NavigationContainer } from '@react-navigation/native';
+import AuthNavigator from './src/navigation/AuthNavigator.tsx';
+
 
 const App = () => {
-  return <WelcomeScreen />;
+  return (
+    <NavigationContainer>
+      <AuthNavigator />
+    </NavigationContainer>
+  );
 };
 
 export default App;

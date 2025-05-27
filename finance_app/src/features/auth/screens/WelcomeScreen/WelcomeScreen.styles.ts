@@ -4,7 +4,7 @@ import { fontSize } from '../../../../styles/fontSizes.js';
 import { spacing } from '../../../../styles/spacing.js';
 
 const { width: screenWidth } = Dimensions.get('window');
-const imageSize = screenWidth * 0.7; // 50% of screen width
+const imageSize = screenWidth * 0.7;
 
 export const WelcomeScreenStyles = StyleSheet.create({
   container: {
