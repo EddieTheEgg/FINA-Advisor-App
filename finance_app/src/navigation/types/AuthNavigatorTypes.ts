@@ -6,6 +6,6 @@ export type AuthStackParamList = {
   CreateAccount: undefined;
 };
 
-export type NavigationProps<T extends keyof AuthStackParamList> = {
+export type AuthNavigationProps<T extends keyof AuthStackParamList> = {
   navigation: NativeStackNavigationProp<AuthStackParamList, T>;
 };

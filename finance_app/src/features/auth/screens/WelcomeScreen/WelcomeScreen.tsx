@@ -1,11 +1,11 @@
 import React from 'react';
-import { View, Image, Text, SafeAreaView } from 'react-native';
+import { View, Image, Text, SafeAreaView, ActivityIndicator } from 'react-native';
 import { WelcomeScreenStyles } from './WelcomeScreen.styles';
 import SignInButton from '../../components/SignInButton/SignInButton';
 import CreateAccountButton from '../../components/CreateAccountButton/CreateAccountButton';
-import { NavigationProps } from '../../../../navigation/types/AuthNavigatorTypes';
+import { AuthNavigationProps } from '../../../../navigation/types/AuthNavigatorTypes';
 
-const WelcomeScreen = ({ navigation }: NavigationProps<'Welcome'>) => {
+const WelcomeScreen = ({ navigation }: AuthNavigationProps<'Welcome'>) => {
 
   const navLoginScreen = () => {
     navigation.navigate('Login');
