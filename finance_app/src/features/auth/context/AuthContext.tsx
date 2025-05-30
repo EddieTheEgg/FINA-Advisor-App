@@ -6,6 +6,8 @@ type AuthContextType = {
   isSignedIn: boolean;
   signIn: (email: string, password: string) => Promise<void>;
   signOut: () => Promise<void>;
+  accessToken: string | null;
+  setAccessToken: React.Dispatch<React.SetStateAction<string | null>>;
 };
 
 export const AuthContext = createContext<AuthContextType | null>(null);
@@ -13,11 +15,12 @@ export const AuthContext = createContext<AuthContextType | null>(null);
 export function AuthProvider({children}: {children: React.ReactNode}) {
   const [isLoading, setIsLoading] = useState(true);
   const [isSignedIn, setIsSignedIn] = useState(false);
+  const [accessToken, setAccessToken] = useState<string | null>(null);
 
   const checkAuthStatus = async () => {
     try {
-      const accessToken = await TokenStorage.getAccessToken();
-      if (accessToken) {
+      const refreshToken = await TokenStorage.getRefreshToken();
+      if (refreshToken) {
         setIsSignedIn(true);
       }
     } catch (error) {
@@ -41,8 +44,8 @@ export function AuthProvider({children}: {children: React.ReactNode}) {
         body: JSON.stringify({email, password}),
       });
       const data = await response.json();
-      await TokenStorage.setAccessToken(data.access_token);
       await TokenStorage.setRefreshToken(data.refresh_token);
+      setAccessToken(data.access_token);
       setIsSignedIn(true);
       setIsLoading(false);
     } catch (error) {
@@ -57,7 +60,8 @@ const signOut = async () => {
   setIsLoading(true);
   try{
     setIsSignedIn(false);
-    await TokenStorage.clearTokens();
+    await TokenStorage.clearRefreshToken();
+    setAccessToken(null);
   } catch (error) {
     console.error('Error signing out:', error);
   } finally {
@@ -67,7 +71,7 @@ const signOut = async () => {
 
 return (
   <AuthContext.Provider
-  value={{isLoading, isSignedIn, signIn, signOut}}>
+  value={{isLoading, isSignedIn, signIn, signOut, accessToken, setAccessToken}}>
     {children}
   </AuthContext.Provider>
 );

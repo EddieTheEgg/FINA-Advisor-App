@@ -1,5 +1,5 @@
 import React from 'react';
-import { View, Image, Text, SafeAreaView, ActivityIndicator } from 'react-native';
+import { View, Image, Text, SafeAreaView } from 'react-native';
 import { WelcomeScreenStyles } from './WelcomeScreen.styles';
 import SignInButton from '../../components/SignInButton/SignInButton';
 import CreateAccountButton from '../../components/CreateAccountButton/CreateAccountButton';
