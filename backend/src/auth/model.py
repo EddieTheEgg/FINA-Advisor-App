@@ -15,6 +15,9 @@ class NewRegisteredUserResponse(BaseModel):
     username: str
     first_name: str
     last_name: str
+    access_token: str
+    refresh_token: str
+    token_type: str = "bearer"
     
     class Config:
         from_attributes = True
@@ -23,7 +26,8 @@ class NewRegisteredUserResponse(BaseModel):
 #The token itself that we return and use between server and client
 class Token(BaseModel):
     access_token: str
-    token_type: str
+    refresh_token: str
+    token_type: str = "bearer"
     
 #When verifies a token, we return the token along with this data
 class TokenData(BaseModel):
@@ -33,6 +37,13 @@ class TokenData(BaseModel):
         if self.user_id:
             return UUID(self.user_id)
         return None
+
+class RefreshTokenRequest(BaseModel):
+    refresh_token: str
+
+class LoginRequest(BaseModel):
+    email: EmailStr
+    password: str
     
 
 
