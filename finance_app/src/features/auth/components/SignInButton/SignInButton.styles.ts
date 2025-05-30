@@ -6,10 +6,11 @@ import { spacing } from '../../../../styles/spacing.js';
 
 export const styles = StyleSheet.create({
   container: {
-    backgroundColor: colors.black,
-   paddingVertical: spacing.md,
-   borderRadius: 30,
-        width: '100%',
+    backgroundColor: colors.secondary,
+    paddingVertical: spacing.md,
+    borderRadius: 30,
+    width: '100%',
+    boxShadow: '0 8px 5px 0 rgba(0, 0, 0, 0.3)',
   },
   buttonText: {
     color: colors.white,
