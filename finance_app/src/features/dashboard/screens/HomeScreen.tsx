@@ -1,9 +1,13 @@
-import { View, Text } from 'react-native';
+import { View, Text, SafeAreaView } from 'react-native';
+import { SignOutButton } from '../../auth/components/SignOutButton/SignOutButton';
 
 export const HomeScreen = () => {
     return (
-        <View>
-            <Text>Home</Text>
-        </View>
+        <SafeAreaView>
+            <View>
+                <Text>Home</Text>
+                {/* <SignOutButton />  For testing purposes*/}
+            </View>
+        </SafeAreaView>
     );
 };

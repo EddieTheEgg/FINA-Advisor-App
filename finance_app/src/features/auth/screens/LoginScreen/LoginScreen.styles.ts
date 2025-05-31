@@ -50,7 +50,7 @@ export const styles = StyleSheet.create({
     },
     forgotPasswordText: {
         fontSize: fontSize.base,
-        fontFamily: 'Poppins-Regular',
+        fontFamily: 'Poppins-SemiBold',
         color: colors.black,
     },
 });

@@ -25,7 +25,7 @@ const BackButton = () => {
                 useNativeDriver: true,
             }).start();
         }, 200);
-    };  
+    };
     return (
         <Animated.View style={[{ transform: [{ scale }] }]}>
             <Pressable
