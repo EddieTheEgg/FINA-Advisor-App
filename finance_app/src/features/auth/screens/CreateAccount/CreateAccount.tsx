@@ -1,9 +1,7 @@
 import React from 'react';
 import { SafeAreaView, Text, View } from 'react-native';
-import { AuthNavigationProps } from '../../../../navigation/types/AuthNavigatorTypes';
 
-
-const CreateAccountScreen = ({navigation}: AuthNavigationProps<'CreateAccount'>) => {
+const CreateAccountScreen = () => {
 
     return (
         <SafeAreaView>
