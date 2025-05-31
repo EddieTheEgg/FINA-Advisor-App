@@ -1,5 +1,6 @@
 import {createContext, useEffect, useState} from 'react';
 import { TokenStorage } from '../../../utils/tokenStorage';
+import api from '../../../api/axios';
 
 type AuthContextType = {
   isLoading: boolean;
@@ -36,14 +37,11 @@ export function AuthProvider({children}: {children: React.ReactNode}) {
 
   const signIn = async(email: string, password: string) => {
     try {
-      const response = await fetch('http://localhost:8000/auth/login', {
-        method: 'POST',
-        headers: {
-          'Content-Type': 'application/json',
-        },
-        body: JSON.stringify({email, password}),
+      const response = await api.post('/auth/login', {
+        email,
+        password,
       });
-      const data = await response.json();
+      const data = response.data;
       await TokenStorage.setRefreshToken(data.refresh_token);
       setAccessToken(data.access_token);
       setIsSignedIn(true);
@@ -57,8 +55,8 @@ export function AuthProvider({children}: {children: React.ReactNode}) {
   };
 
 const signOut = async () => {
-  setIsLoading(true);
   try{
+    setIsLoading(true);
     setIsSignedIn(false);
     await TokenStorage.clearRefreshToken();
     setAccessToken(null);
