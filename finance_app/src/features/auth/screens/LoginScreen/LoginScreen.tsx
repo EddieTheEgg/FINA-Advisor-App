@@ -1,17 +1,20 @@
 import React, { useState } from 'react';
 import { Pressable, SafeAreaView, Text, TextInput, View } from 'react-native';
-import { AuthNavigationProps } from '../../../../navigation/types/AuthNavigatorTypes';
 import { styles } from './LoginScreen.styles';
 import SignInButton from '../../components/SignInButton/SignInButton';
 import FontAwesome6 from 'react-native-vector-icons/FontAwesome6';
+import { useAuth } from '../../hooks/useAuth';
 
-const LoginScreen = ({navigation}: AuthNavigationProps<'Login'>) => {
+const LoginScreen = () => {
     const [email, setEmail] = useState('');
     const [password, setPassword] = useState('');
     const [showPassword, setShowPassword] = useState(true);
 
-    const handleLogin = () => {
-        console.log('Login pressed!');
+    const {signIn} = useAuth();
+
+    const handleLogin = async() => {
+       console.log('Login pressed!');
+       await signIn(email, password);
     };
 
     const handleForgotPass = () => {
@@ -42,7 +45,7 @@ const LoginScreen = ({navigation}: AuthNavigationProps<'Login'>) => {
                         secureTextEntry={showPassword}
                         autoCapitalize="none"
                         autoCorrect={false}
-                        keyboardType="visible-password"
+                        keyboardType="default"
                     />
                     <Pressable onPress= {() => setShowPassword(!showPassword)}>
                         {showPassword ?
