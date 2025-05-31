@@ -1,8 +1,10 @@
 import axios from 'axios';
 import { Platform } from 'react-native';
 import { TokenStorage } from '../utils/tokenStorage';
-import type { AxiosResponse, AxiosError } from 'axios';
+import type { AxiosResponse, AxiosError, InternalAxiosRequestConfig } from 'axios';
+import { accessTokenService } from './accesstokenservice';
 
+// Create axios instance with base URL and headers
 export const api = axios.create({
   baseURL: Platform.OS === 'android'
     ? 'http://10.0.2.2:8000'
@@ -12,6 +14,16 @@ export const api = axios.create({
   },
 });
 
+// Add access token to headers (which is used for any authenticated requests) using singleton pattern
+api.interceptors.request.use((config: InternalAxiosRequestConfig) => {
+  const token = accessTokenService.getToken();
+  if (token) {
+    config.headers.Authorization = `Bearer ${token}`;
+  }
+  return config;
+});
+
+// Handle responses and errors
 api.interceptors.response.use(
     (response: AxiosResponse) => response,
     async (error: AxiosError) => {

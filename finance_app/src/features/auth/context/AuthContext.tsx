@@ -1,6 +1,7 @@
 import {createContext, useEffect, useState} from 'react';
 import { TokenStorage } from '../../../utils/tokenStorage';
 import api from '../../../api/axios';
+import { accessTokenService } from '../../../api/accesstokenservice';
 
 type AuthContextType = {
   isLoading: boolean;
@@ -43,6 +44,7 @@ export function AuthProvider({children}: {children: React.ReactNode}) {
       });
       const data = response.data;
       await TokenStorage.setRefreshToken(data.refresh_token);
+      accessTokenService.setToken(data.access_token);
       setAccessToken(data.access_token);
       setIsSignedIn(true);
       setIsLoading(false);
@@ -59,6 +61,7 @@ const signOut = async () => {
     setIsLoading(true);
     setIsSignedIn(false);
     await TokenStorage.clearRefreshToken();
+    accessTokenService.setToken(null);
     setAccessToken(null);
   } catch (error) {
     console.error('Error signing out:', error);
