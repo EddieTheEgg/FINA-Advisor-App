@@ -13,5 +13,11 @@ export const loginUser = async ({ email, password }: { email: string; password: 
     return normalizeToken(response.data);
 };
 
+// Refreshes the access token using the refresh token (if the access token is expired)
+export const refreshToken = async (fetchRefreshToken: string) => {
+    const response = await api.post('/auth/refresh', { refresh_token: fetchRefreshToken });
+    return normalizeToken(response.data);
+};
+
 
 

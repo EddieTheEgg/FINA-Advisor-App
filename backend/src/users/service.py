@@ -11,7 +11,6 @@ def get_user_by_id(db: Session, user_id: UUID) -> UserResponse:
     if not user:
         logging.warning(f"User not found with given ID: {user_id}")
         raise UserNotFoundError(user_id)
-    logging.info(f"Succesfully retrieved user with ID: {user_id}")
     return user
 
 def change_password(db: Session, user_id: UUID, password_change: PasswordChange):
