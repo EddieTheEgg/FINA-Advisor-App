@@ -2,7 +2,7 @@ import React, { useRef } from 'react';
 import { styles } from './SignInButton.styles';
 import { Pressable, Text, Animated } from 'react-native';
 
-export default function SignInButton({ onPress }: { onPress: () => void }) {
+export default function SignInButton({ onPress, disabled }: { onPress: () => void, disabled: boolean }) {
     const animation = useRef(new Animated.Value(0)).current;
     const scale = animation.interpolate({
         inputRange: [0, 1],
@@ -31,6 +31,7 @@ export default function SignInButton({ onPress }: { onPress: () => void }) {
                 onPressIn={onPressIn}
                 onPressOut={onPressOut}
                 onPress={onPress}
+                disabled={disabled}
             >
                 <Text style={styles.buttonText}>Sign In</Text>
             </Pressable>
