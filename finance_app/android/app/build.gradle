@@ -107,9 +107,8 @@ android {
     }
 
     project.ext.vectoricons = [
-        iconFontNames: [ 'FontAwesome6_Regular.ttf', 'FontAwesome6_Solid.ttf', 'FontAwesome6_Brands.ttf' ]
+        iconFontNames: [ 'FontAwesome6_Regular.ttf', 'FontAwesome6_Solid.ttf', 'FontAwesome6_Brands.ttf', 'MaterialIcons.ttf' ]
     ]
-
     apply from: "../../node_modules/react-native-vector-icons/fonts.gradle"
 }
 
@@ -121,5 +120,15 @@ dependencies {
         implementation("com.facebook.react:hermes-android")
     } else {
         implementation jscFlavor
+    }
+}
+
+afterEvaluate {
+    tasks.whenTaskAdded { task ->
+        if (task.name == 'generateDebugLintReportModel' || task.name == 'generateReleaseLintReportModel') {
+            if (tasks.findByName('copyReactNativeVectorIconFonts')) {
+                task.dependsOn copyReactNativeVectorIconFonts
+            }
+        }
     }
 }
