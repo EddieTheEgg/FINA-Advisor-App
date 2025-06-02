@@ -3,18 +3,18 @@ import { Pressable, SafeAreaView, Text, TextInput, View } from 'react-native';
 import { styles } from './LoginScreen.styles';
 import SignInButton from '../../components/SignInButton/SignInButton';
 import FontAwesome6 from 'react-native-vector-icons/FontAwesome6';
-import { useAuth } from '../../hooks/useAuth';
+import { useLogin } from '../../hooks/useLogin';
 
 const LoginScreen = () => {
     const [email, setEmail] = useState('');
     const [password, setPassword] = useState('');
     const [showPassword, setShowPassword] = useState(true);
 
-    const {signIn} = useAuth();
+    // Use the query login hook to login the user
+    const {mutate: loginUser, error, isPending} = useLogin();
 
-    const handleLogin = async() => {
-       console.log('Login pressed!');
-       await signIn(email, password);
+    const handleLogin = async () => {
+        loginUser({email, password},);
     };
 
     const handleForgotPass = () => {
@@ -54,12 +54,14 @@ const LoginScreen = () => {
                         }
                     </Pressable>
                 </View>
+                {error && <Text style={styles.errorText}>Login failed</Text>}
             </View>
             <View style={styles.buttonContainer}>
-                <SignInButton onPress={handleLogin} />
+                <SignInButton onPress={handleLogin} disabled={isPending} />
                 <Pressable onPress={handleForgotPass}>
                     <Text style = {styles.forgotPasswordText}>Forgot password?</Text>
                 </Pressable>
+                {isPending && <Text style={styles.loadingText}>Loading...</Text>}
             </View>
         </SafeAreaView>
     );

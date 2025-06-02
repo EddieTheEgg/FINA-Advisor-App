@@ -53,4 +53,16 @@ export const styles = StyleSheet.create({
         fontFamily: 'Poppins-SemiBold',
         color: colors.black,
     },
+    loadingText: {
+        fontSize: fontSize.base,
+        fontFamily: 'Poppins-SemiBold',
+        color: colors.black,
+    },
+    errorText: {
+        alignSelf: 'center',
+        fontSize: fontSize.sm,
+        fontFamily: 'Poppins-Regular',
+        color: colors.tertiary,
+    },
 });
+
