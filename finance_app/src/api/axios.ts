@@ -16,7 +16,7 @@ export const api = axios.create({
 
 // Add access token to headers (which is used for any authenticated requests) using singleton pattern
 api.interceptors.request.use((config: InternalAxiosRequestConfig) => {
-  const token = accessTokenService.getToken();
+  const token = accessTokenService.getAccessToken();
   if (token) {
     config.headers.Authorization = `Bearer ${token}`;
   }

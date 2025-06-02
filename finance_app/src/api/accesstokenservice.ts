@@ -1,3 +1,6 @@
+// This class is used to store the access token in the local storage
+// It is a singleton class, so only one instance of the class is created
+// and it is used to store the access token in the local storage
 class AccessTokenService {
     private static instance: AccessTokenService;
     private accessToken: string | null = null;
@@ -12,11 +15,11 @@ class AccessTokenService {
       return AccessTokenService.instance;
     }
 
-    public setToken(token: string | null) {
+    public setAccessToken(token: string | null) {
       this.accessToken = token;
     }
 
-    public getToken() {
+    public getAccessToken() {
       return this.accessToken;
     }
   }
