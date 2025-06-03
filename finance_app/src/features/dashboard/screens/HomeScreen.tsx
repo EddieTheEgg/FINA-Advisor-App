@@ -1,30 +1,22 @@
 import { View, Text, SafeAreaView } from 'react-native';
 import { SignOutButton } from '../../auth/components/SignOutButton/SignOutButton';
-import { useEffect, useState, useCallback } from 'react';
-import api from '../../../api/axios';
+import { useUser } from '../../user/hooks/useUser';
+import { styles } from './HomeScreen.styles';
+import Greeting from '../components/Greeting/Greeting';
 
 export const HomeScreen = () => {
-    const [username, setUsername] = useState('');
-
-    const getUsername = useCallback(async() => {
-        try{
-            const response = await api.get('/users/me');
-            setUsername(response.data.first_name);
-        } catch (error) {
-            console.error('Error fetching username:', error);
-        }
-    }, []);
-
-    useEffect(() => {
-        getUsername();
-    }, [getUsername]);
+    const {data: user} = useUser();
 
     return (
-        <SafeAreaView>
-            <View>
-                <Text>Home</Text>
-                <Text>{username}</Text>
-                {/* <SignOutButton />  For testing purposes*/}
+        <SafeAreaView style={styles.mainContainer}>
+            <View style={styles.headerContainer}>
+                <View>
+                    <Greeting styles={styles.greetingText} />
+                    <Text style={styles.nameText}> {user?.firstName}</Text>
+                </View>
+                <View>
+                    <SignOutButton />
+                </View>
             </View>
         </SafeAreaView>
     );
