@@ -5,12 +5,12 @@ import { spacing } from '../../../../styles/spacing.js';
 
 
 export const styles = StyleSheet.create({
-  container: {
-    backgroundColor: colors.gray[500],
-    paddingVertical: spacing.md,
+  signOutContainer: {
+    backgroundColor: colors.darkerBackground,
+    padding: spacing.md,
     borderRadius: 30,
     width: '100%',
-    boxShadow: '0 8px 5px 0 rgba(0, 0, 0, 0.3)',
+    boxShadow: '0 8px 2x 0 rgba(0, 0, 0, 0.3)',
   },
   buttonText: {
     color: colors.white,
