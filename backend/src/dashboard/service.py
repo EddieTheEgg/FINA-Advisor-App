@@ -132,15 +132,17 @@ def get_recent_transactions(
             Transaction.transaction_date < end_date,
         ).order_by(Transaction.transaction_date.desc()).limit(5).all()
         
+       
         recent_transactions = []
         for transaction in transactions:
+            category_response = category_service.get_category_by_id(db, transaction.category_id, user_id)
             recent_transactions.append(RecentTransaction(
                 transaction_id=transaction.transaction_id,
                 amount=transaction.amount,
                 title=transaction.title,
                 transaction_date=transaction.transaction_date,
                 is_income=transaction.is_income,
-                category=category_service.get_category_by_id(db, transaction.category_id, user_id),
+                category= category_response,
                 merchant=transaction.merchant,
                 notes=transaction.notes,
             ))
