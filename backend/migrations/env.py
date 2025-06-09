@@ -29,9 +29,11 @@ if config.config_file_name is not None:
 # for 'autogenerate' support
 # from myapp import mymodel
 # target_metadata = mymodel.Base.metadata
+from backend.src.entities.category_suggestions import CategoryTraining
 from backend.src.entities.user import User
 from backend.src.entities.category import Category
 from backend.src.entities.transaction import Transaction
+from backend.src.entities.account import Account
 
 # Set target_metadata for autogenerate
 target_metadata = Base.metadata
