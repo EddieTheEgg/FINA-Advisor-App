@@ -22,13 +22,16 @@ class Transaction(Base):
     subscription_end_date = Column(DateTime(timezone=True), nullable=True)
     created_at = Column(DateTime(timezone=True), server_default=func.now())
     updated_at = Column(DateTime(timezone=True), onupdate=func.now())
+    
+    #Foreign Keys
     user_id = Column(UUID(as_uuid=True), ForeignKey("users.user_id"), index = True)
     category_id = Column(UUID(as_uuid=True), ForeignKey("categories.category_id"), index=True, nullable=False)
-    merchant = Column(String, nullable=True) # Describe where or who the transaction is with
-    payment_type = Column(String, nullable=True) # Credit, Debit, Cash, bank_transfer...
-    payment_account = Column(String, nullable=True) # Describes which actual account the payment came from or went to
-
+    account_id = Column(UUID(as_uuid=True), ForeignKey("accounts.account_id"), nullable=False, index=True)
+    
+    #Transaction Details
+    merchant = Column(String, nullable=True) # Describe where or who the transaction is (the other party)
 
     # Relationships
     user = relationship("User", back_populates="transactions")
     category = relationship("Category", back_populates="transactions")
+    account = relationship("Account", back_populates="transactions")

@@ -11,6 +11,7 @@ from backend.src.entities.category import Category
 from backend.src.entities.transaction import Transaction
 from backend.src.exceptions import CategoryNotFoundError, InvalidUserForCategoryError, InvalidUserForTransactionError, TransactionNotFoundError
 from backend.src.transactions.model import TransactionCreate, TransactionResponse, TransactionUpdate, TransactionListResponse
+from backend.src.accounts import service as account_service
 
 # Creates a new transaction entry in the database
 def create_transaction(db: Session, transaction_create_request: TransactionCreate, user_id: UUID) -> TransactionResponse:
@@ -38,14 +39,17 @@ def create_transaction(db: Session, transaction_create_request: TransactionCreat
         subscription_start_date=transaction_create_request.subscription_start_date,
         subscription_end_date=transaction_create_request.subscription_end_date,
         category_id=transaction_create_request.category_id,
-        payment_type=transaction_create_request.payment_type,
+        account_id=transaction_create_request.account_id,
         merchant=transaction_create_request.merchant,
-        payment_account=transaction_create_request.payment_account,
         user_id=user_id
     )
     db.add(new_transaction)
     db.commit()
     db.refresh(new_transaction)
+    
+    #Update the account balance associated with this transaction
+    account_service.update_account_balance(db, transaction_create_request.account_id, user_id, transaction_create_request.amount)
+    
     logging.info(f"Created new transaction for user {user_id} : {new_transaction.title}")
     return new_transaction
 

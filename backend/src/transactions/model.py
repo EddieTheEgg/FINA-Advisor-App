@@ -38,7 +38,7 @@ class TransactionCreate(BaseModel):
     category_id: UUID
     payment_type: PaymentType
     merchant: str | None = None
-    payment_account: str | None = None
+    account_id: UUID
 
 
 
@@ -71,9 +71,8 @@ class TransactionResponse(BaseModel):
     subscription_start_date: datetime | None = None
     subscription_end_date: datetime | None = None
     category_id: UUID
-    payment_type: PaymentType
+    account_id: UUID
     merchant: str | None = None
-    payment_account: str | None = None
     created_at: datetime
     updated_at: datetime | None = None
     category: CategoryResponse | None = None

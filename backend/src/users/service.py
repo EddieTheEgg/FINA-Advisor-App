@@ -2,11 +2,19 @@ import logging
 from uuid import UUID
 from sqlalchemy.orm import Session
 from backend.src.auth.service import verify_password, get_password_hash
-from backend.src.users.model import UserResponse, PasswordChange
+from backend.src.users.model import UserResponse, PasswordChange, UserSimpleResponse
 from backend.src.entities.user import User
 from backend.src.exceptions import UserNotFoundError, InvalidPasswordError, PasswordMismatchError
 
 def get_user_by_id(db: Session, user_id: UUID) -> UserResponse:
+    user = db.query(User).filter(user_id == User.user_id).first()
+    if not user:
+        logging.warning(f"User not found with given ID: {user_id}")
+        raise UserNotFoundError(user_id)
+    return user
+
+#Returns the user information but without user id for security safeties
+def get_quick_user_by_id(db: Session, user_id) -> UserSimpleResponse:
     user = db.query(User).filter(user_id == User.user_id).first()
     if not user:
         logging.warning(f"User not found with given ID: {user_id}")

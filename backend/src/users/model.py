@@ -13,6 +13,17 @@ class UserResponse(BaseModel):
         from_attributes = True
         arbitrary_types_allowed = True 
         
+class UserSimpleResponse(BaseModel):
+    email: EmailStr
+    username: str
+    first_name: str
+    last_name: str
+    
+    class Config:
+        from_attributes = True
+        arbirtrary_types_allowed = True
+    
+        
 #When user wants to change password, we need current and the new password to be accurately confirmed to change
 class PasswordChange(BaseModel):
     current_password: str
