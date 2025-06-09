@@ -10,7 +10,7 @@ export const styles = StyleSheet.create({
     padding: spacing.md,
     borderRadius: 30,
     width: '100%',
-    boxShadow: '0 8px 2x 0 rgba(0, 0, 0, 0.3)',
+    boxShadow: '0 2px 2px 0 rgba(0, 0, 0, 0.3)',
   },
   buttonText: {
     color: colors.white,

@@ -3,6 +3,7 @@ import { View, Text, Pressable, Modal } from 'react-native';
 import { Picker } from '@react-native-picker/picker';
 import {styles} from './MonthSelector.styles';
 import FontAwesome6 from '@react-native-vector-icons/fontawesome6';
+import { MonthSelectorProps } from '../../types';
 
 const months = [
   'January', 'February', 'March', 'April', 'May', 'June',
@@ -11,16 +12,13 @@ const months = [
 
 const years = Array.from({ length: 30 }, (_, i) => 2025 - i);
 
-export default function MonthSelector() {
-  const [selectedMonth, setSelectedMonth] = useState('January');
-  const [selectedYear, setSelectedYear] = useState(2025);
-  const [tempMonth, setTempMonth] = useState(selectedMonth);
-  const [tempYear, setTempYear] = useState(selectedYear);
+export default function MonthSelector({ month, year, onPeriodChange }: MonthSelectorProps) {
+  const [tempMonth, setTempMonth] = useState(month);
+  const [tempYear, setTempYear] = useState(year);
   const [isModalVisible, setIsModalVisible] = useState(false);
 
   const handleSet = () => {
-    setSelectedMonth(tempMonth);
-    setSelectedYear(tempYear);
+    onPeriodChange(tempMonth, tempYear);
     setIsModalVisible(false);
   };
 
@@ -29,7 +27,7 @@ export default function MonthSelector() {
         <View>
             <Pressable onPress={() => setIsModalVisible(!isModalVisible)}>
                 <View style={styles.monthSelectorContainer}>
-                    <Text style = {styles.monthSelectorText}>{selectedMonth} {selectedYear}</Text>
+                    <Text style = {styles.monthSelectorText}>{month} {year}</Text>
                     {isModalVisible ? <FontAwesome6 name="caret-up" size={24} color="black" iconStyle="solid" /> :
                     <FontAwesome6 name="caret-down" size={24} color="black" iconStyle="solid" />
                     }
@@ -47,8 +45,8 @@ export default function MonthSelector() {
                                 onValueChange={(itemValue: string) => setTempMonth(itemValue)}
                                 style={styles.picker}
                             >
-                                {months.map((month) => (
-                                    <Picker.Item key={month} label={month} value={month} />
+                                {months.map((m) => (
+                                    <Picker.Item key={m} label={m} value={m} />
                                 ))}
                             </Picker>
                         </View>
@@ -58,8 +56,8 @@ export default function MonthSelector() {
                                 onValueChange={(itemValue: number) => setTempYear(itemValue)}
                                 style={styles.picker}
                             >
-                                {years.map((year) => (
-                                    <Picker.Item key={year} label={String(year)} value={year} />
+                                {years.map((y) => (
+                                    <Picker.Item key={y} label={String(y)} value={y} />
                                 ))}
                             </Picker>
                         </View>
