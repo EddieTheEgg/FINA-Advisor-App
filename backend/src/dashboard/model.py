@@ -32,6 +32,7 @@ class RecentTransaction(BaseModel):
     is_income: bool
     category: CategoryResponse | None = None
     merchant: str | None = None
+    account_name: str
     notes: str | None = None
     
     class Config:
@@ -44,12 +45,18 @@ class PeriodReponse(BaseModel):
     
     class Config:
         from_attributes = True
+        
+        
+class AccountsResponse(BaseModel):
+    count: int
+    accounts: List[AccountBalance]
     
+
 class DashboardResponse(BaseModel):
     user: UserSimpleResponse
     period: PeriodReponse
     financialSummary: FinancialSummary
-    accounts: List[AccountBalance]
+    accounts: AccountsResponse
     recentTransactions: List[RecentTransaction]
     
     class Config:

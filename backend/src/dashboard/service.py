@@ -6,7 +6,7 @@ from sqlalchemy import case, func
 from sqlalchemy.orm import Session
 import logging
 
-from backend.src.dashboard.model import AccountBalance, DashboardResponse, FinancialSummary, RecentTransaction
+from backend.src.dashboard.model import AccountBalance, AccountsResponse, DashboardResponse, FinancialSummary, RecentTransaction
 from backend.src.entities.transaction import Transaction
 from backend.src.exceptions import DashboardInvalidMonthYearError, MonthlyExpenseError, MonthlyIncomeError, RecentTransactionsError, TotalBalanceError
 from backend.src.users.service import get_quick_user_by_id
@@ -28,14 +28,14 @@ def get_dashboard(
     user = get_quick_user_by_id(db, user_id)
     period = {"month": convert_month_to_string(month), "year": year}
     financial_summary = get_financial_summary(db, user_id, current_month_start, current_month_end)
-    accounts = get_account_information(db, user_id)
+    accounts_response = get_account_information(db, user_id)
     recent_transactions = get_recent_transactions(db, user_id, current_month_start, current_month_end)
 
     return DashboardResponse(
         user=user,
         period=period,
         financialSummary=financial_summary,
-        accounts=accounts,
+        accounts=accounts_response,
         recentTransactions=recent_transactions
     )
     
@@ -115,9 +115,15 @@ def get_account_information(
     db: Session,
     user_id: UUID,
 ) -> List[AccountBalance]:
-    return account_service.get_all_account_information(db, user_id)
+    account_list =  account_service.get_all_account_information(db, user_id)
+    number_of_accounts = len(account_list)
     
-
+    return AccountsResponse(
+        count = number_of_accounts,
+        accounts = account_list,
+    )
+    
+#Get the recent transactions for the user for the specific month and year
 def get_recent_transactions(
     db: Session,
     user_id : UUID,
@@ -136,6 +142,7 @@ def get_recent_transactions(
         recent_transactions = []
         for transaction in transactions:
             category_response = category_service.get_category_by_id(db, transaction.category_id, user_id)
+            account_name = account_service.get_account_name_by_id(db, transaction.account_id, user_id)
             recent_transactions.append(RecentTransaction(
                 transaction_id=transaction.transaction_id,
                 amount=transaction.amount,
@@ -144,6 +151,7 @@ def get_recent_transactions(
                 is_income=transaction.is_income,
                 category= category_response,
                 merchant=transaction.merchant,
+                account_name = account_name,
                 notes=transaction.notes,
             ))
         return recent_transactions
