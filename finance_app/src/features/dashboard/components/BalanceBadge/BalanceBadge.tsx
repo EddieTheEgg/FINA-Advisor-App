@@ -1,16 +1,11 @@
 import {View, Text} from 'react-native';
 import {styles} from './BalanceBadge.styles';
-import { DashboardData } from '../../types';
+import { BalanceBadgeDisplayProps } from '../../types';
 
-type NetAmountBadgeProps = {
-    financialSummary: DashboardData['financialSummary'] | undefined;
-    currencySymbol: string;
-}
-
-export default function NetAmountBadge({
+export default function BalanceBadge({
     financialSummary,
     currencySymbol = '$',
-}: NetAmountBadgeProps) {
+}: BalanceBadgeDisplayProps) {
 
     const formattedAmount = Math.abs(financialSummary?.monthlyNet ?? 0).toLocaleString('en-US', {
         minimumFractionDigits: 2,

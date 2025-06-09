@@ -78,3 +78,10 @@ export type MonthSelectorProps = {
     year: number;
     onPeriodChange: (month: string, year: number) => void;
 }
+
+
+//BalanceBadge
+export type BalanceBadgeDisplayProps = {
+    financialSummary: DashboardData['financialSummary'] | undefined;
+    currencySymbol: string;
+}

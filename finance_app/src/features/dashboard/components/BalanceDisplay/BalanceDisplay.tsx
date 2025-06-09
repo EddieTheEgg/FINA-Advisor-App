@@ -1,13 +1,10 @@
 import { View, Text } from 'react-native';
 import { styles } from './BalanceDisplay.styles';
-import { DashboardData } from '../../types';
+import { BalanceBadgeDisplayProps  } from '../../types';
 
-type BalanceDisplayProps = {
-    financialSummary: DashboardData['financialSummary'] | undefined;
-    currencySymbol: string;
-}
 
-export default function BalanceDisplay({financialSummary, currencySymbol} : BalanceDisplayProps ) {
+
+export default function BalanceDisplay({financialSummary, currencySymbol} : BalanceBadgeDisplayProps ) {
     return (
         <View>
             <Text style = {styles.balanceLabel}>Total Current Balance</Text>
