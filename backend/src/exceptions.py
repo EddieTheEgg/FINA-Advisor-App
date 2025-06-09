@@ -129,5 +129,53 @@ class DatabaseError(HTTPException):
         super().__init__(status_code=500, detail=message)
 
 
+class AccountError(HTTPException):
+    """Base exception for account-related errors"""
+    pass
+
+class AccountNotFoundError(AccountError):
+    def __init__(self, user_id: UUID):
+        super().__init__(status_code=404, detail=f"Account information for user {user_id} not found")
 
 
+
+class DashboardError(HTTPException):
+    """Base exception for dashboard-related errors"""
+    pass
+
+class DashboardNotFoundError(DashboardError):
+    def __init__(self, month: int, year: int):
+        super().__init__(status_code=404, detail=f"Dashboard data for month {month} and year {year} not found")
+
+class DashboardInvalidMonthError(DashboardError):
+    def __init__(self, month: int):
+        super().__init__(status_code=400, detail=f"Invalid month: {month}")
+
+class DashboardInvalidYearError(DashboardError):
+    def __init__(self, year: int):
+        super().__init__(status_code=400, detail=f"Invalid year: {year}")
+
+class DashboardInvalidMonthYearError(DashboardError):
+    def __init__(self, month: int, year: int):
+        super().__init__(status_code=400, detail=f"Invalid month: {month} or year: {year}")
+        
+class TotalBalanceError(DashboardError):
+    def __init__(self, user_id: UUID, month: int, year: int):
+        super().__init__(status_code=500, detail=f"Failed to get total balance for user {user_id} in month {month} and year {year}")
+
+class MonthlyIncomeError(DashboardError):
+    def __init__(self, user_id: UUID, month: int, year: int):
+        super().__init__(status_code=500, detail=f"Failed to get monthly income for user {user_id} in month {month} and year {year}")
+
+class MonthlyExpenseError(DashboardError):
+    def __init__(self, user_id: UUID, month: int, year: int):
+        super().__init__(status_code=500, detail=f"Failed to get monthly expense for user {user_id} in month {month} and year {year}")
+        
+class MonthlyNetError(DashboardError):
+    def __init__(self, user_id: UUID, month: int, year: int):
+        super().__init__(status_code=500, detail=f"Failed to get monthly net for user {user_id} in month {month} and year {year}")
+
+class RecentTransactionsError(DashboardError):
+    def __init__(self, user_id: UUID, month: int, year: int):
+        super().__init__(status_code=500, detail=f"Failed to get recent transactions for user {user_id} in month {month} and year {year}")
+        
