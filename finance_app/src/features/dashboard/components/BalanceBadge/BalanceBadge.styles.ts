@@ -9,6 +9,7 @@ export const styles = StyleSheet.create({
         paddingVertical: spacing.sm,
         borderRadius: 20,
         alignSelf: 'flex-start',
+        marginTop: Platform.OS === 'android' ? -spacing.sm : 0,
     },
     positiveBadge: {
         backgroundColor: colors.green,
@@ -21,7 +22,7 @@ export const styles = StyleSheet.create({
         color: '#FFFFFF',
         fontFamily: 'Poppins-SemiBold',
         fontSize: fontSize.sm,
-        lineHeight: Platform.OS === 'android' ? 15 : 20,
+        lineHeight: Platform.OS === 'android' ? 20 : 20,
     },
 
 });
