@@ -1,4 +1,4 @@
-import {StyleSheet} from 'react-native';
+import {Platform, StyleSheet} from 'react-native';
 import { colors } from '../../../../styles/colors';
 import { fontSize } from '../../../../styles/fontSizes';
 import { spacing } from '../../../../styles/spacing';
@@ -19,9 +19,9 @@ export const styles = StyleSheet.create({
     },
     badgeText: {
         color: '#FFFFFF',
-        fontFamily: 'poppins-semibold',
-        fontWeight: '600',
+        fontFamily: 'Poppins-SemiBold',
         fontSize: fontSize.sm,
+        lineHeight: Platform.OS === 'android' ? 15 : 20,
     },
 
 });

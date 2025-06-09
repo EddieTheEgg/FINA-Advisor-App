@@ -7,7 +7,7 @@ type NetAmountBadgeProps = {
     currencySymbol: string;
 }
 
-export default function NetAmountBadge({ 
+export default function NetAmountBadge({
     financialSummary,
     currencySymbol = '$',
 }: NetAmountBadgeProps) {

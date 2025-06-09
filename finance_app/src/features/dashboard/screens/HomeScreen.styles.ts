@@ -13,6 +13,7 @@ export const styles = StyleSheet.create({
         alignItems: 'center',
         justifyContent: 'space-between',
         marginHorizontal: spacing.lg,
+        marginTop: spacing.md,
     },
     greetingText: {
         fontSize: fontSize.base,
@@ -45,10 +46,5 @@ export const styles = StyleSheet.create({
         fontSize: fontSize.base,
         color: '#666666',
         textAlign: 'center',
-    },
-    loadingContainer: {
-        flex: 1,
-        justifyContent: 'center',
-        alignItems: 'center',
     },
 });
