@@ -3,6 +3,6 @@ from pydantic import BaseModel
 
 class AccountBalance(BaseModel):
     name: str
-    type: str
+    account_type: str
     balance: float
     color: str
