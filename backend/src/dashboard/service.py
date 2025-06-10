@@ -27,7 +27,7 @@ def get_dashboard(
 
     user = get_quick_user_by_id(db, user_id)
     period = {"month": convert_month_to_string(month), "year": year}
-    financial_summary = get_financial_summary(db, user_id, current_month_start, current_month_end)
+    financial_summary = get_financial_summary(db, user_id, user.created_at, current_month_start, current_month_end)
     accounts_response = get_account_information(db, user_id)
     recent_transactions = get_recent_transactions(db, user_id, current_month_start, current_month_end)
 
@@ -50,6 +50,7 @@ def convert_month_to_string(month: int):
 def get_financial_summary(
     db: Session,
     user_id: UUID,
+    account_created_at: datetime,
     start_date: datetime,
     end_date: datetime,
 ) -> FinancialSummary:
@@ -59,7 +60,7 @@ def get_financial_summary(
             case((Transaction.is_income == True, Transaction.amount), else_=-Transaction.amount)
         ).label('total_balance')).filter(
             Transaction.user_id == user_id,
-            Transaction.transaction_date >= start_date,
+            Transaction.transaction_date >= account_created_at,
             Transaction.transaction_date < end_date
         )   
         total_balance =  float(total_balance_query.scalar() or 0.0)
