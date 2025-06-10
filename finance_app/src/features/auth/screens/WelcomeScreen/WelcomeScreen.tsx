@@ -30,7 +30,7 @@ const WelcomeScreen = ({ navigation }: AuthNavigationProps<'Welcome'>) => {
         </Text>
 
         <View style={WelcomeScreenStyles.buttonContainer}>
-         <SignInButton onPress={navLoginScreen}/>
+         <SignInButton onPress={navLoginScreen} disabled={false}/>
          <CreateAccountButton onPress={navCreateAccScreen} />
         </View>
         </View>
