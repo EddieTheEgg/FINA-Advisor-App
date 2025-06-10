@@ -30,6 +30,20 @@ export const styles = StyleSheet.create({
         marginTop: spacing.md,
     },
 
+    monthlyBalanceContainer: {
+        flexDirection: 'row',
+        alignItems: 'center',
+        justifyContent: 'center',
+        marginTop: spacing.md,
+        marginHorizontal: spacing.sm,
+        gap: spacing.md,
+        backgroundColor: 'white',
+        borderRadius: 20,
+        padding: spacing.md,
+        paddingRight: spacing.xl,
+        boxShadow: '0 2px 2px 0 rgba(0, 0, 0, 0.3)',
+    },
+
     errorContainer: {
         flex: 1,
         justifyContent: 'center',

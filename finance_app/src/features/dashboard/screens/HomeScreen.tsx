@@ -4,10 +4,11 @@ import { styles } from './HomeScreen.styles';
 import Greeting from '../components/Greeting/Greeting';
 import MonthSelector from '../components/MonthSelector/MonthSelector';
 import BalanceDisplay from '../components/BalanceDisplay/BalanceDisplay';
-import BalanceBadge from '../components/BalanceBadge/BalanceBadge';
 import { useDashboardQuery } from '../hooks/useDashboard';
 import LoadingScreen from '../../../components/LoadingScreen/LoadingScreen';
 import { useState } from 'react';
+import BalanceBadge from '../components/BalanceBadge/BalanceBadge';
+import AccountCircle from '../components/AccountCircle/AccountCircle';
 
 export const HomeScreen = () => {
     const [selectedMonth, setSelectedMonth] = useState('January');
@@ -73,15 +74,24 @@ export const HomeScreen = () => {
             {isPending ? (
                 <LoadingScreen />
             ) : (
-                <View>
-                    <BalanceDisplay
-                        financialSummary={dashboard?.financialSummary}
-                        currencySymbol="$"
-                    />
-                    <BalanceBadge
-                        financialSummary={dashboard?.financialSummary}
-                        currencySymbol="$"
-                    />
+                <View style = {styles.monthlyBalanceContainer}>
+                   <View >
+                        <View>
+                            <BalanceDisplay
+                                selectedMonth={convertMonthToNumber(selectedMonth)}
+                                selectedYear={selectedYear}
+                            />
+                        </View>
+                        <View>
+                            <BalanceBadge
+                                selectedMonth={convertMonthToNumber(selectedMonth)}
+                                selectedYear={selectedYear}
+                            />
+                        </View>
+                    </View>
+                    <View>
+                        <AccountCircle accounts={dashboard?.accounts} />
+                    </View>
                 </View>
             )}
         </SafeAreaView>
