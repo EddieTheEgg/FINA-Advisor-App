@@ -52,7 +52,7 @@ export type DashboardData = {
     }
     accounts: {
         count: number;
-        accounts: Array<{
+        accountInfos: Array<{
             name: string;
             accountType: string;
             balance: number;
@@ -72,16 +72,22 @@ export type DashboardData = {
     }>;
 }
 
-//MonthSelector
+//Component Props
+
+//MonthSelector Props
 export type MonthSelectorProps = {
     month: string;
     year: number;
     onPeriodChange: (month: string, year: number) => void;
 }
 
+//BalanceBadge and BalanceDisplay Props
+export type BalanceCardProps = {
+    selectedMonth: number;
+    selectedYear: number;
+}
 
-//BalanceBadge
-export type BalanceBadgeDisplayProps = {
-    financialSummary: DashboardData['financialSummary'] | undefined;
-    currencySymbol: string;
+//AccountCircle Props
+export type AccountCircleProps = {
+    accounts: DashboardData['accounts'] | undefined;
 }

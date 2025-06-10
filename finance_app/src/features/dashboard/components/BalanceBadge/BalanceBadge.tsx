@@ -1,11 +1,13 @@
 import {View, Text} from 'react-native';
 import {styles} from './BalanceBadge.styles';
-import { BalanceBadgeDisplayProps } from '../../types';
+import { BalanceCardProps } from '../../types';
+import { useDashboardQuery } from '../../hooks/useDashboard';
 
-export default function BalanceBadge({
-    financialSummary,
-    currencySymbol = '$',
-}: BalanceBadgeDisplayProps) {
+export default function BalanceBadge({selectedMonth, selectedYear}: BalanceCardProps) {
+
+    const { data: dashboard } = useDashboardQuery(selectedMonth, selectedYear);
+    const financialSummary = dashboard?.financialSummary;
+    const currencySymbol = '$';
 
     const formattedAmount = Math.abs(financialSummary?.monthlyNet ?? 0).toLocaleString('en-US', {
         minimumFractionDigits: 2,
