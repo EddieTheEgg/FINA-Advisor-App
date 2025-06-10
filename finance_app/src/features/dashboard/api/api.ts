@@ -25,7 +25,7 @@ export const getDashboard = async ({month, year} : {month : number, year : numbe
         },
         accounts: {
             count: dashboardData.accounts.count,
-            accounts: dashboardData.accounts.accounts.map((account: BackendDashboardAccountInfo) => ({
+            accountInfos: dashboardData.accounts.accounts.map((account: BackendDashboardAccountInfo) => ({
                 name: account.name,
                 accountType: account.account_type,
                 balance: account.balance,
