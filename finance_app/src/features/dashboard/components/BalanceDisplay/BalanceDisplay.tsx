@@ -1,15 +1,37 @@
 import { View, Text } from 'react-native';
 import { styles } from './BalanceDisplay.styles';
-import { BalanceBadgeDisplayProps  } from '../../types';
+import { useDashboardQuery } from '../../hooks/useDashboard';
+import { BalanceDisplayProps } from '../../types';
+import { RFValue } from 'react-native-responsive-fontsize';
+import { Platform } from 'react-native';
+
+export default function BalanceDisplay({ selectedMonth, selectedYear }: BalanceDisplayProps) {
+    const { data: dashboard } = useDashboardQuery(selectedMonth, selectedYear);
+    const period = dashboard?.period;
+    const financialSummary = dashboard?.financialSummary;
+    const currencySymbol = '$';
+
+    //Dynamic font sizing that scales with digit for balances
+    // const balanceString2 = '9,999,999,999,999.00'; // 9 trillion max
+    const balanceString = financialSummary?.totalBalance
+    ? financialSummary.totalBalance.toFixed(2)
+    : '0.00';
+    const numDigits = balanceString.replace('.', '').length;
+
+    const minFontSize = Platform.OS === 'android' ? RFValue(20) : RFValue(14);
+    const baseFontSize = Platform.OS === 'android' ? RFValue(88) : RFValue(65);
+
+    const dynamicFontSize = Math.max(minFontSize, baseFontSize - numDigits * 9);
 
 
-
-export default function BalanceDisplay({financialSummary, currencySymbol} : BalanceBadgeDisplayProps ) {
     return (
-        <View>
-            <Text style = {styles.balanceLabel}>Total Current Balance</Text>
-            <Text style={styles.balanceText}>
-                {currencySymbol}{(financialSummary?.totalBalance ?? 0).toFixed(2)}
+        <View style={styles.balanceCardRow}>
+            <Text style={styles.balanceLabel}>
+                {period?.month}'s Total Balance
+            </Text>
+            <Text style={[styles.balanceText, {fontSize: dynamicFontSize}]}
+            >
+                {currencySymbol}{balanceString}
             </Text>
         </View>
     );
