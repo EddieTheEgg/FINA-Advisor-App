@@ -7,7 +7,7 @@ import { Platform } from 'react-native';
 export const styles = StyleSheet.create({
 
     balanceLabel : {
-        fontFamily: 'Poppins-Regular',
+        fontFamily: 'Poppins-SemiBold',
         color: colors.gray[400],
         lineHeight: Platform.OS === 'android' ? 15 : 20,
     },
