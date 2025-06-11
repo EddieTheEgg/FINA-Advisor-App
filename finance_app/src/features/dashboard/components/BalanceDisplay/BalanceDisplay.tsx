@@ -1,11 +1,11 @@
 import { View, Text } from 'react-native';
 import { styles } from './BalanceDisplay.styles';
 import { useDashboardQuery } from '../../hooks/useDashboard';
-import { BalanceCardProps } from '../../types';
+import { DashboardPeriodProps } from '../../types';
 import { RFValue } from 'react-native-responsive-fontsize';
 import { Platform } from 'react-native';
 
-export default function BalanceDisplay({ selectedMonth, selectedYear }: BalanceCardProps) {
+export default function BalanceDisplay({ selectedMonth, selectedYear }: DashboardPeriodProps) {
     const { data: dashboard } = useDashboardQuery(selectedMonth, selectedYear);
     const period = dashboard?.period;
     const financialSummary = dashboard?.financialSummary;

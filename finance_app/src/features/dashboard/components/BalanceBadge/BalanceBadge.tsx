@@ -1,9 +1,9 @@
 import {View, Text} from 'react-native';
 import {styles} from './BalanceBadge.styles';
-import { BalanceCardProps } from '../../types';
+import { DashboardPeriodProps } from '../../types';
 import { useDashboardQuery } from '../../hooks/useDashboard';
 
-export default function BalanceBadge({selectedMonth, selectedYear}: BalanceCardProps) {
+export default function BalanceBadge({selectedMonth, selectedYear}: DashboardPeriodProps) {
 
     const { data: dashboard } = useDashboardQuery(selectedMonth, selectedYear);
     const financialSummary = dashboard?.financialSummary;

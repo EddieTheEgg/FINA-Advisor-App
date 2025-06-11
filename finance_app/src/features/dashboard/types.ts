@@ -82,7 +82,7 @@ export type MonthSelectorProps = {
 }
 
 //BalanceBadge and BalanceDisplay Props
-export type BalanceCardProps = {
+export type DashboardPeriodProps = {
     selectedMonth: number;
     selectedYear: number;
 }
