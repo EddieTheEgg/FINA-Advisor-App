@@ -1,4 +1,4 @@
-import { View, Text, SafeAreaView } from 'react-native';
+import { View, Text, SafeAreaView, ScrollView } from 'react-native';
 import { SignOutButton } from '../../auth/components/SignOutButton/SignOutButton';
 import { styles } from './HomeScreen.styles';
 import Greeting from '../components/Greeting/Greeting';
@@ -9,6 +9,7 @@ import LoadingScreen from '../../../components/LoadingScreen/LoadingScreen';
 import { useState } from 'react';
 import BalanceBadge from '../components/BalanceBadge/BalanceBadge';
 import AccountCircle from '../components/AccountCircle/AccountCircle';
+import { IncomeExpense } from '../components/IncomeExpense/IncomeExpense';
 
 export const HomeScreen = () => {
     const todayDate = new Date();
@@ -52,6 +53,7 @@ export const HomeScreen = () => {
 
     return (
         <SafeAreaView style={styles.mainContainer}>
+            <ScrollView>
             <View style={styles.headerContainer}>
                 <View>
                     <Greeting styles={styles.greetingText} />
@@ -73,26 +75,35 @@ export const HomeScreen = () => {
             {isPending ? (
                 <LoadingScreen />
             ) : (
-                <View style = {styles.monthlyBalanceContainer}>
-                   <View >
-                        <View>
-                            <BalanceDisplay
-                                selectedMonth={convertMonthToNumber(selectedMonth)}
-                                selectedYear={selectedYear}
-                            />
+                <View>
+                    <View style = {styles.monthlyBalanceContainer}>
+                    <View >
+                            <View>
+                                <BalanceDisplay
+                                    selectedMonth={convertMonthToNumber(selectedMonth)}
+                                    selectedYear={selectedYear}
+                                />
+                            </View>
+                            <View>
+                                <BalanceBadge
+                                    selectedMonth={convertMonthToNumber(selectedMonth)}
+                                    selectedYear={selectedYear}
+                                />
+                            </View>
                         </View>
                         <View>
-                            <BalanceBadge
-                                selectedMonth={convertMonthToNumber(selectedMonth)}
-                                selectedYear={selectedYear}
-                            />
+                            <AccountCircle accounts={dashboard?.accounts} />
                         </View>
                     </View>
-                    <View>
-                        <AccountCircle accounts={dashboard?.accounts} />
+                    <View style = {styles.monthlyIncomeExpenseContainer}>
+                        <IncomeExpense
+                            selectedMonth={convertMonthToNumber(selectedMonth)}
+                            selectedYear={selectedYear}
+                        />
                     </View>
                 </View>
             )}
+            </ScrollView>
         </SafeAreaView>
     );
 };
