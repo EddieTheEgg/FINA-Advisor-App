@@ -11,8 +11,8 @@ import BalanceBadge from '../components/BalanceBadge/BalanceBadge';
 import AccountCircle from '../components/AccountCircle/AccountCircle';
 
 export const HomeScreen = () => {
-    const [selectedMonth, setSelectedMonth] = useState('January');
-    const [selectedYear, setSelectedYear] = useState(2025);
+    const todayDate = new Date();
+    const monthNames = ['January', 'February', 'March', 'April', 'May', 'June', 'July', 'August', 'September', 'October', 'November', 'December'];
 
     //Convert month (string) to numeric version for backend to process
     const convertMonthToNumber = (month: string) => {
@@ -33,11 +33,10 @@ export const HomeScreen = () => {
         return monthMap[month as keyof typeof monthMap];
     };
 
-    const {data: dashboard, isPending, error} = useDashboardQuery(convertMonthToNumber(selectedMonth), selectedYear);
+    const [selectedMonth, setSelectedMonth] = useState(monthNames[todayDate.getMonth()]);
+    const [selectedYear, setSelectedYear] = useState(todayDate.getFullYear());
 
-    console.log('Full Response:', dashboard);
-    console.log('Dashboard Data:', dashboard);
-    console.log('Financial Summary:', dashboard?.financialSummary);
+    const {data: dashboard, isPending, error} = useDashboardQuery(convertMonthToNumber(selectedMonth), selectedYear);
 
     if (error) {
         return (
@@ -66,7 +65,7 @@ export const HomeScreen = () => {
                 <MonthSelector
                 month={selectedMonth}
                 year={selectedYear}
-                onPeriodChange={(month, year) => {
+                onPeriodChange={(month : string, year : number) => {
                     setSelectedMonth(month);
                     setSelectedYear(year);
                 }} />
