@@ -8,7 +8,8 @@ import logging
 
 from backend.src.dashboard.model import AccountBalance, AccountsResponse, DashboardResponse, FinancialSummary, RecentTransaction
 from backend.src.entities.transaction import Transaction
-from backend.src.exceptions import DashboardInvalidMonthYearError, MonthlyExpenseError, MonthlyIncomeError, RecentTransactionsError, TotalBalanceError
+from backend.src.exceptions import DashboardInvalidMonthYearError, MonthlyExpenseError, MonthlyIncomeError, MonthlyTransferError, RecentTransactionsError, TotalBalanceError
+from backend.src.transactions.model import TransactionType
 from backend.src.users.service import get_quick_user_by_id
 from backend.src.accounts import service as account_service
 from backend.src.categories import service as category_service
@@ -57,7 +58,11 @@ def get_financial_summary(
     #Get the total balance for the user for the specific month and year
     try:
         total_balance_query = db.query(func.sum(
-            case((Transaction.is_income == True, Transaction.amount), else_=-Transaction.amount)
+            case(
+                (Transaction.transaction_type == TransactionType.INCOME, Transaction.amount),
+                (Transaction.transaction_type == TransactionType.EXPENSE, -Transaction.amount),
+                else_=0
+            )
         ).label('total_balance')).filter(
             Transaction.user_id == user_id,
             Transaction.transaction_date >= account_created_at,
@@ -71,7 +76,7 @@ def get_financial_summary(
     #Get the monthly income for the user for the specific month and year
     try:
         monthly_income_query = db.query(func.sum(
-            case((Transaction.is_income == True, Transaction.amount), else_=0)
+            case((Transaction.transaction_type == TransactionType.INCOME, Transaction.amount), else_=0)
         ).label('monthly_income')).filter(
             Transaction.user_id == user_id,
             Transaction.transaction_date >= start_date,
@@ -85,7 +90,7 @@ def get_financial_summary(
     #Get the monthly expense for the user for the specific month and year
     try:
         monthly_expense_query = db.query(func.sum(
-            case((Transaction.is_income == False, Transaction.amount), else_=0)
+            case((Transaction.transaction_type == TransactionType.EXPENSE, Transaction.amount), else_=0)
         ).label('monthly_expense')).filter(
             Transaction.user_id == user_id,
             Transaction.transaction_date >= start_date,
@@ -96,7 +101,21 @@ def get_financial_summary(
         logging.warning(f"Failed to get monthly expense for user {user_id}. Error: {str(e)}")
         raise MonthlyExpenseError(user_id, start_date.month, start_date.year)
     
+    try:
+        monthly_transfer_query = db.query(func.sum(
+            case((Transaction.transaction_type == TransactionType.TRANSFER, Transaction.amount), else_=0)
+        ).label('monthly_transfer')).filter(
+            Transaction.user_id == user_id,
+            Transaction.transaction_date >= start_date,
+            Transaction.transaction_date < end_date
+        )
+        monthly_transfer = float(monthly_transfer_query.scalar() or 0.0)
+    except Exception as e:
+        logging.warning(f"Failed to get monthly transfer for user {user_id}. Error: {str(e)}")
+        raise MonthlyTransferError(user_id, start_date.month, start_date.year)
+    
     #Get the monthly net for the user for the specific month and year
+    # DOES NOT INCLUDE TRANSFER TRANSACTIONS
     monthly_net = monthly_income - monthly_expense
     
     #Determine if the monthly net is positive or negative
@@ -106,6 +125,7 @@ def get_financial_summary(
         total_balance=total_balance,
         monthly_income=monthly_income,
         monthly_expense=monthly_expense,
+        monthly_transfer=monthly_transfer,
         monthlyNet=monthly_net,
         isPositive=isPositive
     )
@@ -124,7 +144,7 @@ def get_account_information(
         accounts = account_list,
     )
     
-#Get the recent transactions for the user for the specific month and year
+#Get the recent (5) transactions for the user for the specific month and year
 def get_recent_transactions(
     db: Session,
     user_id : UUID,
@@ -149,7 +169,7 @@ def get_recent_transactions(
                 amount=transaction.amount,
                 title=transaction.title,
                 transaction_date=transaction.transaction_date,
-                is_income=transaction.is_income,
+                transaction_type=transaction.transaction_type,
                 category= category_response,
                 merchant=transaction.merchant,
                 account_name = account_name,

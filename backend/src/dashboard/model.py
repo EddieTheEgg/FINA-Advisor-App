@@ -4,6 +4,7 @@ from pydantic import BaseModel
 from uuid import UUID
 
 from backend.src.categories.model import CategoryResponse
+from backend.src.transactions.model import TransactionType
 from backend.src.users.model import UserSimpleResponse
 from backend.src.accounts.model import AccountBalance
 
@@ -18,6 +19,7 @@ class FinancialSummary(BaseModel):
     total_balance: float
     monthly_income: float
     monthly_expense: float
+    monthly_transfer: float
     monthlyNet: float
     isPositive: bool
     
@@ -29,7 +31,7 @@ class RecentTransaction(BaseModel):
     amount: float
     title: str | None = None
     transaction_date: datetime
-    is_income: bool
+    transaction_type: TransactionType
     category: CategoryResponse | None = None
     merchant: str | None = None
     account_name: str
