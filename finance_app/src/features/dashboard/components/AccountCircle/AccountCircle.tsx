@@ -23,7 +23,7 @@ export default function AccountCircle({accounts}: AccountCircleProps) {
     // If there is only one account, add a tiny invisible slice
     // since the pie chart requires at least two slices
     if (pieData.length === 1) {
-      pieData.push({ value: 500, color: '#e0e0e0' }); //Note, remember to change back to 0.01 when done testing
+      pieData.push({ value: 0.01, color: '#e0e0e0' });
     }
 
 
