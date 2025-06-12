@@ -8,30 +8,68 @@ from sqlalchemy import desc
 
 from backend.src.categories import service
 from backend.src.entities.category import Category
-from backend.src.entities.transaction import Transaction
-from backend.src.exceptions import CategoryNotFoundError, InvalidUserForCategoryError, InvalidUserForTransactionError, TransactionNotFoundError
+from backend.src.entities.transaction import Transaction, TransactionType
+from backend.src.exceptions import TransferTransactionError, CreateTransactionError, CategoryNotFoundError, InvalidUserForCategoryError, InvalidUserForTransactionError, TransactionNotFoundError
 from backend.src.transactions.model import TransactionCreate, TransactionResponse, TransactionUpdate, TransactionListResponse
 from backend.src.accounts import service as account_service
 
-# Creates a new transaction entry in the database
-def create_transaction(db: Session, transaction_create_request: TransactionCreate, user_id: UUID) -> TransactionResponse:
-    category = db.query(Category).filter(Category.category_id == transaction_create_request.category_id).first()
-    if not category:
-        raise CategoryNotFoundError(transaction_create_request.category_id)
-    
-    if category.user_id != user_id:
-        logging.warning(f"Category with id {transaction_create_request.category_id} not valid for this user")
-        raise InvalidUserForCategoryError(transaction_create_request.category_id)
-    
-    #Ensures that the transaction's is_income matches the category is_income
-    # Assuming user knows the category they chose for the category is expense vs income
-    transaction_create_request.is_income = category.is_income
-    
+#Creates a new transfer transaction
+def create_transfer_transaction(
+    db: Session,
+    transaction_create_request: TransactionCreate,
+    user_id: UUID
+) -> TransactionResponse:
+    try:
+
+        if not transaction_create_request.to_account_id:
+            raise ValueError("to_account_id is required for transfers")
+        
+        # Verify both accounts belong to the user
+        from_account = account_service.get_account_by_id(db, transaction_create_request.account_id, user_id)
+        to_account = account_service.get_account_by_id(db, transaction_create_request.to_account_id, user_id)
+        
+        # Create the transfer transaction
+        new_transaction = Transaction(
+            amount=transaction_create_request.amount,
+            title=transaction_create_request.title,
+            transaction_date=transaction_create_request.transaction_date,
+            transaction_type=transaction_create_request.transaction_type,
+            notes=transaction_create_request.notes,
+            location=transaction_create_request.location,
+            is_subscription=transaction_create_request.is_subscription,
+            subscription_frequency=transaction_create_request.subscription_frequency,
+            subscription_start_date=transaction_create_request.subscription_start_date,
+            subscription_end_date=transaction_create_request.subscription_end_date,
+            category_id=transaction_create_request.category_id,
+            account_id=transaction_create_request.account_id,
+            to_account_id=transaction_create_request.to_account_id,
+            merchant=transaction_create_request.merchant,
+            user_id=user_id
+        )
+        db.add(new_transaction)
+        db.commit()
+        db.refresh(new_transaction)
+        
+        # Update both account balances
+        account_service.update_account_balance(db, transaction_create_request.account_id, user_id, -transaction_create_request.amount)
+        account_service.update_account_balance(db, transaction_create_request.to_account_id, user_id, transaction_create_request.amount)
+        
+        return new_transaction
+    except Exception as e:
+        logging.error(f"Error creating transfer transaction for user {user_id}: {str(e)}")
+        raise TransferTransactionError(str(e))
+
+def create_regular_transaction(
+    db: Session,
+    transaction_create_request: TransactionCreate,
+    user_id: UUID
+) -> TransactionResponse:
+    """Helper function to create a regular income/expense transaction."""
     new_transaction = Transaction(
         amount=transaction_create_request.amount,
         title=transaction_create_request.title,
         transaction_date=transaction_create_request.transaction_date,
-        is_income=transaction_create_request.is_income,
+        transaction_type=transaction_create_request.transaction_type,
         notes=transaction_create_request.notes,
         location=transaction_create_request.location,
         is_subscription=transaction_create_request.is_subscription,
@@ -47,11 +85,36 @@ def create_transaction(db: Session, transaction_create_request: TransactionCreat
     db.commit()
     db.refresh(new_transaction)
     
-    #Update the account balance associated with this transaction
-    account_service.update_account_balance(db, transaction_create_request.account_id, user_id, transaction_create_request.amount)
+    # Update the account balance
+    amount = transaction_create_request.amount
+    if transaction_create_request.transaction_type == TransactionType.EXPENSE:
+        amount = -1 * amount
+    account_service.update_account_balance(db, transaction_create_request.account_id, user_id, amount)
     
-    logging.info(f"Created new transaction for user {user_id} : {new_transaction.title}")
     return new_transaction
+
+# Creates a new transaction entry in the database
+def create_transaction(db: Session, transaction_create_request: TransactionCreate, user_id: UUID) -> TransactionResponse:
+    try:
+        category = db.query(Category).filter(Category.category_id == transaction_create_request.category_id).first()
+        if not category:
+            raise CategoryNotFoundError(transaction_create_request.category_id)
+        
+        if category.user_id != user_id:
+            logging.warning(f"Category with id {transaction_create_request.category_id} not valid for this user")
+            raise InvalidUserForCategoryError(transaction_create_request.category_id)
+        
+        # Handle different transaction types
+        if transaction_create_request.transaction_type == TransactionType.TRANSFER:
+            new_transaction = create_transfer_transaction(db, transaction_create_request, user_id)
+        else:
+            new_transaction = create_regular_transaction(db, transaction_create_request, user_id)
+        
+        logging.info(f"Created new transaction for user {user_id} : {new_transaction.title}")
+        return new_transaction
+    except Exception as e:
+        logging.error(f"Error creating transaction for user {user_id}: {str(e)}")
+        raise CreateTransactionError(str(e))
 
 #Acquires a single transaction by id (transaction_id), helper for update and delete
 def get_transaction_by_id(db: Session, transaction_id: UUID, user_id: UUID) -> TransactionResponse:
@@ -76,7 +139,7 @@ def get_transactions_with_filters(
         category_id: UUID | None = None,
         start_date: datetime | None = None,
         end_date: datetime | None = None,
-        is_income: bool | None = None,
+        transaction_type: TransactionType | None = None,
         is_subscription: bool | None = None,
         subscription_frequency: str | None = None,
         search: str | None = None,
@@ -108,8 +171,8 @@ def get_transactions_with_filters(
         if end_date:
             possible_transactions = possible_transactions.filter(Transaction.transaction_date <= end_date)
         
-        if is_income is not None:
-            possible_transactions = possible_transactions.filter(Transaction.is_income == is_income)
+        if transaction_type is not None:
+            possible_transactions = possible_transactions.filter(Transaction.transaction_type == transaction_type)
             
         if is_subscription is not None:
             possible_transactions = possible_transactions.filter(Transaction.is_subscription == is_subscription)

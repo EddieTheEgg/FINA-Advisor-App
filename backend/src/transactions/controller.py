@@ -5,7 +5,7 @@ from fastapi import APIRouter
 from starlette import status
 from backend.src.auth.service import CurrentUser
 from backend.src.database.core import DbSession
-from backend.src.transactions.model import TransactionCreate, TransactionListResponse, TransactionResponse, TransactionUpdate
+from backend.src.transactions.model import TransactionCreate, TransactionListResponse, TransactionResponse, TransactionType, TransactionUpdate
 from backend.src.transactions import service
 router = APIRouter(
     prefix='/transactions',
@@ -38,7 +38,7 @@ def get_transactions(
     category_id: UUID | None = None,    
     start_date: datetime | None = None,
     end_date: datetime | None = None,
-    is_income: bool | None = None,
+    transaction_type: TransactionType | None = None,
     is_subscription: bool | None = None,
     subscription_frequency: str | None = None,
     search: str | None = None,
@@ -59,7 +59,7 @@ def get_transactions(
         category_id,
         start_date,
         end_date,
-        is_income,
+        transaction_type,
         is_subscription,
         subscription_frequency,
         search,
