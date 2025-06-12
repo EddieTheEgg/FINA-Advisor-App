@@ -34,4 +34,10 @@ export const styles = StyleSheet.create({
         fontSize: fontSize.lg,
         lineHeight: Platform.OS === 'android' ? 15 : 0,
     },
+    transferText: {
+        fontFamily: 'Poppins-SemiBold',
+        color: colors.secondary,
+        fontSize: fontSize.lg,
+        lineHeight: Platform.OS === 'android' ? 15 : 0,
+    },
 });
