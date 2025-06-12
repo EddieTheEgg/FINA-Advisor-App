@@ -24,6 +24,7 @@ from backend.src.entities.category_suggestions import CategoryTraining
 
 
 from backend.src.ai.config import client
+from backend.src.transactions.model import TransactionType
 
 def get_openai_client() -> OpenAI:
     return client
@@ -49,7 +50,7 @@ async def suggest_category_from_details(
         
         categories_list = []
         for category in categories:
-            categories_list.append(f"- {category.category_id}: {category.category_name} ({'Income' if category.is_income else 'Expense'})")
+            categories_list.append(f"- {category.category_id}: {category.category_name} ({'Income' if category.transaction_type == TransactionType.INCOME else 'Expense'})")
         categories_list = "\n".join(categories_list)
         
         prompt = f"""You are a financial transaction categorization assistant. Your task is to categorize a transaction into the most appropriate category from the provided list.
@@ -61,7 +62,7 @@ async def suggest_category_from_details(
         Title: {request.title}
         Date: {request.transaction_date.strftime('%Y-%m-%d')}
         Amount: ${request.amount:.2f}
-        Type: {"Income" if request.is_income else "Expense"}
+        Type: {"Income" if request.transaction_type == TransactionType.INCOME else "Expense"}
         Merchant: {request.merchant or 'Not specified'}
         Location: {request.location or 'Not specified'}
         Payment Method: {request.payment_type or 'Not specified'}

@@ -3,11 +3,13 @@ from pydantic import BaseModel
 from typing import List
 from datetime import datetime
 
+from backend.src.transactions.model import TransactionType
+
 class SuggestCategoryRequest(BaseModel):
     amount: float
     title: str
     transaction_date: datetime
-    is_income: bool
+    transaction_type: TransactionType
     notes: str | None = None
     location: str | None = None
     is_subscription: bool = False
