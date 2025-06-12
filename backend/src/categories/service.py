@@ -1,21 +1,22 @@
 import logging
 from typing import List
 from uuid import UUID
-from backend.src.categories.model import CategoryResponse, CreateCategoryRequest, UpdateCategoryRequest
+from backend.src.categories.model import CategoryResponse, CategoryCreate, UpdateCategoryRequest
 from sqlalchemy.orm import Session
 
 from backend.src.entities.category import Category
 from backend.src.entities.transaction import Transaction
 from backend.src.exceptions import CategoryNotFoundError, InvalidCategoryForDeletionError, InvalidUserForCategoryError
+from backend.src.transactions.model import TransactionType
 
 # This is when a user makes a new category besides the default ones, which is custom
-def create_category(db: Session, create_category_request: CreateCategoryRequest, user_id: UUID) -> CategoryResponse:
+def create_category(db: Session, create_category_request: CategoryCreate, user_id: UUID) -> CategoryResponse:
     try:
         new_category = Category(
             category_name=create_category_request.category_name,
             icon=create_category_request.icon,
             color=create_category_request.color,
-            is_income = create_category_request.is_income,
+            transaction_type = create_category_request.transaction_type,
             is_custom = True,
             user_id = user_id
         )
@@ -73,8 +74,8 @@ def update_category(db: Session, category_id: UUID, update_category_request: Upd
     if update_category_request.color:
         category.color = update_category_request.color
         category.is_custom = True
-    if update_category_request.is_income:
-        category.is_income = update_category_request.is_income
+    if update_category_request.transaction_type:
+        category.transaction_type = update_category_request.transaction_type
         category.is_custom = True
 
     db.commit()
@@ -86,34 +87,35 @@ def update_category(db: Session, category_id: UUID, update_category_request: Upd
 def delete_category(db: Session, category_id: UUID, user_id: UUID) -> None:
     delete_category = get_category_by_id(db, category_id, user_id)
     
-    # For now we don't allow users to delete the default General Expense/Income category
-    if delete_category.category_name in {"Uncategorized Expense", "Uncategorized Income"} and not delete_category.is_custom:
-        logging.warning(f"Not allowed: User {user_id} attempted to delete Uncategorized Expense/Income category")
+    # For now we don't allow users to delete the default General Expense/Income and Transfer(default) category
+    if delete_category.category_name in {"Uncategorized Expense", "Uncategorized Income", "Transfer"} and not delete_category.is_custom:
+        logging.warning(f"Not allowed: User {user_id} attempted to delete Uncategorized Expense/Income or Transfer category")
         raise InvalidCategoryForDeletionError(category_id)
 
-    # Get the General/Uncategorized category for this user
-    if delete_category.is_income:
+    # Get the General/Uncategorized category for this user, if it exists
+    # These are general categories is where we move all transactions into when user deletes a category
+    if delete_category.transaction_type == TransactionType.INCOME:
         general_category = db.query(Category).filter(
             Category.user_id == user_id,
             Category.category_name == "Uncategorized Income",
-            Category.is_income == delete_category.is_income,
+            Category.transaction_type == delete_category.transaction_type,
             Category.is_custom == False
         ).first()
     else:
         general_category = db.query(Category).filter(
             Category.user_id == user_id,
             Category.category_name == "Uncategorized Expense",
-            Category.is_income == delete_category.is_income,
+            Category.transaction_type == delete_category.transaction_type,
             Category.is_custom == False
         ).first()
     
     # In the scenario that the default General Expense/Income category does not exist, we create it
-    if not general_category and not delete_category.is_income:
+    if not general_category and delete_category.transaction_type == TransactionType.EXPENSE:
         general_category = Category(
             category_name="Uncategorized Expense",
             icon="📦",
             color="#808080",
-            is_income=delete_category.is_income,
+            transaction_type=delete_category.transaction_type,
             is_custom=False,
             user_id=user_id
         )
@@ -122,7 +124,7 @@ def delete_category(db: Session, category_id: UUID, user_id: UUID) -> None:
             category_name="Uncategorized Income",
             icon="📦",
             color="#808080",
-            is_income=delete_category.is_income,
+            transaction_type=delete_category.transaction_type,
             is_custom=False,
             user_id=user_id
         )
@@ -145,36 +147,37 @@ def delete_category(db: Session, category_id: UUID, user_id: UUID) -> None:
 def create_default_categories(db: Session, user_id : UUID) -> List[CategoryResponse]:
     default_categories = [
         # Uncategorized Categories (Helpful when categories get deleted but keep transactions in those categories)
-        {"category_name": "Uncategorized Expense", "icon": "📦", "color": "#808080", "is_income": False, "is_custom": False, "user_id": user_id},
-        {"category_name": "Uncategorized Income", "icon": "💰", "color": "#808080", "is_income": True, "is_custom": False, "user_id": user_id},
+        {"category_name": "Uncategorized Expense", "icon": "📦", "color": "#808080", "transaction_type": TransactionType.EXPENSE, "is_custom": False, "user_id": user_id},
+        {"category_name": "Uncategorized Income", "icon": "💰", "color": "#808080", "transaction_type": TransactionType.INCOME, "is_custom": False, "user_id": user_id},
+        {"category_name": "Transfer", "icon": "↔️", "color": "#808080", "transaction_type": TransactionType.TRANSFER, "is_custom": False, "user_id": user_id},
         
         # Default Expense Categories
-        {"category_name": "Food & Dining", "icon": "🍔", "color": "#FF5733", "is_income": False, "is_custom": False, "user_id": user_id},
-        {"category_name": "Transportation", "icon": "🚗", "color": "#33FF57", "is_income": False, "is_custom": False, "user_id": user_id},
-        {"category_name": "Entertainment", "icon": "🎉", "color": "#3357FF", "is_income": False, "is_custom": False, "user_id": user_id},
-        {"category_name": "Shopping", "icon": "🛍️", "color": "#FF33A1", "is_income": False, "is_custom": False, "user_id": user_id},
-        {"category_name": "Housing", "icon": "🏠", "color": "#FF3333", "is_income": False, "is_custom": False, "user_id": user_id},
-        {"category_name": "Utilities", "icon": "⚡", "color": "#33A1FF", "is_income": False, "is_custom": False, "user_id": user_id},
-        {"category_name": "Healthcare", "icon": "🏥", "color": "#A133FF", "is_income": False, "is_custom": False, "user_id": user_id},
-        {"category_name": "Personal Care", "icon": "💆‍♂️", "color": "#33FFA1", "is_income": False, "is_custom": False, "user_id": user_id},
-        {"category_name": "Education", "icon": "🎓", "color": "#FFA133", "is_income": False, "is_custom": False, "user_id": user_id},
-        {"category_name": "Gifts & Donations", "icon": "🎁", "color": "#A1FF33", "is_income": False, "is_custom": False, "user_id": user_id},
+        {"category_name": "Food & Dining", "icon": "🍔", "color": "#FF5733", "transaction_type": TransactionType.EXPENSE, "is_custom": False, "user_id": user_id},
+        {"category_name": "Transportation", "icon": "🚗", "color": "#33FF57", "transaction_type": TransactionType.EXPENSE, "is_custom": False, "user_id": user_id},
+        {"category_name": "Entertainment", "icon": "🎉", "color": "#3357FF", "transaction_type": TransactionType.EXPENSE, "is_custom": False, "user_id": user_id},
+        {"category_name": "Shopping", "icon": "🛍️", "color": "#FF33A1", "transaction_type": TransactionType.EXPENSE, "is_custom": False, "user_id": user_id},
+        {"category_name": "Housing", "icon": "🏠", "color": "#FF3333", "transaction_type": TransactionType.EXPENSE, "is_custom": False, "user_id": user_id},
+        {"category_name": "Utilities", "icon": "⚡", "color": "#33A1FF", "transaction_type": TransactionType.EXPENSE, "is_custom": False, "user_id": user_id},
+        {"category_name": "Healthcare", "icon": "🏥", "color": "#A133FF", "transaction_type": TransactionType.EXPENSE, "is_custom": False, "user_id": user_id},
+        {"category_name": "Personal Care", "icon": "💆‍♂️", "color": "#33FFA1", "transaction_type": TransactionType.EXPENSE, "is_custom": False, "user_id": user_id},
+        {"category_name": "Education", "icon": "🎓", "color": "#FFA133", "transaction_type": TransactionType.EXPENSE, "is_custom": False, "user_id": user_id},
+        {"category_name": "Gifts & Donations", "icon": "🎁", "color": "#A1FF33", "transaction_type": TransactionType.EXPENSE, "is_custom": False, "user_id": user_id},
 
         # Default Income/Inflow Categories
-        {"category_name": "Salary", "icon": "💰", "color": "#33FFA1", "is_income": True, "is_custom": False, "user_id": user_id},
-        {"category_name": "Investments", "icon": "📈", "color": "#FFA133", "is_income": True, "is_custom": False, "user_id": user_id},
-        {"category_name": "Rental Income", "icon": "🏠", "color": "#3357FF", "is_income": True, "is_custom": False, "user_id": user_id},
-        {"category_name": "Interest Income", "icon": "💸", "color": "#FF33A1", "is_income": True, "is_custom": False, "user_id": user_id},
-        {"category_name": "Dividends", "icon": "💸", "color": "#FF33A1", "is_income": True, "is_custom": False, "user_id": user_id},
-        {"category_name": "Bonus", "icon": "💸", "color": "#FF33A1", "is_income": True, "is_custom": False, "user_id": user_id},
+        {"category_name": "Salary", "icon": "💰", "color": "#33FFA1", "transaction_type": TransactionType.INCOME, "is_custom": False, "user_id": user_id},
+        {"category_name": "Investments", "icon": "📈", "color": "#FFA133", "transaction_type": TransactionType.INCOME, "is_custom": False, "user_id": user_id},
+        {"category_name": "Rental Income", "icon": "🏠", "color": "#3357FF", "transaction_type": TransactionType.INCOME, "is_custom": False, "user_id": user_id},
+        {"category_name": "Interest Income", "icon": "💸", "color": "#FF33A1", "transaction_type": TransactionType.INCOME, "is_custom": False, "user_id": user_id},
+        {"category_name": "Dividends", "icon": "💸", "color": "#FF33A1", "transaction_type": TransactionType.INCOME, "is_custom": False, "user_id": user_id},
+        {"category_name": "Bonus", "icon": "💸", "color": "#FF33A1", "transaction_type": TransactionType.INCOME, "is_custom": False, "user_id": user_id},
     ]
 
     for default_category in default_categories:
-        # Check if category with same name and is_income status already exists for this user
+        # Check if category with same name and transaction_type already exists for this user
         existing_category = db.query(Category).filter(
             Category.user_id == user_id,
             Category.category_name == default_category["category_name"],
-            Category.is_income == default_category["is_income"]
+            Category.transaction_type == default_category["transaction_type"]
         ).first()
         
         if not existing_category:

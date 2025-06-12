@@ -4,7 +4,7 @@ from fastapi import APIRouter, Query
 from starlette import status
 
 from backend.src.auth.service import CurrentUser
-from backend.src.categories.model import CategoryResponse, CreateCategoryRequest, UpdateCategoryRequest
+from backend.src.categories.model import CategoryResponse, CategoryCreate, UpdateCategoryRequest
 from backend.src.database.core import DbSession
 from backend.src.categories import service
 
@@ -17,7 +17,7 @@ router = APIRouter(
 @router.post("/create-category", response_model=CategoryResponse, status_code=status.HTTP_201_CREATED)
 def create_category(
         db: DbSession,
-        create_category_request: CreateCategoryRequest,
+        create_category_request: CategoryCreate,
         current_user: CurrentUser
 ):
     return service.create_category(db, create_category_request, current_user.get_uuid())

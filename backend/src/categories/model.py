@@ -1,30 +1,40 @@
 from datetime import datetime
 from uuid import UUID
 from pydantic import BaseModel
+from backend.src.entities.enums import TransactionType
 
-class CreateCategoryRequest(BaseModel):
+class CategoryCreate(BaseModel):
     category_name: str
-    icon: str | None = None
+    icon: str
     color: str
-    is_income: bool = False
-    is_custom: bool = False
+    transaction_type: TransactionType
+    is_custom: bool = True
 
 class CategoryUpdate(BaseModel):
-    category_name: str
+    category_name: str | None = None
     icon: str | None = None
     color: str | None = None
-    is_income: bool = False
+    transaction_type: TransactionType | None = None
+    is_custom: bool | None = None
 
 class CategoryResponse(BaseModel):
     category_id: UUID
     category_name: str
-    icon: str | None = None
+    icon: str
     color: str
-    is_income: bool
+    transaction_type: TransactionType
     is_custom: bool
-    user_id: UUID | None = None
+    user_id: UUID | None
     created_at: datetime
     updated_at: datetime | None = None
+
+    class Config:
+        from_attributes = True
+        arbitrary_types_allowed = True
+
+class CategoryListResponse(BaseModel):
+    categories: list[CategoryResponse]
+    total: int  
 
     class Config:
         from_attributes = True
@@ -34,4 +44,4 @@ class UpdateCategoryRequest(BaseModel):
     category_name: str | None = None
     icon: str | None = None
     color: str | None = None
-    is_income: bool | None = None   
+    transaction_type: TransactionType | None = None   
