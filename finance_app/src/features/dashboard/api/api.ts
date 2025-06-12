@@ -20,6 +20,7 @@ export const getDashboard = async ({month, year} : {month : number, year : numbe
             totalBalance: dashboardData.financialSummary.total_balance,
             monthlyIncome: dashboardData.financialSummary.monthly_income,
             monthlyExpense: dashboardData.financialSummary.monthly_expense,
+            monthlyTransfer: dashboardData.financialSummary.monthly_transfer,
             monthlyNet: dashboardData.financialSummary.monthlyNet,
             isPositive: dashboardData.financialSummary.isPositive,
         },
@@ -37,7 +38,12 @@ export const getDashboard = async ({month, year} : {month : number, year : numbe
             amount: transaction.amount,
             title: transaction.title,
             transactionDate: transaction.transaction_date,
-            isIncome: transaction.is_income,
+            transactionType: transaction.transaction_type,
+            category: transaction.category,
+            merchant: transaction.merchant,
+            accountName: transaction.account_name,
+            toAccountName: transaction.to_account_name,
+            notes: transaction.notes,
         })),
     };
 };

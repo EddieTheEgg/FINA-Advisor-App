@@ -11,10 +11,11 @@ export type BackendDashboardRecentTransaction = {
     amount: number;
     title: string | null;
     transaction_date: string;
-    is_income: boolean;
+    transaction_type: 'INCOME' | 'EXPENSE' | 'TRANSFER';
     category: CategoryData | null;
     merchant: string | null;
     account_name: string;
+    to_account_name?: string;  // For transfers
     notes: string | null;
 }
 
@@ -47,6 +48,7 @@ export type DashboardData = {
         totalBalance: number;
         monthlyIncome: number;
         monthlyExpense: number;
+        monthlyTransfer: number;
         monthlyNet: number;
         isPositive: boolean;
     }
@@ -64,10 +66,11 @@ export type DashboardData = {
         amount: number;
         title: string | null;
         transactionDate: string;
-        isIncome: boolean;
+        transactionType: 'INCOME' | 'EXPENSE' | 'TRANSFER';
         category: CategoryData | null;
         merchant: string | null;
         accountName: string;
+        toAccountName?: string;
         notes: string | null;
     }>;
 }
