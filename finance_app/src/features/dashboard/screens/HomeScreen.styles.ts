@@ -40,7 +40,6 @@ export const styles = StyleSheet.create({
         backgroundColor: 'white',
         borderRadius: 20,
         padding: spacing.md,
-        paddingRight: spacing.xl,
         boxShadow: '0 2px 2px 0 rgba(0, 0, 0, 0.3)',
     },
 
