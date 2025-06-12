@@ -76,6 +76,13 @@ class TransactionNotFoundError(TransactionError):
     def __init__(self, transaction_id: UUID):
         super().__init__(status_code=404, detail=f"Transaction with id {transaction_id} not found")
 
+class TransferTransactionError(TransactionError):
+    def __init__(self, message: str = "Error creating transfer transaction"):
+        super().__init__(status_code=400, detail=message)
+
+class CreateTransactionError(TransactionError):
+    def __init__(self, message: str = "Error creating transaction"):
+        super().__init__(status_code=400, detail=message)
 
 
 
@@ -133,9 +140,13 @@ class AccountError(HTTPException):
     """Base exception for account-related errors"""
     pass
 
+class AccountCreationError(AccountError):
+    def __init__(self, user_id: UUID):
+        super().__init__(status_code=400, detail=f"Failed to create account for user {user_id}")
+
 class AccountNotFoundError(AccountError):
     def __init__(self, user_id: UUID):
-        super().__init__(status_code=404, detail=f"Account information for user {user_id} not found")
+        super().__init__(status_code=404, detail=f"No accounts found for user {user_id}")
 
 
 
@@ -171,6 +182,9 @@ class MonthlyExpenseError(DashboardError):
     def __init__(self, user_id: UUID, month: int, year: int):
         super().__init__(status_code=500, detail=f"Failed to get monthly expense for user {user_id} in month {month} and year {year}")
         
+class MonthlyTransferError(DashboardError):
+    def __init__(self, user_id: UUID, month: int, year: int):
+        super().__init__(status_code=500, detail=f"Failed to get monthly transfer amount for user {user_id} in month {month} and year {year}")
 class MonthlyNetError(DashboardError):
     def __init__(self, user_id: UUID, month: int, year: int):
         super().__init__(status_code=500, detail=f"Failed to get monthly net for user {user_id} in month {month} and year {year}")
