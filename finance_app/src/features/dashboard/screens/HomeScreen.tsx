@@ -39,6 +39,12 @@ export const HomeScreen = () => {
 
     const {data: dashboard, isPending, error} = useDashboardQuery(convertMonthToNumber(selectedMonth), selectedYear);
 
+    if (isPending){
+        return(
+            <LoadingScreen />
+        );
+    }
+
     if (error) {
         return (
             <SafeAreaView style={styles.mainContainer}>
