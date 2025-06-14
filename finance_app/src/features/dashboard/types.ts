@@ -84,13 +84,3 @@ export type MonthSelectorProps = {
     onPeriodChange: (month: string, year: number) => void;
 }
 
-//BalanceBadge and BalanceDisplay Props
-export type DashboardPeriodProps = {
-    selectedMonth: number;
-    selectedYear: number;
-}
-
-//AccountCircle Props
-export type AccountCircleProps = {
-    accounts: DashboardData['accounts'] | undefined;
-}

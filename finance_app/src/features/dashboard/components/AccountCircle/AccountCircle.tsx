@@ -1,9 +1,13 @@
 import { useEffect, useRef } from 'react';
 import { View, Text, Easing, Animated, Pressable } from 'react-native';
 import { PieChartPro } from 'react-native-gifted-charts';
-import { AccountCircleProps } from '../../types';
+import { DashboardData } from '../../types';
 import { styles } from './AccountCircle.styles';
 import FontAwesome6 from 'react-native-vector-icons/FontAwesome6';
+
+type AccountCircleProps = {
+  accounts: DashboardData['accounts'];
+}
 
 export default function AccountCircle({accounts}: AccountCircleProps) {
 
