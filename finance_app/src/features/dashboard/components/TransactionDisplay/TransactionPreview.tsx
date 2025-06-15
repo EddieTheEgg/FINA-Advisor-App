@@ -44,7 +44,7 @@ export const TransactionPreview = ({transactionItem} : TransactionPreviewProps) 
     };
 
     const formatAmount = () => {
-        const sign = transactionItem.transactionType === 'INCOME' ? '+' : 
+        const sign = transactionItem.transactionType === 'INCOME' ? '+' :
                     transactionItem.transactionType === 'EXPENSE' ? '-' : '';
         return `${sign}$${Math.abs(transactionItem.amount).toFixed(2)}`;
     };

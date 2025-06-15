@@ -10,6 +10,7 @@ import { useState } from 'react';
 import BalanceBadge from '../components/BalanceBadge/BalanceBadge';
 import AccountCircle from '../components/AccountCircle/AccountCircle';
 import { IncomeExpense } from '../components/IncomeExpense/IncomeExpense';
+import { RecentTransactions } from '../components/RecentTransactions/RecentTransactions';
 
 export const HomeScreen = () => {
     const todayDate = new Date();
@@ -39,12 +40,6 @@ export const HomeScreen = () => {
 
     const {data: dashboard, isPending, error} = useDashboardQuery(convertMonthToNumber(selectedMonth), selectedYear);
 
-    if (isPending){
-        return(
-            <LoadingScreen />
-        );
-    }
-
     if (error) {
         return (
             <SafeAreaView style={styles.mainContainer}>
@@ -57,59 +52,57 @@ export const HomeScreen = () => {
         );
     }
 
+    if (isPending || !dashboard) {
+        return <LoadingScreen />;
+    }
+
+    console.log(dashboard);
+
     return (
         <SafeAreaView style={styles.mainContainer}>
             <ScrollView>
-            <View style={styles.headerContainer}>
-                <View>
-                    <Greeting styles={styles.greetingText} />
-                    <Text style={styles.nameText}> {dashboard?.user.firstName}</Text>
+                <View style={styles.headerContainer}>
+                    <View>
+                        <Greeting styles={styles.greetingText} />
+                        <Text style={styles.nameText}>{dashboard.user.firstName}</Text>
+                    </View>
+                    <View>
+                        <SignOutButton />
+                    </View>
+                </View>
+                <View style={styles.monthSelectorContainer}>
+                    <MonthSelector
+                        month={selectedMonth}
+                        year={selectedYear}
+                        onPeriodChange={(month : string, year : number) => {
+                            setSelectedMonth(month);
+                            setSelectedYear(year);
+                        }}
+                    />
                 </View>
                 <View>
-                    <SignOutButton />
-                </View>
-            </View>
-            <View style={styles.monthSelectorContainer}>
-                <MonthSelector
-                month={selectedMonth}
-                year={selectedYear}
-                onPeriodChange={(month : string, year : number) => {
-                    setSelectedMonth(month);
-                    setSelectedYear(year);
-                }} />
-            </View>
-            {isPending ? (
-                <LoadingScreen />
-            ) : (
-                <View>
-                    <View style = {styles.monthlyBalanceContainer}>
-                    <View >
+                    <View style={styles.monthlyBalanceContainer}>
+                        <View>
                             <View>
-                                <BalanceDisplay
-                                    selectedMonth={convertMonthToNumber(selectedMonth)}
-                                    selectedYear={selectedYear}
-                                />
+                                <BalanceDisplay dashboard={dashboard} />
                             </View>
                             <View>
-                                <BalanceBadge
-                                    selectedMonth={convertMonthToNumber(selectedMonth)}
-                                    selectedYear={selectedYear}
-                                />
+                                <BalanceBadge dashboard={dashboard} />
                             </View>
                         </View>
                         <View>
-                            <AccountCircle accounts={dashboard?.accounts} />
+                            <AccountCircle accounts={dashboard.accounts} />
                         </View>
                     </View>
-                    <View style = {styles.monthlyIncomeExpenseContainer}>
-                        <IncomeExpense
-                            selectedMonth={convertMonthToNumber(selectedMonth)}
-                            selectedYear={selectedYear}
-                        />
+                    <View style={styles.monthlyIncomeExpenseContainer}>
+                        <IncomeExpense dashboard={dashboard} />
                     </View>
                 </View>
-            )}
+                <View style = {styles.recentTransactionsContainer}>
+                    <RecentTransactions recentTransactions={dashboard.recentTransactions} />
+                </View>
             </ScrollView>
         </SafeAreaView>
     );
 };
+

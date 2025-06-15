@@ -47,6 +47,11 @@ export const styles = StyleSheet.create({
         marginTop: spacing.sm,
     },
 
+    recentTransactionsContainer: {
+        marginTop: spacing.sm,
+        marginBottom: spacing.md,
+    },
+
 
     errorContainer: {
         flex: 1,
