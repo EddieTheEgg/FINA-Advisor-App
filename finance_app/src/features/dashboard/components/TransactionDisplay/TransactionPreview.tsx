@@ -7,7 +7,7 @@ import { styles } from './TransactionPreview.styles';
 type Transaction = {
     transactionId: string;
     amount: number;
-    title: string | null;
+    title: string;
     transactionDate: string;
     transactionType: 'INCOME' | 'EXPENSE' | 'TRANSFER';
     category: CategoryData;
@@ -23,6 +23,13 @@ type TransactionPreviewProps = {
 }
 
 export const TransactionPreview = ({transactionItem} : TransactionPreviewProps) => {
+    const truncateText = (text: string, maxLength: number) => {
+        if (text.length <= maxLength) {
+            return text;
+        }
+        return text.substring(0, maxLength) + '...';
+    };
+
     const getAmountStyle = () => {
         switch (transactionItem.transactionType) {
             case 'INCOME':
@@ -65,23 +72,15 @@ export const TransactionPreview = ({transactionItem} : TransactionPreviewProps) 
                 <Text style={styles.iconText}>{transactionItem.category.icon}</Text>
             </View>
             <View style={styles.contentContainer}>
-                <Text 
-                    style={styles.transactionTitle}
-                    numberOfLines={1}
-                    ellipsizeMode="tail"
-                >
-                    {transactionItem.title}
+                <Text style={styles.transactionTitle}>
+                    {truncateText(transactionItem.title, 18)}
                 </Text>
                 <View style={styles.subDescBar}>
                     <Text style={styles.accountText}>
                         {formatDate()}
                     </Text>
-                    <Text 
-                        style={styles.accountName}
-                        numberOfLines={1}
-                        ellipsizeMode="tail"
-                    >
-                        {transactionItem.accountName}
+                    <Text style={styles.accountName}>
+                        {truncateText(transactionItem.accountName, 15)}
                     </Text>
                 </View>
             </View>

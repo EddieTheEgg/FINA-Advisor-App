@@ -9,7 +9,7 @@ export type BackendDashboardAccountInfo = {
 export type BackendDashboardRecentTransaction = {
     transaction_id: string;
     amount: number;
-    title: string | null;
+    title: string;
     transaction_date: string;
     transaction_type: 'INCOME' | 'EXPENSE' | 'TRANSFER';
     category: CategoryData;
@@ -65,7 +65,7 @@ export type DashboardData = {
     recentTransactions: Array<{
         transactionId: string;
         amount: number;
-        title: string | null;
+        title: string;
         transactionDate: string;
         transactionType: 'INCOME' | 'EXPENSE' | 'TRANSFER';
         category: CategoryData;

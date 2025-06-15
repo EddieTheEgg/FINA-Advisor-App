@@ -1,7 +1,7 @@
-import { Platform, StyleSheet } from "react-native";
-import { fontSize } from "../../../../styles/fontSizes";
-import { colors } from "../../../../styles/colors";
-import { spacing } from "../../../../styles/spacing";
+import { Platform, StyleSheet } from 'react-native';
+import { fontSize } from '../../../../styles/fontSizes';
+import { colors } from '../../../../styles/colors';
+import { spacing } from '../../../../styles/spacing';
 
 
 export const styles = StyleSheet.create({
