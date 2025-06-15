@@ -45,6 +45,7 @@ export const getDashboard = async ({month, year} : {month : number, year : numbe
                 accountName: transaction.account_name,
                 toAccountName: transaction.to_account_name,
                 notes: transaction.notes,
+                isSubscription: transaction.is_subscription,
             })),
         };
     } catch (error : unknown) {

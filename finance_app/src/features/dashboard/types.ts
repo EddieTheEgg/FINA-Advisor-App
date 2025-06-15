@@ -12,11 +12,12 @@ export type BackendDashboardRecentTransaction = {
     title: string | null;
     transaction_date: string;
     transaction_type: 'INCOME' | 'EXPENSE' | 'TRANSFER';
-    category: CategoryData | null;
+    category: CategoryData;
     merchant: string | null;
     account_name: string;
     to_account_name?: string;  // For transfers
     notes: string | null;
+    is_subscription: boolean;
 }
 
 // Frontend Types
@@ -25,7 +26,7 @@ export type CategoryData = {
     categoryName: string;
     icon: string;
     color: string;
-    isIncome: boolean;
+    transactionType: 'INCOME' | 'EXPENSE' | 'TRANSFER';
     isCustom: boolean;
     userId: string | null;
     createdAt: string;
@@ -67,11 +68,12 @@ export type DashboardData = {
         title: string | null;
         transactionDate: string;
         transactionType: 'INCOME' | 'EXPENSE' | 'TRANSFER';
-        category: CategoryData | null;
+        category: CategoryData;
         merchant: string | null;
         accountName: string;
         toAccountName?: string;
         notes: string | null;
+        isSubscription: boolean;
     }>;
 }
 

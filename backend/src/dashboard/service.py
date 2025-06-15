@@ -164,6 +164,9 @@ def get_recent_transactions(
         for transaction in transactions:
             category_response = category_service.get_category_by_id(db, transaction.category_id, user_id)
             account_name = account_service.get_account_name_by_id(db, transaction.account_id, user_id)
+            to_account_name = None
+            if transaction.to_account_id:
+                to_account_name = account_service.get_account_name_by_id(db, transaction.to_account_id, user_id)
             recent_transactions.append(RecentTransaction(
                 transaction_id=transaction.transaction_id,
                 amount=transaction.amount,
@@ -173,7 +176,9 @@ def get_recent_transactions(
                 category= category_response,
                 merchant=transaction.merchant,
                 account_name = account_name,
+                to_account_name = to_account_name,
                 notes=transaction.notes,
+                is_subscription = transaction.is_subscription,
             ))
         return recent_transactions
     except Exception as e:

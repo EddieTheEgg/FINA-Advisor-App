@@ -11,6 +11,12 @@ class PaymentType(Enum):
     DEBIT_CARD = "DEBIT_CARD"
     BANK_TRANSFER = "BANK_TRANSFER"
     MOBILE_PAYMENT = "MOBILE_PAYMENT"
+    PAYPAL = "PAYPAL"
+    VENMO = "VENMO"
+    APPLE_PAY = "APPLE_PAY"
+    GOOGLE_PAY = "GOOGLE_PAY"
+    ZELLE = "ZELLE"
+    OTHER_ONLINE = "OTHER_ONLINE"
     OTHER = "OTHER"
 
 class SubscriptionFrequency(Enum):

@@ -4,6 +4,7 @@ from pydantic import BaseModel
 from uuid import UUID
 
 from backend.src.categories.model import CategoryResponse
+from backend.src.entities.enums import PaymentType
 from backend.src.transactions.model import TransactionType
 from backend.src.users.model import UserSimpleResponse
 from backend.src.accounts.model import AccountBalance
@@ -35,7 +36,9 @@ class RecentTransaction(BaseModel):
     category: CategoryResponse | None = None
     merchant: str | None = None
     account_name: str
+    to_account_name: str | None = None
     notes: str | None = None
+    is_subscription: bool
     
     class Config:
         from_attributes = True
