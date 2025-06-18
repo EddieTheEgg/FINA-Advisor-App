@@ -30,7 +30,7 @@ def get_dashboard(
     period = {"month": convert_month_to_string(month), "year": year}
     financial_summary = get_financial_summary(db, user_id, user.created_at, current_month_start, current_month_end)
     accounts_response = get_account_information(db, user_id)
-    recent_transactions = get_recent_transactions(db, user_id, current_month_start, current_month_end)
+    recent_transactions = get_recent_transactions(db, user_id, user.created_at, datetime.now(timezone.utc))
 
     return DashboardResponse(
         user=user,
