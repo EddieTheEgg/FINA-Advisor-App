@@ -16,6 +16,7 @@ export const HomeNavigator = () => {
             tabBar={renderCustomTabBar}
             screenOptions={{
                 headerShown: false,
+                animation: 'shift',
             }}
         >
             <Tab.Screen name="Dashboard" component={DashboardScreen} />

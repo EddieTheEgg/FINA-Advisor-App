@@ -5,7 +5,7 @@ import FontAwesome6 from 'react-native-vector-icons/FontAwesome6';
 import { styles } from './CustomTabBar.styles';
 import { colors } from '../../styles/colors';
 
-
+// Displays the tab bar icons, if transaction tab adjust the transaction button icon differently
 const getTabBarIcon = ({ route, size, focused }: any) => {
     let iconName: string = 'help-outline';
 
@@ -34,7 +34,7 @@ const getTabBarIcon = ({ route, size, focused }: any) => {
     );
   };
 
-export const CustomTabBar = ({state, navigation, insets}: BottomTabBarProps) => {
+export const CustomTabBar = ({state, navigation}: BottomTabBarProps) => {
     const { width } = useWindowDimensions();
     const TAB_COUNT = 5;
     const TAB_WIDTH = width / TAB_COUNT;
@@ -49,7 +49,7 @@ export const CustomTabBar = ({state, navigation, insets}: BottomTabBarProps) => 
     }, [state.index, TAB_WIDTH, indicatorPos]);
 
       return (
-        <View style={[styles.tabBarContainer, { paddingBottom: insets?.bottom  }]}>
+        <View style={[styles.tabBarContainer]}>
            <Animated.View
             style={state.index === 2 ?
                 null :
