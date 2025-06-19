@@ -13,7 +13,7 @@ export const SignOutButton = () => {
     return (
         <Pressable onPress={handleSignOut}>
             <View style={styles.signOutContainer}>
-                <FontAwesome6 name="right-from-bracket" size={30} color="black" solid />
+                <FontAwesome6 name="right-from-bracket" size={30} color="white" solid />
             </View>
         </Pressable>
     );

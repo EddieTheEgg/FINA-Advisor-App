@@ -48,7 +48,6 @@ export const styles = StyleSheet.create({
 
     recentTransactionsContainer: {
         marginTop: spacing.sm,
-        marginBottom: spacing.md,
     },
 
 

@@ -1,4 +1,4 @@
-import { View, Text, ScrollView } from 'react-native';
+import { View, Text, ScrollView, Dimensions } from 'react-native';
 import { useSafeAreaInsets } from 'react-native-safe-area-context';
 import { SignOutButton } from '../../auth/components/SignOutButton/SignOutButton';
 import { styles } from './HomeScreen.styles';
@@ -12,6 +12,9 @@ import BalanceBadge from '../components/BalanceBadge/BalanceBadge';
 import AccountCircle from '../components/AccountCircle/AccountCircle';
 import { IncomeExpense } from '../components/IncomeExpense/IncomeExpense';
 import { RecentTransactions } from '../components/RecentTransactions/RecentTransactions';
+
+const { height } = Dimensions.get('window');
+const responsivePadding = height * 0.2;
 
 export const DashboardScreen = () => {
     const insets = useSafeAreaInsets();
@@ -62,7 +65,10 @@ export const DashboardScreen = () => {
 
     return (
         <View style={[styles.container, { paddingTop: insets.top, paddingBottom: insets.bottom }]}>
-            <ScrollView contentContainerStyle={{ paddingBottom: insets.bottom }}>
+            <ScrollView
+                contentContainerStyle={{ paddingBottom: insets.bottom + responsivePadding }}
+                showsVerticalScrollIndicator={false}
+            >
                 <View style={styles.headerContainer}>
                     <View>
                         <Greeting styles={styles.greetingText} />
