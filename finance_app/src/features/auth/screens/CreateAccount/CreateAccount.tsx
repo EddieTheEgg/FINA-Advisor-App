@@ -1,14 +1,15 @@
 import React from 'react';
-import { SafeAreaView, Text, View } from 'react-native';
+import { Text, View } from 'react-native';
+import { useSafeAreaInsets } from 'react-native-safe-area-context';
 
 const CreateAccountScreen = () => {
-
+    const insets  = useSafeAreaInsets();
     return (
-        <SafeAreaView>
+        <View style = {[{paddingTop: insets.top, paddingBottom: insets.bottom }]}>
             <View>
-                <Text>Login Screen</Text>
+                <Text>Create Account Beginning Screen</Text>
             </View>
-        </SafeAreaView>
+        </View>
     );
 };
 

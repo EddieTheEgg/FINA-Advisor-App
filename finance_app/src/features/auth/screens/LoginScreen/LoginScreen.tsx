@@ -1,11 +1,13 @@
 import React, { useState } from 'react';
-import { Pressable, SafeAreaView, Text, TextInput, View } from 'react-native';
+import { Pressable, Text, TextInput, View } from 'react-native';
 import { styles } from './LoginScreen.styles';
 import SignInButton from '../../components/SignInButton/SignInButton';
 import FontAwesome6 from 'react-native-vector-icons/FontAwesome6';
 import { useLogin } from '../../hooks/useLogin';
+import { useSafeAreaInsets } from 'react-native-safe-area-context';
 
 const LoginScreen = () => {
+    const insets = useSafeAreaInsets();
     const [email, setEmail] = useState('');
     const [password, setPassword] = useState('');
     const [showPassword, setShowPassword] = useState(true);
@@ -22,7 +24,7 @@ const LoginScreen = () => {
     };
 
     return (
-        <SafeAreaView style={styles.mainContainer}>
+        <View style={[styles.mainContainer, {paddingTop: insets.top, paddingBottom: insets.bottom}]}>
             <View>
                 <Text style={styles.title}>Sign in</Text>
             </View>
@@ -63,7 +65,7 @@ const LoginScreen = () => {
                 </Pressable>
                 {isPending && <Text style={styles.loadingText}>Loading...</Text>}
             </View>
-        </SafeAreaView>
+        </View>
     );
 };
 

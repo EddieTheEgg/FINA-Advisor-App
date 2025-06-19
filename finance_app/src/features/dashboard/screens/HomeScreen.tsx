@@ -1,4 +1,5 @@
-import { View, Text, SafeAreaView, ScrollView } from 'react-native';
+import { View, Text, ScrollView } from 'react-native';
+import { useSafeAreaInsets } from 'react-native-safe-area-context';
 import { SignOutButton } from '../../auth/components/SignOutButton/SignOutButton';
 import { styles } from './HomeScreen.styles';
 import Greeting from '../components/Greeting/Greeting';
@@ -12,7 +13,8 @@ import AccountCircle from '../components/AccountCircle/AccountCircle';
 import { IncomeExpense } from '../components/IncomeExpense/IncomeExpense';
 import { RecentTransactions } from '../components/RecentTransactions/RecentTransactions';
 
-export const HomeScreen = () => {
+export const DashboardScreen = () => {
+    const insets = useSafeAreaInsets();
     const todayDate = new Date();
     const monthNames = ['January', 'February', 'March', 'April', 'May', 'June', 'July', 'August', 'September', 'October', 'November', 'December'];
 
@@ -42,13 +44,13 @@ export const HomeScreen = () => {
 
     if (error) {
         return (
-            <SafeAreaView style={styles.mainContainer}>
+            <View style={[styles.container, { paddingTop: insets.top }]}>
                 <View style={styles.errorContainer}>
                     <Text style={styles.errorText}>Failed to load dashboard data</Text>
                     <Text style={styles.errorSubText}>Please try again later</Text>
                     <Text style={styles.errorSubText}>Error: {error.message}</Text>
                 </View>
-            </SafeAreaView>
+            </View>
         );
     }
 
@@ -59,8 +61,8 @@ export const HomeScreen = () => {
     console.log(dashboard);
 
     return (
-        <SafeAreaView style={styles.mainContainer}>
-            <ScrollView>
+        <View style={[styles.container, { paddingTop: insets.top, paddingBottom: insets.bottom }]}>
+            <ScrollView contentContainerStyle={{ paddingBottom: insets.bottom }}>
                 <View style={styles.headerContainer}>
                     <View>
                         <Greeting styles={styles.greetingText} />
@@ -102,7 +104,7 @@ export const HomeScreen = () => {
                     <RecentTransactions recentTransactions={dashboard.recentTransactions} />
                 </View>
             </ScrollView>
-        </SafeAreaView>
+        </View>
     );
 };
 
