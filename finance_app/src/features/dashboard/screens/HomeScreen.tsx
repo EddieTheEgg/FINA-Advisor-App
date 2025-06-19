@@ -61,8 +61,6 @@ export const DashboardScreen = () => {
         return <LoadingScreen />;
     }
 
-    console.log(dashboard);
-
     return (
         <View style={[styles.container, { paddingTop: insets.top, paddingBottom: insets.bottom }]}>
             <ScrollView
