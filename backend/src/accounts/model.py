@@ -1,3 +1,4 @@
+from typing import Dict, List
 from uuid import UUID
 from pydantic import BaseModel
 
@@ -33,11 +34,16 @@ class AccountResponse(BaseModel):
     class Config:
         from_attributes = True
         arbitrary_types_allowed = True
-    
-    
+ 
     
 class AccountBalance(BaseModel):
     name: str
     account_type: str
     balance: float
     color: str
+    
+class GroupedAccountsResponse(BaseModel):
+    accounts: Dict[str, List[AccountResponse]]
+    class Config:
+        from_attributes = True
+        arbitrary_types_allowed = True

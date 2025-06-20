@@ -1,6 +1,6 @@
 from typing import List
 from fastapi import APIRouter
-from backend.src.accounts.model import AccountCreateRequest, AccountResponse
+from backend.src.accounts.model import AccountCreateRequest, AccountResponse, GroupedAccountsResponse
 from backend.src.auth.service import CurrentUser
 from backend.src.database.core import DbSession
 from backend.src.accounts import service as account_service
@@ -26,3 +26,11 @@ def get_user_accounts(
     current_user: CurrentUser
 ):
     return account_service.get_user_accounts(db, current_user.get_uuid())
+
+#Gets all accounts for the user grouped by category
+@router.get("/user-accounts-grouped", response_model = GroupedAccountsResponse)
+def get_user_accounts_grouped(
+    db: DbSession,
+    current_user: CurrentUser
+):
+    return account_service.get_user_accounts_grouped(db, current_user.get_uuid())

@@ -1,10 +1,11 @@
 import logging
-from typing import List
+from typing import List, Dict
 from uuid import UUID
 from sqlalchemy.orm import Session
-from backend.src.accounts.model import AccountBalance, AccountCreateRequest, AccountResponse
+from backend.src.accounts.model import AccountBalance, AccountCreateRequest, AccountResponse, GroupedAccountsResponse
 from backend.src.entities.account import Account
-from backend.src.exceptions import AccountCreationError, AccountNotFoundError
+from backend.src.exceptions import AccountCreationError, AccountNotFoundError, GroupedAccountNotFoundError
+from backend.src.accounts.constants import ACCOUNT_GROUPS
 
 #Creates a new account for the user
 def create_account(db: Session, account_create_request: AccountCreateRequest, user_id: UUID) -> AccountResponse:
@@ -137,3 +138,32 @@ def get_account_by_id(db: Session, account_id: UUID, user_id: UUID) -> AccountRe
     except Exception as e:
         logging.warning(f"Failed to get account by id for user {user_id}. Error: {str(e)}")
         raise AccountNotFoundError(account_id)
+
+#Gets all accounts for the user grouped by their type of account
+def get_user_accounts_grouped(db: Session, user_id: UUID) -> GroupedAccountsResponse:
+    try:
+        user_accounts = get_user_accounts(db, user_id)
+        grouped_accounts = {
+            "Cash & Banking": [],
+            "Credit Cards": [],
+            "Loans": [],
+            "Investments": [],
+            "Other": []
+        }
+        
+        for account in user_accounts:
+            if account.account_type in ACCOUNT_GROUPS["Cash & Banking"]:
+                grouped_accounts["Cash & Banking"].append(account)
+            elif account.account_type in ACCOUNT_GROUPS["Credit Cards"]:
+                grouped_accounts["Credit Cards"].append(account)
+            elif account.account_type in ACCOUNT_GROUPS["Loans"]:
+                grouped_accounts["Loans"].append(account)
+            elif account.account_type in ACCOUNT_GROUPS["Investments"]:
+                grouped_accounts["Investments"].append(account)
+            elif account.account_type in ACCOUNT_GROUPS["Other"]:
+                grouped_accounts["Other"].append(account)
+        
+        return GroupedAccountsResponse(accounts=grouped_accounts)
+    except Exception as e:
+        logging.warning(f"Failed to get grouped user accounts for user {user_id}. Error: {str(e)}")
+        raise GroupedAccountNotFoundError(user_id)

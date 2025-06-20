@@ -148,6 +148,10 @@ class AccountNotFoundError(AccountError):
     def __init__(self, user_id: UUID):
         super().__init__(status_code=404, detail=f"No accounts found for user {user_id}")
 
+class GroupedAccountNotFoundError(AccountError):
+    def __init__(self, user_id: UUID):
+        super().__init__(status_code=404, detail=f"Failed to find grouped accounts for user {user_id}")
+
 
 
 class DashboardError(HTTPException):
