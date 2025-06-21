@@ -12,6 +12,7 @@ import BalanceBadge from '../components/BalanceBadge/BalanceBadge';
 import AccountCircle from '../components/AccountCircle/AccountCircle';
 import { IncomeExpense } from '../components/IncomeExpense/IncomeExpense';
 import { RecentTransactions } from '../components/RecentTransactions/RecentTransactions';
+import { ErrorScreen } from '../../../components/ErrorScreen/ErrorScreen';
 
 const { height } = Dimensions.get('window');
 const responsivePadding = height * 0.2;
@@ -47,13 +48,11 @@ export const DashboardScreen = () => {
 
     if (error) {
         return (
-            <View style={[styles.container, { paddingTop: insets.top }]}>
-                <View style={styles.errorContainer}>
-                    <Text style={styles.errorText}>Failed to load dashboard data</Text>
-                    <Text style={styles.errorSubText}>Please try again later</Text>
-                    <Text style={styles.errorSubText}>Error: {error.message}</Text>
-                </View>
-            </View>
+            <ErrorScreen
+                errorText = "Failed to load dashboard data"
+                errorSubText = "Please try again later"
+                errorMessage = {error.message}
+            />
         );
     }
 
