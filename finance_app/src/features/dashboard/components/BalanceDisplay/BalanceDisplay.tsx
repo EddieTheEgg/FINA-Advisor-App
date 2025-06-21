@@ -9,7 +9,6 @@ type BalanceDisplayProps = {
 }
 
 export default function BalanceDisplay({ dashboard }: BalanceDisplayProps) {
-    const period = dashboard.period;
     const financialSummary = dashboard.financialSummary;
     const currencySymbol = '$';
 
@@ -28,7 +27,7 @@ export default function BalanceDisplay({ dashboard }: BalanceDisplayProps) {
     return (
         <View style={styles.balanceCardRow}>
             <Text style={styles.balanceLabel}>
-                {period.month}'s Total Balance
+                Current Balance
             </Text>
             <Text style={[styles.balanceText, {fontSize: dynamicFontSize}]}
             >

@@ -13,6 +13,7 @@ from backend.src.transactions.model import TransactionType
 from backend.src.users.service import get_quick_user_by_id
 from backend.src.accounts import service as account_service
 from backend.src.categories import service as category_service
+from backend.src.entities.account import Account  # Make sure to import Account
 
 # Main Service function to getting all dashboard
 def get_dashboard(
@@ -55,23 +56,12 @@ def get_financial_summary(
     start_date: datetime,
     end_date: datetime,
 ) -> FinancialSummary:
-    #Get the total balance for the user for the specific month and year
-    try:
-        total_balance_query = db.query(func.sum(
-            case(
-                (Transaction.transaction_type == TransactionType.INCOME, Transaction.amount),
-                (Transaction.transaction_type == TransactionType.EXPENSE, -Transaction.amount),
-                else_=0
-            )
-        ).label('total_balance')).filter(
-            Transaction.user_id == user_id,
-            Transaction.transaction_date >= account_created_at,
-            Transaction.transaction_date < end_date
-        )   
-        total_balance =  float(total_balance_query.scalar() or 0.0)
-    except Exception as e:
-        logging.warning(f"Failed to get total balance for user {user_id}. Error: {str(e)}")
-        raise TotalBalanceError(user_id, start_date.month, start_date.year)
+    # Simple query to sum account balances where include_in_totals = True
+    total_balance_query = db.query(func.sum(Account.balance)).filter(
+        Account.user_id == user_id,
+        Account.include_in_totals == True
+    )
+    total_balance = float(total_balance_query.scalar() or 0.0)
             
     #Get the monthly income for the user for the specific month and year
     try:
