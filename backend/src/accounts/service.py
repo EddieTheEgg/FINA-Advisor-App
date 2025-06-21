@@ -150,8 +150,10 @@ def get_user_accounts_grouped(db: Session, user_id: UUID) -> GroupedAccountsResp
             "Investments": [],
             "Other": []
         }
+        total_net_worth = 0
         
         for account in user_accounts:
+            total_net_worth = total_net_worth + account.balance
             if account.account_type in ACCOUNT_GROUPS["Cash & Banking"]:
                 grouped_accounts["Cash & Banking"].append(account)
             elif account.account_type in ACCOUNT_GROUPS["Credit Cards"]:
@@ -163,7 +165,8 @@ def get_user_accounts_grouped(db: Session, user_id: UUID) -> GroupedAccountsResp
             elif account.account_type in ACCOUNT_GROUPS["Other"]:
                 grouped_accounts["Other"].append(account)
         
-        return GroupedAccountsResponse(account_groups=grouped_accounts)
+        return GroupedAccountsResponse(total_net = total_net_worth,
+            account_groups=grouped_accounts)
     except Exception as e:
         logging.warning(f"Failed to get grouped user accounts for user {user_id}. Error: {str(e)}")
         raise GroupedAccountNotFoundError(user_id)

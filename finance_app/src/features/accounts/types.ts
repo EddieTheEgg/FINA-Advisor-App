@@ -26,6 +26,7 @@ export type AccountResponse = {
 
 
 export type GroupedAccountsResponse = {
+    totalNet : number;
     accountGroupsData: Record<string, AccountResponse[]>;
 }
 

@@ -24,7 +24,9 @@ export const getUserGroupedAccounts = async(): Promise<GroupedAccountsResponse> 
                 routingNumber: account.routing_number,
             }));
         }
-        return { accountGroupsData: groupedAccountsData };
+        return {
+            totalNet : data.total_net,
+            accountGroupsData: groupedAccountsData };
     } catch (error : unknown) {
         if (axios.isAxiosError(error) && error.response?.status === 404) {
             throw new Error('No accounts found for this user');

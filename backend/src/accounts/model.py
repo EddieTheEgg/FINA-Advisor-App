@@ -43,6 +43,7 @@ class AccountBalance(BaseModel):
     color: str
     
 class GroupedAccountsResponse(BaseModel):
+    total_net: float
     account_groups: Dict[str, List[AccountResponse]]
     class Config:
         from_attributes = True
