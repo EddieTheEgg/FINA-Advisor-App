@@ -43,7 +43,7 @@ class AccountBalance(BaseModel):
     color: str
     
 class GroupedAccountsResponse(BaseModel):
-    accounts: Dict[str, List[AccountResponse]]
+    account_groups: Dict[str, List[AccountResponse]]
     class Config:
         from_attributes = True
         arbitrary_types_allowed = True

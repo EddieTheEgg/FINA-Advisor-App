@@ -1,6 +1,6 @@
 import { DashboardData, BackendDashboardAccountInfo, BackendDashboardRecentTransaction } from '../types';
-import { api } from '../../../api/axios';
-import { AxiosError } from 'axios';
+import api from '../../../api/axios';
+import axios from 'axios';
 
 // Fetches the user summary dashboard data specifically for dashboard home screen
 export const getDashboard = async ({month, year} : {month : number, year : number}) : Promise<DashboardData> => {
@@ -49,18 +49,15 @@ export const getDashboard = async ({month, year} : {month : number, year : numbe
             })),
         };
     } catch (error : unknown) {
-        if (error instanceof AxiosError) {
-            if (error.response?.status === 404) {
+            if (axios.isAxiosError(error) && error.response?.status === 404) {
                 throw new Error('Dashboard data not found');
             }
-            if (error.response?.status === 401) {
+            if (axios.isAxiosError(error) && error.response?.status === 401) {
                 throw new Error('Unauthorized access to dashboard');
             }
-            if (error.response?.status === 500) {
+            if (axios.isAxiosError(error) && error.response?.status === 500) {
                 throw new Error('Server error while fetching dashboard data');
             }
-        }
-        // Handle network errors or other unexpected errors
         throw new Error('Failed to fetch dashboard data');
     }
 };
