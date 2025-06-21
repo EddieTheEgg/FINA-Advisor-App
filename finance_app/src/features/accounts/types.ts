@@ -25,7 +25,23 @@ export type AccountResponse = {
 }
 
 
-export type AccountGroup = {
+export type GroupedAccountsResponse = {
     accountGroupsData: Record<string, AccountResponse[]>;
 }
 
+
+//Types for the backend
+export type BackendAccountResponse = {
+    account_id: string;
+    name: string;
+    account_type: AccountType;
+    balance: number;
+    color: string;
+    icon: string | null;
+    is_default: boolean;
+    include_in_totals: boolean;
+    is_active: boolean;
+    bank_name: string | null;
+    account_number: string | null;
+    routing_number: string | null;
+}
