@@ -26,6 +26,7 @@ export const getUserGroupedAccounts = async(): Promise<GroupedAccountsResponse> 
         }
         return {
             totalNet : data.total_net,
+            percentChange: data.percent_change,
             accountGroupsData: groupedAccountsData };
     } catch (error : unknown) {
         if (axios.isAxiosError(error) && error.response?.status === 404) {

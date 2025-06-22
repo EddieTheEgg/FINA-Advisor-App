@@ -7,7 +7,7 @@ from backend.src.entities.monthly_snapshot import MonthlySnapshot
 from backend.src.entities.account import Account
 from backend.src.entities.enums import SnapshotType
 from backend.src.snapshots.model import SnapshotResponse
-from backend.src.exceptions import MonthlySnapshotsJobError, SnapshotCreationError
+from backend.src.exceptions import MonthlySnapshotsJobError, SnapshotCreationError, SnapshotNotFoundError
 from backend.src.accounts import service as accounts_service
 
 
@@ -140,3 +140,16 @@ def _convert_to_response(snapshot: MonthlySnapshot) -> SnapshotResponse:
         created_at=snapshot.created_at.isoformat() if snapshot.created_at else "",
         updated_at=snapshot.updated_at.isoformat() if snapshot.updated_at else None
     ) 
+    
+# Fetches the user's net worth snapshot for a given month
+# (Used for calculating percent changes in net worth)
+def get_user_month_net_worth_snapshot(db: Session, user_id: UUID, snapshot_date: date) -> MonthlySnapshot:
+    month_snapshot = db.query(MonthlySnapshot).filter(
+        MonthlySnapshot.user_id == user_id,
+        MonthlySnapshot.snapshot_type == SnapshotType.NET_WORTH,
+        MonthlySnapshot.snapshot_date == snapshot_date
+    ).first()  
+    if not month_snapshot:
+        logging.warning(f"No net worth snapshot found for user {user_id} for {snapshot_date}")
+        raise SnapshotNotFoundError(user_id, snapshot_date)
+    return month_snapshot.amount 

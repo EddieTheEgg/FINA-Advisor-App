@@ -44,6 +44,7 @@ class AccountBalance(BaseModel):
     
 class GroupedAccountsResponse(BaseModel):
     total_net: float
+    percent_change: float #Will get the percent change from current month to current balance
     account_groups: Dict[str, List[AccountResponse]]
     class Config:
         from_attributes = True

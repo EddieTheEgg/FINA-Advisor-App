@@ -1,3 +1,4 @@
+from datetime import date
 import logging
 from typing import List, Dict
 from uuid import UUID
@@ -6,6 +7,7 @@ from backend.src.accounts.model import AccountBalance, AccountCreateRequest, Acc
 from backend.src.entities.account import Account
 from backend.src.exceptions import AccountCreationError, AccountNotFoundError, GroupedAccountNotFoundError, NetWorthCalculationError
 from backend.src.accounts.constants import ACCOUNT_GROUPS
+from backend.src.snapshots import service as snapshots_service
 
 #Creates a new account for the user
 def create_account(db: Session, account_create_request: AccountCreateRequest, user_id: UUID) -> AccountResponse:
@@ -150,8 +152,10 @@ def get_user_accounts_grouped(db: Session, user_id: UUID) -> GroupedAccountsResp
             "Investments": [],
             "Other": []
         }
+        
         total_net_worth = 0
         
+        #Calculate total net worth and assign accounts to their respective groups
         for account in user_accounts:
             total_net_worth = total_net_worth + account.balance
             if account.account_type in ACCOUNT_GROUPS["Cash & Banking"]:
@@ -165,13 +169,24 @@ def get_user_accounts_grouped(db: Session, user_id: UUID) -> GroupedAccountsResp
             elif account.account_type in ACCOUNT_GROUPS["Other"]:
                 grouped_accounts["Other"].append(account)
         
-        return GroupedAccountsResponse(total_net = total_net_worth,
+        #Calculate percent change in net worth
+        current_month_date = date.today().replace(day=1)
+        month_starting_net = snapshots_service.get_user_month_net_worth_snapshot(db, user_id, current_month_date)
+        
+        if month_starting_net == 0:
+            percent_change = 0.0
+        else:
+            percent_change = (total_net_worth - month_starting_net) / month_starting_net * 100
+        
+        return GroupedAccountsResponse(
+            total_net = total_net_worth,
+            percent_change = round(percent_change, 2),
             account_groups=grouped_accounts)
     except Exception as e:
         logging.warning(f"Failed to get grouped user accounts for user {user_id}. Error: {str(e)}")
         raise GroupedAccountNotFoundError(user_id)
 
-
+#Fetches the user current net worth
 def calculate_user_net_worth(db: Session, user_id: UUID) -> float:
     try:
         accounts = db.query(Account).filter(Account.user_id == user_id, Account.is_active == True).all()
