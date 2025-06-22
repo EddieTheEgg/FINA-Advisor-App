@@ -10,7 +10,10 @@ export const colors = {
     darkerBackground: '#95664C',
 
     green: '#3ECD58',
+    lighterGreen : '#E2FBE8',
+
     red: '#F30004',
+    lighterRed: '#FBE2E2',
 
     gray: {
         50: '#F9FAFB',
