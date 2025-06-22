@@ -4,7 +4,7 @@ from uuid import UUID
 from sqlalchemy.orm import Session
 from backend.src.accounts.model import AccountBalance, AccountCreateRequest, AccountResponse, GroupedAccountsResponse
 from backend.src.entities.account import Account
-from backend.src.exceptions import AccountCreationError, AccountNotFoundError, GroupedAccountNotFoundError
+from backend.src.exceptions import AccountCreationError, AccountNotFoundError, GroupedAccountNotFoundError, NetWorthCalculationError
 from backend.src.accounts.constants import ACCOUNT_GROUPS
 
 #Creates a new account for the user
@@ -170,3 +170,12 @@ def get_user_accounts_grouped(db: Session, user_id: UUID) -> GroupedAccountsResp
     except Exception as e:
         logging.warning(f"Failed to get grouped user accounts for user {user_id}. Error: {str(e)}")
         raise GroupedAccountNotFoundError(user_id)
+
+
+def calculate_user_net_worth(db: Session, user_id: UUID) -> float:
+    try:
+        accounts = db.query(Account).filter(Account.user_id == user_id, Account.is_active == True).all()
+        return sum(account.balance for account in accounts)
+    except Exception as e:
+        logging.warning(f"Failed to calculate user net worth for user {user_id}. Error: {str(e)}")
+        raise NetWorthCalculationError(user_id)

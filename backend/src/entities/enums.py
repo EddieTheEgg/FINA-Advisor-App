@@ -4,6 +4,12 @@ class TransactionType(Enum):
     INCOME = "INCOME"
     EXPENSE = "EXPENSE"
     TRANSFER = "TRANSFER"
+    
+class SnapshotType(Enum):
+    ACCOUNT = "ACCOUNT"
+    NET_WORTH = "NET_WORTH"
+    BUDGET_PROGRESS = 'BUDGET_PROGRESS'
+    CATEGORY_SPENDING = 'CATEGORY_SPENDING'
 
 class PaymentType(Enum):
     CASH = "CASH"

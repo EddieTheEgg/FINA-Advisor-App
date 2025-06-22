@@ -6,6 +6,7 @@ from backend.src.auth.controller import router as auth_router
 from backend.src.ai.controller import router as ai_router
 from backend.src.dashboard.controller import router as dashboard_router
 from backend.src.accounts.controller import router as accounts_router
+from backend.src.snapshots.controller import router as snapshots_router
 
 def register_routes(app: FastAPI):
     app.include_router(users_router)
@@ -15,4 +16,5 @@ def register_routes(app: FastAPI):
     app.include_router(auth_router)
     app.include_router(ai_router)
     app.include_router(accounts_router)
+    app.include_router(snapshots_router)
 

@@ -49,5 +49,6 @@ class Account(Base):
         back_populates="to_account",
         foreign_keys="[Transaction.to_account_id]"
     )
+    monthly_snapshots = relationship("MonthlySnapshot", back_populates="account", cascade="all, delete-orphan")
     
     

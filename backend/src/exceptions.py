@@ -152,6 +152,9 @@ class GroupedAccountNotFoundError(AccountError):
     def __init__(self, user_id: UUID):
         super().__init__(status_code=404, detail=f"Failed to find grouped accounts for user {user_id}")
 
+class NetWorthCalculationError(AccountError):
+    def __init__(self, user_id: UUID):
+        super().__init__(status_code=500, detail=f"Failed to calculate net worth for user {user_id}")
 
 
 class DashboardError(HTTPException):
@@ -196,4 +199,25 @@ class MonthlyNetError(DashboardError):
 class RecentTransactionsError(DashboardError):
     def __init__(self, user_id: UUID, month: int, year: int):
         super().__init__(status_code=500, detail=f"Failed to get recent transactions for user {user_id} in month {month} and year {year}")
-        
+
+
+class SnapshotError(HTTPException):
+    """Base exception for snapshot-related errors"""
+    pass
+
+class SnapshotCreationError(SnapshotError):
+    def __init__(self, user_id: UUID, message: str = "Failed to create snapshot"):
+        super().__init__(status_code=500, detail=f"{message} for user {user_id}")
+
+class SnapshotNotFoundError(SnapshotError):
+    def __init__(self, user_id: UUID, snapshot_type: str = ""):
+        detail = f"No {snapshot_type} snapshots found for user {user_id}" if snapshot_type else f"No snapshots found for user {user_id}"
+        super().__init__(status_code=404, detail=detail)
+
+class NetWorthCalculationError(SnapshotError):
+    def __init__(self, user_id: UUID):
+        super().__init__(status_code=500, detail=f"Failed to calculate net worth for user {user_id}")
+
+class MonthlySnapshotsJobError(SnapshotError):
+    def __init__(self):
+        super().__init__(status_code=500, detail="Failed to run monthly snapshots job")
