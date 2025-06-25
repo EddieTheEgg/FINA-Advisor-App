@@ -6,8 +6,9 @@ import LoadingScreen from '../../../../components/LoadingScreen/LoadingScreen';
 import { ErrorScreen } from '../../../../components/ErrorScreen/ErrorScreen';
 import { NetWorthCard } from '../../components/NetWorthCard/NetWorthCard';
 import { GroupedAccountList } from '../../components/GroupedAccountList/GroupedAccountList';
+import { AccountNavigatorProps } from '../../../../navigation/types/AccountNavigatorTypes';
 
-export const AccountsListScreen = () => {
+export const AccountsListScreen = ({navigation} : {navigation: AccountNavigatorProps}) => {
     const insets = useSafeAreaInsets();
     const {data : groupedAccounts, isPending, error} = useGroupAccounts();
 
@@ -52,6 +53,7 @@ export const AccountsListScreen = () => {
                             key={accountGroupName}
                             accountGroupName = {accountGroupName}
                             accounts = {accounts}
+                            navigation = {navigation}
                         />)
                 ))}
             </View>

@@ -6,7 +6,7 @@ import CreateAccountButton from '../../components/CreateAccountButton/CreateAcco
 import { AuthNavigationProps } from '../../../../navigation/types/AuthNavigatorTypes';
 import { useSafeAreaInsets } from 'react-native-safe-area-context';
 
-const WelcomeScreen = ({ navigation }: AuthNavigationProps<'Welcome'>) => {
+const WelcomeScreen = ({ navigation }: { navigation: AuthNavigationProps }) => {
   const insets = useSafeAreaInsets();
 
   const navLoginScreen = () => {
