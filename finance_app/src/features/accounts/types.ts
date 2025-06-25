@@ -23,6 +23,8 @@ export type AccountResponse = {
     bankName: string | null;
     accountNumber: string | null;
     routingNumber: string | null;
+    createdAt: string;
+    updatedAt: string | null;
 }
 
 // Enhanced transaction types for account details
@@ -73,6 +75,8 @@ export type BackendAccountResponse = {
     bank_name: string | null;
     account_number: string | null;
     routing_number: string | null;
+    created_at: string;
+    updated_at: string | null;
 }
 
 export type BackendTransactionResponse = {

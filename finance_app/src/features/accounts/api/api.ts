@@ -28,6 +28,8 @@ export const getUserGroupedAccounts = async(): Promise<GroupedAccountsResponse> 
                 bankName: account.bank_name,
                 accountNumber: account.account_number,
                 routingNumber: account.routing_number,
+                createdAt: account.created_at,
+                updatedAt: account.updated_at,
             }));
         }
         return {

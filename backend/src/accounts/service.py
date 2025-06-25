@@ -71,7 +71,15 @@ def get_user_accounts(db: Session, user_id: UUID) -> List[AccountResponse]:
             is_active=account.is_active,
             bank_name=account.bank_name,
             account_number=account.account_number,
-            routing_number=account.routing_number
+            routing_number=account.routing_number,
+            created_at=(
+                "Today" if account.created_at.date() == date.today()
+                else account.created_at.strftime("%B %d, %Y")
+            ),
+            updated_at=(
+                "Today" if account.updated_at.date() == date.today()
+                else account.updated_at.strftime("%B %d, %Y")
+            ) if account.updated_at else None
         ) for account in accounts]
     except Exception as e:
         logging.warning(f"Failed to get user accounts for user {user_id}. Error: {str(e)}")
@@ -137,7 +145,15 @@ def get_account_by_id(db: Session, account_id: UUID, user_id: UUID) -> AccountRe
             is_active=account.is_active,
             bank_name=account.bank_name,
             account_number=account.account_number,
-            routing_number=account.routing_number
+            routing_number=account.routing_number,
+            created_at=(
+                "Today" if account.created_at.date() == date.today()
+                else account.created_at.strftime("%B %d, %Y")
+            ),
+            updated_at=(
+                "Today" if account.updated_at.date() == date.today()
+                else account.updated_at.strftime("%B %d, %Y")
+            ) if account.updated_at else None
         )
     except Exception as e:
         logging.warning(f"Failed to get account by id for user {user_id}. Error: {str(e)}")

@@ -31,6 +31,8 @@ class AccountResponse(BaseModel):
     bank_name: str | None = None
     account_number: str | None = None
     routing_number: str | None = None
+    created_at: str
+    updated_at: str | None = None
 
     class Config:
         from_attributes = True
