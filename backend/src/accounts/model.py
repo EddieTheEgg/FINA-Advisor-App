@@ -3,6 +3,7 @@ from uuid import UUID
 from pydantic import BaseModel
 
 from backend.src.entities.enums import AccountType
+from backend.src.transactions.model import TransactionResponse
 
 class AccountCreateRequest(BaseModel):
     name: str
@@ -49,3 +50,14 @@ class GroupedAccountsResponse(BaseModel):
     class Config:
         from_attributes = True
         arbitrary_types_allowed = True
+        
+        
+class AccountTransactionHistoryRequest(BaseModel):
+    account_id: str
+    page_param: int
+    limit: int
+
+class AccountTransactionHistoryResponse(BaseModel):
+    transactions: List[TransactionResponse]
+    current_page: int
+    next_page: int | None = None

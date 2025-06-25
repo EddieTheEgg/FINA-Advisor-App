@@ -1,12 +1,14 @@
 import { View, Text, Pressable } from 'react-native';
 import { AccountResponse } from '../../types';
 import { styles } from './AccountCard.styles';
+import { AccountNavigatorProps } from '../../../../navigation/types/AccountNavigatorTypes';
 
 type AccountCardProps = {
     accountItem : AccountResponse
+    navigation : AccountNavigatorProps
 }
 
-export const AccountCard = ({accountItem} : AccountCardProps) => {
+export const AccountCard = ({accountItem, navigation} : AccountCardProps) => {
     const truncateText = (text: string, maxLength: number) => {
         if (text.length <= maxLength) {
             return text;
@@ -24,7 +26,7 @@ export const AccountCard = ({accountItem} : AccountCardProps) => {
 
     const navAccountDetails = (accountId : string) => {
         console.log(`Navigate to specific account: ${accountId}`);
-        // navigation.navigate('AccountDetails', { accountId });
+        navigation.navigate('AccountDetails', { accountId: accountItem.accountId });
     };
 
 

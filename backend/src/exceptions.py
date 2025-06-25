@@ -156,6 +156,9 @@ class NetWorthCalculationError(AccountError):
     def __init__(self, user_id: UUID):
         super().__init__(status_code=500, detail=f"Failed to calculate net worth for user {user_id}")
 
+class AccountTransactionHistoryNotFoundError(AccountError):
+    def __init__(self, user_id: UUID):
+        super().__init__(status_code=404, detail=f"Failed to find account transaction history for user {user_id}")
 
 class DashboardError(HTTPException):
     """Base exception for dashboard-related errors"""

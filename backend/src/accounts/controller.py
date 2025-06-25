@@ -1,6 +1,6 @@
 from typing import List
-from fastapi import APIRouter
-from backend.src.accounts.model import AccountCreateRequest, AccountResponse, GroupedAccountsResponse
+from fastapi import APIRouter, Query
+from backend.src.accounts.model import AccountCreateRequest, AccountResponse, AccountTransactionHistoryResponse, GroupedAccountsResponse
 from backend.src.auth.service import CurrentUser
 from backend.src.database.core import DbSession
 from backend.src.accounts import service as account_service
@@ -34,3 +34,14 @@ def get_user_accounts_grouped(
     current_user: CurrentUser
 ):
     return account_service.get_user_accounts_grouped(db, current_user.get_uuid())
+
+#Gets the transaction history for a given account with paginationq
+@router.get("/account-transaction-history", response_model = AccountTransactionHistoryResponse)
+def get_account_transaction_history(
+    db: DbSession,
+    current_user: CurrentUser,
+    account_id: str = Query(..., description="ID of the account to retrieve transactions for"),
+    offset: int = Query(0, ge=0, description="Offset for pagination"),
+    limit: int = Query(10, gt=0, le=30, description="Number of transactions to fetch")
+):
+    return account_service.get_account_transaction_history(db, current_user.get_uuid(), account_id, offset, limit)

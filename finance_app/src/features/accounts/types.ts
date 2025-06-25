@@ -10,6 +10,7 @@ export enum AccountType {
 }
 
 export type AccountResponse = {
+    length: number;
     accountId: string;
     name: string;
     accountType: AccountType;
@@ -24,13 +25,39 @@ export type AccountResponse = {
     routingNumber: string | null;
 }
 
+// Enhanced transaction types for account details
+export type TransactionResponse = {
+    transactionId: string;
+    amount: number;
+    title: string;
+    transactionDate: string;
+    transactionType: 'INCOME' | 'EXPENSE' | 'TRANSFER';
+    notes: string | null;
+    location: string | null;
+    merchant: string | null;
+    accountName: string;
+    toAccountName?: string;
+    isSubscription: boolean;
+    category: {
+        categoryId: string;
+        categoryName: string;
+        icon: string;
+        color: string;
+    } | null;
+}
+
+// Account transactions response
+export type AccountTransactionsResponse = {
+    transactions: TransactionResponse[];
+    current_page: number;
+    next_page: number | null;
+}
 
 export type GroupedAccountsResponse = {
     totalNet : number;
     percentChange: number;
     accountGroupsData: Record<string, AccountResponse[]>;
 }
-
 
 //Types for the backend
 export type BackendAccountResponse = {
@@ -46,4 +73,24 @@ export type BackendAccountResponse = {
     bank_name: string | null;
     account_number: string | null;
     routing_number: string | null;
+}
+
+export type BackendTransactionResponse = {
+    transaction_id: string;
+    amount: number;
+    title: string;
+    transaction_date: string;
+    transaction_type: 'INCOME' | 'EXPENSE' | 'TRANSFER';
+    notes: string | null;
+    location: string | null;
+    merchant: string | null;
+    account_name: string;
+    to_account_name?: string;
+    is_subscription: boolean;
+    category: {
+        category_id: string;
+        category_name: string;
+        icon: string;
+        color: string;
+    } | null;
 }

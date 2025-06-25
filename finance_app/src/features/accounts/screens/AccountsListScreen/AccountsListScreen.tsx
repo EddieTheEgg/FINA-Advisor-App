@@ -15,10 +15,6 @@ export const AccountsListScreen = ({navigation} : {navigation: AccountNavigatorP
     const { height } = Dimensions.get('window');
     const responsivePadding = height * 0.2;
 
-    if (isPending || !groupedAccounts) {
-        return (<LoadingScreen />);
-    }
-
     if (error) {
         return (
             <ErrorScreen
@@ -27,7 +23,10 @@ export const AccountsListScreen = ({navigation} : {navigation: AccountNavigatorP
             errorMessage = {error.message}
              />
         );
+    }
 
+    if (isPending || !groupedAccounts) {
+        return (<LoadingScreen />);
     }
 
     return (

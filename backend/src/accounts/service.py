@@ -3,11 +3,13 @@ import logging
 from typing import List, Dict
 from uuid import UUID
 from sqlalchemy.orm import Session
-from backend.src.accounts.model import AccountBalance, AccountCreateRequest, AccountResponse, GroupedAccountsResponse
+from backend.src.accounts.model import AccountBalance, AccountCreateRequest, AccountResponse, AccountTransactionHistoryResponse, GroupedAccountsResponse
 from backend.src.entities.account import Account
-from backend.src.exceptions import AccountCreationError, AccountNotFoundError, GroupedAccountNotFoundError, NetWorthCalculationError
+from backend.src.entities.transaction import Transaction
+from backend.src.exceptions import AccountCreationError, AccountNotFoundError, AccountTransactionHistoryNotFoundError, GroupedAccountNotFoundError, NetWorthCalculationError
 from backend.src.accounts.constants import ACCOUNT_GROUPS
 from backend.src.snapshots import service as snapshots_service
+from backend.src.transactions.model import TransactionResponse
 
 #Creates a new account for the user
 def create_account(db: Session, account_create_request: AccountCreateRequest, user_id: UUID) -> AccountResponse:
@@ -194,3 +196,18 @@ def calculate_user_net_worth(db: Session, user_id: UUID) -> float:
     except Exception as e:
         logging.warning(f"Failed to calculate user net worth for user {user_id}. Error: {str(e)}")
         raise NetWorthCalculationError(user_id)
+    
+#Gets the transaction history for a given account
+# Pagination is done by offsetting the query by the page_param and limiting the number of transactions to the limit
+# If there are no more transactions, the next_page is None. This is handled when last page has less than limit transactions
+def get_account_transaction_history(db: Session, user_id: UUID, account_id: UUID, offset: int, limit: int) -> List[TransactionResponse]:
+    try:
+        transactions = db.query(Transaction).filter(Transaction.account_id == account_id, Transaction.user_id == user_id).order_by(Transaction.transaction_date.desc()).offset(offset).limit(limit).all()
+        return AccountTransactionHistoryResponse(
+            transactions=transactions,
+            current_page=offset,
+            next_page= offset + limit if len(transactions) == limit else None,
+        )
+    except Exception as e:
+        logging.warning(f"Failed to get account transaction history for user {user_id}. Error: {str(e)}")
+        raise AccountTransactionHistoryNotFoundError(user_id)
