@@ -10,6 +10,7 @@ import { styles } from './AccountDetailsScreen.styles';
 import { LoadingDots } from '../../../../components/LoadingDots/LoadingDots';
 import { AccountTransactionCard } from '../../components/AccountTransactionCard/AccountTransactionCard';
 import { ErrorScreen } from '../../../../components/ErrorScreen/ErrorScreen';
+import { AccountDetailsCard } from '../../components/AccountDetailsCard/AccountDetailsCard';
 
 
 type AccountDetailsRouteProp = RouteProp<AccountNavigatorParamList, 'AccountDetails'>;
@@ -44,11 +45,13 @@ export const AccountDetailsScreen = ({ route } : {route: AccountDetailsRouteProp
     }
 
     return (
-        <View style = {{paddingTop: insets.top}}>
-            <BackButton />
-            <View style = {styles.accountDetailsContainer}>
-                <Text style = {styles.accountDetailsTitle}>Account Overview</Text>
-                <Text style = {styles.accountDetailsId}>Current Balance: {accountDetails.balance}</Text>
+        <View style = {[styles.accountDetailsContainer, {paddingTop: insets.top}]}>
+            <View style = {styles.accountDetailsHeader}>
+                <BackButton />
+                <Text style = {styles.accountDetailsTitle}> {accountDetails.name}</Text>
+            </View>
+            <View style = {styles.accountDetailsCardContainer}>
+                <AccountDetailsCard accountDetails = {accountDetails}/>
             </View>
             <View style = {styles.transactionListContainer}>
                 <Text style = {styles.transactionListTitle}>Account Transactions</Text>
