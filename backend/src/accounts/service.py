@@ -2,14 +2,15 @@ from datetime import date
 import logging
 from typing import List, Dict
 from uuid import UUID
-from sqlalchemy.orm import Session
+from sqlalchemy.orm import Session, joinedload
 from backend.src.accounts.model import AccountBalance, AccountCreateRequest, AccountResponse, AccountTransactionHistoryResponse, GroupedAccountsResponse
+from backend.src.categories.model import CategorySimplifiedResponse
 from backend.src.entities.account import Account
 from backend.src.entities.transaction import Transaction
-from backend.src.exceptions import AccountCreationError, AccountNotFoundError, AccountTransactionHistoryNotFoundError, GroupedAccountNotFoundError, NetWorthCalculationError
+from backend.src.exceptions import AccountCreationError, AccountNotFoundError, AccountTransactionHistoryNotFoundError, AccountTransactionHistoryProcessingError, GroupedAccountNotFoundError, NetWorthCalculationError
 from backend.src.accounts.constants import ACCOUNT_GROUPS
 from backend.src.snapshots import service as snapshots_service
-from backend.src.transactions.model import TransactionResponse
+from backend.src.transactions.model import AccountTransactionResponse, TransactionResponse
 
 #Creates a new account for the user
 def create_account(db: Session, account_create_request: AccountCreateRequest, user_id: UUID) -> AccountResponse:
@@ -216,11 +217,54 @@ def calculate_user_net_worth(db: Session, user_id: UUID) -> float:
 #Gets the transaction history for a given account
 # Pagination is done by offsetting the query by the page_param and limiting the number of transactions to the limit
 # If there are no more transactions, the next_page is None. This is handled when last page has less than limit transactions
-def get_account_transaction_history(db: Session, user_id: UUID, account_id: UUID, offset: int, limit: int) -> List[TransactionResponse]:
+def get_account_transaction_history(db: Session, user_id: UUID, account_id: UUID, offset: int, limit: int) -> AccountTransactionHistoryResponse:
     try:
-        transactions = db.query(Transaction).filter(Transaction.account_id == account_id, Transaction.user_id == user_id).order_by(Transaction.transaction_date.desc()).offset(offset).limit(limit).all()
+        # First check if the account exists and belongs to the user
+        account = db.query(Account).filter(Account.account_id == account_id, Account.user_id == user_id).first()
+        if not account:
+            raise AccountNotFoundError(account_id)
+        
+        transactions = db.query(Transaction).options(
+            joinedload(Transaction.category),
+            joinedload(Transaction.account),
+            joinedload(Transaction.to_account)
+        ).filter(Transaction.account_id == account_id, Transaction.user_id == user_id).order_by(Transaction.transaction_date.desc()).offset(offset).limit(limit).all()
+        
+        simplified_transactions = []
+        for transaction in transactions:
+            try:
+                simplified_category_response = CategorySimplifiedResponse(
+                    category_id=transaction.category.category_id,
+                    category_name=transaction.category.category_name,
+                    icon=transaction.category.icon,
+                    color=transaction.category.color,
+                    is_custom=transaction.category.is_custom,
+                )
+                simplified_transactions.append(AccountTransactionResponse(
+                    transaction_id=transaction.transaction_id,
+                    amount=transaction.amount,
+                    title=transaction.title,
+                    transaction_date=transaction.transaction_date.isoformat(),
+                    transaction_type=transaction.transaction_type,
+                    notes=transaction.notes,
+                    location=transaction.location,
+                    is_subscription=transaction.is_subscription,
+                    subscription_frequency=transaction.subscription_frequency,
+                    subscription_start_date=transaction.subscription_start_date.isoformat() if transaction.subscription_start_date else None,
+                    subscription_end_date=transaction.subscription_end_date.isoformat() if transaction.subscription_end_date else None,
+                    account_name=transaction.account.name,
+                    to_account_name=transaction.to_account.name if transaction.to_account else None,
+                    merchant=transaction.merchant,
+                    created_at=transaction.created_at.isoformat(),
+                    updated_at=transaction.updated_at.isoformat() if transaction.updated_at else None,
+                    category_simplified=simplified_category_response,
+                ))
+            except Exception as inner_e:
+                logging.warning(f"Error processing transaction {transaction.transaction_id}: {str(inner_e)}")
+                raise AccountTransactionHistoryProcessingError(transaction.transaction_id)
+        
         return AccountTransactionHistoryResponse(
-            transactions=transactions,
+            transactions=simplified_transactions,
             current_page=offset,
             next_page= offset + limit if len(transactions) == limit else None,
         )

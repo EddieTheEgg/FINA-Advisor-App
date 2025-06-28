@@ -160,6 +160,10 @@ class AccountTransactionHistoryNotFoundError(AccountError):
     def __init__(self, user_id: UUID):
         super().__init__(status_code=404, detail=f"Failed to find account transaction history for user {user_id}")
 
+class AccountTransactionHistoryProcessingError(AccountError):
+    def __init__(self, transaction_id: UUID):
+        super().__init__(status_code=400, detail=f"Failed to process transaction {transaction_id}")
+
 class DashboardError(HTTPException):
     """Base exception for dashboard-related errors"""
     pass

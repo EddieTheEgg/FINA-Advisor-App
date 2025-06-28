@@ -1,4 +1,5 @@
 from typing import List
+from uuid import UUID
 from fastapi import APIRouter, Query
 from backend.src.accounts.model import AccountCreateRequest, AccountResponse, AccountTransactionHistoryResponse, GroupedAccountsResponse
 from backend.src.auth.service import CurrentUser
@@ -44,4 +45,4 @@ def get_account_transaction_history(
     offset: int = Query(0, ge=0, description="Offset for pagination"),
     limit: int = Query(10, gt=0, le=30, description="Number of transactions to fetch")
 ):
-    return account_service.get_account_transaction_history(db, current_user.get_uuid(), account_id, offset, limit)
+    return account_service.get_account_transaction_history(db, current_user.get_uuid(), UUID(account_id), offset, limit)

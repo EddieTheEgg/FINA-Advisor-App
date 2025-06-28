@@ -31,6 +31,16 @@ class CategoryResponse(BaseModel):
     class Config:
         from_attributes = True
         arbitrary_types_allowed = True
+    
+class CategorySimplifiedResponse(BaseModel):
+    category_id: UUID
+    category_name: str
+    icon: str
+    color: str
+    is_custom: bool
+    class Config:
+        from_attributes = True
+        arbitrary_types_allowed = True
 
 class CategoryListResponse(BaseModel):
     categories: list[CategoryResponse]

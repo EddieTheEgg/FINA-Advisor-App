@@ -4,7 +4,7 @@ from uuid import UUID
 from pydantic import BaseModel, Field, validator
 from enum import Enum
 
-from backend.src.categories.model import CategoryResponse
+from backend.src.categories.model import CategoryResponse, CategorySimplifiedResponse   
 from backend.src.entities.enums import TransactionType, PaymentType, SubscriptionFrequency
 
 class TransactionCreate(BaseModel):
@@ -40,30 +40,48 @@ class TransactionUpdate(BaseModel):
     merchant: str | None = None
     to_account_id: UUID | None = None
 
-class TransactionResponse(BaseModel):
+class AccountTransactionResponse(BaseModel):
     transaction_id: UUID
     amount: float
-    title: str | None = None
-    transaction_date: datetime
+    title: str
+    transaction_date: str
     transaction_type: TransactionType
-    notes: str | None = None
-    location: str | None = None
+    notes: str | None
+    location: str | None
     is_subscription: bool
-    subscription_frequency: SubscriptionFrequency | None = None
-    subscription_start_date: datetime | None = None
-    subscription_end_date: datetime | None = None
-    category_id: UUID
-    account_id: UUID
-    to_account_id: UUID | None = None
-    merchant: str | None = None
-    created_at: datetime
-    updated_at: datetime | None = None
-    category: CategoryResponse | None = None
+    subscription_frequency: SubscriptionFrequency | None
+    subscription_start_date: str | None
+    subscription_end_date: str | None
+    account_name: str
+    to_account_name: str | None
+    merchant: str | None
+    created_at: str
+    updated_at: str | None
+    category_simplified: CategorySimplifiedResponse
 
     class Config:
         from_attributes = True
         arbitrary_types_allowed = True
-
+        
+class TransactionResponse(BaseModel):
+    transaction_id: UUID
+    amount: float
+    title: str
+    transaction_date: str
+    transaction_type: TransactionType
+    notes: str | None
+    location: str | None
+    is_subscription: bool
+    subscription_frequency: SubscriptionFrequency | None
+    subscription_start_date: str | None
+    subscription_end_date: str | None
+    account_name: str
+    to_account_name: str | None
+    merchant: str | None
+    created_at: str
+    updated_at: str | None
+    category: CategoryResponse
+    
 class TransactionListResponse(BaseModel):
     transactions: list[TransactionResponse]
     total: int
