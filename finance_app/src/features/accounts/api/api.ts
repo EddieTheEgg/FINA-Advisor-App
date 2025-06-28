@@ -1,6 +1,6 @@
 import axios from 'axios';
 import api from '../../../api/axios';
-import { GroupedAccountsResponse, AccountResponse, BackendAccountResponse, AccountTransactionsResponse } from '../types';
+import { GroupedAccountsResponse, AccountResponse, BackendAccountResponse, AccountTransactionsResponse, BackendTransactionAccountResponse } from '../types';
 
 type getUserAccountTransactionHistoryParams = {
     accountId : string,
@@ -56,8 +56,39 @@ export const getUserAccountTransactionHistory = async ({accountId, pageParam, li
         const response = await api.get('/accounts/account-transaction-history', {
             params: {account_id: accountId, offset: pageParam, limit},
         });
-        console.log(response.data);
-        return response.data;
+
+        // Convert backend response of transaction attributes to frontend format
+        const convertedData: AccountTransactionsResponse = {
+            transactions: response.data.transactions.map((transaction: BackendTransactionAccountResponse) => ({
+                transactionId: transaction.transaction_id,
+                amount: transaction.amount,
+                title: transaction.title,
+                transactionDate: transaction.transaction_date,
+                transactionType: transaction.transaction_type,
+                notes: transaction.notes,
+                location: transaction.location,
+                isSubscription: transaction.is_subscription,
+                subscriptionFrequency: transaction.subscription_frequency,
+                subscriptionStartDate: transaction.subscription_start_date,
+                subscriptionEndDate: transaction.subscription_end_date,
+                accountName: transaction.account_name,
+                toAccountName: transaction.to_account_name,
+                merchant: transaction.merchant,
+                createdAt: transaction.created_at,
+                updatedAt: transaction.updated_at,
+                categorySimplified: {
+                    categoryId: transaction.category_simplified.category_id,
+                    categoryName: transaction.category_simplified.category_name,
+                    icon: transaction.category_simplified.icon,
+                    color: transaction.category_simplified.color,
+                    isCustom: transaction.category_simplified.is_custom,
+                },
+            })),
+            current_page: response.data.current_page,
+            next_page: response.data.next_page,
+        };
+
+        return convertedData;
     } catch (error : unknown) {
         if (axios.isAxiosError(error) && error.response?.status === 404) {
             throw new Error('No accounts found for this user');

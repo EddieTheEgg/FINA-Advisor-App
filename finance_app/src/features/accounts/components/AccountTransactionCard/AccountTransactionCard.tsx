@@ -1,16 +1,23 @@
 import { View, Text } from 'react-native';
-import { TransactionResponse } from '../../types';
-
+import { AccountTransactionResponse } from '../../types';
+import { styles } from './AccountTransactionCard.styles';
 
 type AccountTransactionCardProps = {
-    transactionData : TransactionResponse
+    transactionData : AccountTransactionResponse
 }
 
 
 export const AccountTransactionCard = ({transactionData} : AccountTransactionCardProps) => {
     return (
-        <View>
-            <Text>{transactionData.title}</Text>
+        <View style = {styles.transactionCardContainer}>
+            <Text>{transactionData.categorySimplified.icon}</Text>
+            <View>
+                <Text>{transactionData.title}</Text>
+                <Text style = {styles.transactionSubInfoText}>
+                    {transactionData.transactionDate} * {transactionData.categorySimplified.categoryName}
+                </Text>
+            </View>
+            <Text>{transactionData.amount}</Text>
         </View>
     );
 };

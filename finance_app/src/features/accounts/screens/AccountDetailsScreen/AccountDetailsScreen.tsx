@@ -1,11 +1,11 @@
-import { View, Text, FlatList } from 'react-native';
+import { View, Text, FlatList, ScrollView } from 'react-native';
 import { RouteProp } from '@react-navigation/native';
 import { AccountNavigatorParamList } from '../../../../navigation/types/AccountNavigatorTypes';
 import { useSafeAreaInsets } from 'react-native-safe-area-context';
 import { useAccountDetails } from '../../hooks/useAccountDetails';
 import { useAccountTransactionHistory } from '../../hooks/useAccountTransactionHistory';
 import BackButton from '../../../auth/components/GoBackButton/GoBackButton';
-import { TransactionResponse } from '../../types';
+import { AccountTransactionResponse } from '../../types';
 import { styles } from './AccountDetailsScreen.styles';
 import { LoadingDots } from '../../../../components/LoadingDots/LoadingDots';
 import { AccountTransactionCard } from '../../components/AccountTransactionCard/AccountTransactionCard';
@@ -45,7 +45,7 @@ export const AccountDetailsScreen = ({ route } : {route: AccountDetailsRouteProp
     }
 
     return (
-        <View style = {[styles.accountDetailsContainer, {paddingTop: insets.top}]}>
+        <ScrollView style = {[styles.accountDetailsContainer, {paddingTop: insets.top}]}>
             <View style = {styles.accountDetailsHeader}>
                 <BackButton />
                 <Text style = {styles.accountDetailsTitle}> {accountDetails.name}</Text>
@@ -54,20 +54,22 @@ export const AccountDetailsScreen = ({ route } : {route: AccountDetailsRouteProp
                 <AccountDetailsCard accountDetails = {accountDetails}/>
             </View>
             <View style = {styles.transactionListContainer}>
-                <Text style = {styles.transactionListTitle}>Account Transactions</Text>
+                <Text style = {styles.transactionListTitle}>Transaction History</Text>
                 <FlatList
+                    style = {styles.transactionHistoryContainer}
                     data = {accountTransactions.pages.flatMap(page => page.transactions)}
                     renderItem = {({item}) => <AccountTransactionCard transactionData = {item}/>}
-                    keyExtractor = {(item : TransactionResponse, index: number) => `transaction-${item.transactionId}-${index}`}
+                    keyExtractor = {(item : AccountTransactionResponse, index: number) => `transaction-${item.transactionId}-${index}`}
                     onEndReached = {() => {
                         if (hasNextPage && !isFetchingNextPage) {
                             fetchNextPage();
                         }
                     }}
                     onEndReachedThreshold = {0.5}
+                    scrollEnabled = {false}
                     ListFooterComponent = {isFetchingNextPage ? <LoadingDots /> : null}
                 />
             </View>
-        </View>
+        </ScrollView>
     );
 };

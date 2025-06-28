@@ -28,7 +28,7 @@ export type AccountResponse = {
 }
 
 // Enhanced transaction types for account details
-export type TransactionResponse = {
+export type AccountTransactionResponse = {
     transactionId: string;
     amount: number;
     title: string;
@@ -36,21 +36,27 @@ export type TransactionResponse = {
     transactionType: 'INCOME' | 'EXPENSE' | 'TRANSFER';
     notes: string | null;
     location: string | null;
-    merchant: string | null;
+    isSubscription: boolean;
+    subscriptionFrequency: 'DAILY' | 'WEEKLY' | 'MONTHLY' | 'QUARTERLY' | 'YEARLY' | null;
+    subscriptionStartDate: string | null;
+    subscriptionEndDate: string | null;
     accountName: string;
     toAccountName?: string;
-    isSubscription: boolean;
-    category: {
+    merchant: string | null;
+    createdAt: string;
+    updatedAt: string;
+    categorySimplified: {
         categoryId: string;
         categoryName: string;
         icon: string;
         color: string;
-    } | null;
+        isCustom: boolean;
+    };
 }
 
 // Account transactions response
 export type AccountTransactionsResponse = {
-    transactions: TransactionResponse[];
+    transactions: AccountTransactionResponse[];
     current_page: number;
     next_page: number | null;
 }
@@ -77,9 +83,9 @@ export type BackendAccountResponse = {
     routing_number: string | null;
     created_at: string;
     updated_at: string | null;
-}
+};
 
-export type BackendTransactionResponse = {
+export type BackendTransactionAccountResponse = {
     transaction_id: string;
     amount: number;
     title: string;
@@ -87,14 +93,20 @@ export type BackendTransactionResponse = {
     transaction_type: 'INCOME' | 'EXPENSE' | 'TRANSFER';
     notes: string | null;
     location: string | null;
-    merchant: string | null;
-    account_name: string;
-    to_account_name?: string;
     is_subscription: boolean;
-    category: {
+    subscription_frequency: 'DAILY' | 'WEEKLY' | 'MONTHLY' | 'QUARTERLY' | 'YEARLY' | null;
+    subscription_start_date: string | null;
+    subscription_end_date: string | null;
+    account_name: string;
+    to_account_name: string | null;
+    merchant: string | null;
+    created_at: string;
+    updated_at: string | null;
+    category_simplified: {
         category_id: string;
         category_name: string;
         icon: string;
         color: string;
-    } | null;
+        is_custom: boolean;
+    };
 }

@@ -22,10 +22,21 @@ export const styles = StyleSheet.create({
     accountDetailsCardContainer : {
         marginHorizontal: spacing.md,
     },
-    transactionListContainer: {
+    transactionListContainer : {
+        marginHorizontal: spacing.md,
+    },
+    transactionHistoryContainer : {
+        padding: spacing.md,
+        backgroundColor: colors.white,
+        borderRadius: 20,
+        boxShadow: '0 2px 2px 0 rgba(0, 0, 0, 0.3)',
     },
     accountDetailsId: {
     },
     transactionListTitle: {
+        color: colors.black,
+        fontSize: fontSize.xl,
+        fontFamily: 'Poppins-SemiBold',
+        marginVertical: spacing.md,
     },
 });
