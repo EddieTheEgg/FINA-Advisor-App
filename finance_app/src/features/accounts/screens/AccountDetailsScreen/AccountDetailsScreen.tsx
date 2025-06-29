@@ -1,4 +1,4 @@
-import { View, Text, FlatList, ScrollView } from 'react-native';
+import { View, Text, FlatList, ScrollView, Dimensions } from 'react-native';
 import { RouteProp } from '@react-navigation/native';
 import { AccountNavigatorParamList } from '../../../../navigation/types/AccountNavigatorTypes';
 import { useSafeAreaInsets } from 'react-native-safe-area-context';
@@ -12,16 +12,22 @@ import { AccountTransactionCard } from '../../components/AccountTransactionCard/
 import { ErrorScreen } from '../../../../components/ErrorScreen/ErrorScreen';
 import { AccountDetailsCard } from '../../components/AccountDetailsCard/AccountDetailsCard';
 
-
 type AccountDetailsRouteProp = RouteProp<AccountNavigatorParamList, 'AccountDetails'>;
+
+const SeparatorComponent = () => <View style={styles.separator} />;
+const { height } = Dimensions.get('window');
+const responsivePadding = height * 0.2;
 
 export const AccountDetailsScreen = ({ route } : {route: AccountDetailsRouteProp}) => {
     const { accountId } = route.params;
     const insets = useSafeAreaInsets();
+
+    // Query for account details
     const {data : accountDetails,
         isPending : isAccountDetailsPending,
         error : accountDetailsError} = useAccountDetails(accountId);
 
+    // Query for account transactions
     const {data : accountTransactions,
         fetchNextPage,
         hasNextPage,
@@ -29,6 +35,8 @@ export const AccountDetailsScreen = ({ route } : {route: AccountDetailsRouteProp
         isPending : isAccountTransactionsPending,
         error : accountTransactionsError,
         } = useAccountTransactionHistory(accountId);
+
+
 
     if (accountDetailsError || accountTransactionsError) {
         return <ErrorScreen
@@ -45,7 +53,11 @@ export const AccountDetailsScreen = ({ route } : {route: AccountDetailsRouteProp
     }
 
     return (
-        <ScrollView style = {[styles.accountDetailsContainer, {paddingTop: insets.top}]}>
+        <ScrollView
+        style = {[styles.accountDetailsContainer, {paddingTop: insets.top}]}
+        showsVerticalScrollIndicator = {false}
+        contentContainerStyle = {{paddingBottom: insets.bottom + responsivePadding}}
+        >
             <View style = {styles.accountDetailsHeader}>
                 <BackButton />
                 <Text style = {styles.accountDetailsTitle}> {accountDetails.name}</Text>
@@ -66,6 +78,7 @@ export const AccountDetailsScreen = ({ route } : {route: AccountDetailsRouteProp
                         }
                     }}
                     onEndReachedThreshold = {0.5}
+                    ItemSeparatorComponent={SeparatorComponent}
                     scrollEnabled = {false}
                     ListFooterComponent = {isFetchingNextPage ? <LoadingDots /> : null}
                 />

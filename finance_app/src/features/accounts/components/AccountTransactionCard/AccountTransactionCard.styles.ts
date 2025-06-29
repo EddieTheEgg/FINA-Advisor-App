@@ -6,22 +6,21 @@ import { fontSize } from '../../../../styles/fontSizes';
 export const styles = StyleSheet.create({
     transactionCardContainer : {
         flexDirection: 'row',
-        backgroundColor: 'white',
         padding: spacing.md,
         alignItems: 'center',
         gap: spacing.md,
         borderRadius: 20,
-        boxShadow: '0 2px 2px 0 rgba(0, 0, 0, 0.3)',
-        marginBottom: spacing.xs,
     },
-    iconContainer: {
-        padding: spacing.sm,
+    transactionCardIcon: {
         borderRadius: 10,
-    },
-    iconText: {
         fontSize: fontSize.xxl,
+        padding: spacing.sm,
     },
-    accountInfoContainer : {
+    transactionTitle : {
+        fontSize: fontSize.lg,
+        fontFamily: 'Poppins-SemiBold',
+    },
+    transactionDetailContainer : {
         flex: 2,
     },
     accountNameText : {
@@ -30,11 +29,25 @@ export const styles = StyleSheet.create({
     },
     transactionSubInfoText: {
         fontSize: fontSize.sm,
-        fontFamily: 'Poppins-SemiBold',
+        fontWeight: 500,
+        fontFamily: 'Poppins-Regular',
         color: colors.gray[500],
     },
-    accountBalanceText : {
+    transactionBalanceText : {
         fontSize: fontSize.lg,
         fontFamily: 'Poppins-SemiBold',
+    },
+    transactionAmount: {
+        fontSize: fontSize.lg,
+        fontFamily: 'Poppins-SemiBold',
+    },
+    incomeAmount: {
+        color: colors.darkerGreen,
+    },
+    expenseAmount: {
+        color: colors.red,
+    },
+    transferAmount: {
+        color: colors.gray[600],
     },
 });

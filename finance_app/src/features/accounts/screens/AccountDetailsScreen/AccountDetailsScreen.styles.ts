@@ -26,7 +26,7 @@ export const styles = StyleSheet.create({
         marginHorizontal: spacing.md,
     },
     transactionHistoryContainer : {
-        padding: spacing.md,
+        paddingTop: spacing.sm,
         backgroundColor: colors.white,
         borderRadius: 20,
         boxShadow: '0 2px 2px 0 rgba(0, 0, 0, 0.3)',
@@ -38,5 +38,11 @@ export const styles = StyleSheet.create({
         fontSize: fontSize.xl,
         fontFamily: 'Poppins-SemiBold',
         marginVertical: spacing.md,
+    },
+    separator : {
+      backgroundColor: colors.gray[200],
+      height: 1,
+      borderRadius: 12,
+      marginVertical: spacing.sm,
     },
 });

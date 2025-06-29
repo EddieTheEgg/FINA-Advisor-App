@@ -24,7 +24,7 @@ export const styles = StyleSheet.create({
     },
     incomeText: {
         fontFamily: 'Poppins-SemiBold',
-        color: colors.green,
+        color: colors.darkerGreen,
         fontSize: fontSize.lg,
         lineHeight: Platform.OS === 'android' ? 15 : 0,
     },

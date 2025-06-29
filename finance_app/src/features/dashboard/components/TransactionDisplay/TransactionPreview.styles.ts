@@ -41,7 +41,7 @@ export const styles = StyleSheet.create({
         fontFamily: 'Poppins-SemiBold',
     },
     incomeAmount: {
-        color: colors.green,
+        color: colors.darkerGreen,
     },
     expenseAmount: {
         color: colors.red,
