@@ -1,5 +1,5 @@
-import { View, Text, FlatList, ScrollView, Dimensions } from 'react-native';
-import { RouteProp } from '@react-navigation/native';
+import { View, Text, FlatList, ScrollView, Dimensions} from 'react-native';
+import { RouteProp, useRoute } from '@react-navigation/native';
 import { AccountNavigatorParamList } from '../../../../navigation/types/AccountNavigatorTypes';
 import { useSafeAreaInsets } from 'react-native-safe-area-context';
 import { useAccountDetails } from '../../hooks/useAccountDetails';
@@ -12,6 +12,8 @@ import { AccountTransactionCard } from '../../components/AccountTransactionCard/
 import { ErrorScreen } from '../../../../components/ErrorScreen/ErrorScreen';
 import { AccountDetailsCard } from '../../components/AccountDetailsCard/AccountDetailsCard';
 import { NoTransactions } from '../../components/NoTransactions/NoTransactions';
+import { TransferButton } from '../../components/TransferButton/TransferButton';
+import { AddTransactionButton } from '../../components/AddTransactionButton/AddTransactionButton';
 
 type AccountDetailsRouteProp = RouteProp<AccountNavigatorParamList, 'AccountDetails'>;
 
@@ -19,8 +21,8 @@ const SeparatorComponent = () => <View style={styles.separator} />;
 const { height } = Dimensions.get('window');
 const responsivePadding = height * 0.2;
 
-export const AccountDetailsScreen = ({ route } : {route: AccountDetailsRouteProp}) => {
-    const { accountId } = route.params;
+export const AccountDetailsScreen = () => {
+    const { accountId } = useRoute<AccountDetailsRouteProp>().params;
     const insets = useSafeAreaInsets();
 
     // Query for account details
@@ -66,6 +68,10 @@ export const AccountDetailsScreen = ({ route } : {route: AccountDetailsRouteProp
             <View style = {styles.accountDetailsCardContainer}>
                 <AccountDetailsCard accountDetails = {accountDetails}/>
             </View>
+             <View style={styles.accountQuickActionCardContainer}>
+                <TransferButton thisAccountDetails = {accountDetails} />
+                <AddTransactionButton />
+                    </View>
             <View style = {styles.transactionListContainer}>
                 <Text style = {styles.transactionListTitle}>Transaction History</Text>
                 {accountTransactions.pages.flatMap(page => page.transactions).length <= 0 ? (

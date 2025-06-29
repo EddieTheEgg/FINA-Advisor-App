@@ -45,4 +45,11 @@ export const styles = StyleSheet.create({
       borderRadius: 12,
       marginVertical: spacing.sm,
     },
+    accountQuickActionCardContainer : {
+        display: 'flex',
+        flexDirection: 'row',
+        justifyContent: 'space-evenly',
+        marginVertical: spacing.md,
+        marginHorizontal: spacing.md,
+    },
 });

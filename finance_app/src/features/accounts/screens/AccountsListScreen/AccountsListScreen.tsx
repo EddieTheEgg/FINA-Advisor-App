@@ -7,8 +7,10 @@ import { ErrorScreen } from '../../../../components/ErrorScreen/ErrorScreen';
 import { NetWorthCard } from '../../components/NetWorthCard/NetWorthCard';
 import { GroupedAccountList } from '../../components/GroupedAccountList/GroupedAccountList';
 import { AccountNavigatorProps } from '../../../../navigation/types/AccountNavigatorTypes';
+import { useNavigation } from '@react-navigation/native';
 
-export const AccountsListScreen = ({navigation} : {navigation: AccountNavigatorProps}) => {
+export const AccountsListScreen = () => {
+    const navigation = useNavigation<AccountNavigatorProps>();
     const insets = useSafeAreaInsets();
     const {data : groupedAccounts, isPending, error} = useGroupAccounts();
 
