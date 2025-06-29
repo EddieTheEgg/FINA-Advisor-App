@@ -5,8 +5,9 @@ import { ProfileScreen } from '../features/user/screens/ProfileScreen';
 import { AccountsNavigator } from './AccountsNavigator';
 import { TransactionNavigator } from './TransactionNavigatgor';
 import { CustomTabBar } from '../components/CustomTabBar/CustomTabBar';
+import { HomeStackParamList } from './types/HomeNavigatorTypes';
 
-const Tab = createBottomTabNavigator();
+const Tab = createBottomTabNavigator<HomeStackParamList>();
 
 const renderCustomTabBar = (props: BottomTabBarProps) => <CustomTabBar {...props} />;
 

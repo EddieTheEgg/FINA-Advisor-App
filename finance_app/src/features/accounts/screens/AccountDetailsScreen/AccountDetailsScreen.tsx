@@ -1,6 +1,4 @@
 import { View, Text, FlatList, ScrollView, Dimensions} from 'react-native';
-import { RouteProp, useRoute } from '@react-navigation/native';
-import { AccountNavigatorParamList } from '../../../../navigation/types/AccountNavigatorTypes';
 import { useSafeAreaInsets } from 'react-native-safe-area-context';
 import { useAccountDetails } from '../../hooks/useAccountDetails';
 import { useAccountTransactionHistory } from '../../hooks/useAccountTransactionHistory';
@@ -14,15 +12,20 @@ import { AccountDetailsCard } from '../../components/AccountDetailsCard/AccountD
 import { NoTransactions } from '../../components/NoTransactions/NoTransactions';
 import { TransferButton } from '../../components/TransferButton/TransferButton';
 import { AddTransactionButton } from '../../components/AddTransactionButton/AddTransactionButton';
-
-type AccountDetailsRouteProp = RouteProp<AccountNavigatorParamList, 'AccountDetails'>;
+import { RouteProp } from '@react-navigation/native';
+import { AccountNavigatorParamList, AccountNavigatorProps } from '../../../../navigation/types/AccountNavigatorTypes';
 
 const SeparatorComponent = () => <View style={styles.separator} />;
 const { height } = Dimensions.get('window');
 const responsivePadding = height * 0.2;
 
-export const AccountDetailsScreen = () => {
-    const { accountId } = useRoute<AccountDetailsRouteProp>().params;
+type AccountDetailsScreenProps = {
+    route: RouteProp<AccountNavigatorParamList, 'AccountDetails'>;
+    navigation: AccountNavigatorProps;
+}
+
+export const AccountDetailsScreen = ({ route, navigation }: AccountDetailsScreenProps) => {
+    const { accountId } = route.params;
     const insets = useSafeAreaInsets();
 
     // Query for account details
@@ -69,7 +72,7 @@ export const AccountDetailsScreen = () => {
                 <AccountDetailsCard accountDetails = {accountDetails}/>
             </View>
              <View style={styles.accountQuickActionCardContainer}>
-                <TransferButton thisAccountDetails = {accountDetails} />
+                <TransferButton thisAccountDetails = {accountDetails} navigation = {navigation} />
                 <AddTransactionButton />
                     </View>
             <View style = {styles.transactionListContainer}>

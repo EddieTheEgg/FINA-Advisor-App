@@ -3,8 +3,9 @@ import WelcomeScreen from '../features/auth/screens/WelcomeScreen/WelcomeScreen'
 import LoginScreen from '../features/auth/screens/LoginScreen/LoginScreen';
 import CreateAccountScreen from '../features/auth/screens/CreateAccount/CreateAccount';
 import BackButton from '../features/auth/components/GoBackButton/GoBackButton';
+import { AuthStackParamList } from './types/AuthNavigatorTypes';
 
-const Stack = createNativeStackNavigator();
+const Stack = createNativeStackNavigator<AuthStackParamList>();
 
 const renderBackButton = () => <BackButton />;
 
@@ -31,7 +32,7 @@ const AuthNavigator = () => {
         }}
       />
       <Stack.Screen
-        name="Create_Account"
+        name="CreateAccount"
         component={CreateAccountScreen}
     />
     </Stack.Navigator>

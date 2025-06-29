@@ -1,12 +1,15 @@
 import { View, Text, Pressable } from 'react-native';
 import { styles } from './TransferButton.styles';
 import { AccountResponse } from '../../types';
-import { useNavigation } from '@react-navigation/native';
 import { AccountNavigatorProps } from '../../../../navigation/types/AccountNavigatorTypes';
 
-export const TransferButton = ({thisAccountDetails}: {thisAccountDetails: AccountResponse}) => {
 
-    const navigation = useNavigation<AccountNavigatorProps>();
+type TransferButtonProps = {
+    thisAccountDetails: AccountResponse;
+    navigation: AccountNavigatorProps;
+}
+
+export const TransferButton = ({thisAccountDetails, navigation}: TransferButtonProps) => {
 
     const navigateToTransferScreen = () => {
       navigation.navigate('Transfer', {thisAccountDetails});

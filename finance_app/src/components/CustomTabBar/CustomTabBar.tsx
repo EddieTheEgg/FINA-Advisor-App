@@ -40,6 +40,7 @@ export const CustomTabBar = ({state, navigation}: BottomTabBarProps) => {
     const TAB_WIDTH = width / TAB_COUNT;
     const indicatorPos = useRef(new Animated.Value(0)).current;
 
+    // Animates/moves the indicator position based on the current state index
     useEffect(() => {
         Animated.timing(indicatorPos, {
             toValue: state.index * TAB_WIDTH,
