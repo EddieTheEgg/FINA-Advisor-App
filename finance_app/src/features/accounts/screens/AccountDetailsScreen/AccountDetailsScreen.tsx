@@ -11,6 +11,7 @@ import { LoadingDots } from '../../../../components/LoadingDots/LoadingDots';
 import { AccountTransactionCard } from '../../components/AccountTransactionCard/AccountTransactionCard';
 import { ErrorScreen } from '../../../../components/ErrorScreen/ErrorScreen';
 import { AccountDetailsCard } from '../../components/AccountDetailsCard/AccountDetailsCard';
+import { NoTransactions } from '../../components/NoTransactions/NoTransactions';
 
 type AccountDetailsRouteProp = RouteProp<AccountNavigatorParamList, 'AccountDetails'>;
 
@@ -67,6 +68,9 @@ export const AccountDetailsScreen = ({ route } : {route: AccountDetailsRouteProp
             </View>
             <View style = {styles.transactionListContainer}>
                 <Text style = {styles.transactionListTitle}>Transaction History</Text>
+                {accountTransactions.pages.flatMap(page => page.transactions).length <= 0 ? (
+                    <NoTransactions />
+            ) : (
                 <FlatList
                     style = {styles.transactionHistoryContainer}
                     data = {accountTransactions.pages.flatMap(page => page.transactions)}
@@ -82,6 +86,7 @@ export const AccountDetailsScreen = ({ route } : {route: AccountDetailsRouteProp
                     scrollEnabled = {false}
                     ListFooterComponent = {isFetchingNextPage ? <LoadingDots /> : null}
                 />
+                )}
             </View>
         </ScrollView>
     );

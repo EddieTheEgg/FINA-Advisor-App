@@ -52,7 +52,7 @@ export const AccountTransactionCard = ({transactionData} : AccountTransactionCar
                     {formatDate(transactionData.transactionDate)} • {transactionData.categorySimplified.categoryName}
                 </Text>
             </View>
-            <Text style = {getAmountStyle()}>${formatBalance()}</Text>
+            <Text style = {getAmountStyle()}>${formatBalance()}{'>'}</Text>
         </View>
     );
 };
