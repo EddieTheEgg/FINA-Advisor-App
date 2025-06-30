@@ -73,8 +73,8 @@ export const AccountDetailsScreen = ({ route, navigation }: AccountDetailsScreen
             </View>
              <View style={styles.accountQuickActionCardContainer}>
                 <TransferButton thisAccountDetails = {accountDetails} navigation = {navigation} />
-                <AddTransactionButton />
-                    </View>
+                <AddTransactionButton navigation = {navigation} />
+            </View>
             <View style = {styles.transactionListContainer}>
                 <Text style = {styles.transactionListTitle}>Transaction History</Text>
                 {accountTransactions.pages.flatMap(page => page.transactions).length <= 0 ? (

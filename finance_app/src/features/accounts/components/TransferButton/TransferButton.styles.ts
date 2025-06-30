@@ -4,21 +4,19 @@ import { fontSize } from '../../../../styles/fontSizes';
 import { spacing } from '../../../../styles/spacing';
 
 export const styles = StyleSheet.create({
-    accountQuickActionCardContainer: {
-        flexDirection: 'row',
-        justifyContent: 'space-evenly',
-        alignItems: 'center',
-    },
     actionButton: {
         backgroundColor: colors.gray[50],
-        paddingHorizontal: spacing.md,
-        borderRadius: 10,
-        alignItems: 'center',
+        borderRadius: 20,
         borderWidth: 1,
         borderColor: colors.gray[200],
+        flex: 1,
+        flexDirection: 'row',
+        alignItems: 'center',
+        gap: spacing.xs,
+        justifyContent: 'center',
+        padding: spacing.lg,
     },
     actionText: {
-        padding: spacing.lg,
         color: colors.black,
         fontSize: fontSize.lg,
         fontFamily: 'Poppins-SemiBold',

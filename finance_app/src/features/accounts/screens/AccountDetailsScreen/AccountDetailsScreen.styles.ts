@@ -46,13 +46,14 @@ export const styles = StyleSheet.create({
       marginVertical: spacing.sm,
     },
     accountQuickActionCardContainer : {
-        display: 'flex',
         flexDirection: 'row',
         justifyContent: 'space-evenly',
-        paddingVertical: spacing.lg,
-        borderRadius: 20,
+        gap: spacing.sm,
         backgroundColor: colors.white,
+        padding: spacing.md,
         marginTop: spacing.md,
         marginHorizontal: spacing.md,
+        borderRadius: 20,
+        boxShadow: '0 2px 2px 0 rgba(0, 0, 0, 0.3)',
     },
 });

@@ -1,4 +1,4 @@
-import { View, Text, Pressable, Animated } from 'react-native';
+import { Text, Pressable, Animated } from 'react-native';
 import { styles } from './TransferButton.styles';
 import { AccountResponse } from '../../types';
 import { AccountNavigatorProps } from '../../../../navigation/types/AccountNavigatorTypes';
@@ -39,16 +39,15 @@ export const TransferButton = ({thisAccountDetails, navigation}: TransferButtonP
     };
 
     return (
-        <View style={styles.accountQuickActionCardContainer}>
-            <Animated.View style={{transform: [{scale}]}}>
-                <Pressable
-                onPress={navigateToTransferScreen}
-                onPressIn={onPressIn}
-                onPressOut={onPressOut}
-                style={styles.actionButton}>
-                    <Text style={styles.actionText}>🔁 Transfer</Text>
-                </Pressable>
-            </Animated.View>
-        </View>
+        <Animated.View style={{transform: [{scale}]}}>
+            <Pressable
+            onPress={navigateToTransferScreen}
+            onPressIn={onPressIn}
+            onPressOut={onPressOut}
+            style={styles.actionButton}>
+                <Text>🔁</Text>
+                <Text style={styles.actionText}>Transfer</Text>
+            </Pressable>
+        </Animated.View>
     );
 };
