@@ -49,7 +49,10 @@ export const styles = StyleSheet.create({
         display: 'flex',
         flexDirection: 'row',
         justifyContent: 'space-evenly',
-        marginVertical: spacing.md,
+        paddingVertical: spacing.lg,
+        borderRadius: 20,
+        backgroundColor: colors.white,
+        marginTop: spacing.md,
         marginHorizontal: spacing.md,
     },
 });

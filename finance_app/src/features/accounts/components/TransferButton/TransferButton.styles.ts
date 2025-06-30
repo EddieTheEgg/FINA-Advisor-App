@@ -1,24 +1,26 @@
 import { StyleSheet } from 'react-native';
+import { colors } from '../../../../styles/colors';
+import { fontSize } from '../../../../styles/fontSizes';
+import { spacing } from '../../../../styles/spacing';
 
 export const styles = StyleSheet.create({
     accountQuickActionCardContainer: {
         flexDirection: 'row',
         justifyContent: 'space-evenly',
         alignItems: 'center',
-        paddingVertical: 12,
-        paddingHorizontal: 16,
     },
     actionButton: {
-        backgroundColor: '#007AFF',
-        paddingVertical: 8,
-        paddingHorizontal: 16,
-        borderRadius: 8,
-        minWidth: 80,
+        backgroundColor: colors.gray[50],
+        paddingHorizontal: spacing.md,
+        borderRadius: 10,
         alignItems: 'center',
+        borderWidth: 1,
+        borderColor: colors.gray[200],
     },
     actionText: {
-        color: 'white',
-        fontSize: 14,
-        fontWeight: '600',
+        padding: spacing.lg,
+        color: colors.black,
+        fontSize: fontSize.lg,
+        fontFamily: 'Poppins-SemiBold',
     },
 });
