@@ -72,7 +72,7 @@ export const AccountDetailsScreen = ({ route, navigation }: AccountDetailsScreen
                 <AccountDetailsCard accountDetails = {accountDetails}/>
             </View>
              <View style={styles.accountQuickActionCardContainer}>
-                <TransferButton thisAccountDetails = {accountDetails} navigation = {navigation} />
+                <TransferButton fromAccountDetails = {accountDetails} navigation = {navigation} />
                 <AddTransactionButton navigation = {navigation} />
             </View>
             <View style = {styles.transactionListContainer}>

@@ -6,11 +6,11 @@ import { useRef } from 'react';
 
 
 type TransferButtonProps = {
-    thisAccountDetails: AccountResponse;
+    fromAccountDetails: AccountResponse;
     navigation: AccountNavigatorProps;
 }
 
-export const TransferButton = ({thisAccountDetails, navigation}: TransferButtonProps) => {
+export const TransferButton = ({fromAccountDetails, navigation}: TransferButtonProps) => {
 
     const animation = useRef(new Animated.Value(0)).current;
     const scale = animation.interpolate({
@@ -35,7 +35,7 @@ export const TransferButton = ({thisAccountDetails, navigation}: TransferButtonP
     };
 
     const navigateToTransferScreen = () => {
-      navigation.navigate('Transfer', {thisAccountDetails});
+      navigation.navigate('Transfer', {fromAccountDetails, toAccountDetails: undefined});
     };
 
     return (

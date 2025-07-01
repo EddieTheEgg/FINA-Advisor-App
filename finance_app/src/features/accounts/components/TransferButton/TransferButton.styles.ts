@@ -14,7 +14,8 @@ export const styles = StyleSheet.create({
         alignItems: 'center',
         gap: spacing.xs,
         justifyContent: 'center',
-        padding: spacing.lg,
+        paddingHorizontal: spacing.md,
+        paddingVertical: spacing.sm,
     },
     actionText: {
         color: colors.black,
