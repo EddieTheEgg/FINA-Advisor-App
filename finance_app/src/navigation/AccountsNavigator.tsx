@@ -3,6 +3,7 @@ import { AccountsListScreen } from '../features/accounts/screens/AccountsListScr
 import { AccountDetailsScreen } from '../features/accounts/screens/AccountDetailsScreen/AccountDetailsScreen';
 import { AccountNavigatorParamList } from './types/AccountNavigatorTypes';
 import { TransferScreen } from '../features/accounts/screens/TransferScreen/TransferScreen';
+import { TransferAccountSelectionScreen } from '../features/accounts/screens/TransferAccountSelectionScreen/TransferAccountSelectionScreen';
 
 const Stack = createNativeStackNavigator<AccountNavigatorParamList>();
 
@@ -16,6 +17,7 @@ export const AccountsNavigator = () => {
             <Stack.Screen name="AccountsList" component={AccountsListScreen} />
             <Stack.Screen name="AccountDetails" component={AccountDetailsScreen} />
             <Stack.Screen name="Transfer" component={TransferScreen} />
+            <Stack.Screen name="TransferAccountSelection" component={TransferAccountSelectionScreen} />
       </Stack.Navigator>
     );
   };

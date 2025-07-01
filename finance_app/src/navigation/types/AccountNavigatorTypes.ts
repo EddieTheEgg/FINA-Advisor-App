@@ -4,7 +4,11 @@ import { AccountResponse } from '../../features/accounts/types';
 export type AccountNavigatorParamList = {
     AccountsList: undefined;
     AccountDetails: { accountId: string };
-    Transfer: { thisAccountDetails: AccountResponse };
+    Transfer: {
+        fromAccountDetails: AccountResponse | undefined,
+        toAccountDetails: AccountResponse | undefined
+    };
+    TransferAccountSelection: { fromAccountDetails: AccountResponse | undefined };
 };
 
 export type AccountNavigatorProps = NativeStackNavigationProp<AccountNavigatorParamList>;
