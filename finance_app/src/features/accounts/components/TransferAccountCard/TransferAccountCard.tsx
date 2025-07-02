@@ -30,7 +30,14 @@ export const TransferAccountCard = ({accountColor, accountIcon, accountBalance, 
 
 };
   return emptyCard ? (
-    <View>{/* empty card content */}</View>
+    <View style = {styles.emptyAccountCardContainer}>
+       <Text style = {[styles.emptyAccountIcon]}>  ?  </Text>
+        <View style = {styles.accountInfoContainer}>
+          <Text style = {styles.accountName}>Choose An Account</Text>
+          <Text style = {styles.accountBalance}>Avaliable: ???</Text>
+        </View>
+        <Text style = {styles.arrowIcon}> {'>'}</Text>
+    </View>
   ) : (
     <View style = {styles.accountCardContainer}>
         <Text style = {[styles.accountIcon, {backgroundColor: accountColor}]}>{accountIcon}</Text>
