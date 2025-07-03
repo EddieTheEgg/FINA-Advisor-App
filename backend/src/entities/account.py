@@ -31,7 +31,7 @@ class Account(Base):
     
     #Display for account (color theme)
     color = Column(String, nullable=False)
-    icon = Column(String, nullable=True)
+    icon = Column(String, nullable=False)
     
     #Timestamps
     created_at = Column(DateTime(timezone=True), server_default = func.now())

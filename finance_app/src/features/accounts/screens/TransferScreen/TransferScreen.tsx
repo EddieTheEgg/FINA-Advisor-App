@@ -139,7 +139,7 @@ export const TransferScreen = ({ navigation }: TransferScreenProps) => {
                                 <TransferAccountCard
                                         emptyCard={false}
                                         accountColor = {fromAccount.color}
-                                        accountIcon = {fromAccount.icon ?? undefined}
+                                        accountIcon = {fromAccount.icon}
                                         accountBalance = {fromAccount.balance}
                                         accountName = {fromAccount.name}
                                 />
@@ -163,7 +163,7 @@ export const TransferScreen = ({ navigation }: TransferScreenProps) => {
                                 <TransferAccountCard
                                         emptyCard={false}
                                         accountColor = {toAccount.color}
-                                        accountIcon = {toAccount.icon ?? undefined}
+                                        accountIcon = {toAccount.icon}
                                         accountBalance = {toAccount.balance}
                                         accountName = {toAccount.name}
                                 />
