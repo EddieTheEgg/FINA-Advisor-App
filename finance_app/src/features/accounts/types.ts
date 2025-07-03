@@ -16,7 +16,7 @@ export type AccountResponse = {
     accountType: AccountType;
     balance: number;
     color: string;
-    icon: string | null;
+    icon: string;
     isDefault: boolean;
     includeInTotals: boolean;
     isActive: boolean;

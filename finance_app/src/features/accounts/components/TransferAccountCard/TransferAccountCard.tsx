@@ -40,7 +40,11 @@ export const TransferAccountCard = ({accountColor, accountIcon, accountBalance, 
     </View>
   ) : (
     <View style = {styles.accountCardContainer}>
+      {accountIcon ? (
         <Text style = {[styles.accountIcon, {backgroundColor: accountColor}]}>{accountIcon}</Text>
+      ) : (
+        <Text style = {[styles.accountIcon, {backgroundColor: accountColor}]}> </Text>
+      )}
         <View style = {styles.accountInfoContainer}>
           <Text style = {styles.accountName}>{truncateText(accountName, 15)}</Text>
           <Text style = {styles.accountBalance}>Avaliable: ${formatBalance(accountBalance)}</Text>

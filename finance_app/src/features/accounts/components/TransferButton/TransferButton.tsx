@@ -3,6 +3,7 @@ import { styles } from './TransferButton.styles';
 import { AccountResponse } from '../../types';
 import { AccountNavigatorProps } from '../../../../navigation/types/AccountNavigatorTypes';
 import { useRef } from 'react';
+import { useTransferStore } from '../../store/useTransferStore';
 
 
 type TransferButtonProps = {
@@ -11,6 +12,7 @@ type TransferButtonProps = {
 }
 
 export const TransferButton = ({fromAccountDetails, navigation}: TransferButtonProps) => {
+    const { setFromAccount, resetTransfer } = useTransferStore();
 
     const animation = useRef(new Animated.Value(0)).current;
     const scale = animation.interpolate({
@@ -35,7 +37,10 @@ export const TransferButton = ({fromAccountDetails, navigation}: TransferButtonP
     };
 
     const navigateToTransferScreen = () => {
-      navigation.navigate('Transfer', {fromAccountDetails, toAccountDetails: undefined});
+        // Reset any previous transfer state and set the from account
+        resetTransfer();
+        setFromAccount(fromAccountDetails);
+        navigation.navigate('Transfer');
     };
 
     return (

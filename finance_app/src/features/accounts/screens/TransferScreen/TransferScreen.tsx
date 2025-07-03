@@ -1,61 +1,80 @@
 import { View, Text, ScrollView, Pressable, Animated, KeyboardAvoidingView, Platform, Dimensions } from 'react-native';
 import { useSafeAreaInsets } from 'react-native-safe-area-context';
-import { useRoute } from '@react-navigation/native';
-import { AccountNavigatorParamList } from '../../../../navigation/types/AccountNavigatorTypes';
-import { RouteProp } from '@react-navigation/native';
+import { AccountNavigatorProps } from '../../../../navigation/types/AccountNavigatorTypes';
 import { styles } from './TransferScreen.styles';
 import GoBackButton from '../../../auth/components/GoBackButton/GoBackButton';
 import { TransferAccountCard } from '../../components/TransferAccountCard/TransferAccountCard';
-import { useRef, useState } from 'react';
+import { useRef, useEffect } from 'react';
 import FontAwesome6 from 'react-native-vector-icons/FontAwesome6';
 import { colors } from '../../../../styles/colors';
 import { TransferAmountCard } from '../../components/TransferAmountCard/TransferAmountCard';
 import { TransferTitleInput } from '../../components/TransferTitleInput/TransferTitleInput';
 import { TransferNoteCard } from '../../components/TransferNoteCard/TransferNoteCard';
 import { TransferLocationCard } from '../../components/TransferLocationCard/TransferLocationCard';
+import { useTransferStore } from '../../store/useTransferStore';
 
+type TransferScreenProps = {
+    navigation: AccountNavigatorProps;
+}
 
-export const TransferScreen = () => {
-    const { fromAccountDetails, toAccountDetails } = useRoute<RouteProp<AccountNavigatorParamList, 'Transfer'>>().params;
-    const [transferAmount, setTransferAmount] = useState<number>(0.00);
-    const [transferTitle, setTransferTitle] = useState<string>('');
-    const [transferNote, setTransferNote] = useState<string>('');
-    const [transferLocation, setTransferLocation] = useState<string>('');
-    const [transferAmountError, setTransferAmountError] = useState<string>('');
-
-    const handleAmountChange = (amount: string) => {
-        // Handle empty input
-        if (amount === '' || amount === '.') {
-            setTransferAmount(0.00);
-            setTransferAmountError('');
-            return;
-        }
-
-        // Validate numeric input and prevent NaN
-        const amountNumber = parseFloat(amount);
-        if (isNaN(amountNumber) || amountNumber < 0) {
-            return;
-        }
-
-        setTransferAmount(amountNumber);
-
-        // For error messages
-        if (!fromAccountDetails || !toAccountDetails) {
-            setTransferAmountError('You need to choose a source and destination account for the transfer!');
-        } else if (amountNumber > fromAccountDetails.balance) {
-            setTransferAmountError('Insufficient funds from source account!');
-        } else {
-            setTransferAmountError('');
-        }
-    };
+export const TransferScreen = ({ navigation }: TransferScreenProps) => {
+    const {
+        fromAccount,
+        toAccount,
+        amount,
+        title,
+        note,
+        location,
+        amountError,
+        setAmount,
+        setTitle,
+        setNote,
+        setLocation,
+        validateAmount,
+    } = useTransferStore();
 
     const insets = useSafeAreaInsets();
     const { height } = Dimensions.get('window');
     const responsivePadding = height * 0.2;
     const responsivePaddingTop = insets.top + (height * 0.02);
-
     const animation = useRef(new Animated.Value(0)).current;
     const animation2 = useRef(new Animated.Value(0)).current;
+
+    const handleNavigateFromAccountSelection = () => {
+        navigation.navigate('TransferAccountSelection', {
+            selectionType: 'from',
+        });
+    };
+
+    const handleNavigateToAccountSelection = () => {
+        navigation.navigate('TransferAccountSelection', {
+            selectionType: 'to',
+        });
+    };
+
+    const handleAmountChange = (amountStr: string) => {
+        // Handle empty input
+        if (amountStr === '' || amountStr === '.') {
+            setAmount(0.00);
+            return;
+        }
+
+        // Validate numeric input and prevent NaN
+        const amountNumber = parseFloat(amountStr);
+        if (isNaN(amountNumber) || amountNumber < 0) {
+            return;
+        }
+
+        setAmount(amountNumber);
+    };
+
+    // Validate amount whenever relevant state changes
+    useEffect(() => {
+        if (amount > 0) {
+            validateAmount();
+        }
+    }, [amount, fromAccount, toAccount, validateAmount]);
+
     const scale = animation.interpolate({
         inputRange: [0, 1],
         outputRange: [1,0.9],
@@ -79,15 +98,13 @@ export const TransferScreen = () => {
         }).start();
     };
 
-
-
     const onPressOut = () => {
         setTimeout(() => {
             Animated.spring(animation, {
                 toValue: 0,
                 useNativeDriver: true,
             }).start();
-        }, 200); // 200ms delay to ensure the animation is smooth
+        }, 200);
     };
 
     const onPressOut2 = () => {
@@ -96,9 +113,8 @@ export const TransferScreen = () => {
                 toValue: 0,
                 useNativeDriver: true,
             }).start();
-        }, 200); // 200ms delay to ensure the animation is smooth
+        }, 200);
     };
-
 
     return (
         <KeyboardAvoidingView
@@ -116,15 +132,16 @@ export const TransferScreen = () => {
                         <Text style = {styles.accountToFromTitle}>From</Text>
                         <Animated.View style = {{transform: [{scale}]}}>
                             <Pressable
+                                onPress = {handleNavigateFromAccountSelection}
                                 onPressIn={onPressIn}
                                 onPressOut={onPressOut}>
-                                {fromAccountDetails ? (
+                                {fromAccount ? (
                                 <TransferAccountCard
                                         emptyCard={false}
-                                        accountColor = {fromAccountDetails.color}
-                                        accountIcon = {fromAccountDetails.icon ?? undefined}
-                                        accountBalance = {fromAccountDetails.balance}
-                                        accountName = {fromAccountDetails.name}
+                                        accountColor = {fromAccount.color}
+                                        accountIcon = {fromAccount.icon ?? undefined}
+                                        accountBalance = {fromAccount.balance}
+                                        accountName = {fromAccount.name}
                                 />
                                 ) : (
                                 <TransferAccountCard emptyCard={true} />
@@ -139,15 +156,16 @@ export const TransferScreen = () => {
                         <Text style = {styles.accountToFromTitle}>To</Text>
                         <Animated.View style = {{transform: [{scale: scale2}]}}>
                             <Pressable
+                                onPress = {handleNavigateToAccountSelection}
                                 onPressIn={onPressIn2}
                                 onPressOut={onPressOut2}>
-                                {toAccountDetails ? (
+                                {toAccount ? (
                                 <TransferAccountCard
                                         emptyCard={false}
-                                        accountColor = {toAccountDetails.color}
-                                        accountIcon = {toAccountDetails.icon ?? undefined}
-                                        accountBalance = {toAccountDetails.balance}
-                                        accountName = {toAccountDetails.name}
+                                        accountColor = {toAccount.color}
+                                        accountIcon = {toAccount.icon ?? undefined}
+                                        accountBalance = {toAccount.balance}
+                                        accountName = {toAccount.name}
                                 />
                                 ) : (
                                 <TransferAccountCard emptyCard={true} />
@@ -157,30 +175,30 @@ export const TransferScreen = () => {
                     </View>
                     <View style={styles.transferTitleContainer}>
                         <TransferTitleInput
-                            title={transferTitle}
-                            onTitleChange={setTransferTitle}
+                            title={title}
+                            onTitleChange={setTitle}
                         />
                     </View>
                     <View style = {styles.optionalDetailsContainer}>
                         <TransferNoteCard
-                            note={transferNote}
-                            onNoteChange={setTransferNote}
+                            note={note}
+                            onNoteChange={setNote}
                             maxLength = {150}                    />
                     </View>
                     <View style = {styles.optionalDetailsContainer}>
                         <TransferLocationCard
-                            location={transferLocation}
-                            onLocationChange={setTransferLocation}
+                            location={location}
+                            onLocationChange={setLocation}
                             maxLength = {50}
                         />
                     </View>
                     <View style = {styles.transferAmountCardContainer}>
                         <TransferAmountCard
-                            amount = {transferAmount}
+                            amount = {amount}
                             onAmountChange = {handleAmountChange}
-                            error = {transferAmountError}
+                            error = {amountError}
                         />
-                    </View> 
+                    </View>
                 </ScrollView>
             </View>
         </KeyboardAvoidingView>
