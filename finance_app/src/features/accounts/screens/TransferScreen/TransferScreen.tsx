@@ -10,11 +10,17 @@ import { useRef, useState } from 'react';
 import FontAwesome6 from 'react-native-vector-icons/FontAwesome6';
 import { colors } from '../../../../styles/colors';
 import { TransferAmountCard } from '../../components/TransferAmountCard/TransferAmountCard';
+import { TransferTitleInput } from '../../components/TransferTitleInput/TransferTitleInput';
+import { TransferNoteCard } from '../../components/TransferNoteCard/TransferNoteCard';
+import { TransferLocationCard } from '../../components/TransferLocationCard/TransferLocationCard';
 
 
 export const TransferScreen = () => {
     const { fromAccountDetails, toAccountDetails } = useRoute<RouteProp<AccountNavigatorParamList, 'Transfer'>>().params;
     const [transferAmount, setTransferAmount] = useState<number>(0.00);
+    const [transferTitle, setTransferTitle] = useState<string>('');
+    const [transferNote, setTransferNote] = useState<string>('');
+    const [transferLocation, setTransferLocation] = useState<string>('');
     const [transferAmountError, setTransferAmountError] = useState<string>('');
 
     const handleAmountChange = (amount: string) => {
@@ -97,7 +103,8 @@ export const TransferScreen = () => {
     return (
         <KeyboardAvoidingView
             style = {styles.keyboardAvoidingView}
-            behavior={Platform.OS === 'ios' ? 'padding' : 'height'}>
+            behavior={Platform.OS === 'ios' ? 'padding' : 'height'}
+            >
             <View style = {[styles.transferScreenContainer,{paddingTop: responsivePaddingTop}]}>
                 <View style = {styles.headerSection}>
                     <GoBackButton />
@@ -148,13 +155,32 @@ export const TransferScreen = () => {
                             </Pressable>
                         </Animated.View>
                     </View>
+                    <View style={styles.transferTitleContainer}>
+                        <TransferTitleInput
+                            title={transferTitle}
+                            onTitleChange={setTransferTitle}
+                        />
+                    </View>
+                    <View style = {styles.optionalDetailsContainer}>
+                        <TransferNoteCard
+                            note={transferNote}
+                            onNoteChange={setTransferNote}
+                            maxLength = {150}                    />
+                    </View>
+                    <View style = {styles.optionalDetailsContainer}>
+                        <TransferLocationCard
+                            location={transferLocation}
+                            onLocationChange={setTransferLocation}
+                            maxLength = {50}
+                        />
+                    </View>
                     <View style = {styles.transferAmountCardContainer}>
                         <TransferAmountCard
                             amount = {transferAmount}
                             onAmountChange = {handleAmountChange}
                             error = {transferAmountError}
                         />
-                    </View>
+                    </View> 
                 </ScrollView>
             </View>
         </KeyboardAvoidingView>

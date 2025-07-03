@@ -42,6 +42,14 @@ export const styles = StyleSheet.create({
     },
     transferAmountCardContainer : {
         marginHorizontal: spacing.md,
-        marginVertical: spacing.lg,
+        marginVertical: spacing.sm,
+    },
+    transferTitleContainer: {
+        marginHorizontal: spacing.md,
+        marginTop: spacing.lg,
+    },
+    optionalDetailsContainer: {
+        marginTop: spacing.sm,
+        marginHorizontal: spacing.md,
     },
 });
