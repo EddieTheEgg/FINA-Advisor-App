@@ -8,17 +8,25 @@ type GroupedAccountListProps = {
     accountGroupName : string,
     accounts : AccountResponse[],
     navigation: AccountNavigatorProps,
+    transferAccountCard: boolean,
+    selectionType?: 'from' | 'to'
 }
 
 const SeparatorComponent = () => <View style={styles.separator} />;
 
-export const GroupedAccountList = ({accountGroupName, accounts, navigation} : GroupedAccountListProps) => {
+export const GroupedAccountList = ({accountGroupName, accounts, navigation, transferAccountCard, selectionType} : GroupedAccountListProps) => {
     return (
         <View style = {styles.groupedAccountsContainer}>
             <Text style = {styles.accountGroupTitle}>{accountGroupName}</Text>
             <FlatList
                 data = {accounts}
-                renderItem = {({item}) => <AccountCard accountItem= {item} navigation = {navigation} />}
+                renderItem = {({item}) => (
+                    transferAccountCard ? (
+                        <AccountCard accountItem= {item} navigation = {navigation} transferAccountCard = {true} selectionType = {selectionType} />
+                    ) : (
+                        <AccountCard accountItem= {item} navigation = {navigation} transferAccountCard = {false} />
+                    )
+                )}
                 keyExtractor = {(item) => item.accountId}
                 showsVerticalScrollIndicator = {false}
                 scrollEnabled = {false}

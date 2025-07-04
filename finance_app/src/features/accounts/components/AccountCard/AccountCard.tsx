@@ -2,13 +2,19 @@ import { View, Text, Pressable } from 'react-native';
 import { AccountResponse } from '../../types';
 import { styles } from './AccountCard.styles';
 import { AccountNavigatorProps } from '../../../../navigation/types/AccountNavigatorTypes';
+import { useTransferStore } from '../../store/useTransferStore';
 
 type AccountCardProps = {
     accountItem : AccountResponse
     navigation : AccountNavigatorProps
+    transferAccountCard?: boolean
+    selectionType?: 'from' | 'to'
 }
 
-export const AccountCard = ({accountItem, navigation} : AccountCardProps) => {
+export const AccountCard = ({accountItem, navigation, transferAccountCard, selectionType} : AccountCardProps) => {
+
+    const {fromAccount, toAccount, setFromAccount, setToAccount} = useTransferStore();
+
     const truncateText = (text: string, maxLength: number) => {
         if (text.length <= maxLength) {
             return text;
@@ -29,8 +35,41 @@ export const AccountCard = ({accountItem, navigation} : AccountCardProps) => {
         navigation.navigate('AccountDetails', { accountId: accountItem.accountId });
     };
 
+    const handleTransferAccountPress = () => {
+        if (selectionType === 'from') {
+            setFromAccount(accountItem);
+            navigation.goBack();
+        } else {
+            setToAccount(accountItem);
+            navigation.goBack();
+        }
+    };
+
+    const isSelected =
+    (accountItem.accountId === fromAccount?.accountId && selectionType === 'from')
+    || (accountItem.accountId === toAccount?.accountId && selectionType === 'to');
+
 
     return (
+        // For the transfer account selection screen, when we need to select the source or destination account
+        transferAccountCard ? (
+            <Pressable
+            style = {[styles.AccountCardContainer, isSelected && styles.selectedAccountCard]}
+            onPress = {handleTransferAccountPress}
+            >
+                <View style = {[styles.iconContainer ,{backgroundColor : accountItem.color}]}>
+                <Text style = {styles.iconText}>{accountItem.icon}</Text>
+                </View>
+                <View style = {styles.accountInfoContainer}>
+                    <Text style = {styles.accountNameText}>{truncateText(accountItem.name, 15)}</Text>
+                    <Text style = {styles.accountSubInfoText}>{capitalizeFirstLetter(accountItem.accountType)}</Text>
+                </View>
+                <View>
+                    <Text style = {styles.accountBalanceText}>${formatBalance(accountItem.balance)}{'>'}</Text>
+                </View>
+            </Pressable>
+        ) : (
+        // For the accounts list screen, when we need to navigate to an account details screen
         <Pressable
         style = {styles.AccountCardContainer}
         onPress = {() => navAccountDetails(accountItem.accountId)}
@@ -46,5 +85,6 @@ export const AccountCard = ({accountItem, navigation} : AccountCardProps) => {
                 <Text style = {styles.accountBalanceText}>${formatBalance(accountItem.balance)}{'>'}</Text>
             </View>
         </Pressable>
+        )
     );
 };

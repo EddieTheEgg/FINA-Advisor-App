@@ -17,7 +17,7 @@ export const AccountsNavigator = () => {
             <Stack.Screen name="AccountsList" component={AccountsListScreen} />
             <Stack.Screen name="AccountDetails" component={AccountDetailsScreen} />
             <Stack.Screen name="Transfer" component={TransferScreen} />
-            <Stack.Screen name="TransferAccountSelection" component={TransferAccountSelectionScreen} />
+            <Stack.Screen name= "TransferAccountSelection" component={TransferAccountSelectionScreen} />
       </Stack.Navigator>
     );
   };

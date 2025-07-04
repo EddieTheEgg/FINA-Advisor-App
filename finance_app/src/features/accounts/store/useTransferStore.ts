@@ -33,6 +33,8 @@ const initialState = {
   note: '',
   location: '',
   amountError: '',
+  allAccounts: [],
+  availableAccounts: [],
 };
 
 //Zustand store for client state management on transfer screen
@@ -54,6 +56,11 @@ export const useTransferStore = create<TransferState>((set, get) => ({
 
     if (!fromAccount || !toAccount) {
       set({ amountError: 'You need to choose a source and destination account for the transfer!' });
+      return false;
+    }
+
+    if (fromAccount.accountId === toAccount.accountId) {
+      set({ amountError: 'Can\'t transfer money from and to the same account!' });
       return false;
     }
 

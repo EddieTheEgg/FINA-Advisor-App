@@ -57,6 +57,7 @@ export const AccountsListScreen = ({ navigation }: AccountsListScreenProps) => {
                             accountGroupName = {accountGroupName}
                             accounts = {accounts}
                             navigation = {navigation}
+                            transferAccountCard = {false}
                         />)
                 ))}
             </View>
