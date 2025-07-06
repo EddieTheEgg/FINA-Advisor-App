@@ -10,6 +10,7 @@ type TransferState = {
   note: string;
   location: string;
   amountError: string;
+  titleError: string;
 
   // Actions
   setFromAccount: (account: AccountResponse | null) => void;
@@ -19,10 +20,12 @@ type TransferState = {
   setNote: (note: string) => void;
   setLocation: (location: string) => void;
   setAmountError: (error: string) => void;
+  setTitleError: (error: string) => void;
 
   // Utility actions
   resetTransfer: () => void;
   validateAmount: () => boolean;
+  validateTitle: () => boolean;
 }
 
 const initialState = {
@@ -33,6 +36,7 @@ const initialState = {
   note: '',
   location: '',
   amountError: '',
+  titleError: '',
   allAccounts: [],
   availableAccounts: [],
 };
@@ -48,6 +52,7 @@ export const useTransferStore = create<TransferState>((set, get) => ({
   setNote: (note) => set({ note : note }),
   setLocation: (location) => set({ location : location }),
   setAmountError: (error) => set({ amountError: error }),
+  setTitleError: (error) => set({titleError: error}),
 
   resetTransfer: () => set(initialState),
 
@@ -77,4 +82,17 @@ export const useTransferStore = create<TransferState>((set, get) => ({
     set({ amountError: '' });
     return true;
   },
+
+  validateTitle : () => {
+    const { title } = get();
+    if (!title) {
+      set({titleError: 'A title is required!'});
+      return false;
+    }
+
+    set({ titleError: '' });
+    return true;
+  },
+
+
 }));

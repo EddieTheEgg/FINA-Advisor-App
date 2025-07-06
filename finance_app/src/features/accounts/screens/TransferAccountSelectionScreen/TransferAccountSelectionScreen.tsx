@@ -23,6 +23,12 @@ export const TransferAccountSelectionScreen = ({route, navigation} : TransferAcc
 
     const  {data: groupedAccounts, isPending, error} = useGroupAccounts();
 
+    const capitalizeFirstLetter = (word : string) => {
+        return (
+            word.substring(0,1).toLocaleUpperCase() + word.substring(1)
+        );
+    };
+
 
 
     if(isPending || !groupedAccounts) {
@@ -49,8 +55,10 @@ export const TransferAccountSelectionScreen = ({route, navigation} : TransferAcc
             contentContainerStyle = {{paddingBottom: insets.bottom + responsivePadding}}
             showsVerticalScrollIndicator = {false}
         >
-            <GoBackButton />
-            <Text>Select the "{selectionType}" account</Text>
+            <View style = {styles.headerSection}>
+                <GoBackButton />
+                <Text style = {styles.headerText}>{capitalizeFirstLetter(selectionType)} Account</Text>
+            </View>
             <View style = {styles.accountListContainer}>
                 {Object.entries(groupedAccounts.accountGroupsData).map(([accountGroupName, accounts]) => {
                     return (

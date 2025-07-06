@@ -10,6 +10,7 @@ export const styles = StyleSheet.create({
         position: 'absolute',
         bottom: 0,
         minHeight: 80,
+        width: '100%',
     },
     indicator: {
         position: 'absolute',

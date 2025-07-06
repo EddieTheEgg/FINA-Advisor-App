@@ -4,6 +4,7 @@ import { Pressable, useWindowDimensions, View, Animated } from 'react-native';
 import FontAwesome6 from 'react-native-vector-icons/FontAwesome6';
 import { styles } from './CustomTabBar.styles';
 import { colors } from '../../styles/colors';
+import { TransferSubmissionBar } from '../../features/accounts/components/TransferSubmissionBar/TransferSubmissionBar';
 
 // Displays the tab bar icons, if transaction tab adjust the transaction button icon differently
 const getTabBarIcon = ({ route, size, focused }: any) => {
@@ -48,6 +49,33 @@ export const CustomTabBar = ({state, navigation}: BottomTabBarProps) => {
             useNativeDriver: true,
         }).start();
     }, [state.index, TAB_WIDTH, indicatorPos]);
+
+    // Check if we're currently on the Transfer screen within the Accounts stack
+    const currentRoute = state.routes[state.index];
+    const isOnTransferScreen = currentRoute.name === 'Accounts' &&
+        currentRoute.state &&
+        typeof currentRoute.state.index === 'number' &&
+        currentRoute.state.routes &&
+        currentRoute.state.routes[currentRoute.state.index]?.name === 'Transfer';
+
+    if (isOnTransferScreen) {
+      return (
+        <TransferSubmissionBar />
+      );
+    }
+
+    const isOnTransferAccountSelectionScreen = currentRoute.name === 'Accounts' &&
+        currentRoute.state &&
+        typeof currentRoute.state.index === 'number' &&
+        currentRoute.state.routes &&
+        currentRoute.state.routes[currentRoute.state.index]?.name === 'TransferAccountSelection';
+
+    if (isOnTransferAccountSelectionScreen) {
+      return (
+        //Nothing
+        <View />
+      );
+    }
 
       return (
         <View style={[styles.tabBarContainer]}>

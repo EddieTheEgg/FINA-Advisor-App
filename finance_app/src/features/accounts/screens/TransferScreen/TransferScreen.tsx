@@ -35,7 +35,7 @@ export const TransferScreen = ({ navigation }: TransferScreenProps) => {
 
     const insets = useSafeAreaInsets();
     const { height } = Dimensions.get('window');
-    const responsivePadding = height * 0.2;
+    const responsivePadding = height * 0.1;
     const responsivePaddingTop = insets.top + (height * 0.02);
     const animation = useRef(new Animated.Value(0)).current;
     const animation2 = useRef(new Animated.Value(0)).current;

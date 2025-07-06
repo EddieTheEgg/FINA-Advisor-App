@@ -13,9 +13,8 @@ type GroupedAccountListProps = {
 }
 
 const SeparatorComponent = () => <View style={styles.separator} />;
-
 export const GroupedAccountList = ({accountGroupName, accounts, navigation, transferAccountCard, selectionType} : GroupedAccountListProps) => {
-    return (
+    return accounts.length > 0 && (
         <View style = {styles.groupedAccountsContainer}>
             <Text style = {styles.accountGroupTitle}>{accountGroupName}</Text>
             <FlatList
