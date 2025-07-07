@@ -224,11 +224,17 @@ def get_account_transaction_history(db: Session, user_id: UUID, account_id: UUID
         if not account:
             raise AccountNotFoundError(account_id)
         
+        # Include transactions where this account is either the source (account_id) 
+        # or destination (to_account_id) for transfers
         transactions = db.query(Transaction).options(
             joinedload(Transaction.category),
             joinedload(Transaction.account),
             joinedload(Transaction.to_account)
-        ).filter(Transaction.account_id == account_id, Transaction.user_id == user_id).order_by(Transaction.transaction_date.desc()).offset(offset).limit(limit).all()
+        ).filter(
+            (Transaction.account_id == account_id) | 
+            (Transaction.to_account_id == account_id),
+            Transaction.user_id == user_id
+        ).order_by(Transaction.transaction_date.desc()).offset(offset).limit(limit).all()
         
         simplified_transactions = []
         for transaction in transactions:
