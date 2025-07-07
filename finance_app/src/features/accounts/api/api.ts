@@ -1,6 +1,6 @@
 import axios from 'axios';
 import api from '../../../api/axios';
-import { GroupedAccountsResponse, AccountResponse, BackendAccountResponse, AccountTransactionsResponse, BackendTransactionAccountResponse } from '../types';
+import { GroupedAccountsResponse, AccountResponse, BackendAccountResponse, AccountTransactionsResponse, BackendTransactionAccountResponse, TransferSubmission } from '../types';
 
 type getUserAccountTransactionHistoryParams = {
     accountId : string,
@@ -103,3 +103,12 @@ export const getUserAccountTransactionHistory = async ({accountId, pageParam, li
     }
 };
 
+
+export const submitTransfer = async (transferSubmissionData: TransferSubmission) => {
+    try {
+        const response = await api.post('/transactions/transfer', transferSubmissionData);
+        return response.data;
+    } catch (error) {
+        throw new Error('Failed to submit transfer');
+    }
+};

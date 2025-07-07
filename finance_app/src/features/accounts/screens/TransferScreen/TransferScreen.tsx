@@ -31,6 +31,7 @@ export const TransferScreen = ({ navigation }: TransferScreenProps) => {
         setNote,
         setLocation,
         validateAmount,
+        validateTitle,
     } = useTransferStore();
 
     const insets = useSafeAreaInsets();
@@ -72,8 +73,9 @@ export const TransferScreen = ({ navigation }: TransferScreenProps) => {
     useEffect(() => {
         if (amount > 0) {
             validateAmount();
+            validateTitle();
         }
-    }, [amount, fromAccount, toAccount, validateAmount]);
+    }, [amount, fromAccount, toAccount, validateAmount, validateTitle]);
 
     const scale = animation.interpolate({
         inputRange: [0, 1],

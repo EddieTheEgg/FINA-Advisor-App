@@ -6,58 +6,13 @@ from typing import List, Tuple
 from datetime import datetime
 from sqlalchemy import desc
 
-from backend.src.categories import service
+from backend.src.categories import service as category_service
 from backend.src.entities.category import Category
 from backend.src.entities.transaction import Transaction, TransactionType
 from backend.src.exceptions import TransferTransactionError, CreateTransactionError, CategoryNotFoundError, InvalidUserForCategoryError, InvalidUserForTransactionError, TransactionNotFoundError
-from backend.src.transactions.model import TransactionCreate, TransactionResponse, TransactionUpdate, TransactionListResponse
+from backend.src.transactions.model import TransactionCreate, TransactionResponse, TransactionUpdate, TransactionListResponse, TransferCreateRequest, TransferCreateResponse
 from backend.src.accounts import service as account_service
 
-#Creates a new transfer transaction
-def create_transfer_transaction(
-    db: Session,
-    transaction_create_request: TransactionCreate,
-    user_id: UUID
-) -> TransactionResponse:
-    try:
-
-        if not transaction_create_request.to_account_id:
-            raise ValueError("to_account_id is required for transfers")
-        
-        # Verify both accounts belong to the user
-        from_account = account_service.get_account_by_id(db, transaction_create_request.account_id, user_id)
-        to_account = account_service.get_account_by_id(db, transaction_create_request.to_account_id, user_id)
-        
-        # Create the transfer transaction
-        new_transaction = Transaction(
-            amount=transaction_create_request.amount,
-            title=transaction_create_request.title,
-            transaction_date=transaction_create_request.transaction_date,
-            transaction_type=transaction_create_request.transaction_type,
-            notes=transaction_create_request.notes,
-            location=transaction_create_request.location,
-            is_subscription=transaction_create_request.is_subscription,
-            subscription_frequency=transaction_create_request.subscription_frequency,
-            subscription_start_date=transaction_create_request.subscription_start_date,
-            subscription_end_date=transaction_create_request.subscription_end_date,
-            category_id=transaction_create_request.category_id,
-            account_id=transaction_create_request.account_id,
-            to_account_id=transaction_create_request.to_account_id,
-            merchant=transaction_create_request.merchant,
-            user_id=user_id
-        )
-        db.add(new_transaction)
-        db.commit()
-        db.refresh(new_transaction)
-        
-        # Update both account balances
-        account_service.update_account_balance(db, transaction_create_request.account_id, user_id, -transaction_create_request.amount)
-        account_service.update_account_balance(db, transaction_create_request.to_account_id, user_id, transaction_create_request.amount)
-        
-        return new_transaction
-    except Exception as e:
-        logging.error(f"Error creating transfer transaction for user {user_id}: {str(e)}")
-        raise TransferTransactionError(str(e))
 
 def create_regular_transaction(
     db: Session,
@@ -104,12 +59,7 @@ def create_transaction(db: Session, transaction_create_request: TransactionCreat
             logging.warning(f"Category with id {transaction_create_request.category_id} not valid for this user")
             raise InvalidUserForCategoryError(transaction_create_request.category_id)
         
-        # Handle different transaction types
-        if transaction_create_request.transaction_type == TransactionType.TRANSFER:
-            new_transaction = create_transfer_transaction(db, transaction_create_request, user_id)
-        else:
-            new_transaction = create_regular_transaction(db, transaction_create_request, user_id)
-        
+        new_transaction = create_regular_transaction(db, transaction_create_request, user_id)
         logging.info(f"Created new transaction for user {user_id} : {new_transaction.title}")
         return new_transaction
     except Exception as e:
@@ -233,7 +183,7 @@ def update_transaction(db: Session, transaction_id: UUID, transaction_update_req
     transaction = get_transaction_by_id(db, transaction_id, user_id)
     
     # Check if the category (could be new or existing) exists and belongs to the user
-    new_existing_category = service.get_category_by_id(db, transaction_update_request.category_id, user_id)
+    new_existing_category = category_service.get_category_by_id(db, transaction_update_request.category_id, user_id)
     
     transaction.amount = transaction_update_request.amount
     transaction.title = transaction_update_request.title
@@ -260,3 +210,56 @@ def delete_transaction(db: Session, transaction_id: UUID, user_id: UUID) -> None
     db.delete(transaction)
     db.commit()
     logging.info(f"Deleted transaction {transaction_id} for user {user_id}")
+
+
+def create_transfer_transaction(
+    db: Session,
+    transfer_create_request: TransferCreateRequest,
+    user_id: UUID,
+) -> TransferCreateResponse:
+    try: 
+        # Convert frontend field names to UUIDs
+        from_account_id = UUID(transfer_create_request.fromAccount)
+        to_account_id = UUID(transfer_create_request.toAccount)
+        
+        # Verify both accounts belong to the user
+        from_account = account_service.get_account_by_id(db, from_account_id, user_id)
+        to_account = account_service.get_account_by_id(db, to_account_id, user_id)
+        
+        new_transfer_transaction = Transaction(
+            amount = transfer_create_request.amount,
+            title = transfer_create_request.title,
+            transaction_date = datetime.now(),
+            transaction_type = TransactionType.TRANSFER,
+            notes = transfer_create_request.note,
+            location = transfer_create_request.location,
+            is_subscription = False, #Default false for now, will implement toggle later
+            subscription_frequency = None,
+            subscription_start_date = None,
+            subscription_end_date = None,
+            category_id = category_service.get_transfer_category(db, user_id),
+            account_id = from_account_id,
+            to_account_id = to_account_id,
+            merchant = "Self",
+            user_id = user_id
+        )
+        db.add(new_transfer_transaction)
+        db.commit()
+        db.refresh(new_transfer_transaction)
+        
+        #Update both account balances
+        account_service.update_account_balance(db, from_account_id, user_id, -transfer_create_request.amount)
+        account_service.update_account_balance(db, to_account_id, user_id, transfer_create_request.amount)
+        
+        logging.info(f"Created new transfer transaction for user {user_id}")
+        return TransferCreateResponse(
+            fromAccount=transfer_create_request.fromAccount,
+            toAccount=transfer_create_request.toAccount,
+            amount=transfer_create_request.amount,
+            title=transfer_create_request.title,
+            note=transfer_create_request.note,
+            location=transfer_create_request.location
+        )
+    except Exception as e:
+        logging.error(f"Error creating transfer transaction for user {user_id}: {str(e)}")
+        raise TransferTransactionError(str(e))

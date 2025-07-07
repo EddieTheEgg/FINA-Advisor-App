@@ -122,6 +122,27 @@ class TransactionSummary(BaseModel):
     subscription_monthly_estimate: float
     
     
+class TransferCreateRequest(BaseModel):
+    fromAccount: str
+    toAccount: str
+    amount: float
+    title: str
+    note: str | None = None
+    location: str | None = None
+    
+class TransferCreateResponse(BaseModel):
+    fromAccount: str
+    toAccount: str
+    amount: float
+    title: str
+    note: str | None = None
+    location: str | None = None
+    class Config:
+        from_attributes = True
+        arbitrary_types_allowed = True
+    
+
+    
     
 
     

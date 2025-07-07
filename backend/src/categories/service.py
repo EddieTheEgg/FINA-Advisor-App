@@ -189,4 +189,12 @@ def create_default_categories(db: Session, user_id : UUID) -> List[CategoryRespo
     logging.info(f"Successfully added default categories for user {user_id}")
     return db.query(Category).filter(Category.user_id == user_id).all()
 
-
+# Gets the trasnfer category id for a user  
+def get_transfer_category(db: Session, user_id: UUID) -> UUID:
+    transfer_category = db.query(Category).filter(
+        Category.user_id == user_id,
+        Category.category_name == "Transfer",
+        Category.transaction_type == TransactionType.TRANSFER,
+        Category.is_custom == False
+    ).first()
+    return transfer_category.category_id    

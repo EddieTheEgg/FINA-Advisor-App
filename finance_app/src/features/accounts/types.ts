@@ -67,6 +67,15 @@ export type GroupedAccountsResponse = {
     accountGroupsData: Record<string, AccountResponse[]>;
 }
 
+export type TransferSubmission = {
+    fromAccount: string;
+    toAccount: string;
+    amount: number;
+    title: string;
+    note: string;
+    location: string;
+}
+
 //Types for the backend
 export type BackendAccountResponse = {
     account_id: string;

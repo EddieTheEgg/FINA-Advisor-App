@@ -5,7 +5,7 @@ from fastapi import APIRouter
 from starlette import status
 from backend.src.auth.service import CurrentUser
 from backend.src.database.core import DbSession
-from backend.src.transactions.model import TransactionCreate, TransactionListResponse, TransactionResponse, TransactionType, TransactionUpdate
+from backend.src.transactions.model import TransactionCreate, TransactionListResponse, TransactionResponse, TransactionType, TransactionUpdate, TransferCreateRequest, TransferCreateResponse
 from backend.src.transactions import service
 router = APIRouter(
     prefix='/transactions',
@@ -88,3 +88,11 @@ def delete_transactions(
     current_user: CurrentUser
 ):
     return service.delete_transaction(db, transaction_id, current_user.get_uuid())
+
+@router.post("/transfer", response_model = TransferCreateResponse, status_code = status.HTTP_200_OK)
+def transfer_transaction(
+    db: DbSession,
+    transfer_create_request: TransferCreateRequest,
+    current_user: CurrentUser,
+):
+    return service.create_transfer_transaction(db, transfer_create_request, current_user.get_uuid())
