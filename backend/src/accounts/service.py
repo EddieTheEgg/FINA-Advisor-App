@@ -6,6 +6,7 @@ from sqlalchemy.orm import Session, joinedload
 from backend.src.accounts.model import AccountBalance, AccountCreateRequest, AccountResponse, AccountTransactionHistoryResponse, GroupedAccountsResponse
 from backend.src.categories.model import CategorySimplifiedResponse
 from backend.src.entities.account import Account
+from backend.src.entities.enums import TransactionType
 from backend.src.entities.transaction import Transaction
 from backend.src.exceptions import AccountCreationError, AccountNotFoundError, AccountTransactionHistoryNotFoundError, AccountTransactionHistoryProcessingError, GroupedAccountNotFoundError, NetWorthCalculationError
 from backend.src.accounts.constants import ACCOUNT_GROUPS
@@ -240,9 +241,9 @@ def get_account_transaction_history(db: Session, user_id: UUID, account_id: UUID
         # If the account is the destination, the amount is positive, 
         # if the account is the source, the amount is negative
         def process_transaction(transaction: Transaction) -> float:
-            if transaction.to_account_id == account_id and transaction.transaction_type == 'TRANSFER':
+            if transaction.to_account_id == account_id and transaction.transaction_type == TransactionType.TRANSFER:
                 return transaction.amount
-            elif transaction.account_id == account_id and transaction.transaction_type == 'TRANSFER ':
+            elif transaction.account_id == account_id and transaction.transaction_type == TransactionType.TRANSFER:
                 return -transaction.amount
             else:
                 return transaction.amount
