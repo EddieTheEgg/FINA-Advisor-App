@@ -52,4 +52,12 @@ export const styles = StyleSheet.create({
         marginTop: spacing.sm,
         marginHorizontal: spacing.md,
     },
+    errorText: {
+        color: colors.red,
+        fontSize: fontSize.base,
+        textAlign: 'center',
+        marginHorizontal: spacing.md,
+        marginTop: spacing.md,
+        fontFamily: 'Poppins-Medium',
+    },
 });

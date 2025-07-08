@@ -30,8 +30,8 @@ export const TransferScreen = ({ navigation }: TransferScreenProps) => {
         setTitle,
         setNote,
         setLocation,
-        validateAmount,
-        validateTitle,
+        validateTransfer,
+        transferError,
     } = useTransferStore();
 
     const insets = useSafeAreaInsets();
@@ -71,11 +71,8 @@ export const TransferScreen = ({ navigation }: TransferScreenProps) => {
 
     // Validate amount whenever relevant state changes
     useEffect(() => {
-        if (amount > 0) {
-            validateAmount();
-            validateTitle();
-        }
-    }, [amount, fromAccount, toAccount, validateAmount, validateTitle]);
+        validateTransfer();
+    }, [amount, title, fromAccount, toAccount, validateTransfer]);
 
     const scale = animation.interpolate({
         inputRange: [0, 1],
@@ -201,6 +198,9 @@ export const TransferScreen = ({ navigation }: TransferScreenProps) => {
                             error = {amountError}
                         />
                     </View>
+                    {transferError && (
+                        <Text style={styles.errorText}>{transferError}</Text>
+                    )}
                 </ScrollView>
             </View>
         </KeyboardAvoidingView>

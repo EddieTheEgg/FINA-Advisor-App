@@ -3,10 +3,18 @@ import { styles } from './TransferSubmissionBar.styles';
 import { useRef } from 'react';
 import { useTransferStore } from '../../store/useTransferStore';
 import { TransferSubmission } from '../../types';
-import { useMutation } from '@tanstack/react-query';
+import { useMutation, useQueryClient } from '@tanstack/react-query';
 import { submitTransfer } from '../../api/api';
+import { useNavigation } from '@react-navigation/native';
+import { AccountNavigatorProps } from '../../../../navigation/types/AccountNavigatorTypes';
 
 export const TransferSubmissionBar = () => {
+    const navigation = useNavigation<AccountNavigatorProps>();
+    const queryClient = useQueryClient();
+
+    const currentDate = new Date();
+    const month = currentDate.getMonth() + 1;
+    const year = currentDate.getFullYear();
 
     const {
         fromAccount,
@@ -15,8 +23,10 @@ export const TransferSubmissionBar = () => {
         title,
         note,
         location,
-        amountError,
         resetTransfer,
+        setTransferError,
+        amountError,
+        validateTransfer,
     } = useTransferStore();
 
     const animation = useRef(new Animated.Value(0)).current;
@@ -43,9 +53,21 @@ export const TransferSubmissionBar = () => {
     };
 
     const handleTransferSubmission = async() => {
-        if (amountError || fromAccount === null || toAccount === null) {
-            return; //TODO: Show error message
+        // Clear any previous transfer errors
+        setTransferError('');
+        validateTransfer();
+
+        // Validation checks with specific error messages
+
+        if (fromAccount === null || toAccount === null) {
+            return;
         }
+
+        if (amountError) {
+            setTransferError('You have missing or invalid fields');
+            return;
+        }
+
 
         const transferSubmissionData : TransferSubmission = {
             fromAccount: fromAccount.accountId,
@@ -66,9 +88,17 @@ export const TransferSubmissionBar = () => {
         onSuccess: () => {
             console.log('Transfer successful!');
             resetTransfer();
+            queryClient.invalidateQueries({ queryKey: ['grouped-accounts'] });
+            queryClient.invalidateQueries({ queryKey: ['account-details', fromAccount?.accountId] });
+            queryClient.invalidateQueries({ queryKey: ['account-details', toAccount?.accountId] });
+            queryClient.invalidateQueries({ queryKey: ['account-transactions', fromAccount?.accountId] });
+            queryClient.invalidateQueries({ queryKey: ['account-transactions', toAccount?.accountId] });
+            queryClient.invalidateQueries({ queryKey: ['dashboard', month, year] });
+            navigation.navigate('AccountsList');
         },
         onError: (error) => {
             console.error('Transfer failed:', error);
+            setTransferError(`Transfer failed: ${error.message || 'An unexpected error occurred'}`);
         },
     });
 

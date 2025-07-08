@@ -108,7 +108,16 @@ export const submitTransfer = async (transferSubmissionData: TransferSubmission)
     try {
         const response = await api.post('/transactions/transfer', transferSubmissionData);
         return response.data;
-    } catch (error) {
-        throw new Error('Failed to submit transfer');
+    } catch (error : unknown) {
+        if (axios.isAxiosError(error) && error.response?.status === 401) {
+            throw new Error('Please log in again to submit a transfer');
+        }
+        if (axios.isAxiosError(error) && error.response?.status === 400) {
+            throw new Error('Failed to submit transfer: ' + error.response?.data.detail);
+        }
+        if (axios.isAxiosError(error) && error.response?.status === 500) {
+            throw new Error('Failed to submit transfer, please try again (Internal server error)');
+        }
+        throw new Error('Failed to submit transfer, please try again (Unknown error)');
     }
 };

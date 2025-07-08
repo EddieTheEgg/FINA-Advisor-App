@@ -11,6 +11,7 @@ type TransferState = {
   location: string;
   amountError: string;
   titleError: string;
+  transferError: string;
 
   // Actions
   setFromAccount: (account: AccountResponse | null) => void;
@@ -21,11 +22,11 @@ type TransferState = {
   setLocation: (location: string) => void;
   setAmountError: (error: string) => void;
   setTitleError: (error: string) => void;
+  setTransferError: (error: string) => void;
 
   // Utility actions
   resetTransfer: () => void;
-  validateAmount: () => boolean;
-  validateTitle: () => boolean;
+  validateTransfer: () => boolean;
 }
 
 const initialState = {
@@ -37,6 +38,7 @@ const initialState = {
   location: '',
   amountError: '',
   titleError: '',
+  transferError: '',
   allAccounts: [],
   availableAccounts: [],
 };
@@ -53,19 +55,20 @@ export const useTransferStore = create<TransferState>((set, get) => ({
   setLocation: (location) => set({ location : location }),
   setAmountError: (error) => set({ amountError: error }),
   setTitleError: (error) => set({titleError: error}),
+  setTransferError: (error) => set({ transferError: error }),
 
   resetTransfer: () => set(initialState),
 
-  validateAmount: () => {
-    const { amount, fromAccount, toAccount } = get();
+  validateTransfer: () => {
+    const { amount, title, fromAccount, toAccount } = get();
 
     if (!fromAccount || !toAccount) {
-      set({ amountError: 'You need to choose a source and destination account for the transfer!' });
+      set({ amountError: 'You need to choose a source and destination account for the transfer' });
       return false;
     }
 
     if (fromAccount.accountId === toAccount.accountId) {
-      set({ amountError: 'Can\'t transfer money from and to the same account!' });
+      set({ amountError: 'Can\'t transfer money from and to the same account' });
       return false;
     }
 
@@ -75,24 +78,16 @@ export const useTransferStore = create<TransferState>((set, get) => ({
     }
 
     if (amount > fromAccount.balance) {
-      set({ amountError: 'Insufficient funds from source account!' });
+      set({ amountError: 'Insufficient funds from source account' });
+      return false;
+    }
+
+    if (title === '') {
+      set({amountError: 'Transfer title is required'});
       return false;
     }
 
     set({ amountError: '' });
     return true;
   },
-
-  validateTitle : () => {
-    const { title } = get();
-    if (!title) {
-      set({titleError: 'A title is required!'});
-      return false;
-    }
-
-    set({ titleError: '' });
-    return true;
-  },
-
-
 }));
