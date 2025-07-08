@@ -10,6 +10,7 @@ export const useAccountTransactionHistory = (accountId: string) => {
         initialPageParam: 0,
         queryFn: ({pageParam}) => getUserAccountTransactionHistory({accountId, pageParam, limit: LIMIT}),
         getNextPageParam: (lastPage : AccountTransactionsResponse) => lastPage.next_page,
+        staleTime: 1000 * 60 * 5, //5 minutes
     });
 
     return {data, fetchNextPage, hasNextPage, isFetchingNextPage, isPending, error};

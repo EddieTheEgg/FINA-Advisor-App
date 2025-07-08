@@ -12,6 +12,7 @@ type TransferState = {
   amountError: string;
   titleError: string;
   transferError: string;
+  isTransferProcessing: boolean;
 
   // Actions
   setFromAccount: (account: AccountResponse | null) => void;
@@ -23,6 +24,7 @@ type TransferState = {
   setAmountError: (error: string) => void;
   setTitleError: (error: string) => void;
   setTransferError: (error: string) => void;
+  setIsTransferProcessing: (isProcessing: boolean) => void;
 
   // Utility actions
   resetTransfer: () => void;
@@ -39,6 +41,7 @@ const initialState = {
   amountError: '',
   titleError: '',
   transferError: '',
+  isTransferProcessing: false,
   allAccounts: [],
   availableAccounts: [],
 };
@@ -56,6 +59,7 @@ export const useTransferStore = create<TransferState>((set, get) => ({
   setAmountError: (error) => set({ amountError: error }),
   setTitleError: (error) => set({titleError: error}),
   setTransferError: (error) => set({ transferError: error }),
+  setIsTransferProcessing: (isProcessing) => set({ isTransferProcessing: isProcessing }),
 
   resetTransfer: () => set(initialState),
 

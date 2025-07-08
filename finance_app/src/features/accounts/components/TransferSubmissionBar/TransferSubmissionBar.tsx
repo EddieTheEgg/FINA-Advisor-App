@@ -27,6 +27,7 @@ export const TransferSubmissionBar = () => {
         setTransferError,
         amountError,
         validateTransfer,
+        setIsTransferProcessing,
     } = useTransferStore();
 
     const animation = useRef(new Animated.Value(0)).current;
@@ -68,6 +69,7 @@ export const TransferSubmissionBar = () => {
             return;
         }
 
+        setIsTransferProcessing(true);
 
         const transferSubmissionData : TransferSubmission = {
             fromAccount: fromAccount.accountId,
@@ -85,16 +87,19 @@ export const TransferSubmissionBar = () => {
         mutationFn: async (transferSubmissionData: TransferSubmission) => {
             return await submitTransfer(transferSubmissionData);
         },
-        onSuccess: () => {
+        //Might need to use preFetchQuery and preFetchInfiniteQuery instead of invalidateQueries for better performance
+        onSuccess: async () => {
             console.log('Transfer successful!');
-            resetTransfer();
-            queryClient.invalidateQueries({ queryKey: ['grouped-accounts'] });
-            queryClient.invalidateQueries({ queryKey: ['account-details', fromAccount?.accountId] });
-            queryClient.invalidateQueries({ queryKey: ['account-details', toAccount?.accountId] });
-            queryClient.invalidateQueries({ queryKey: ['account-transactions', fromAccount?.accountId] });
-            queryClient.invalidateQueries({ queryKey: ['account-transactions', toAccount?.accountId] });
-            queryClient.invalidateQueries({ queryKey: ['dashboard', month, year] });
+            await Promise.all([
+                queryClient.invalidateQueries({ queryKey: ['grouped-accounts'] }),
+                queryClient.invalidateQueries({ queryKey: ['account-details', fromAccount?.accountId] }),
+                queryClient.invalidateQueries({ queryKey: ['account-details', toAccount?.accountId] }),
+                queryClient.invalidateQueries({ queryKey: ['account-transactions', fromAccount?.accountId] }),
+                queryClient.invalidateQueries({ queryKey: ['account-transactions', toAccount?.accountId] }),
+                queryClient.invalidateQueries({ queryKey: ['dashboard', month, year] }),
+            ]);
             navigation.navigate('AccountsList');
+            resetTransfer();
         },
         onError: (error) => {
             console.error('Transfer failed:', error);

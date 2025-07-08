@@ -12,6 +12,7 @@ import { TransferTitleInput } from '../../components/TransferTitleInput/Transfer
 import { TransferNoteCard } from '../../components/TransferNoteCard/TransferNoteCard';
 import { TransferLocationCard } from '../../components/TransferLocationCard/TransferLocationCard';
 import { useTransferStore } from '../../store/useTransferStore';
+import { ProcessingTransfer } from '../../components/ProcessingTransfer/ProcessingTransfer';
 
 type TransferScreenProps = {
     navigation: AccountNavigatorProps;
@@ -32,6 +33,7 @@ export const TransferScreen = ({ navigation }: TransferScreenProps) => {
         setLocation,
         validateTransfer,
         transferError,
+        isTransferProcessing,
     } = useTransferStore();
 
     const insets = useSafeAreaInsets();
@@ -116,6 +118,9 @@ export const TransferScreen = ({ navigation }: TransferScreenProps) => {
     };
 
     return (
+        isTransferProcessing ? (
+            <ProcessingTransfer />
+        ) : (
         <KeyboardAvoidingView
             style = {styles.keyboardAvoidingView}
             behavior={Platform.OS === 'ios' ? 'padding' : 'height'}
@@ -202,7 +207,8 @@ export const TransferScreen = ({ navigation }: TransferScreenProps) => {
                         <Text style={styles.errorText}>{transferError}</Text>
                     )}
                 </ScrollView>
-            </View>
-        </KeyboardAvoidingView>
+                </View>
+            </KeyboardAvoidingView>
+        )
     );
 };

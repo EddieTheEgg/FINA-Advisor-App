@@ -5,9 +5,11 @@ import FontAwesome6 from 'react-native-vector-icons/FontAwesome6';
 import { styles } from './CustomTabBar.styles';
 import { colors } from '../../styles/colors';
 import { TransferSubmissionBar } from '../../features/accounts/components/TransferSubmissionBar/TransferSubmissionBar';
+import { useTransferStore } from '../../features/accounts/store/useTransferStore';
 
 // Displays the tab bar icons, if transaction tab adjust the transaction button icon differently
 const getTabBarIcon = ({ route, size, focused }: any) => {
+
     let iconName: string = 'help-outline';
 
     if (route.name === 'Dashboard') {
@@ -36,6 +38,8 @@ const getTabBarIcon = ({ route, size, focused }: any) => {
   };
 
 export const CustomTabBar = ({state, navigation}: BottomTabBarProps) => {
+const { isTransferProcessing } = useTransferStore();
+
     const { width } = useWindowDimensions();
     const TAB_COUNT = 5;
     const TAB_WIDTH = width / TAB_COUNT;
@@ -58,7 +62,7 @@ export const CustomTabBar = ({state, navigation}: BottomTabBarProps) => {
         currentRoute.state.routes &&
         currentRoute.state.routes[currentRoute.state.index]?.name === 'Transfer';
 
-    if (isOnTransferScreen) {
+    if (isOnTransferScreen && !isTransferProcessing) {
       return (
         <TransferSubmissionBar />
       );

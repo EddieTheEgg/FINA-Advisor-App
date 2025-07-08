@@ -3,9 +3,10 @@ import { useEffect, useState } from 'react';
 
 type LoadingDotsProps = {
     style?: StyleProp<TextStyle>;
+    loadingText?: string;
 }
 
-export const LoadingDots = ({ style }: LoadingDotsProps) => {
+export const LoadingDots = ({ style, loadingText = 'Loading' }: LoadingDotsProps) => {
     const [dots, setDots] = useState('');
 
     useEffect(() => {
@@ -16,6 +17,6 @@ export const LoadingDots = ({ style }: LoadingDotsProps) => {
     }, []);
 
     return (
-        <Text style={style}>{`Loading${dots}`}</Text>
+        <Text style={style}>{`${loadingText}${dots}`}</Text>
     );
 };
