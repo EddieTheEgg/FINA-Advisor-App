@@ -14,15 +14,16 @@ export const styles = StyleSheet.create({
     },
     completeTransferButton: {
         backgroundColor: colors.darkerBackground,
-        padding: spacing.md,
+        paddingHorizontal: spacing.xxl * 2,
+        paddingVertical: spacing.md,
         borderRadius: 10,
-        width: '90%',
+        width: '100%',
         alignItems: 'center',
         justifyContent: 'center',
     },
     completeTransferButtonText: {
         color: colors.white,
-        fontSize: fontSize.lg,
+        fontSize: fontSize.xl,
         fontWeight: 'bold',
     },
 });

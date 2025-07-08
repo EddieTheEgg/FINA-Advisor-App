@@ -1,12 +1,12 @@
-import { Animated, Pressable, Text} from 'react-native';
+import { Text, View } from 'react-native';
 import { styles } from './TransferSubmissionBar.styles';
-import { useRef } from 'react';
 import { useTransferStore } from '../../store/useTransferStore';
 import { TransferSubmission } from '../../types';
 import { useMutation, useQueryClient } from '@tanstack/react-query';
 import { submitTransfer } from '../../api/api';
 import { useNavigation } from '@react-navigation/native';
 import { AccountNavigatorProps } from '../../../../navigation/types/AccountNavigatorTypes';
+import { AnimatedPressable } from '../../../../components/AnimatedPressable/AnimatedPressable';
 
 export const TransferSubmissionBar = () => {
     const navigation = useNavigation<AccountNavigatorProps>();
@@ -29,29 +29,6 @@ export const TransferSubmissionBar = () => {
         validateTransfer,
         setIsTransferProcessing,
     } = useTransferStore();
-
-    const animation = useRef(new Animated.Value(0)).current;
-
-    const scale = animation.interpolate({
-        inputRange: [0, 1],
-        outputRange: [1, 0.9],
-    });
-
-    const onPressIn = () => {
-        Animated.spring(animation, {
-            toValue: 1,
-            useNativeDriver: true,
-        }).start();
-    };
-
-    const onPressOut = () => {
-        setTimeout(() => {
-            Animated.spring(animation, {
-                toValue: 0,
-                useNativeDriver: true,
-            }).start();
-        });
-    };
 
     const handleTransferSubmission = async() => {
         // Clear any previous transfer errors
@@ -108,14 +85,14 @@ export const TransferSubmissionBar = () => {
     });
 
     return (
-        <Animated.View style={[styles.transferSubmissionBar, { transform: [{ scale }] }]}>
-            <Pressable style={styles.completeTransferButton}
-                onPressIn = {onPressIn}
-                onPressOut = {onPressOut}
-                onPress = {handleTransferSubmission}
+        <View style={styles.transferSubmissionBar}>
+            <AnimatedPressable
+                style={styles.completeTransferButton}
+                onPress={handleTransferSubmission}
+                scaleValue={0.9}
             >
                 <Text style={styles.completeTransferButtonText}>Complete Transfer</Text>
-            </Pressable>
-        </Animated.View>
+            </AnimatedPressable>
+        </View>
     );
 };

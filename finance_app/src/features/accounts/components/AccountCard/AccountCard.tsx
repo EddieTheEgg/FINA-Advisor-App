@@ -1,8 +1,9 @@
-import { View, Text, Pressable } from 'react-native';
+import { View, Text } from 'react-native';
 import { AccountResponse } from '../../types';
 import { styles } from './AccountCard.styles';
 import { AccountNavigatorProps } from '../../../../navigation/types/AccountNavigatorTypes';
 import { useTransferStore } from '../../store/useTransferStore';
+import { AnimatedPressable } from '../../../../components/AnimatedPressable/AnimatedPressable';
 
 type AccountCardProps = {
     accountItem : AccountResponse
@@ -53,7 +54,9 @@ export const AccountCard = ({accountItem, navigation, transferAccountCard, selec
     return (
         // For the transfer account selection screen, when we need to select the source or destination account
         transferAccountCard ? (
-            <Pressable
+            <AnimatedPressable
+            scaleValue={0.9}
+            delay={200}
             style = {[styles.AccountCardContainer, isSelected && styles.selectedAccountCard]}
             onPress = {handleTransferAccountPress}
             >
@@ -67,12 +70,14 @@ export const AccountCard = ({accountItem, navigation, transferAccountCard, selec
                 <View>
                     <Text style = {styles.accountBalanceText}>${formatBalance(accountItem.balance)}{'>'}</Text>
                 </View>
-            </Pressable>
+            </AnimatedPressable>
         ) : (
         // For the accounts list screen, when we need to navigate to an account details screen
-        <Pressable
-        style = {styles.AccountCardContainer}
-        onPress = {() => navAccountDetails(accountItem.accountId)}
+        <AnimatedPressable
+            scaleValue={0.9}
+            delay={200}
+            style = {styles.AccountCardContainer}
+            onPress = {() => navAccountDetails(accountItem.accountId)}
         >
             <View style = {[styles.iconContainer ,{backgroundColor : accountItem.color}]}>
                 <Text style = {styles.iconText}>{accountItem.icon}</Text>
@@ -84,7 +89,7 @@ export const AccountCard = ({accountItem, navigation, transferAccountCard, selec
             <View>
                 <Text style = {styles.accountBalanceText}>${formatBalance(accountItem.balance)}{'>'}</Text>
             </View>
-        </Pressable>
+        </AnimatedPressable>
         )
     );
 };
