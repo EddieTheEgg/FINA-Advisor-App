@@ -18,9 +18,16 @@ export const AccountTransactionCard = ({transactionData} : AccountTransactionCar
 
     const formatBalance = () => {
         const amount = Math.abs(transactionData.amount);
+        const formatCurrency = (sign: string) =>
+            `${sign}${amount.toLocaleString('en-US', { minimumFractionDigits: 2, maximumFractionDigits: 2 })}`;
+
+        if (transactionData.transactionType === 'TRANSFER') {
+            const sign = transactionData.amount >= 0 ? '' : '-';
+            return formatCurrency(sign);
+        }
         const sign = transactionData.transactionType === 'INCOME' ? '+' :
                     transactionData.transactionType === 'EXPENSE' ? '-' : '';
-        return `${sign}${amount.toLocaleString('en-US', { minimumFractionDigits: 2, maximumFractionDigits: 2 })}`;
+        return formatCurrency(sign);
     };
 
     const truncateText = (text: string, maxLength: number) => {

@@ -236,6 +236,17 @@ def get_account_transaction_history(db: Session, user_id: UUID, account_id: UUID
             Transaction.user_id == user_id
         ).order_by(Transaction.transaction_date.desc()).offset(offset).limit(limit).all()
         
+        # Mini helper function to process the transaction amount for transfers
+        # If the account is the destination, the amount is positive, 
+        # if the account is the source, the amount is negative
+        def process_transaction(transaction: Transaction) -> float:
+            if transaction.to_account_id == account_id and transaction.transaction_type == 'TRANSFER':
+                return transaction.amount
+            elif transaction.account_id == account_id and transaction.transaction_type == 'TRANSFER ':
+                return -transaction.amount
+            else:
+                return transaction.amount
+        
         simplified_transactions = []
         for transaction in transactions:
             try:
@@ -248,7 +259,7 @@ def get_account_transaction_history(db: Session, user_id: UUID, account_id: UUID
                 )
                 simplified_transactions.append(AccountTransactionResponse(
                     transaction_id=transaction.transaction_id,
-                    amount=transaction.amount,
+                    amount= process_transaction(transaction),
                     title=transaction.title,
                     transaction_date=transaction.transaction_date.isoformat(),
                     transaction_type=transaction.transaction_type,
