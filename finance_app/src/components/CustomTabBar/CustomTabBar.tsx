@@ -6,6 +6,7 @@ import { styles } from './CustomTabBar.styles';
 import { colors } from '../../styles/colors';
 import { TransferSubmissionBar } from '../../features/accounts/components/TransferSubmissionBar/TransferSubmissionBar';
 import { useTransferStore } from '../../features/accounts/store/useTransferStore';
+import { TransactionSubmissionBar } from '../../features/transaction/components/TransactionSubmissionBar/TransactionSubmissionBar';
 
 // Displays the tab bar icons, if transaction tab adjust the transaction button icon differently
 const getTabBarIcon = ({ route, size, focused }: any) => {
@@ -54,13 +55,16 @@ const { isTransferProcessing } = useTransferStore();
         }).start();
     }, [state.index, TAB_WIDTH, indicatorPos]);
 
-    // Check if we're currently on the Transfer screen within the Accounts stack
+
+    // Get the current route (active navigator tab of HomeNavigator)
+    // via state.index (number) of all active routes/tabs of HomeNavigator
     const currentRoute = state.routes[state.index];
+
+    // Check if we're currently on the Transfer screen within the Accounts stack
     const isOnTransferScreen = currentRoute.name === 'Accounts' &&
         currentRoute.state &&
         typeof currentRoute.state.index === 'number' &&
-        currentRoute.state.routes &&
-        currentRoute.state.routes[currentRoute.state.index]?.name === 'Transfer';
+        currentRoute.state.routes[currentRoute.state.index].name === 'Transfer';
 
     if (isOnTransferScreen && !isTransferProcessing) {
       return (
@@ -68,11 +72,11 @@ const { isTransferProcessing } = useTransferStore();
       );
     }
 
+    // Check if we're currently on the TransferAccountSelection screen within the Accounts stack
     const isOnTransferAccountSelectionScreen = currentRoute.name === 'Accounts' &&
         currentRoute.state &&
         typeof currentRoute.state.index === 'number' &&
-        currentRoute.state.routes &&
-        currentRoute.state.routes[currentRoute.state.index]?.name === 'TransferAccountSelection';
+        currentRoute.state.routes[currentRoute.state.index].name === 'TransferAccountSelection';
 
     if (isOnTransferAccountSelectionScreen) {
       return (
@@ -80,6 +84,24 @@ const { isTransferProcessing } = useTransferStore();
         <View />
       );
     }
+
+    // Check if we're currently on the CreateTransaction screen within the Transactions stack
+    const isOnTransactionCreationScreen = currentRoute.name === 'Transactions' && (
+        currentRoute.state &&
+        typeof currentRoute.state.index === 'number' &&
+        currentRoute.state.routes &&
+        currentRoute.state.routes[currentRoute.state.index].name === 'CreateTransaction'
+        ||
+        !currentRoute.state // If no state, we're on the initial screen (CreateTransaction)
+        //React Navigation doesn't have a state for the initial screen (CreateTransaction)
+    );
+
+      if (isOnTransactionCreationScreen) {
+        return (
+          <TransactionSubmissionBar />
+        );
+      }
+
 
       return (
         <View style={[styles.tabBarContainer]}>

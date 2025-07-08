@@ -3,7 +3,7 @@ import { DashboardScreen } from '../features/dashboard/screens/HomeScreen';
 import { InsightsScreen } from '../features/insights/screens/InsightsScreen';
 import { ProfileScreen } from '../features/user/screens/ProfileScreen';
 import { AccountsNavigator } from './AccountsNavigator';
-import { TransactionNavigator } from './TransactionNavigatgor';
+import { TransactionNavigator } from './TransactionNavigator';
 import { CustomTabBar } from '../components/CustomTabBar/CustomTabBar';
 import { HomeStackParamList } from './types/HomeNavigatorTypes';
 
