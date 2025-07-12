@@ -27,7 +27,13 @@ export const AccountSelector = ({ navigation } : AccountSelectorProps ) => {
             <AnimatedPressable
                 onPress = {navigateToAccountSelection}
             >
-                <SelectedAccountCard emptyCard = {sourceAccount ? false : true} />
+                <SelectedAccountCard
+                    emptyCard = {sourceAccount ? false : true}
+                    accountColor = {sourceAccount?.color}
+                    accountIcon = {sourceAccount?.icon}
+                    accountBalance = {sourceAccount?.balance}
+                    accountName = {sourceAccount?.name}
+                />
             </AnimatedPressable>
         </View>
     );

@@ -15,7 +15,7 @@ export const styles = StyleSheet.create({
         marginBottom: spacing.xs,
     },
     selectedAccountCard: {
-        backgroundColor: colors.gray[300],
+        backgroundColor: colors.gray[200],
     },
     iconContainer: {
         padding: spacing.sm,

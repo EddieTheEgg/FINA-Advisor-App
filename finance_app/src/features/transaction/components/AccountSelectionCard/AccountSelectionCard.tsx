@@ -5,6 +5,8 @@ import { AnimatedPressable } from '../../../../components/AnimatedPressable/Anim
 import { styles } from './AccountSelectionCard.styles';
 import { capitalizeFirstLetter, truncateText } from '../../../../utils/textFormat';
 import { formatBalance } from '../../../../utils/balanceFormat';
+import { useCreateTransactionStore } from '../../store/useTransactionStore';
+import { colors } from '../../../../styles/colors';
 
 
 type AccountSelectionCardProps = {
@@ -12,17 +14,24 @@ type AccountSelectionCardProps = {
     navigation: TransactionNavigatorProps,
 }
 
-const handleNavToTransactionScreen = () => {
-    console.log('Going to transction screen!');
-}
 
 
 export const AccountSelectionCard = ({accountItem, navigation} : AccountSelectionCardProps) => {
+
+    const {sourceAccount, setSourceAccount} = useCreateTransactionStore();
+
+    const handleNavToTransactionScreen = () => {
+        setSourceAccount(accountItem);
+        navigation.navigate('CreateTransaction');
+    };
+
     return (
          <AnimatedPressable
             scaleValue={0.9}
             delay={200}
-            style = {styles.AccountCardContainer}
+            style = {[
+                styles.AccountCardContainer,
+                sourceAccount?.accountId === accountItem.accountId ? styles.selectedAccountCard : '']}
             onPress = {handleNavToTransactionScreen}
         >
             <View style = {[styles.iconContainer ,{backgroundColor : accountItem.color}]}>
@@ -36,5 +45,5 @@ export const AccountSelectionCard = ({accountItem, navigation} : AccountSelectio
                 <Text style = {styles.accountBalanceText}>${formatBalance(accountItem.balance)}{'>'}</Text>
             </View>
         </AnimatedPressable>
-    )
-}
+    );
+};
