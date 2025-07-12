@@ -6,7 +6,6 @@ import { styles } from './AccountSelectionCard.styles';
 import { capitalizeFirstLetter, truncateText } from '../../../../utils/textFormat';
 import { formatBalance } from '../../../../utils/balanceFormat';
 import { useCreateTransactionStore } from '../../store/useTransactionStore';
-import { colors } from '../../../../styles/colors';
 
 
 type AccountSelectionCardProps = {

@@ -24,6 +24,7 @@ export const styles = StyleSheet.create({
         marginHorizontal: spacing.md,
     },
     expenseSection : {
+        gap: spacing.md,
         marginVertical: spacing.lg,
         marginHorizontal: spacing.md,
     },
