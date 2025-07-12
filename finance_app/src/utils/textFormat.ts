@@ -10,3 +10,8 @@
         }
         return text.substring(0, maxLength) + '...';
     };
+
+    //Simply capitalizes first letter of the given string
+    export const capitalizeFirstLetter = (text: string) => {
+        return text.charAt(0).toUpperCase() + text.slice(1);
+    };
