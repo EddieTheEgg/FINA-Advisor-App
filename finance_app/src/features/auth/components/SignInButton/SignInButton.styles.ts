@@ -5,12 +5,16 @@ import { spacing } from '../../../../styles/spacing.js';
 
 
 export const styles = StyleSheet.create({
+  wrapper: {
+    width: '100%',
+    alignSelf: 'stretch',
+  },
   container: {
     backgroundColor: colors.secondary,
     paddingVertical: spacing.md,
     borderRadius: 30,
     width: '100%',
-    boxShadow: '0 8px 5px 0 rgba(0, 0, 0, 0.3)',
+    boxShadow: '0 5px 5px 0 rgba(0, 0, 0, 0.3)',
   },
   buttonText: {
     color: colors.white,
