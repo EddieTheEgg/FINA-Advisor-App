@@ -4,6 +4,8 @@ import { styles } from './AccountCard.styles';
 import { AccountNavigatorProps } from '../../../../navigation/types/AccountNavigatorTypes';
 import { useTransferStore } from '../../store/useTransferStore';
 import { AnimatedPressable } from '../../../../components/AnimatedPressable/AnimatedPressable';
+import { formatBalance } from '../../../../utils/balanceFormat.ts';
+import { truncateText } from '../../../../utils/textFormat.ts';
 
 type AccountCardProps = {
     accountItem : AccountResponse
@@ -15,17 +17,6 @@ type AccountCardProps = {
 export const AccountCard = ({accountItem, navigation, transferAccountCard, selectionType} : AccountCardProps) => {
 
     const {fromAccount, toAccount, setFromAccount, setToAccount} = useTransferStore();
-
-    const truncateText = (text: string, maxLength: number) => {
-        if (text.length <= maxLength) {
-            return text;
-        }
-        return text.substring(0, maxLength) + '...';
-    };
-
-    const formatBalance = (balance: number) => {
-        return balance.toLocaleString('en-US', { minimumFractionDigits: 2, maximumFractionDigits: 2 });
-    };
 
     const capitalizeFirstLetter = (text: string) => {
         return text.charAt(0).toUpperCase() + text.slice(1);

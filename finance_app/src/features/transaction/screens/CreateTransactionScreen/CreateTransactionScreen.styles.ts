@@ -23,4 +23,8 @@ export const styles = StyleSheet.create({
     transactionTypeContainer : {
         marginHorizontal: spacing.md,
     },
+    expenseSection : {
+        marginVertical: spacing.lg,
+        marginHorizontal: spacing.md,
+    },
 });

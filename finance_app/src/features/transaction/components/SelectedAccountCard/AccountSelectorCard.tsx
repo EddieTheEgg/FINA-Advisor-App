@@ -1,9 +1,11 @@
-import { View, Text } from 'react-native';
-import { styles } from './TransferAccountCard.styles';
-import { formatBalance } from '../../../../utils/balanceFormat.ts';
-import { truncateText } from '../../../../utils/textFormat.ts';
-//The transfer account card will either display account info, or nothing which is when emptySelected is true
-type TransferAccountCardProps = {
+import { Text, View } from 'react-native';
+import { truncateText } from '../../../../utils/textFormat';
+import { formatBalance } from '../../../../utils/balanceFormat';
+import {styles } from './AccountSelectorCard.styles';
+
+
+
+type SelectedAccountCardProps = {
     emptyCard: boolean,
     accountColor?: string,
     accountIcon?: string,
@@ -11,8 +13,7 @@ type TransferAccountCardProps = {
     accountName?: string,
 }
 
-export const TransferAccountCard = ({accountColor, accountIcon, accountBalance, accountName, emptyCard} : TransferAccountCardProps) => {
-
+export const SelectedAccountCard = ({accountColor, accountIcon, accountBalance, accountName, emptyCard} : SelectedAccountCardProps) => {
   return emptyCard ? (
     <View style = {styles.emptyAccountCardContainer}>
        <Text style = {[styles.emptyAccountIcon]}>  ?  </Text>
