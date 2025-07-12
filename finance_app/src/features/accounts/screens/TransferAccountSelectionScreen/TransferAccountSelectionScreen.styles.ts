@@ -12,16 +12,16 @@ export const styles = StyleSheet.create({
         flexDirection: 'row',
         alignItems: 'center',
         marginHorizontal: spacing.md,
-        marginBottom: spacing.sm,
-        gap: spacing.sm,
+        marginVertical: spacing.md,
+        gap: spacing.md,
     },
     headerText: {
         fontSize: fontSize.xxl,
         fontFamily: 'Poppins-SemiBold',
+        includeFontPadding: false,
         color: colors.black,
     },
     accountListContainer: {
-        marginTop: spacing.md,
         marginHorizontal: spacing.sm,
     },
 });

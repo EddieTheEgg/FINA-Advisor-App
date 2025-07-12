@@ -22,6 +22,7 @@ export const styles = StyleSheet.create({
         fontSize: fontSize.xxl,
         fontFamily: 'Poppins-SemiBold',
         color: colors.black,
+        includeFontPadding: false,
     },
     accountToFromContainer : {
         backgroundColor: colors.white,
