@@ -1,7 +1,7 @@
 import { View, Text } from 'react-native';
 import { TransactionNavigatorProps } from '../../../../navigation/types/TransactionNavigatorTypes';
 import { AnimatedPressable } from '../../../../components/AnimatedPressable/AnimatedPressable';
-import { SelectedAccountCard } from '../SelectedAccountCard/AccountSelectorCard';
+import { SelectedAccountCard } from '../SelectedAccountCard/SelectedAccountCard';
 import { useCreateTransactionStore } from '../../store/useTransactionStore';
 import { styles } from './AccountSelector.styles';
 

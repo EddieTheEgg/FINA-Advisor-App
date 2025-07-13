@@ -7,6 +7,7 @@ import { useCreateTransactionStore } from '../../store/useTransactionStore';
 import { AccountSelector } from '../../components/AccountSelector/AccountSelector';
 import { TransactionNavigatorProps } from '../../../../navigation/types/TransactionNavigatorTypes';
 import { AmountCard } from '../../components/AmountCard/AmountCard';
+import { CategorySelector } from '../../components/CategorySelector/CategorySelector';
 
 type CreateTransactionScreenProps = {
     navigation : TransactionNavigatorProps;
@@ -15,14 +16,14 @@ type CreateTransactionScreenProps = {
 export const CreateTransactionScreen = ( { navigation }: CreateTransactionScreenProps) => {
     const insets = useSafeAreaInsets();
     const height = Dimensions.get('window').height;
-    const canvasPadding = height * 0.02;
+    const canvasPadding = height * 0.04;
 
     const {transactionType} = useCreateTransactionStore();
     return (
         <ScrollView
         showsVerticalScrollIndicator = {false}
         contentContainerStyle = {{paddingBottom: insets.bottom + canvasPadding}}
-        style = {[styles.backgroundContainer,{paddingTop: insets.top + canvasPadding, paddingBottom: insets.bottom}]}>
+        style = {[styles.backgroundContainer,{paddingTop: insets.top + canvasPadding }]}>
             <View style = {styles.header}>
                 <BackButton />
                 <Text style = {styles.title}>Create Transaction</Text>
@@ -34,12 +35,14 @@ export const CreateTransactionScreen = ( { navigation }: CreateTransactionScreen
                 <View style = {styles.expenseSection}>
                     <AccountSelector navigation = {navigation} />
                     <AmountCard />
+                    <CategorySelector navigation = {navigation} />
                 </View>
             )}
             {transactionType === 'INCOME' && (
                 <View style = {styles.expenseSection}>
                     <AccountSelector navigation = {navigation} />
                     <AmountCard />
+                    <CategorySelector navigation = {navigation} />
                 </View>
             )}
         </ScrollView>

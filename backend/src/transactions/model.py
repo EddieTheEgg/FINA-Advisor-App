@@ -44,19 +44,19 @@ class AccountTransactionResponse(BaseModel):
     transaction_id: UUID
     amount: float
     title: str
-    transaction_date: str
+    transaction_date: datetime
     transaction_type: TransactionType
     notes: str | None
     location: str | None
     is_subscription: bool
     subscription_frequency: SubscriptionFrequency | None
-    subscription_start_date: str | None
-    subscription_end_date: str | None
+    subscription_start_date: datetime | None
+    subscription_end_date: datetime | None
     account_name: str
     to_account_name: str | None
     merchant: str | None
-    created_at: str
-    updated_at: str | None
+    created_at: datetime
+    updated_at: datetime | None
     category_simplified: CategorySimplifiedResponse
 
     class Config:
@@ -67,19 +67,19 @@ class TransactionResponse(BaseModel):
     transaction_id: UUID
     amount: float
     title: str
-    transaction_date: str
+    transaction_date: datetime
     transaction_type: TransactionType
     notes: str | None
     location: str | None
     is_subscription: bool
     subscription_frequency: SubscriptionFrequency | None
-    subscription_start_date: str | None
-    subscription_end_date: str | None
+    subscription_start_date: datetime | None
+    subscription_end_date: datetime | None
     account_name: str
     to_account_name: str | None
     merchant: str | None
-    created_at: str
-    updated_at: str | None
+    created_at: datetime
+    updated_at: datetime | None
     category: CategoryResponse
     
 class TransactionListResponse(BaseModel):

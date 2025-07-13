@@ -1,12 +1,13 @@
 import logging
 from typing import List
 from uuid import UUID
-from backend.src.categories.model import CategoryResponse, CategoryCreate, UpdateCategoryRequest
+import logging
+from backend.src.categories.model import CategoryResponse, CategoryCreate, UpdateCategoryRequest, CategoryListResponse
 from sqlalchemy.orm import Session
 
 from backend.src.entities.category import Category
 from backend.src.entities.transaction import Transaction
-from backend.src.exceptions import CategoryNotFoundError, InvalidCategoryForDeletionError, InvalidUserForCategoryError
+from backend.src.exceptions import CategoryNotFoundError, InvalidCategoryForDeletionError, InvalidTransactionTypeError, InvalidUserForCategoryError
 from backend.src.transactions.model import TransactionType
 
 # This is when a user makes a new category besides the default ones, which is custom
@@ -29,13 +30,15 @@ def create_category(db: Session, create_category_request: CategoryCreate, user_i
         raise
 
 # This gets "all" categories connected to the user
+# indexing starts at 0, so for example limit = 5 means 5 categories per page but index from 0-4
 def get_user_categories(
         db: Session,
         user_id: UUID,
         skip: int = 0,
-        limit: int = 100,
+        limit: int = 10, #Default limit is 10
         include_system_default_categories: bool = True,
-) -> List[CategoryResponse]:
+        transaction_type: str | None = None,
+) -> CategoryListResponse:
     possibleCategories = db.query(Category)
 
     #Gets all default and user's possible categories to work with if true
@@ -45,7 +48,24 @@ def get_user_categories(
             (Category.user_id == user_id) | ((Category.is_custom == False) & (Category.user_id == user_id)))
     else:
         possibleCategories = possibleCategories.filter((Category.user_id == user_id) & (Category.is_custom == True))
-    return possibleCategories.offset(skip).limit(limit).all()
+    
+    # Filter by transaction type if provided
+    if transaction_type:
+        try:
+            transaction_type_enum = TransactionType(transaction_type.upper())
+            possibleCategories = possibleCategories.filter(Category.transaction_type == transaction_type_enum)
+        except ValueError:
+            logging.warning(f"Invalid transaction type: {transaction_type}")
+            raise InvalidTransactionTypeError(transaction_type)
+        
+    return CategoryListResponse(
+        categories=possibleCategories.offset(skip).limit(limit).all(),
+        total=possibleCategories.count(),
+        has_next=skip + limit < possibleCategories.count(),
+        total_pages=possibleCategories.count() // limit,
+        current_page=skip // limit + 1, 
+        page_size=limit
+    )
 
 # This gets a specific category that is associated with the current active user
 # Helper method for update and delete category methods

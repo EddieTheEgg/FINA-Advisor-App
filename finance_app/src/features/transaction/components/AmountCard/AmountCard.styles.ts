@@ -8,7 +8,7 @@ export const styles = StyleSheet.create({
         backgroundColor: colors.white,
         padding: spacing.md,
         borderRadius: 20,
-        boxShadow: '0px 4px 4px 0px rgba(0, 0, 0, 0.25)',
+        boxShadow: '0 2px 2px 0 rgba(0, 0, 0, 0.3)',
     },
     transferAmountTitle : {
         fontSize: fontSize.lg,

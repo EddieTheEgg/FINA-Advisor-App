@@ -48,6 +48,10 @@ class CategoryError(HTTPException):
     """Base exception for category-related errors"""
     pass
 
+class InvalidTransactionTypeError(CategoryError):
+    def __init__(self, transaction_type: str):
+        super().__init__(status_code=400, detail=f"Invalid transaction type: {transaction_type}")
+
 class CategoryNotFoundError(CategoryError):
     def __init__(self, category_id: UUID):
         super().__init__(status_code=404, detail=f"Category with id {category_id} not found")

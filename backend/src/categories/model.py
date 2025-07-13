@@ -23,6 +23,7 @@ class CategoryResponse(BaseModel):
     icon: str
     color: str
     transaction_type: TransactionType
+    category_description: str | None = None
     is_custom: bool
     user_id: UUID | None
     created_at: datetime
@@ -44,7 +45,10 @@ class CategorySimplifiedResponse(BaseModel):
 
 class CategoryListResponse(BaseModel):
     categories: list[CategoryResponse]
-    total: int  
+    total: int
+    has_next: bool
+    current_page: int
+    page_size: int
 
     class Config:
         from_attributes = True

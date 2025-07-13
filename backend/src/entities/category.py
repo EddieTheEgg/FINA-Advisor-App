@@ -16,6 +16,7 @@ class Category(Base):
     color = Column(String, nullable = False)
     transaction_type = Column(Enum(TransactionType, name='transactiontype'), nullable = False, default = TransactionType.EXPENSE)
     is_custom = Column(Boolean, nullable = False, default = False)
+    category_description = Column(String, nullable = True)
     user_id = Column(UUID(as_uuid=True), ForeignKey("users.user_id"), index=True)
     created_at = Column(DateTime(timezone=True), server_default = func.now())
     updated_at = Column(DateTime(timezone=True), onupdate=func.now())

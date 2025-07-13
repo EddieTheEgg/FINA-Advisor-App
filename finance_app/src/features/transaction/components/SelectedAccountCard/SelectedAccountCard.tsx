@@ -1,7 +1,7 @@
 import { Text, View } from 'react-native';
 import { truncateText } from '../../../../utils/textFormat';
 import { formatBalance } from '../../../../utils/balanceFormat';
-import {styles } from './AccountSelectorCard.styles';
+import {styles } from './SelectedAccountCard.styles';
 
 
 

@@ -1,17 +1,21 @@
 import { create } from 'zustand';
 import { AccountResponse } from '../../accounts/types';
+import { CategoryResponse } from '../types';
 
 type CreateTransactionState = {
     transactionType: 'INCOME' | 'EXPENSE' | 'TRANSFER';
     sourceAccount : AccountResponse | null;
     amount : number;
     amountError: string,
+    selectedCategory: CategoryResponse | null,
 
 
     setTransactionType : (transactionType : 'INCOME' | 'EXPENSE' | 'TRANSFER') => void;
     setSourceAccount : (sourceAccount : AccountResponse) => void;
     setAmount : (amount : number) => void;
     setAmountError: (error: string) => void;
+    setSelectedCategory : (selectedCategory : CategoryResponse) => void;
+
 
     validateAmount : (amount : number) => boolean;
 };
@@ -21,6 +25,7 @@ const initialState = {
     sourceAccount: null,
     amount: 0.00,
     amountError: '',
+    selectedCategory: null,
 };
 
 
@@ -32,6 +37,7 @@ export const useCreateTransactionStore = create<CreateTransactionState>((set, ge
     setSourceAccount: (sourceAccount) => set({sourceAccount: sourceAccount}),
     setAmount: (amount) => set({amount: amount}),
     setAmountError: (error) => set({ amountError: error }),
+    setSelectedCategory: (selectedCategory) => set({selectedCategory: selectedCategory}),
 
     validateAmount: () => {
         const {amount} = get();
