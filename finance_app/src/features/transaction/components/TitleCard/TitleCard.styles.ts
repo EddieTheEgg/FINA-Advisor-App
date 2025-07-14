@@ -4,7 +4,7 @@ import { spacing } from '../../../../styles/spacing';
 import { fontSize } from '../../../../styles/fontSizes';
 
 export const styles = StyleSheet.create({
-    transferTitle: {
+    title: {
         backgroundColor: colors.white,
         padding: spacing.md,
         borderRadius: 20,
@@ -16,7 +16,7 @@ export const styles = StyleSheet.create({
         justifyContent: 'space-between',
         alignItems: 'center',
     },
-    transferTitleText: {
+    titleText: {
         fontSize: fontSize.lg,
         fontFamily: 'Poppins-SemiBold',
         color: colors.black,
@@ -29,14 +29,14 @@ export const styles = StyleSheet.create({
     charCounterWarning: {
         color: colors.red,
     },
-    transferTitleInput: {
+    titleInput: {
         backgroundColor: colors.gray[50],
         borderRadius: 10,
         padding: spacing.sm,
         fontSize: fontSize.base,
         fontFamily: 'Poppins-Regular',
         color: colors.black,
-        borderWidth: 1,
+        borderWidth: 2,
         borderColor: colors.gray[200],
     },
 });
