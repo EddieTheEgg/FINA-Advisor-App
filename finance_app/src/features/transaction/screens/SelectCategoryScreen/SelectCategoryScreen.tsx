@@ -11,6 +11,7 @@ import { useCreateTransactionStore } from '../../store/useTransactionStore';
 import { LoadingDots } from '../../../../components/LoadingDots/LoadingDots';
 import { spacing } from '../../../../styles/spacing';
 import { CategoryResponse } from '../../types';
+import { AddCategoryButton } from '../../../categories/components/AddCategoryButton/AddCategoryButton';
 
 type SelectCategoryScreenProps = {
   navigation: TransactionNavigatorProps;
@@ -45,6 +46,10 @@ export const SelectCategoryScreen = ({ navigation }: SelectCategoryScreenProps) 
 
   const categories = data.pages.flatMap((page) => page?.categories || []);
 
+  const navigateToCreateCategory = () => {
+    navigation.navigate('CreateCategory');
+  };
+
   return (
     <View style={[styles.categoryScreenContainer, { paddingTop: insets.top }]}>
       <View style={styles.headerSection}>
@@ -52,25 +57,28 @@ export const SelectCategoryScreen = ({ navigation }: SelectCategoryScreenProps) 
         <Text style={styles.title}>Select Category</Text>
       </View>
       <View style = {styles.categoryListContainer}>
-                <FlatList
-          contentContainerStyle={[{ paddingBottom: insets.bottom + canvasPadding }]}
-          showsVerticalScrollIndicator={false}
-        data={categories}
-        keyExtractor={(item : CategoryResponse) => item.categoryId.toString()}
-        renderItem={({ item } : {item : CategoryResponse}) => (
-            <CategorySelectionCard categoryItem={item} navigation={navigation} />
-        )}
-        ItemSeparatorComponent={seperator}
-        onEndReached={() => {
-            console.log('onEndReached triggered', { hasNextPage, isFetchingNextPage });
-            if (hasNextPage && !isFetchingNextPage) {
-              console.log('Fetching next page...');
-              fetchNextPage();
-            }
-        }}
-        onEndReachedThreshold={0.1}
-          ListFooterComponent={isFetchingNextPage ? <LoadingDots /> : null}
+          <FlatList
+            contentContainerStyle={[{ paddingBottom: insets.bottom + canvasPadding }]}
+            showsVerticalScrollIndicator={false}
+            data={categories}
+            keyExtractor={(item : CategoryResponse) => item.categoryId.toString()}
+            renderItem={({ item } : {item : CategoryResponse}) => (
+                <CategorySelectionCard categoryItem={item} navigation={navigation} />
+            )}
+            ItemSeparatorComponent={seperator}
+            onEndReached={() => {
+                console.log('onEndReached triggered', { hasNextPage, isFetchingNextPage });
+                if (hasNextPage && !isFetchingNextPage) {
+                  console.log('Fetching next page...');
+                  fetchNextPage();
+                }
+            }}
+            onEndReachedThreshold={0.1}
+            ListFooterComponent={isFetchingNextPage ? <LoadingDots /> : null}
         />
+      </View>
+      <View style={[styles.addCategoryButtonContainer, { bottom: insets.bottom + 80 }]}>
+        <AddCategoryButton onPress={navigateToCreateCategory} />
       </View>
     </View>
   );

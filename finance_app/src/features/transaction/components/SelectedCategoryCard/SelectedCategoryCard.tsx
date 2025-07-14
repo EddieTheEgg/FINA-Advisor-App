@@ -24,7 +24,7 @@ export const SelectedCategoryCard = ({emptyCard, categoryColor, categoryIcon, ca
             <Text style = {[styles.categoryIcon, {backgroundColor: categoryColor}]}>{categoryIcon}</Text>
             <View style = {styles.categoryInfoContainer}>
               <Text style = {styles.categoryName}>{truncateText(categoryName, 15)}</Text>
-              <Text style = {styles.categoryDescription}>{categoryDescription}</Text>
+              {categoryDescription && <Text style = {styles.categoryDescription}>{categoryDescription}</Text>}
             </View>
             <Text style = {styles.arrowIcon}> {'>'}</Text>
         </View>
