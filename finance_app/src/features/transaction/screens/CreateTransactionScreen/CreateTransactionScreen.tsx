@@ -9,6 +9,7 @@ import { TransactionNavigatorProps } from '../../../../navigation/types/Transact
 import { AmountCard } from '../../components/AmountCard/AmountCard';
 import { CategorySelector } from '../../components/CategorySelector/CategorySelector';
 import { TitleCard } from '../../components/TitleCard/TitleCard';
+import { DateCard } from '../../components/DateCard/DateCard';
 
 type CreateTransactionScreenProps = {
     navigation : TransactionNavigatorProps;
@@ -38,6 +39,7 @@ export const CreateTransactionScreen = ( { navigation }: CreateTransactionScreen
                     <CategorySelector navigation = {navigation} />
                     <AmountCard />
                     <TitleCard />
+                    <DateCard />
                 </View>
             )}
             {transactionType === 'INCOME' && (
@@ -46,6 +48,7 @@ export const CreateTransactionScreen = ( { navigation }: CreateTransactionScreen
                     <CategorySelector navigation = {navigation} />
                     <AmountCard />
                     <TitleCard />
+                    <DateCard />
                 </View>
             )}
         </ScrollView>

@@ -9,7 +9,7 @@ type CreateTransactionState = {
     amountError: string,
     selectedCategory: CategoryResponse | null,
     title : string,
-
+    date: Date;
 
     setTransactionType : (transactionType : 'INCOME' | 'EXPENSE' | 'TRANSFER') => void;
     setSourceAccount : (sourceAccount : AccountResponse) => void;
@@ -17,7 +17,7 @@ type CreateTransactionState = {
     setAmountError: (error: string) => void;
     setSelectedCategory : (selectedCategory : CategoryResponse | null) => void;
     setTitle: (title: string) => void;
-
+    setDate: (date: Date) => void;
 
     validateAmount : (amount : number) => boolean;
 };
@@ -29,9 +29,8 @@ const initialState = {
     amountError: '',
     selectedCategory: null,
     title: '',
+    date: new Date(),
 };
-
-
 
 export const useCreateTransactionStore = create<CreateTransactionState>((set, get) => ({
     ...initialState,
@@ -42,6 +41,7 @@ export const useCreateTransactionStore = create<CreateTransactionState>((set, ge
     setAmountError: (error) => set({ amountError: error }),
     setSelectedCategory: (selectedCategory) => set({selectedCategory: selectedCategory}),
     setTitle: (title) => set({title: title}),
+    setDate: (date) => set({date: date}),
 
     validateAmount: () => {
         const {amount} = get();
