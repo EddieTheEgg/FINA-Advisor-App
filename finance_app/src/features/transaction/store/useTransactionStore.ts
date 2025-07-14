@@ -14,7 +14,7 @@ type CreateTransactionState = {
     setSourceAccount : (sourceAccount : AccountResponse) => void;
     setAmount : (amount : number) => void;
     setAmountError: (error: string) => void;
-    setSelectedCategory : (selectedCategory : CategoryResponse) => void;
+    setSelectedCategory : (selectedCategory : CategoryResponse | null) => void;
 
 
     validateAmount : (amount : number) => boolean;

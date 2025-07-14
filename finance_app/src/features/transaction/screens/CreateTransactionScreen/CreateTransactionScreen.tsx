@@ -34,15 +34,15 @@ export const CreateTransactionScreen = ( { navigation }: CreateTransactionScreen
             {transactionType === 'EXPENSE' && (
                 <View style = {styles.expenseSection}>
                     <AccountSelector navigation = {navigation} />
-                    <AmountCard />
                     <CategorySelector navigation = {navigation} />
+                    <AmountCard />
                 </View>
             )}
             {transactionType === 'INCOME' && (
                 <View style = {styles.expenseSection}>
                     <AccountSelector navigation = {navigation} />
-                    <AmountCard />
                     <CategorySelector navigation = {navigation} />
+                    <AmountCard />
                 </View>
             )}
         </ScrollView>

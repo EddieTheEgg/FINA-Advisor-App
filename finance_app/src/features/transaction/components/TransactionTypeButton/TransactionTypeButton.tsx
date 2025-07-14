@@ -11,7 +11,14 @@ type TransactionTypeButtonProps = {
 
 export const TransactionTypeButton = ({selectedTransactionType, label}: TransactionTypeButtonProps) => {
 
-    const {transactionType, setTransactionType} = useCreateTransactionStore();
+    const {transactionType, setTransactionType, setSelectedCategory} = useCreateTransactionStore();
+
+    const handleChangeTransactionType = () => {
+        if (transactionType !== selectedTransactionType) {
+            setSelectedCategory(null);
+        }
+        setTransactionType(selectedTransactionType);
+    };
 
     return (
         <AnimatedPressable
@@ -20,7 +27,7 @@ export const TransactionTypeButton = ({selectedTransactionType, label}: Transact
                 ? styles.activeTransactionType
                 : styles.inactiveTransactionType
         }
-        onPress={() => setTransactionType(selectedTransactionType)}
+        onPress={handleChangeTransactionType}
     >
      <Text style = {transactionType === selectedTransactionType
                 ? styles.activeTransactionTypeText
