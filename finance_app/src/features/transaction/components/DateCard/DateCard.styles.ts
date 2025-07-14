@@ -43,7 +43,7 @@ export const styles = StyleSheet.create({
         backgroundColor: 'rgba(0, 0, 0, 0.5)',
         justifyContent: 'flex-end',
     },
-    modalContent: {
+    calendarModalContent: {
         backgroundColor: colors.white,
         borderTopLeftRadius: 20,
         borderTopRightRadius: 20,
@@ -69,18 +69,5 @@ export const styles = StyleSheet.create({
         fontSize: fontSize.base,
         fontFamily: 'Poppins-Medium',
         color: colors.darkerBackground,
-    },
-    datePickerContainer: {
-        alignItems: 'center',
-        marginVertical: spacing.lg,
-    },
-    calendarModalContent: {
-        backgroundColor: colors.white,
-        borderTopLeftRadius: 20,
-        borderTopRightRadius: 20,
-        paddingTop: spacing.lg,
-        paddingBottom: spacing.xl,
-        paddingHorizontal: spacing.md,
-        maxHeight: '80%',
     },
 });
