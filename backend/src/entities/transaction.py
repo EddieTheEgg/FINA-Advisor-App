@@ -1,4 +1,4 @@
-from sqlalchemy import Column, Float, ForeignKey, String, Boolean, DateTime, Enum
+from sqlalchemy import Column, Date, Float, ForeignKey, String, Boolean, DateTime, Enum
 from sqlalchemy.dialects.postgresql import UUID
 from sqlalchemy.orm import relationship
 from sqlalchemy.sql import func
@@ -13,7 +13,7 @@ class Transaction(Base):
     transaction_id = Column(UUID(as_uuid=True), primary_key = True, default = uuid.uuid4)
     amount = Column(Float, nullable=False)
     title = Column(String, nullable=False)
-    transaction_date = Column(DateTime(timezone=True), nullable=False)
+    transaction_date = Column(Date, nullable=False)
     transaction_type = Column(Enum(TransactionType, name='transactiontype'), nullable=False, default=TransactionType.EXPENSE)
     notes = Column(String, nullable=True)
     location = Column(String, nullable=True)
