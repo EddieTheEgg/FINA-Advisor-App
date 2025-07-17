@@ -22,7 +22,7 @@ export const styles = StyleSheet.create({
     },
     recurringTransactionDetailsTitle: {
         includeFontPadding: false,
-        fontSize: fontSize.base,
+        fontSize: fontSize.lg,
         fontFamily: 'Poppins-SemiBold',
         color: colors.black,
     },

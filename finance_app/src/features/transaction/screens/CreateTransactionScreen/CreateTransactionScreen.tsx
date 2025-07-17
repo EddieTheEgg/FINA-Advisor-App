@@ -1,4 +1,4 @@
-import { Dimensions, ScrollView, Text, View } from 'react-native';
+import { Dimensions, Platform, ScrollView, Text, View } from 'react-native';
 import { useSafeAreaInsets } from 'react-native-safe-area-context';
 import { styles } from './CreateTransactionScreen.styles';
 import { TransactionTypeCard } from '../../components/TransactionTypeCard/TransactionTypeCard';
@@ -42,7 +42,7 @@ const DashboardBackButton = () => {
 export const CreateTransactionScreen = ( { navigation }: CreateTransactionScreenProps) => {
     const insets = useSafeAreaInsets();
     const height = Dimensions.get('window').height;
-    const canvasPadding = height * 0.04;
+    const canvasPadding = height * 0.03;
 
     const {transactionType} = useCreateTransactionStore();
 
@@ -51,7 +51,7 @@ export const CreateTransactionScreen = ( { navigation }: CreateTransactionScreen
         <ScrollView
         showsVerticalScrollIndicator = {false}
         contentContainerStyle = {{paddingBottom: insets.bottom + canvasPadding}}
-        style = {[styles.backgroundContainer,{paddingTop: insets.top + canvasPadding }]}>
+        style = {[styles.backgroundContainer,{paddingTop: Platform.OS === 'android' ? insets.top + canvasPadding : insets.top}]}>
             <View style = {styles.header}>
                 <DashboardBackButton />
                 <Text style = {styles.title}>Create Transaction</Text>

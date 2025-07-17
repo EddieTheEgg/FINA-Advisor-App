@@ -45,9 +45,9 @@ export const RecurringTransactionCard = () => {
                     onPress={toggleRecurringTransaction}
                 >
                     {recurringTransaction ? (
-                        <FontAwesome6 name="square-check" size={fontSize.lg} color={colors.darkerBackground} />
+                        <FontAwesome6 name="square-check" size={fontSize.xxl} color={colors.darkerBackground} />
                     ) : (
-                        <FontAwesome6 name="square" size={fontSize.lg} color={colors.darkerBackground} />
+                        <FontAwesome6 name="square" size={fontSize.xxl} color={colors.darkerBackground} />
                     )}
                 </AnimatedPressable>
                 <Text style={styles.recurringTransactionDetailsTitle}>This is a recurring transaction</Text>

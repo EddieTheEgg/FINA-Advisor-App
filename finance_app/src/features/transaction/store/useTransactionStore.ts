@@ -213,7 +213,6 @@ export const useCreateTransactionStore = create<CreateTransactionState>((set, ge
 
         if (recurringTransactionStartDate && recurringTransactionEndDate && recurringTransactionStartDate.getTime() >= recurringTransactionEndDate.getTime()) {
             set({recurringTransactionError: 'Start date must be before end date'});
-            console.log('Start date must be before end date');
             return false;
         }
 

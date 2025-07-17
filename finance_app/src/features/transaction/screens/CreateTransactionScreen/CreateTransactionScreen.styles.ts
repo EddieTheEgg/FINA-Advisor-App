@@ -15,8 +15,10 @@ export const styles = StyleSheet.create({
         marginHorizontal: spacing.md,
         alignItems: 'center',
         gap: spacing.xxl + 19,
+        marginBottom: spacing.sm,
     },
     title : {
+        includeFontPadding: false,
         fontSize: fontSize.xl,
         fontFamily: 'Poppins-SemiBold',
     },
@@ -25,7 +27,7 @@ export const styles = StyleSheet.create({
     },
     expenseSection : {
         gap: spacing.md,
-        marginVertical: spacing.lg,
+        marginVertical: spacing.md,
         marginHorizontal: spacing.md,
     },
 });
