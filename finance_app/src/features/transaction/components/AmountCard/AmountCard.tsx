@@ -5,12 +5,17 @@ import { useEffect, useState } from 'react';
 
 export const AmountCard = () => {
 
-    const {transactionType,setAmount, amount, validateAmount, amountError} = useCreateTransactionStore();
+    const {transactionType,setAmount, amount, validateAmount, amountError, sourceAccount} = useCreateTransactionStore();
     const [inputValue, setInputValue] = useState<string>(amount > 0 ? amount.toFixed(2) : '');
 
     useEffect(() => {
-        validateAmount(amount);
-    }, [amount, validateAmount]);
+        validateAmount();
+    }, [amount, validateAmount, sourceAccount]);
+
+    // Sync local input value with store amount when it changes
+    useEffect(() => {
+        setInputValue(amount > 0 ? amount.toFixed(2) : '');
+    }, [amount]);
 
     const handleTextChange = (text: string) => {
         // If text has multiple decimal points, remove the extra ones

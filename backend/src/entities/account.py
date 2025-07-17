@@ -18,6 +18,7 @@ class Account(Base):
     name = Column(String, nullable=False)
     account_type = Column(Enum(AccountType, name='accounttype'), nullable=False, default=AccountType.CHECKING)
     balance = Column(Float, nullable = False, default = 0)
+    credit_limit = Column(Float, nullable = True, default = 0)
     
     #Optional bank details
     bank_name = Column(String, nullable=True)

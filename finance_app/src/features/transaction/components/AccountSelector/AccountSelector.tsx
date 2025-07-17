@@ -12,14 +12,12 @@ type AccountSelectorProps = {
 
 export const AccountSelector = ({ navigation } : AccountSelectorProps ) => {
 
-    const {sourceAccount} = useCreateTransactionStore();
+    const {sourceAccount, sourceAccountError} = useCreateTransactionStore();
 
     const navigateToAccountSelection = () => {
         console.log('Navigated to Account Selection Screen');
         navigation.navigate('SelectAccount');
     };
-
-
 
     return (
         <View style = {styles.accountSelectorContainer}>
@@ -35,6 +33,9 @@ export const AccountSelector = ({ navigation } : AccountSelectorProps ) => {
                     accountName = {sourceAccount?.name}
                 />
             </AnimatedPressable>
+            {sourceAccountError && (
+                <Text style={styles.selectedAccountError}>{sourceAccountError}</Text>
+            )}
         </View>
     );
 };

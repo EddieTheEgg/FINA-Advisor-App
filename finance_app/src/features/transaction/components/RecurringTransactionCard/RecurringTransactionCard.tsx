@@ -16,7 +16,9 @@ export const RecurringTransactionCard = () => {
         recurringTransactionEndDate,
         setRecurringTransactionEndDate,
         recurringTransactionFrequency,
-        setRecurringTransactionFrequency} = useCreateTransactionStore();
+        setRecurringTransactionFrequency,
+        validateRecurringTransaction,
+        recurringTransactionError} = useCreateTransactionStore();
 
     const toggleRecurringTransaction = () => {
         setRecurringTransaction(!recurringTransaction);
@@ -24,10 +26,12 @@ export const RecurringTransactionCard = () => {
 
     const handleStartDateSelect = (date: Date) => {
         setRecurringTransactionStartDate(date);
+        validateRecurringTransaction();
     };
 
     const handleEndDateSelect = (date: Date) => {
         setRecurringTransactionEndDate(date);
+        validateRecurringTransaction();
     };
 
     const handleFrequencySelect = (frequency: 'DAILY' | 'WEEKLY' | 'MONTHLY' | 'YEARLY') => {
@@ -48,6 +52,9 @@ export const RecurringTransactionCard = () => {
                 </AnimatedPressable>
                 <Text style={styles.recurringTransactionDetailsTitle}>This is a recurring transaction</Text>
             </View>
+            {recurringTransactionError && (
+                <Text style={styles.recurringTransactionError}>{recurringTransactionError}</Text>
+            )}
             {recurringTransaction && (
                 <View style={styles.recurringTransactionDetailsContainer}>
                     <RecurringTransactionDateSelector

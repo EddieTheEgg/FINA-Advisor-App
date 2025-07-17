@@ -6,7 +6,6 @@ import { fontSize } from '../../../../styles/fontSizes';
 export const styles = StyleSheet.create({
      transactionSubmissionBar: {
         display: 'flex',
-        flexDirection: 'row',
         width: '100%',
         paddingBottom: spacing.xxl,
         paddingTop: spacing.md,
@@ -14,16 +13,26 @@ export const styles = StyleSheet.create({
     },
     completeTransactionButton: {
         backgroundColor: colors.darkerBackground,
-        paddingHorizontal: spacing.xxl * 2,
         paddingVertical: spacing.md,
         borderRadius: 10,
-        width: '100%',
         alignItems: 'center',
         justifyContent: 'center',
+        marginHorizontal: spacing.lg,
     },
     completeTransactionButtonText: {
         color: colors.white,
         fontSize: fontSize.xl,
-        fontWeight: 'bold',
+        fontFamily: 'Poppins-SemiBold',
+    },
+    errorContainer: {
+        width: '100%',
+        alignItems: 'center',
+        justifyContent: 'center',
+    },
+    errorText: {
+        fontSize: fontSize.base,
+        fontFamily: 'Poppins-Regular',
+        color: colors.red,
+        marginBottom: spacing.sm,
     },
 });

@@ -14,6 +14,7 @@ class AccountCreateRequest(BaseModel):
     is_default: bool
     include_in_totals: bool
     is_active: bool
+    credit_limit: float | None = None
     bank_name: str | None = None
     account_number: str | None = None
     routing_number: str | None = None
@@ -28,6 +29,7 @@ class AccountResponse(BaseModel):
     is_default: bool
     include_in_totals: bool
     is_active: bool
+    credit_limit: float | None = None
     bank_name: str | None = None
     account_number: str | None = None
     routing_number: str | None = None

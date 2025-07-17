@@ -25,6 +25,7 @@ export const getUserGroupedAccounts = async(): Promise<GroupedAccountsResponse> 
                 isDefault: account.is_default,
                 includeInTotals: account.include_in_totals,
                 isActive: account.is_active,
+                creditLimit: account.credit_limit,
                 bankName: account.bank_name,
                 accountNumber: account.account_number,
                 routingNumber: account.routing_number,

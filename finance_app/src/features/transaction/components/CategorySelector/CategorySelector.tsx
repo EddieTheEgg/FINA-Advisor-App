@@ -11,7 +11,7 @@ type CategorySelectorProps = {
 
 export const CategorySelector = ({navigation} : CategorySelectorProps) => {
 
-    const { selectedCategory } = useCreateTransactionStore();
+    const { selectedCategory, selectedCategoryError } = useCreateTransactionStore();
 
     const navigateToCategorySelection = () => {
         navigation.navigate('SelectCategory');
@@ -31,6 +31,9 @@ export const CategorySelector = ({navigation} : CategorySelectorProps) => {
                 categoryDescription = {selectedCategory?.categoryDescription}
             />
         </AnimatedPressable>
+        {selectedCategoryError && (
+            <Text style={styles.selectedCategoryError}>{selectedCategoryError}</Text>
+        )}
     </View>
     );
 };

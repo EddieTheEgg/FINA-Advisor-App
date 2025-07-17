@@ -1,6 +1,6 @@
 import { Text, TextInput, View } from 'react-native';
 import { styles } from './TitleCard.styles';
-import { useState } from 'react';
+import { useEffect, useState } from 'react';
 import { useCreateTransactionStore } from '../../store/useTransactionStore';
 
 type TitleCardProps = {
@@ -12,7 +12,7 @@ export const TitleCard = ({
     placeholder = 'Enter transaction title...',
     maxLength = 50,
 }: TitleCardProps) => {
-    const {title, setTitle} = useCreateTransactionStore();
+    const {title, setTitle, validateTitle, titleError} = useCreateTransactionStore();
     const [titleInput, setTitleInput] = useState(title);
 
     const storeValidTitle = () => {
@@ -20,7 +20,12 @@ export const TitleCard = ({
         if (titleInput.trim() !== title) {
             setTitle(titleInput);
         }
+        validateTitle();
     };
+
+    useEffect(() => {
+        validateTitle();
+    }, [titleInput, validateTitle]);
 
     const remainingChars = maxLength - titleInput.length;
     return (
@@ -44,6 +49,9 @@ export const TitleCard = ({
                 maxLength={maxLength}
                 onBlur={storeValidTitle}
             />
+            {titleError && (
+                <Text style={styles.titleError}>{titleError}</Text>
+            )}
         </View>
     );
 };

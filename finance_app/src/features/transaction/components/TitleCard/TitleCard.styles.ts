@@ -39,4 +39,9 @@ export const styles = StyleSheet.create({
         borderWidth: 2,
         borderColor: colors.gray[200],
     },
+    titleError: {
+        fontSize: fontSize.sm,
+        fontFamily: 'Poppins-Regular',
+        color: colors.red,
+    },
 });

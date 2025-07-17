@@ -1,5 +1,5 @@
 import { create } from 'zustand';
-import { AccountResponse } from '../../accounts/types';
+import { AccountResponse, AccountType } from '../../accounts/types';
 import { CategoryResponse } from '../types';
 
 type CreateTransactionState = {
@@ -34,11 +34,19 @@ type CreateTransactionState = {
     setRecurringTransactionEndDate: (recurringTransactionEndDate: Date | null) => void;
 
     // Validation errors
+    sourceAccountError: string;
+    selectedCategoryError: string;
     recurringTransactionError: string;
+    titleError: string;
 
-    // Validation functions
-    validateAmount : (amount : number) => boolean;
+    // Validation
+    validateSourceAccount : () => boolean;
+    validateSelectedCategory : () => boolean;
+    validateTitle : () => boolean;
+    validateAmount : () => boolean;
     validateRecurringTransaction : () => boolean;
+    validateCreateTransaction : () => boolean;
+    resetToInitialState : () => void;
 };
 
 const initialState = {
@@ -58,7 +66,10 @@ const initialState = {
     recurringTransactionEndDate: null,
 
     // Validation errors
+    sourceAccountError: '',
     recurringTransactionError: '',
+    titleError: '',
+    selectedCategoryError: '',
 };
 
 export const useCreateTransactionStore = create<CreateTransactionState>((set, get) => ({
@@ -79,12 +90,118 @@ export const useCreateTransactionStore = create<CreateTransactionState>((set, ge
     setRecurringTransactionStartDate: (recurringTransactionStartDate) => set({recurringTransactionStartDate: recurringTransactionStartDate}),
     setRecurringTransactionEndDate: (recurringTransactionEndDate) => set({recurringTransactionEndDate: recurringTransactionEndDate}),
 
+    resetToInitialState: () => set(initialState),
+
+    validateSourceAccount: () => {
+        const {sourceAccount} = get();
+
+        if (!sourceAccount) {
+            set({sourceAccountError: 'Account is required'});
+            return false;
+        }
+
+        set({sourceAccountError: ''});
+        return true;
+    },
+
+    validateSelectedCategory: () => {
+        const {selectedCategory} = get();
+
+        if (!selectedCategory) {
+            set({selectedCategoryError: 'Category is required'});
+            return false;
+        }
+
+        set({selectedCategoryError: ''});
+        return true;
+    },
+
+    validateTitle: () => {
+        const {title} = get();
+
+        if (!title) {
+            set({titleError: 'Title is required'});
+            return false;
+        }
+
+        if (title.length < 3) {
+            set({titleError: 'Title must be at least 3 characters long'});
+            return false;
+        }
+
+        set({titleError: ''});
+        return true;
+    },
+
     validateAmount: () => {
-        const {amount} = get();
+        const {amount, transactionType, sourceAccount} = get();
+
+        if (!sourceAccount) {
+            set({amountError: 'Choose an account first to ensure this amount is valid'});
+            return false;
+        }
+
+        const {accountType, balance, creditLimit = 0} = sourceAccount;
 
         if (amount <= 0.00) {
             set({ amountError: 'Transaction amount must be greater than 0' });
             return false;
+        }
+
+        if (transactionType === 'EXPENSE') {
+            switch (accountType) {
+                case AccountType.CASH:
+                    if (amount > balance) {
+                        set({amountError: 'Not enough cash to cover this transaction'});
+                        return false;
+                    }
+                    break;
+
+                case AccountType.CHECKING:
+                    //Note in future, if we support overdrafts, we need to add logic to handle that
+                    if (amount > balance) {
+                        set({amountError: 'Insufficient funds'});
+                        return false;
+                    }
+                    break;
+
+                case AccountType.SAVINGS:
+                    if (amount > balance) {
+                        set({amountError: 'Insufficient funds'});
+                        return false;
+                    }
+                    break;
+
+                case AccountType.CREDIT_CARD:
+                    if (creditLimit && Math.abs(amount) > Math.abs(creditLimit - balance)) {
+                        set({amountError: `Exceeds the account's credit limit: $${creditLimit.toFixed(2)}`});
+                        return false;
+                    }
+                    break;
+
+                case AccountType.LOAN:
+                    if (amount > balance) {
+                        set({amountError: 'Loan balance exceeded'});
+                        return false;
+                    }
+                    break;
+
+                case AccountType.INVESTMENT:
+                    // Optional: For the future, if we support withdrawing investments
+                    break;
+            }
+        }
+
+        if (transactionType === 'INCOME') {
+            switch (accountType) {
+                case AccountType.LOAN:
+                    set({amountError: 'Cannot deposit income into a loan account'});
+                    return false;
+                case AccountType.CREDIT_CARD:
+                    // Putting income into a credit card is allowed (to pay down the credit, or if account
+                    // becomes positive, someone owes you credit)
+                    break;
+            }
         }
 
         set({amountError: ''});
@@ -94,12 +211,26 @@ export const useCreateTransactionStore = create<CreateTransactionState>((set, ge
     validateRecurringTransaction: () => {
         const {recurringTransactionStartDate, recurringTransactionEndDate} = get();
 
-        if (recurringTransactionStartDate && recurringTransactionEndDate && recurringTransactionStartDate > recurringTransactionEndDate) {
+        if (recurringTransactionStartDate && recurringTransactionEndDate && recurringTransactionStartDate.getTime() >= recurringTransactionEndDate.getTime()) {
             set({recurringTransactionError: 'Start date must be before end date'});
+            console.log('Start date must be before end date');
             return false;
         }
 
         set({recurringTransactionError: ''});
         return true;
+    },
+
+    // Make sure all fields (that have validation) are valid before creating a transaction
+    validateCreateTransaction: () => {
+        const {validateTitle, validateAmount, validateRecurringTransaction, validateSelectedCategory, validateSourceAccount} = get();
+
+        const titleValid = validateTitle();
+        const amountValid = validateAmount();
+        const recurringTransactionValid = validateRecurringTransaction();
+        const selectedCategoryValid = validateSelectedCategory();
+        const sourceAccountValid = validateSourceAccount();
+
+        return titleValid && amountValid && recurringTransactionValid && selectedCategoryValid && sourceAccountValid;
     },
 }));

@@ -48,6 +48,7 @@ def create_account(db: Session, account_create_request: AccountCreateRequest, us
             is_default=account.is_default,
             include_in_totals=account.include_in_totals,
             is_active=account.is_active,
+            credit_limit=account.credit_limit,
             bank_name=account.bank_name,
             account_number=account.account_number,
             routing_number=account.routing_number
@@ -71,6 +72,7 @@ def get_user_accounts(db: Session, user_id: UUID) -> List[AccountResponse]:
             is_default=account.is_default,
             include_in_totals=account.include_in_totals,
             is_active=account.is_active,
+            credit_limit=account.credit_limit,
             bank_name=account.bank_name,
             account_number=account.account_number,
             routing_number=account.routing_number,
@@ -145,6 +147,7 @@ def get_account_by_id(db: Session, account_id: UUID, user_id: UUID) -> AccountRe
             is_default=account.is_default,
             include_in_totals=account.include_in_totals,
             is_active=account.is_active,
+            credit_limit=account.credit_limit,
             bank_name=account.bank_name,
             account_number=account.account_number,
             routing_number=account.routing_number,

@@ -16,7 +16,10 @@ export const RecurringTransactionDateSelector = ({ onDateSelect, title, value }:
     const [showCalendar, setShowCalendar] = useState(false);
 
     // Format date for display ex.) Date -> Sunday, July 14, 2025
-    const formatDateToDisplay = (dateToFormat: Date) => {
+    const formatDateToDisplay = (dateToFormat: Date | null) => {
+        if (!dateToFormat) {
+            return '';
+        }
         return dateToFormat.toLocaleDateString('en-US', {
             weekday: 'long',
             year: 'numeric',
@@ -26,7 +29,10 @@ export const RecurringTransactionDateSelector = ({ onDateSelect, title, value }:
     };
 
     // Format date for calendar ex.) Date -> 2025-07-14
-    const formatDateForCalendar = (dateToFormat: Date) => {
+    const formatDateForCalendar = (dateToFormat: Date | null) => {
+        if (!dateToFormat) {
+            return '';
+        }
         return dateToFormat.toISOString().split('T')[0];
     };
 
@@ -39,8 +45,7 @@ export const RecurringTransactionDateSelector = ({ onDateSelect, title, value }:
     };
 
     const today = new Date();
-    const currentDate = value ?? today;
-    const maxDate = formatDateForCalendar(today);
+    const currentDate = value;
     const selectedDate = formatDateForCalendar(currentDate);
 
     return (
@@ -87,7 +92,6 @@ export const RecurringTransactionDateSelector = ({ onDateSelect, title, value }:
                                 },
                             }}
                             onDayPress={handleDateSelect}
-                            maxDate={maxDate}
                             theme={{
                                 backgroundColor: colors.gray[500],
                                 textDisabledColor: colors.gray[300],

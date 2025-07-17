@@ -16,4 +16,9 @@ export const styles = StyleSheet.create({
         fontSize: fontSize.lg,
         fontFamily: 'Poppins-SemiBold',
     },
+    selectedAccountError : {
+        fontSize: fontSize.sm,
+        fontFamily: 'Poppins-Regular',
+        color: colors.red,
+    },
 });

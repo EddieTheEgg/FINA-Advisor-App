@@ -10,7 +10,6 @@ export enum AccountType {
 }
 
 export type AccountResponse = {
-    length: number;
     accountId: string;
     name: string;
     accountType: AccountType;
@@ -20,6 +19,7 @@ export type AccountResponse = {
     isDefault: boolean;
     includeInTotals: boolean;
     isActive: boolean;
+    creditLimit: number | null;
     bankName: string | null;
     accountNumber: string | null;
     routingNumber: string | null;
@@ -42,6 +42,7 @@ export type AccountTransactionResponse = {
     subscriptionEndDate: string | null;
     accountName: string;
     toAccountName?: string;
+    creditLimit: number | null;
     merchant: string | null;
     createdAt: string;
     updatedAt: string;
@@ -87,6 +88,7 @@ export type BackendAccountResponse = {
     is_default: boolean;
     include_in_totals: boolean;
     is_active: boolean;
+    credit_limit: number | null;
     bank_name: string | null;
     account_number: string | null;
     routing_number: string | null;
@@ -108,6 +110,7 @@ export type BackendTransactionAccountResponse = {
     subscription_end_date: string | null;
     account_name: string;
     to_account_name: string | null;
+    credit_limit: number | null;
     merchant: string | null;
     created_at: string;
     updated_at: string | null;

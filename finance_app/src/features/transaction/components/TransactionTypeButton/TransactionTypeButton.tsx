@@ -1,3 +1,4 @@
+import React from 'react';
 import { AnimatedPressable } from '../../../../components/AnimatedPressable/AnimatedPressable';
 import { Text } from 'react-native';
 import { useCreateTransactionStore } from '../../store/useTransactionStore';
@@ -9,15 +10,13 @@ type TransactionTypeButtonProps = {
     label: string;
 }
 
-export const TransactionTypeButton = ({selectedTransactionType, label}: TransactionTypeButtonProps) => {
+export const TransactionTypeButton = React.memo(({selectedTransactionType, label}: TransactionTypeButtonProps) => {
 
-    const {transactionType, setTransactionType, setSelectedCategory} = useCreateTransactionStore();
+    const {transactionType, setTransactionType, setAmount} = useCreateTransactionStore();
 
     const handleChangeTransactionType = () => {
-        if (transactionType !== selectedTransactionType) {
-            setSelectedCategory(null);
-        }
         setTransactionType(selectedTransactionType);
+        setAmount(0.00);
     };
 
     return (
@@ -34,4 +33,4 @@ export const TransactionTypeButton = ({selectedTransactionType, label}: Transact
                 : styles.inactiveTransactionTypeText}>{label}</Text>
     </AnimatedPressable>
 );
-};
+});
