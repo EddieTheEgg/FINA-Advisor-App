@@ -11,6 +11,8 @@ type CreateTransactionState = {
     title : string,
     date: Date;
     merchant: string | null;
+    location: string | null;
+    notes: string | null;
 
     setTransactionType : (transactionType : 'INCOME' | 'EXPENSE' | 'TRANSFER') => void;
     setSourceAccount : (sourceAccount : AccountResponse) => void;
@@ -20,6 +22,8 @@ type CreateTransactionState = {
     setTitle: (title: string) => void;
     setDate: (date: Date) => void;
     setMerchant: (merchant: string | null) => void;
+    setLocation: (location: string | null) => void;
+    setNotes: (notes: string | null) => void;
 
     validateAmount : (amount : number) => boolean;
 };
@@ -33,6 +37,8 @@ const initialState = {
     title: '',
     date: new Date(),
     merchant: null,
+    location: null,
+    notes: null,
 };
 
 export const useCreateTransactionStore = create<CreateTransactionState>((set, get) => ({
@@ -46,6 +52,9 @@ export const useCreateTransactionStore = create<CreateTransactionState>((set, ge
     setTitle: (title) => set({title: title}),
     setDate: (date) => set({date: date}),
     setMerchant: (merchant) => set({merchant: merchant}),
+    setLocation: (location) => set({location: location}),
+    setNotes: (notes) => set({notes: notes}),
+
     validateAmount: () => {
         const {amount} = get();
 

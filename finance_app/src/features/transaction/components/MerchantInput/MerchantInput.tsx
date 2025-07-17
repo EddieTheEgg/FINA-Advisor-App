@@ -20,7 +20,7 @@ export const MerchantInput = ({placeholder = 'Merchant name...', maxLength = 50}
     };
 
 
-    const remainingChars = maxLength - MerchantInput.length;
+    const remainingChars = maxLength - (merchantInput?.length || 0);
     return (
         <View style={styles.merchantContainer}>
             <View style={styles.merchantHeader}>
