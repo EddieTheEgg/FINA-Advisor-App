@@ -11,6 +11,7 @@ import { CategorySelector } from '../../components/CategorySelector/CategorySele
 import { TitleCard } from '../../components/TitleCard/TitleCard';
 import { DateCard } from '../../components/DateCard/DateCard';
 import { OptionalDetailsCard } from '../../components/OptionalDetailsCard/OptionalDetailsCard';
+import { RecurringTransactionCard } from '../../components/RecurringTransactionCard/RecurringTransactionCard';
 
 type CreateTransactionScreenProps = {
     navigation : TransactionNavigatorProps;
@@ -42,6 +43,7 @@ export const CreateTransactionScreen = ( { navigation }: CreateTransactionScreen
                     <TitleCard />
                     <DateCard />
                     <OptionalDetailsCard />
+                    <RecurringTransactionCard />
                 </View>
             )}
             {transactionType === 'INCOME' && (
@@ -52,6 +54,7 @@ export const CreateTransactionScreen = ( { navigation }: CreateTransactionScreen
                     <TitleCard />
                     <DateCard />
                     <OptionalDetailsCard />
+                    <RecurringTransactionCard />
                 </View>
             )}
         </ScrollView>
