@@ -31,7 +31,7 @@ def get_dashboard(
     period = {"month": convert_month_to_string(month), "year": year}
     financial_summary = get_financial_summary(db, user_id, user.created_at, current_month_start, current_month_end)
     accounts_response = get_account_information(db, user_id)
-    recent_transactions = get_recent_transactions(db, user_id, user.created_at, datetime.now(timezone.utc))
+    recent_transactions = get_recent_transactions(db, user_id)
 
     return DashboardResponse(
         user=user,
@@ -134,19 +134,15 @@ def get_account_information(
         accounts = account_list,
     )
     
-#Get the recent (5) transactions for the user for the specific month and year
+#Get the recent (5) transactions for the user
 def get_recent_transactions(
     db: Session,
     user_id : UUID,
-    start_date: datetime,
-    end_date: datetime,
 ) -> List[RecentTransaction]:
     
     try:
         transactions = db.query(Transaction).filter(
             Transaction.user_id == user_id,
-            Transaction.transaction_date >= start_date,
-            Transaction.transaction_date < end_date,
         ).order_by(Transaction.transaction_date.desc()).limit(5).all()
         
        
@@ -173,7 +169,7 @@ def get_recent_transactions(
         return recent_transactions
     except Exception as e:
         logging.warning(f"Failed to get recent transactions for user {user_id}. Error: {str(e)}")
-        raise RecentTransactionsError(user_id, start_date.month, start_date.year)
+        raise RecentTransactionsError(user_id, datetime.now().month, datetime.now().year)
     
     
     
