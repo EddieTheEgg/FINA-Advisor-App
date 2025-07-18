@@ -1,4 +1,4 @@
-import { Dimensions, FlatList, Text, View } from 'react-native';
+import { Dimensions, FlatList, Platform, Text, View } from 'react-native';
 import { useSafeAreaInsets } from 'react-native-safe-area-context';
 import { styles } from './SelectCategoryScreen.styles';
 import BackButton from '../../../auth/components/GoBackButton/GoBackButton';
@@ -77,7 +77,7 @@ export const SelectCategoryScreen = ({ navigation }: SelectCategoryScreenProps) 
             ListFooterComponent={isFetchingNextPage ? <LoadingDots /> : null}
         />
       </View>
-      <View style={[styles.addCategoryButtonContainer, { bottom: insets.bottom + 80 }]}>
+      <View style={[styles.addCategoryButtonContainer, { bottom: Platform.OS === 'android' ? insets.bottom + spacing.md : insets.bottom}]}>
         <AddCategoryButton onPress={navigateToCreateCategory} />
       </View>
     </View>

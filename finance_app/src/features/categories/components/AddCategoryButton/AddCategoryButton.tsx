@@ -12,7 +12,7 @@ export const AddCategoryButton = ({ onPress }: AddCategoryButtonProps) => {
             onPress={onPress}
             style={styles.addCategoryButton}
         >
-            <Text style={styles.buttonText}>+ Create Category</Text>
+            <Text style={styles.buttonText}>Create Category</Text>
         </AnimatedPressable>
     );
 };

@@ -7,6 +7,7 @@ import { colors } from '../../styles/colors';
 import { TransferSubmissionBar } from '../../features/accounts/components/TransferSubmissionBar/TransferSubmissionBar';
 import { useTransferStore } from '../../features/accounts/store/useTransferStore';
 import { TransactionSubmissionBar } from '../../features/transaction/components/TransactionSubmissionBar/TransactionSubmissionBar';
+import { useCreateTransactionStore } from '../../features/transaction/store/useTransactionStore';
 
 // Displays the tab bar icons, if transaction tab adjust the transaction button icon differently
 const getTabBarIcon = ({ route, size, focused }: any) => {
@@ -39,7 +40,8 @@ const getTabBarIcon = ({ route, size, focused }: any) => {
   };
 
 export const CustomTabBar = ({state, navigation}: BottomTabBarProps) => {
-const { isTransferProcessing } = useTransferStore();
+    const { isTransferProcessing } = useTransferStore();
+    const { isTransactionProcessing } = useCreateTransactionStore();
 
     const { width } = useWindowDimensions();
     const TAB_COUNT = 5;
@@ -85,6 +87,25 @@ const { isTransferProcessing } = useTransferStore();
       );
     }
 
+
+    const isOnAccountSelectionScreen = currentRoute.name === 'Transactions' &&
+        currentRoute.state &&
+        typeof currentRoute.state.index === 'number' &&
+        currentRoute.state.routes[currentRoute.state.index].name === 'SelectAccount';
+
+    const isOnCategorySelectionScreen = currentRoute.name === 'Transactions' &&
+        currentRoute.state &&
+        typeof currentRoute.state.index === 'number' &&
+        currentRoute.state.routes[currentRoute.state.index].name === 'SelectCategory';
+
+    if (isOnAccountSelectionScreen || isOnCategorySelectionScreen) {
+      return (
+        <View />
+      );
+    }
+
+
+
     // Check if we're currently on the CreateTransaction screen within the Transactions stack
     const isOnTransactionCreationScreen = currentRoute.name === 'Transactions' && (
         currentRoute.state &&
@@ -96,9 +117,13 @@ const { isTransferProcessing } = useTransferStore();
         //React Navigation doesn't have a state for the initial screen (CreateTransaction)
     );
 
-      if (isOnTransactionCreationScreen) {
+      if (isOnTransactionCreationScreen && !isTransactionProcessing) {
         return (
           <TransactionSubmissionBar />
+        );
+      } else if (isOnTransactionCreationScreen && isTransactionProcessing) {
+        return (
+          <View />
         );
       }
 

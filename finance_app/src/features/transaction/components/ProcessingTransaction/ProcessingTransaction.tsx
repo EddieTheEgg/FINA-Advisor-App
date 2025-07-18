@@ -8,7 +8,7 @@ export const ProcessingTransaction = () => {
     return (
         <View style = {[styles.container, {paddingTop: insets.top}]}>
             <Image source={require('../../../../assets/images/Loading_Pig.png')} style={styles.image} />
-            <LoadingDots style={styles.text} loadingText="Processing Transaction" />
+            <LoadingDots style={styles.text} loadingText="Creating Transaction" />
         </View>
     );
 };

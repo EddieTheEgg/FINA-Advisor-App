@@ -1,4 +1,4 @@
-import { StyleSheet } from 'react-native';
+import { Platform, StyleSheet } from 'react-native';
 import { spacing } from '../../../../styles/spacing';
 import { colors } from '../../../../styles/colors';
 import { fontSize } from '../../../../styles/fontSizes';
@@ -7,7 +7,7 @@ export const styles = StyleSheet.create({
      transactionSubmissionBar: {
         display: 'flex',
         width: '100%',
-        paddingBottom: spacing.xxl,
+        paddingBottom: Platform.OS === 'android' ? spacing.lg : spacing.xxl,
         paddingTop: spacing.md,
         justifyContent: 'center',
     },

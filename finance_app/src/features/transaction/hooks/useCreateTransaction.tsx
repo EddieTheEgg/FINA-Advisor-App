@@ -1,8 +1,11 @@
 import { useMutation, useQueryClient } from '@tanstack/react-query';
 import { createTransaction } from '../api/api';
 import { BackendTransactionCreateRequest, TransactionResponse } from '../types';
+import { useCreateTransactionStore } from '../store/useTransactionStore';
 
 export const useCreateTransaction = () => {
+    const { resetToInitialState } = useCreateTransactionStore();
+
     const queryClient = useQueryClient();
     const {mutate, isPending, error} = useMutation({
         mutationFn: (transaction: BackendTransactionCreateRequest) : Promise<TransactionResponse> => createTransaction(transaction),
@@ -18,6 +21,8 @@ export const useCreateTransaction = () => {
                 queryClient.invalidateQueries({queryKey: ['account-details', data.accountId]}),
                 queryClient.invalidateQueries({queryKey: ['dashboard', month, year]}),
             ]);
+
+            resetToInitialState();
         },
         onError: (err : any) => {
             console.error('Error creating transaction:', err);
