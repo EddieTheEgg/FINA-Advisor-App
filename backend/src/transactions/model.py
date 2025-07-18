@@ -1,4 +1,4 @@
-from datetime import datetime
+from datetime import datetime, date
 from typing import List
 from uuid import UUID
 from pydantic import BaseModel, Field, validator
@@ -8,21 +8,23 @@ from backend.src.categories.model import CategoryResponse, CategorySimplifiedRes
 from backend.src.entities.enums import TransactionType, PaymentType, SubscriptionFrequency
 
 class TransactionCreate(BaseModel):
+    transaction_type: TransactionType
+    account_id: str
+    category_id: str
     amount: float = Field(..., ge=0)
     title: str
-    transaction_date: datetime
-    transaction_type: TransactionType
+    transaction_date: date
+    
     notes: str | None = None
     location: str | None = None
+    merchant: str | None = None
+    
     is_subscription: bool = False
     subscription_frequency: SubscriptionFrequency | None = None
-    subscription_start_date: datetime | None = None
-    subscription_end_date: datetime | None = None
-    category_id: UUID
-    payment_type: PaymentType
-    merchant: str | None = None
-    account_id: UUID
-    to_account_id: UUID | None = None
+    subscription_start_date: date | None = None
+    subscription_end_date: date | None = None
+   
+    to_account_id: str | None = None
 
 class TransactionUpdate(BaseModel):
     amount: float | None = Field(None, ge = 0)
@@ -65,9 +67,10 @@ class AccountTransactionResponse(BaseModel):
         
 class TransactionResponse(BaseModel):
     transaction_id: UUID
+    account_id: UUID
     amount: float
     title: str
-    transaction_date: datetime
+    transaction_date: date
     transaction_type: TransactionType
     notes: str | None
     location: str | None
@@ -80,7 +83,11 @@ class TransactionResponse(BaseModel):
     merchant: str | None
     created_at: datetime
     updated_at: datetime | None
-    category: CategoryResponse
+    category: CategorySimplifiedResponse
+    
+    class Config:
+        from_attributes = True
+        arbitrary_types_allowed = True
     
 class TransactionListResponse(BaseModel):
     transactions: list[TransactionResponse]

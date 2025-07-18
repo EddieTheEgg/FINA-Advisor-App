@@ -25,7 +25,6 @@ class CategoryResponse(BaseModel):
     transaction_type: TransactionType
     category_description: str | None = None
     is_custom: bool
-    user_id: UUID | None
     created_at: datetime
     updated_at: datetime | None = None
 

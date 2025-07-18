@@ -1,6 +1,6 @@
 import { create } from 'zustand';
 import { AccountResponse, AccountType } from '../../accounts/types';
-import { CategoryResponse } from '../types';
+import { BackendTransactionCreateRequest, CategoryResponse } from '../types';
 
 type CreateTransactionState = {
     transactionType: 'INCOME' | 'EXPENSE' | 'TRANSFER';
@@ -17,6 +17,12 @@ type CreateTransactionState = {
     recurringTransactionFrequency: 'DAILY' | 'WEEKLY' | 'MONTHLY' | 'YEARLY' | null;
     recurringTransactionStartDate: Date | null;
     recurringTransactionEndDate: Date | null;
+
+    transactionProcessingError: string | null;
+    setTransactionProcessingError: (error: string | null) => void;
+
+    isTransactionProcessing: boolean;
+    setIsTransactionProcessing: (isProcessing: boolean) => void;
 
     setTransactionType : (transactionType : 'INCOME' | 'EXPENSE' | 'TRANSFER') => void;
     setSourceAccount : (sourceAccount : AccountResponse) => void;
@@ -47,6 +53,9 @@ type CreateTransactionState = {
     validateRecurringTransaction : () => boolean;
     validateCreateTransaction : () => boolean;
     resetToInitialState : () => void;
+
+    // Formatting
+    formatTransactionForBackend : () => BackendTransactionCreateRequest;
 };
 
 const initialState = {
@@ -65,6 +74,9 @@ const initialState = {
     recurringTransactionStartDate: null,
     recurringTransactionEndDate: null,
 
+    transactionProcessingError: null,
+    isTransactionProcessing: false,
+
     // Validation errors
     sourceAccountError: '',
     recurringTransactionError: '',
@@ -75,6 +87,7 @@ const initialState = {
 export const useCreateTransactionStore = create<CreateTransactionState>((set, get) => ({
     ...initialState,
 
+    // Transaction fields
     setTransactionType: (transactionType) => set({transactionType: transactionType }),
     setSourceAccount: (sourceAccount) => set({sourceAccount: sourceAccount}),
     setAmount: (amount) => set({amount: amount}),
@@ -89,6 +102,10 @@ export const useCreateTransactionStore = create<CreateTransactionState>((set, ge
     setRecurringTransactionFrequency: (recurringTransactionFrequency) => set({recurringTransactionFrequency: recurringTransactionFrequency}),
     setRecurringTransactionStartDate: (recurringTransactionStartDate) => set({recurringTransactionStartDate: recurringTransactionStartDate}),
     setRecurringTransactionEndDate: (recurringTransactionEndDate) => set({recurringTransactionEndDate: recurringTransactionEndDate}),
+
+    // Transaction processing
+    setTransactionProcessingError: (error) => set({transactionProcessingError: error}),
+    setIsTransactionProcessing: (isProcessing) => set({isTransactionProcessing: isProcessing}),
 
     resetToInitialState: () => set(initialState),
 
@@ -231,5 +248,33 @@ export const useCreateTransactionStore = create<CreateTransactionState>((set, ge
         const sourceAccountValid = validateSourceAccount();
 
         return titleValid && amountValid && recurringTransactionValid && selectedCategoryValid && sourceAccountValid;
+    },
+
+    formatTransactionForBackend: () => {
+        const {transactionType, sourceAccount, amount, selectedCategory, title, date, merchant, location, notes, recurringTransaction, recurringTransactionFrequency, recurringTransactionStartDate, recurringTransactionEndDate} = get();
+
+        // Just cautionary, but should not happen since we call validateCreateTransaction before this
+        if (!sourceAccount || !selectedCategory) {
+            throw new Error('Source account and category are required');
+        }
+
+        return {
+            transaction_type: transactionType,
+            account_id: sourceAccount.accountId,
+            category_id: selectedCategory.categoryId,
+            amount: amount,
+            title: title,
+            transaction_date: date.toISOString().split('T')[0], // Send only date part (YYYY-MM-DD)
+
+            notes: notes,
+            location: location,
+            merchant: merchant,
+
+            is_subscription: recurringTransaction,
+            subscription_frequency: recurringTransactionFrequency,
+            subscription_start_date: recurringTransactionStartDate ? recurringTransactionStartDate.toISOString().split('T')[0] : null,
+            subscription_end_date: recurringTransactionEndDate ? recurringTransactionEndDate.toISOString().split('T')[0] : null,
+            to_account_id: null, // Only used for transfers
+        };
     },
 }));

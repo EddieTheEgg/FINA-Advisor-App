@@ -1,0 +1,28 @@
+import { useMutation, useQueryClient } from '@tanstack/react-query';
+import { createTransaction } from '../api/api';
+import { BackendTransactionCreateRequest, TransactionResponse } from '../types';
+
+export const useCreateTransaction = () => {
+    const queryClient = useQueryClient();
+    const {mutate, isPending, error} = useMutation({
+        mutationFn: (transaction: BackendTransactionCreateRequest) : Promise<TransactionResponse> => createTransaction(transaction),
+        onSuccess: async (data: TransactionResponse) => {
+            const currentDate = new Date(data.transactionDate);
+            const month = currentDate.getMonth() + 1;
+            const year = currentDate.getFullYear();
+
+            // Invalidate all queries that could be affected by the new transaction
+            await Promise.all([
+                queryClient.invalidateQueries({queryKey: ['account-transactions', data.accountId]}),
+                queryClient.invalidateQueries({queryKey: ['grouped-accounts']}),
+                queryClient.invalidateQueries({queryKey: ['account-details', data.accountId]}),
+                queryClient.invalidateQueries({queryKey: ['dashboard', month, year]}),
+            ]);
+        },
+        onError: (err : any) => {
+            console.error('Error creating transaction:', err);
+        },
+    });
+
+    return {mutate, isPending, error};
+};

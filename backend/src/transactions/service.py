@@ -1,12 +1,15 @@
 # Create a new transaction
 import logging
 from uuid import UUID
+from xml.etree.ElementTree import tostring
 from pytest import Session
 from typing import List, Tuple
 from datetime import datetime
 from sqlalchemy import desc
 
 from backend.src.categories import service as category_service
+from backend.src.categories.model import CategoryResponse, CategorySimplifiedResponse
+from backend.src.entities.account import Account
 from backend.src.entities.category import Category
 from backend.src.entities.transaction import Transaction, TransactionType
 from backend.src.exceptions import TransferTransactionError, CreateTransactionError, CategoryNotFoundError, InvalidUserForCategoryError, InvalidUserForTransactionError, TransactionNotFoundError
@@ -31,8 +34,8 @@ def create_regular_transaction(
         subscription_frequency=transaction_create_request.subscription_frequency,
         subscription_start_date=transaction_create_request.subscription_start_date,
         subscription_end_date=transaction_create_request.subscription_end_date,
-        category_id=transaction_create_request.category_id,
-        account_id=transaction_create_request.account_id,
+        category_id=UUID(transaction_create_request.category_id),
+        account_id=UUID(transaction_create_request.account_id),
         merchant=transaction_create_request.merchant,
         user_id=user_id
     )
@@ -46,7 +49,43 @@ def create_regular_transaction(
         amount = -1 * amount
     account_service.update_account_balance(db, transaction_create_request.account_id, user_id, amount)
     
-    return new_transaction
+    if new_transaction.transaction_type == TransactionType.TRANSFER:
+        account_name = db.query(Account).filter(Account.account_id == transaction_create_request.account_id).first().name
+        to_account_name = db.query(Account).filter(Account.account_id == new_transaction.to_account_id).first().name
+    else:
+        account_name = db.query(Account).filter(Account.account_id == transaction_create_request.account_id).first().name
+        to_account_name = None
+    
+    return TransactionResponse(
+        transaction_id=new_transaction.transaction_id,
+        account_id=(new_transaction.account_id),
+        amount=new_transaction.amount,
+        title=new_transaction.title,
+        transaction_date=new_transaction.transaction_date,
+        transaction_type=new_transaction.transaction_type,
+        notes=new_transaction.notes,
+        location=new_transaction.location,
+        is_subscription=new_transaction.is_subscription,
+        subscription_frequency=new_transaction.subscription_frequency,
+        subscription_start_date=new_transaction.subscription_start_date,
+        subscription_end_date=new_transaction.subscription_end_date,
+        account_name=account_name,
+        to_account_name=to_account_name,
+        merchant=new_transaction.merchant,
+        created_at=new_transaction.created_at,
+        updated_at=new_transaction.updated_at,
+        category=CategoryResponse(
+            category_id=new_transaction.category.category_id,
+            category_name=new_transaction.category.category_name,
+            icon=new_transaction.category.icon,
+            color=new_transaction.category.color,
+            transaction_type=new_transaction.category.transaction_type,
+            category_description=new_transaction.category.category_description,
+            is_custom=new_transaction.category.is_custom,
+            created_at=new_transaction.category.created_at,
+            updated_at=new_transaction.category.updated_at
+        )   
+    )
 
 # Creates a new transaction entry in the database
 def create_transaction(db: Session, transaction_create_request: TransactionCreate, user_id: UUID) -> TransactionResponse:

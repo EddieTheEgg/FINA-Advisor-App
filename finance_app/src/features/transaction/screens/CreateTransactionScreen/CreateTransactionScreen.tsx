@@ -14,6 +14,8 @@ import { RecurringTransactionCard } from '../../components/RecurringTransactionC
 import { useNavigation } from '@react-navigation/native';
 import { AnimatedPressable } from '../../../../components/AnimatedPressable/AnimatedPressable';
 import FontAwesome6 from 'react-native-vector-icons/FontAwesome6';
+import { ProcessingTransaction } from '../../components/ProcessingTransaction/ProcessingTransaction';
+import { ErrorScreen } from '../../../../components/ErrorScreen/ErrorScreen';
 
 type CreateTransactionScreenProps = {
     navigation : TransactionNavigatorProps;
@@ -44,10 +46,17 @@ export const CreateTransactionScreen = ( { navigation }: CreateTransactionScreen
     const height = Dimensions.get('window').height;
     const canvasPadding = height * 0.03;
 
-    const {transactionType} = useCreateTransactionStore();
+    const {transactionType, isTransactionProcessing, transactionProcessingError} = useCreateTransactionStore();
+
+    if (transactionProcessingError) {
+        return <ErrorScreen errorText="Error creating transaction" errorSubText="Please try again" errorMessage={transactionProcessingError} />;
+    }
 
 
     return (
+        isTransactionProcessing ? (
+            <ProcessingTransaction />
+        ) : (
         <ScrollView
         showsVerticalScrollIndicator = {false}
         contentContainerStyle = {{paddingBottom: insets.bottom + canvasPadding}}
@@ -71,5 +80,6 @@ export const CreateTransactionScreen = ( { navigation }: CreateTransactionScreen
                 </View>
             )}
         </ScrollView>
+        )
     );
 };
