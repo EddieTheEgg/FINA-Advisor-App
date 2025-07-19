@@ -1,4 +1,4 @@
-import { DashboardData, BackendDashboardAccountInfo, BackendDashboardRecentTransaction } from '../types';
+import { DashboardData, BackendDashboardAccountInfo, BackendDashboardRecentTransaction, BackendTransactionListRequest, TransactionListResponse, BackendTransactionSummary } from '../types';
 import api from '../../../api/axios';
 import axios from 'axios';
 
@@ -34,8 +34,7 @@ export const getDashboard = async ({month, year} : {month : number, year : numbe
                     color: account.color,
                 })),
             },
-            recentTransactions: dashboardData.recentTransactions.map((transaction: BackendDashboardRecentTransaction) => ({
-                transactionId: transaction.transaction_id,
+            recentTransactions: dashboardData.recentTransactions.map((transaction: BackendDashboardRecentTransaction) => ({                transactionId: transaction.transaction_id,
                 amount: transaction.amount,
                 title: transaction.title,
                 transactionDate: transaction.transaction_date,
@@ -62,4 +61,49 @@ export const getDashboard = async ({month, year} : {month : number, year : numbe
     }
 };
 
+// Fetches the transaction list for the dashboard home screen
+export const getTransactionList = async (skip: number, limit: number, requestData: BackendTransactionListRequest) : Promise<TransactionListResponse> => {
+    try {
+        const response = await api.post('/transactions/transaction-list', {
+            params: {
+                skip,
+                limit,
+                requestData,
+            },
+        });
+        const data = response.data;
 
+        return {
+            transactions: data.transactions.map((transaction: BackendTransactionSummary) => ({
+                transactionId: transaction.transaction_id,
+                amount: transaction.amount,
+                title: transaction.title,
+                transactionDate: transaction.transaction_date,
+                transactionType: transaction.transaction_type,
+                category: transaction.category,
+                accountName: transaction.account_name,
+            })),
+            pagination: {
+                hasNext: data.pagination.has_next,
+                currentPage: data.pagination.current_page,
+                pageSize: data.pagination.page_size,
+            },
+            summary: {
+                monthIncome: data.summary.month_income,
+                monthExpense: data.summary.month_expense,
+                monthTransfer: data.summary.month_transfer,
+            },
+        };
+    } catch (error : unknown) {
+        if (axios.isAxiosError(error) && error.response?.status === 404) {
+            throw new Error('Transaction list not found');
+        }
+        if (axios.isAxiosError(error) && error.response?.status === 401) {
+            throw new Error('Unauthorized access to transaction list');
+        }
+        if (axios.isAxiosError(error) && error.response?.status === 500) {
+            throw new Error('Server error while fetching transaction list');
+        }
+        throw new Error('Failed to fetch transaction list');
+    }
+};

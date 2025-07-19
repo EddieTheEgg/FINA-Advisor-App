@@ -4,6 +4,17 @@ class TransactionType(Enum):
     INCOME = "INCOME"
     EXPENSE = "EXPENSE"
     TRANSFER = "TRANSFER"
+    ALL = "ALL"
+
+class TransactionSortBy(Enum):
+    TRANSACTION_DATE = "TRANSACTION_DATE"
+    AMOUNT = "AMOUNT"
+    TITLE = "TITLE"
+    CREATED_AT = "CREATED_AT"
+    
+class SortOrder(Enum):
+    ASC = "ASC"
+    DESC = "DESC"
     
 class SnapshotType(Enum):
     ACCOUNT = "ACCOUNT"

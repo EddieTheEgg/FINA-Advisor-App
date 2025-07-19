@@ -40,7 +40,6 @@ export const getUserCategories = async ({skip, limit, transactionType} : userCat
 // Create a new transaction, and returns the created transaction information (can be like a reciept for users)
 export const createTransaction = async (transaction: BackendTransactionCreateRequest) : Promise<TransactionResponse> => {
     try {
-        console.log('Sending transaction data:', JSON.stringify(transaction, null, 2));
         const response = await api.post('/transactions/create-transaction', transaction);
         const data = response.data;
 

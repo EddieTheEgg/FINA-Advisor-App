@@ -4,16 +4,18 @@ from uuid import UUID
 from xml.etree.ElementTree import tostring
 from pytest import Session
 from typing import List, Tuple
-from datetime import datetime
-from sqlalchemy import desc
+from datetime import datetime, timedelta
+from sqlalchemy import desc, func, case
+from sqlalchemy.orm import joinedload
 
 from backend.src.categories import service as category_service
 from backend.src.categories.model import CategoryResponse, CategorySimplifiedResponse
 from backend.src.entities.account import Account
 from backend.src.entities.category import Category
 from backend.src.entities.transaction import Transaction, TransactionType
+from backend.src.entities.enums import TransactionSortBy, SortOrder
 from backend.src.exceptions import TransferTransactionError, CreateTransactionError, CategoryNotFoundError, InvalidUserForCategoryError, InvalidUserForTransactionError, TransactionNotFoundError
-from backend.src.transactions.model import TransactionCreate, TransactionResponse, TransactionUpdate, TransactionListResponse, TransferCreateRequest, TransferCreateResponse
+from backend.src.transactions.model import TransactionCreate, TransactionListRequest, TransactionResponse, TransactionSummary, TransactionUpdate, TransactionListResponse, TransferCreateRequest, TransferCreateResponse, PaginationResponse, SummaryResponse
 from backend.src.accounts import service as account_service
 
 
@@ -119,103 +121,118 @@ def get_transaction_by_id(db: Session, transaction_id: UUID, user_id: UUID) -> T
     
     return transaction
 
-# Get transactions with filtering and pagination
-def get_transactions_with_filters(
-        db: Session, 
-        user_id: UUID, 
-        skip: int = 0, 
-        limit: int = 100,
-        category_id: UUID | None = None,
-        start_date: datetime | None = None,
-        end_date: datetime | None = None,
-        transaction_type: TransactionType | None = None,
-        is_subscription: bool | None = None,
-        subscription_frequency: str | None = None,
-        search: str | None = None,
-        min_amount: float | None = None,
-        max_amount: float | None = None,
-        merchant: str | None = None,
-        location: str | None = None,
-        payment_type: str | None = None,
-        payment_account: str | None = None,
-        sort_by: str = "transaction_date",
-        sort_order: str = "desc"
-    ) -> TransactionListResponse:
-    try:
-        possible_transactions = db.query(Transaction).filter(Transaction.user_id == user_id)
-        
-        if category_id:
-            category = db.query(Category).filter(
-                Category.category_id == category_id,
-                Category.user_id == user_id
-            ).first()
-            if not category:
-                logging.warning(f"Category {category_id} not found or doesn't belong to user {user_id}")
-                raise InvalidUserForCategoryError(category_id)
-            possible_transactions = possible_transactions.filter(Transaction.category_id == category_id)
-        
-        if start_date:
-            possible_transactions = possible_transactions.filter(Transaction.transaction_date >= start_date)
-        
-        if end_date:
-            possible_transactions = possible_transactions.filter(Transaction.transaction_date <= end_date)
-        
-        if transaction_type is not None:
-            possible_transactions = possible_transactions.filter(Transaction.transaction_type == transaction_type)
-            
-        if is_subscription is not None:
-            possible_transactions = possible_transactions.filter(Transaction.is_subscription == is_subscription)
-            
-        if subscription_frequency:
-            possible_transactions = possible_transactions.filter(Transaction.subscription_frequency == subscription_frequency)
-            
-        if search:
-            search_term = f"%{search}%"
-            possible_transactions = possible_transactions.filter(
-                (Transaction.title.ilike(search_term)) | 
-                (Transaction.notes.ilike(search_term)) |
-                (Transaction.merchant.ilike(search_term))
-            )
-            
-        if min_amount is not None:
-            possible_transactions = possible_transactions.filter(Transaction.amount >= min_amount)
-            
-        if max_amount is not None:
-            possible_transactions = possible_transactions.filter(Transaction.amount <= max_amount)
-            
-        if merchant:
-            possible_transactions = possible_transactions.filter(Transaction.merchant.ilike(f"%{merchant}%"))
-            
-        if location:
-            possible_transactions = possible_transactions.filter(Transaction.location.ilike(f"%{location}%"))
-            
-        if payment_type:
-            possible_transactions = possible_transactions.filter(Transaction.payment_type == payment_type)
-            
-        if payment_account:
-            possible_transactions = possible_transactions.filter(Transaction.payment_account.ilike(f"%{payment_account}%"))
-        
-        total_count = possible_transactions.count()
-        
-        # Sorting column process, sort by transaction_date by default
-        sort_column = {
-            "transaction_date": Transaction.transaction_date,
-            "amount": Transaction.amount,
-            "created_at": Transaction.created_at,
-        }.get(sort_by, Transaction.transaction_date)
-            
-        if sort_order.lower() == "asc":
-            possible_transactions = possible_transactions.order_by(sort_column)
-        else:
-            possible_transactions = possible_transactions.order_by(desc(sort_column))
-            
-        final_transactions = possible_transactions.offset(skip).limit(limit).all()
-        
-        logging.info(f"Retrieved current page of {len(final_transactions)} transactions for user {user_id}")
-        return TransactionListResponse(transactions=final_transactions, total=total_count)
-    except Exception as e:
-        logging.error(f"Error retrieving transactions for user {user_id}: {str(e)}")
-        raise
+def get_transaction_list(db: Session, user_id: UUID, request_data: TransactionListRequest, offset: int, limit: int) -> TransactionListResponse:
+    start_date = request_data.transaction_timeframe
+    # Get the last day of the month
+    if start_date.month == 12:
+        end_date = start_date.replace(year=start_date.year + 1, month=1, day=1) - timedelta(days=1)
+    else:
+        end_date = start_date.replace(month=start_date.month + 1, day=1) - timedelta(days=1)
+    
+    # Base filter which only grabs transactions for the given month and year
+    base_filter = [
+        Transaction.user_id == user_id,
+        Transaction.transaction_date.between(start_date, end_date)
+    ]
+    
+    # Only add transaction type filter if not requesting ALL
+    if request_data.transaction_type != TransactionType.ALL:
+        base_filter.append(Transaction.transaction_type == request_data.transaction_type)
+    
+    # Add optional filters if provided
+    if request_data.account_id:
+        base_filter.append(Transaction.account_id == UUID(request_data.account_id))
+    
+    if request_data.category_id:
+        base_filter.append(Transaction.category_id == UUID(request_data.category_id))
+    
+    # Determine sorting
+    sort_field_mapping = {
+        TransactionSortBy.TRANSACTION_DATE: Transaction.transaction_date,
+        TransactionSortBy.AMOUNT: Transaction.amount,
+        TransactionSortBy.TITLE: Transaction.title,
+        None: Transaction.transaction_date  # Default sort
+    }
+    
+    sort_field = sort_field_mapping.get(request_data.sort_by, Transaction.transaction_date)
+    
+    if request_data.sort_order == SortOrder.ASC:
+        order_by_clause = sort_field.asc()
+    else:
+        order_by_clause = sort_field.desc()  # Default to DESC
+    
+    # OPTIMIZED: Single query with eager loading for transactions
+    transactions = (
+        db.query(Transaction)
+        .options(
+            joinedload(Transaction.category),
+            joinedload(Transaction.account),
+            joinedload(Transaction.to_account)
+        )
+        .filter(*base_filter)
+        .order_by(order_by_clause)
+        .offset(offset)
+        .limit(limit)
+        .all()
+    )
+    
+    # OPTIMIZED: Single aggregation query for both count and summary totals
+    summary_data = (
+        db.query(
+            func.count(Transaction.transaction_id).label('total_count'),
+            func.coalesce(
+                func.sum(case((Transaction.transaction_type == TransactionType.INCOME, Transaction.amount), else_=0)), 
+                0
+            ).label('month_income'),
+            func.coalesce(
+                func.sum(case((Transaction.transaction_type == TransactionType.EXPENSE, Transaction.amount), else_=0)), 
+                0
+            ).label('month_expense'),
+            func.coalesce(
+                func.sum(case((Transaction.transaction_type == TransactionType.TRANSFER, Transaction.amount), else_=0)), 
+                0
+            ).label('month_transfer')
+        )
+        .filter(*base_filter)
+        .first()
+    )
+    
+    # Calculate pagination info
+    total_transactions = summary_data.total_count
+    current_page = (offset // limit) + 1
+    has_next = (offset + limit) < total_transactions
+    
+    # Build simplified transactions list
+    simplified_transactions = [TransactionSummary(
+        transaction_id=x.transaction_id,
+        amount=x.amount,
+        title=x.title,
+        transaction_date=x.transaction_date,
+        transaction_type=x.transaction_type,
+        category=CategorySimplifiedResponse(
+            category_id=x.category.category_id,
+            category_name=x.category.category_name,
+            icon=x.category.icon,
+            color=x.category.color,
+            is_custom=x.category.is_custom,
+        ),
+        account_name=x.account.name,
+        to_account_name=x.to_account.name if x.to_account else None,
+    ) for x in transactions]
+    
+    return TransactionListResponse(
+        transactions=simplified_transactions,
+        pagination=PaginationResponse(
+            has_next=has_next,
+            current_page=current_page,
+            page_size=limit
+        ),
+        summary=SummaryResponse(
+            month_income=float(summary_data.month_income),
+            month_expense=float(summary_data.month_expense),
+            month_transfer=float(summary_data.month_transfer)
+        )
+    )
 
 # Updates a transaction entry in the database
 def update_transaction(db: Session, transaction_id: UUID, transaction_update_request: TransactionUpdate, user_id: UUID) -> TransactionResponse:

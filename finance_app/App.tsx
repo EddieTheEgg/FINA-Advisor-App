@@ -7,6 +7,12 @@ import { HomeNavigator } from './src/navigation/HomeNavigator.tsx';
 import { useAuth } from './src/features/auth/hooks/useAuth.tsx';
 import LoadingScreen from './src/components/LoadingScreen/LoadingScreen.tsx';
 import { QueryClient, QueryClientProvider } from '@tanstack/react-query';
+import { createNativeStackNavigator } from '@react-navigation/native-stack';
+import { TransactionDetailScreen } from './src/features/transaction/screens/TransactionDetailScreen/TransactionDetailScreen';
+import { EditTransactionScreen } from './src/features/transaction/screens/EditTransactionScreen/EditTransactionScreen';
+import { RootStackParamList } from './src/navigation/types/RootNavigatorTypes';
+
+const Stack = createNativeStackNavigator<RootStackParamList>();
 
 const AppContent = () => {
   const {isSignedIn, isLoading} = useAuth();
@@ -18,7 +24,17 @@ const AppContent = () => {
 
   return (
       <NavigationContainer>
-        {isSignedIn ? <HomeNavigator /> : <AuthNavigator />}
+        <Stack.Navigator screenOptions={{headerShown: false}}>
+          {isSignedIn ? (
+            <>
+              <Stack.Screen name= "Home" component={HomeNavigator} />
+              <Stack.Screen name = "TransactionDetail" component={TransactionDetailScreen} />
+              <Stack.Screen name =  "EditTransaction" component={EditTransactionScreen} />
+            </>
+          ) : (
+            <Stack.Screen name="Auth" component={AuthNavigator} />
+          )}
+        </Stack.Navigator>
       </NavigationContainer>
   );
 };

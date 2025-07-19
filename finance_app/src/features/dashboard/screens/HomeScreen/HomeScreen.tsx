@@ -1,23 +1,28 @@
 import { View, Text, ScrollView, Dimensions } from 'react-native';
 import { useSafeAreaInsets } from 'react-native-safe-area-context';
-import { SignOutButton } from '../../auth/components/SignOutButton/SignOutButton';
+import { SignOutButton } from '../../../auth/components/SignOutButton/SignOutButton';
 import { styles } from './HomeScreen.styles';
-import Greeting from '../components/Greeting/Greeting';
-import MonthSelector from '../components/MonthSelector/MonthSelector';
-import BalanceDisplay from '../components/BalanceDisplay/BalanceDisplay';
-import { useDashboardQuery } from '../hooks/useDashboard';
-import LoadingScreen from '../../../components/LoadingScreen/LoadingScreen';
+import Greeting from '../../components/Greeting/Greeting';
+import MonthSelector from '../../components/MonthSelector/MonthSelector';
+import BalanceDisplay from '../../components/BalanceDisplay/BalanceDisplay';
+import { useDashboardQuery } from '../../hooks/useDashboard';
+import LoadingScreen from '../../../../components/LoadingScreen/LoadingScreen';
 import { useState } from 'react';
-import BalanceBadge from '../components/BalanceBadge/BalanceBadge';
-import AccountCircle from '../components/AccountCircle/AccountCircle';
-import { IncomeExpense } from '../components/IncomeExpense/IncomeExpense';
-import { RecentTransactions } from '../components/RecentTransactions/RecentTransactions';
-import { ErrorScreen } from '../../../components/ErrorScreen/ErrorScreen';
+import BalanceBadge from '../../components/BalanceBadge/BalanceBadge';
+import AccountCircle from '../../components/AccountCircle/AccountCircle';
+import { IncomeExpense } from '../../components/IncomeExpense/IncomeExpense';
+import { RecentTransactions } from '../../components/RecentTransactions/RecentTransactions';
+import { ErrorScreen } from '../../../../components/ErrorScreen/ErrorScreen';
+import { DashboardNavigationProps } from '../../../../navigation/types/DashboardNavigatorTypes';
 
 const { height } = Dimensions.get('window');
 const responsivePadding = height * 0.2;
 
-export const DashboardScreen = () => {
+type DashboardScreenProps = {
+    navigation: DashboardNavigationProps;
+}
+
+export const DashboardScreen = ({ navigation }: DashboardScreenProps) => {
     const insets = useSafeAreaInsets();
     const todayDate = new Date();
     const monthNames = ['January', 'February', 'March', 'April', 'May', 'June', 'July', 'August', 'September', 'October', 'November', 'December'];
@@ -104,7 +109,7 @@ export const DashboardScreen = () => {
                     </View>
                 </View>
                 <View style = {styles.recentTransactionsContainer}>
-                    <RecentTransactions recentTransactions={dashboard.recentTransactions} />
+                    <RecentTransactions recentTransactions={dashboard.recentTransactions} navigation={navigation} />
                 </View>
             </ScrollView>
         </View>

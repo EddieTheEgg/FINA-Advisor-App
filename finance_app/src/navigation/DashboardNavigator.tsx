@@ -1,0 +1,20 @@
+import { createNativeStackNavigator } from '@react-navigation/native-stack';
+import { DashboardStackParamList } from './types/DashboardNavigatorTypes.ts';
+import { DashboardScreen } from '../features/dashboard/screens/HomeScreen/HomeScreen.tsx';
+import { TransactionListScreen } from '../features/dashboard/screens/TransactionListScreen/TransactionListScreen.tsx';
+
+const Stack = createNativeStackNavigator<DashboardStackParamList>();
+
+export const DashboardNavigator = () => {
+    return (
+        <Stack.Navigator
+            screenOptions={{
+                headerShown: false,
+                animation: 'slide_from_right',
+            }}
+        >
+            <Stack.Screen name="DashboardMenu" component={DashboardScreen} />
+            <Stack.Screen name="TransactionList" component = {TransactionListScreen} />
+        </Stack.Navigator>
+    );
+};

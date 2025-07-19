@@ -1,11 +1,11 @@
 import { BottomTabBarProps, createBottomTabNavigator } from '@react-navigation/bottom-tabs';
-import { DashboardScreen } from '../features/dashboard/screens/HomeScreen';
 import { InsightsScreen } from '../features/insights/screens/InsightsScreen';
 import { ProfileScreen } from '../features/user/screens/ProfileScreen';
 import { AccountsNavigator } from './AccountsNavigator';
 import { TransactionNavigator } from './TransactionNavigator';
 import { CustomTabBar } from '../components/CustomTabBar/CustomTabBar';
 import { HomeStackParamList } from './types/HomeNavigatorTypes';
+import { DashboardNavigator } from './DashboardNavigator';
 
 const Tab = createBottomTabNavigator<HomeStackParamList>();
 
@@ -20,7 +20,7 @@ export const HomeNavigator = () => {
                 animation: 'shift',
             }}
         >
-            <Tab.Screen name="Dashboard" component={DashboardScreen} />
+            <Tab.Screen name="Dashboard" component={DashboardNavigator} />
             <Tab.Screen name="Accounts" component={AccountsNavigator}/>
             <Tab.Screen name="Transactions" component={TransactionNavigator} />
             <Tab.Screen name="Insights" component={InsightsScreen} />

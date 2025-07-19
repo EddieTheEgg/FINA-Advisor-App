@@ -5,7 +5,7 @@ from pydantic import BaseModel, Field, validator
 from enum import Enum
 
 from backend.src.categories.model import CategoryResponse, CategorySimplifiedResponse   
-from backend.src.entities.enums import TransactionType, PaymentType, SubscriptionFrequency
+from backend.src.entities.enums import TransactionType, PaymentType, SubscriptionFrequency, TransactionSortBy, SortOrder
 
 class TransactionCreate(BaseModel):
     transaction_type: TransactionType
@@ -25,6 +25,16 @@ class TransactionCreate(BaseModel):
     subscription_end_date: date | None = None
    
     to_account_id: str | None = None
+    
+class TransactionListRequest(BaseModel):
+    transaction_type: TransactionType
+    transaction_timeframe: date # YYYY-MM-01 always 1st of the provided month and year
+    
+    account_id: str | None = None
+    category_id: str | None = None
+    
+    sort_by: TransactionSortBy | None = None
+    sort_order: SortOrder | None = None
 
 class TransactionUpdate(BaseModel):
     amount: float | None = Field(None, ge = 0)
@@ -88,14 +98,45 @@ class TransactionResponse(BaseModel):
     class Config:
         from_attributes = True
         arbitrary_types_allowed = True
+
+
+
+
+
+class TransactionSummary(BaseModel):
+    transaction_id: UUID
+    amount: float
+    title: str
+    transaction_date: date
+    transaction_type: TransactionType
+    category: CategorySimplifiedResponse
+    account_name: str
+    to_account_name: str | None = None
+
+class PaginationResponse(BaseModel):
+    has_next: bool
+    current_page: int
+    page_size: int
+
+class SummaryResponse(BaseModel):
+    month_income: float
+    month_expense: float
+    month_transfer: float
     
 class TransactionListResponse(BaseModel):
-    transactions: list[TransactionResponse]
-    total: int
+    transactions: list[TransactionSummary]
+    pagination: PaginationResponse
+    summary: SummaryResponse
 
     class Config:
         from_attributes = True
         arbitrary_types_allowed = True
+
+
+
+
+
+
 
 class CategorySummary(BaseModel):
     category_id: UUID
@@ -114,21 +155,7 @@ class SubscriptionSummary(BaseModel):
     total: float
     monthly_equivalent: float
 
-class TransactionSummary(BaseModel):
-    total_income: float
-    total_expenses: float
-    total_transfers: float
-    balance: float
-    expense_by_category: List[CategorySummary]
-    income_by_category: List[CategorySummary]
-    recent_transactions: List[TransactionResponse]
-    payment_type_breakdown: List[PaymentTypeSummary]
-    subscription_breakdown: List[SubscriptionSummary]
-    subscription_total: float
-    subscription_count: int
-    subscription_monthly_estimate: float
-    
-    
+
 class TransferCreateRequest(BaseModel):
     fromAccount: str
     toAccount: str

@@ -20,6 +20,47 @@ export type BackendDashboardRecentTransaction = {
     is_subscription: boolean;
 }
 
+export type BackendTransactionListRequest = {
+    transaction_type: 'ALL' | 'INCOME' | 'EXPENSE' | 'TRANSFER';
+    transaction_timeframe: Date, //In format #YYYY-MM-01 (Always start at 01)
+
+    account_id?: string;
+    category_id?: string;
+
+    sort_by?: 'transaction_date' | 'amount' | 'created_at';
+    sort_order?: 'asc' | 'desc';
+}
+
+export type BackendCategorySimplified = {
+    category_id: string;
+    category_name: string;
+    icon: string;
+    color: string;
+    is_custom: boolean;
+}
+
+
+export type BackendTransactionSummary = {
+    transaction_id: string;
+    amount: number;
+    title: string;
+    transaction_date: Date;
+    transaction_type: 'ALL' | 'INCOME' | 'EXPENSE' | 'TRANSFER';
+    category: BackendCategorySimplified;
+    account_name: string;
+    to_account_name?: string;
+}
+
+
+
+
+
+
+
+
+
+
+
 // Frontend Types
 export type CategoryData = {
     categoryId: string;
@@ -31,6 +72,14 @@ export type CategoryData = {
     userId: string | null;
     createdAt: string;
     updatedAt: string | null;
+}
+
+export type CategorySimplifiedData = {
+    categoryId: string;
+    categoryName: string;
+    icon: string;
+    color: string;
+    isCustom: boolean;
 }
 
 export type UserSimpleResponse = {
@@ -75,6 +124,31 @@ export type DashboardData = {
         notes: string | null;
         isSubscription: boolean;
     }>;
+}
+
+export type TransactionSummary = {
+    transactionId: string;
+    amount: number;
+    title: string;
+    transactionDate: string;
+    transactionType: 'INCOME' | 'EXPENSE' | 'TRANSFER';
+    category: CategoryData;
+    accountName: string;
+    toAccountName?: string;
+}
+
+export type TransactionListResponse = {
+    transactions: TransactionSummary[];
+    pagination: {
+        hasNext: boolean;
+        currentPage: number;
+        pageSize: number;
+    }
+    summary: {
+        monthIncome: number;
+        monthExpense: number;
+        monthTransfer: number;
+    }
 }
 
 //Component Props
