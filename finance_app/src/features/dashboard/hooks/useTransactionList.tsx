@@ -5,7 +5,7 @@ import { getTransactionList } from '../api/api';
 const LIMIT = 10;
 
 export const useTransactionList = (request: BackendTransactionListRequest) => {
-    return useInfiniteQuery({
+    const {data, isPending, error} = useInfiniteQuery({
         queryKey: ['transactionList', request],
         queryFn: ({ pageParam = 0 }) => getTransactionList(pageParam, LIMIT, request),
         getNextPageParam: (lastPage) => {
@@ -14,6 +14,17 @@ export const useTransactionList = (request: BackendTransactionListRequest) => {
                 : undefined;
             },
         initialPageParam: 0,
-        select: (data) => data.pages.flatMap((page) => page.transactions),
+        select: (queryData) => {
+            const allTransactions = queryData.pages.flatMap((page) => page.transactions);
+            const lastPage = queryData.pages[queryData.pages.length - 1];
+
+            return {
+                transactions: allTransactions,
+                pagination: lastPage?.pagination,
+                summary: lastPage?.summary,
+            };
+        },
     });
+
+    return {data, isPending, error};
 };

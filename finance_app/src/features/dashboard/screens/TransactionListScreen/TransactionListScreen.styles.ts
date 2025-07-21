@@ -24,5 +24,12 @@ export const styles = StyleSheet.create({
         boxShadow: '0 2px 2px 0 rgba(0, 0, 0, 0.3)',
         backgroundColor: colors.white,
         marginHorizontal: spacing.md,
+        marginVertical: spacing.md,
+    },
+    loadingDots: {
+        fontSize: fontSize.lg,
+        fontFamily: 'Poppins-SemiBold',
+        alignSelf: 'center',
+        marginBottom: spacing.md,
     },
 });

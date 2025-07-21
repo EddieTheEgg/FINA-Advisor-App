@@ -64,11 +64,15 @@ export const getDashboard = async ({month, year} : {month : number, year : numbe
 // Fetches the transaction list for the dashboard home screen
 export const getTransactionList = async (skip: number, limit: number, requestData: BackendTransactionListRequest) : Promise<TransactionListResponse> => {
     try {
-        const response = await api.post('/transactions/transaction-list', {
+        const requestBody = {
+            ...requestData,
+            transaction_timeframe: requestData.transaction_timeframe.toISOString().split('T')[0],
+        };
+
+        const response = await api.post('/transactions/transaction-list', requestBody, {
             params: {
-                skip,
-                limit,
-                requestData,
+                offset: skip,
+                limit: limit,
             },
         });
         const data = response.data;
