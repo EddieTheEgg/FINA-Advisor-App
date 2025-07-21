@@ -4,42 +4,34 @@ import { colors } from '../../../../styles/colors';
 import { fontSize } from '../../../../styles/fontSizes';
 
 export const styles = StyleSheet.create({
-    transactionCardContainer : {
+    transactionItemContainer: {
         flexDirection: 'row',
         padding: spacing.md,
-        alignItems: 'center',
         gap: spacing.md,
-        borderRadius: 20,
+        alignItems: 'center',
     },
-    transactionCardIcon: {
+    transactionItemIcon : {
         fontSize: fontSize.xl,
         padding: spacing.sm + 5,
         borderRadius: 10,
         alignSelf: 'flex-start',
     },
-    transactionTitle : {
+    transactionItemTitle : {
         fontSize: fontSize.lg,
         fontFamily: 'Poppins-SemiBold',
     },
-    transactionDetailContainer : {
+    transactionItemContent : {
         flex: 2,
     },
-    accountNameText : {
-        fontSize: fontSize.lg,
-        fontFamily: 'Poppins-SemiBold',
-    },
-    transactionSubInfoText: {
+    transactionItemSubInfoText: {
         fontSize: fontSize.sm,
         fontWeight: 500,
         fontFamily: 'Poppins-Regular',
         color: colors.gray[500],
     },
-    transactionBalanceText : {
-        fontSize: fontSize.lg,
-        fontFamily: 'Poppins-SemiBold',
-    },
     transactionAmount: {
         fontSize: fontSize.lg,
+        textAlign: 'right',
         fontFamily: 'Poppins-SemiBold',
     },
     incomeAmount: {

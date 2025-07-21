@@ -32,4 +32,16 @@ export const styles = StyleSheet.create({
         alignSelf: 'center',
         marginBottom: spacing.md,
     },
+    transactionList: {
+        backgroundColor: colors.white,
+        marginHorizontal: spacing.md,
+        borderRadius: 20,
+        boxShadow: '0 2px 2px 0 rgba(0, 0, 0, 0.3)',
+        marginBottom: spacing.xxl,
+    },
+    selectorDivider: {
+        height: 1,
+        backgroundColor: colors.gray[200],
+        marginVertical: spacing.xs,
+    },
 });

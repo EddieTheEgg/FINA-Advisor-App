@@ -1,4 +1,4 @@
-import { View, Text, Dimensions } from 'react-native';
+import { View, Text, Dimensions, ScrollView } from 'react-native';
 import { useEffect } from 'react';
 import { styles } from './TransactionListScreen.styles';
 import { useSafeAreaInsets } from 'react-native-safe-area-context';
@@ -10,6 +10,14 @@ import { useCreateTransactionListStore } from '../../store/useTransactionListSto
 import { TransactionListStatSummarizer } from '../../components/TransactionListStatSummarizer/TransactionListStatSummarizer';
 import { LoadingDots } from '../../../../components/LoadingDots/LoadingDots';
 import { ErrorScreen } from '../../../../components/ErrorScreen/ErrorScreen';
+import { TransactionItem } from '../../components/TransactionItem/TransactionItem';
+
+
+const selectorDivider = () => {
+    return (
+        <View style = {styles.selectorDivider} />
+    );
+};
 
 export const TransactionListScreen = () => {
 
@@ -43,7 +51,7 @@ export const TransactionListScreen = () => {
 
 
     return (
-        <View style={[styles.container, {paddingTop: insets.top + canvasPadding}]}>
+        <View style={[styles.container, {paddingTop: insets.top + canvasPadding, paddingBottom: insets.bottom + canvasPadding}]}>
             <View style={styles.header}>
                 <BackButton />
                 <Text style={styles.title}>Transactions</Text>
@@ -54,6 +62,19 @@ export const TransactionListScreen = () => {
                 {isPending ? <LoadingDots style = {styles.loadingDots} /> :
                 <TransactionListStatSummarizer /> }
             </View>
+            {isPending ? <LoadingDots style = {styles.loadingDots} /> :
+            <ScrollView 
+                style = {styles.transactionList}
+                showsVerticalScrollIndicator = {false}
+            >
+                {data?.transactions.map((transaction) => (
+                    <>
+                        <TransactionItem key = {transaction.transactionId} transaction = {transaction} />
+                        {selectorDivider()}
+                    </>
+                ))}
+            </ScrollView>
+            }
         </View>
     );
 };

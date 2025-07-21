@@ -1,6 +1,7 @@
 import { Text, View } from 'react-native';
 import { CategoryData} from '../../types';
 import { styles } from './TransactionPreview.styles';
+import { formatDate } from '../../../../utils/formatDate';
 
 
 
@@ -49,19 +50,6 @@ export const TransactionPreview = ({transactionItem} : TransactionPreviewProps) 
         return `${sign}$${Math.abs(transactionItem.amount).toFixed(2)}`;
     };
 
-    const formatDate = () => {
-        const date = new Date(transactionItem.transactionDate);
-        const today = new Date();
-        const yesterday = new Date(today);
-        yesterday.setDate(today.getDate() - 1);
-        if (date.toDateString() === today.toDateString()) {
-            return 'Today';
-        } else if (date.toDateString() === yesterday.toDateString()) {
-            return 'Yesterday';
-        } else {
-            return date.toLocaleDateString('en-US', { month: 'short', day: 'numeric' });
-        }
-    };
 
     return (
         <View style={styles.transactionItemContainer}>
@@ -77,7 +65,7 @@ export const TransactionPreview = ({transactionItem} : TransactionPreviewProps) 
                 </Text>
                 <View style={styles.subDescBar}>
                     <Text style={styles.accountText}>
-                        {formatDate()}
+                        {formatDate(new Date(transactionItem.transactionDate))}
                     </Text>
                     <Text style={styles.accountName}>
                         {truncateText(transactionItem.accountName, 15)}

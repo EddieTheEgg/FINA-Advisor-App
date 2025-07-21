@@ -22,13 +22,13 @@ export const styles = StyleSheet.create({
         textAlign: 'center',
     },
     incomeValue : {
-        color: colors.red,
+        color: colors.darkerGreen,
         fontFamily: 'Poppins-SemiBold',
         textAlign: 'center',
         fontSize: fontSize.lg,
     },
     expenseValue : {
-        color: colors.darkerGreen,
+        color: colors.red,
         fontFamily: 'Poppins-SemiBold',
         textAlign: 'center',
         fontSize: fontSize.lg,
@@ -39,6 +39,4 @@ export const styles = StyleSheet.create({
         textAlign: 'center',
         fontSize: fontSize.lg,
     },
-
-
 });
