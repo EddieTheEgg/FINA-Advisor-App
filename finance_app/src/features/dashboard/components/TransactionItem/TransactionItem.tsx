@@ -4,12 +4,15 @@ import { AnimatedPressable } from '../../../../components/AnimatedPressable/Anim
 import { styles } from './TransactionItem.styles';
 import { truncateText } from '../../../../utils/textFormat';
 import { formatDate } from '../../../../utils/formatDate';
+import { DashboardNavigationProps } from '../../../../navigation/types/DashboardNavigatorTypes';
+import { formatAmount } from '../../../../utils/formatAmount';
 
 type TransactionItemProps = {
     transaction: TransactionSummary;
+    navigation: DashboardNavigationProps;
 };
 
-export const TransactionItem = ({transaction}: TransactionItemProps) => {
+export const TransactionItem = ({transaction, navigation}: TransactionItemProps) => {
 
     const getAmountStyle = () => {
         switch (transaction.transactionType) {
@@ -24,21 +27,22 @@ export const TransactionItem = ({transaction}: TransactionItemProps) => {
         }
     };
 
-    const formatAmount = () => {
-        const sign = transaction.transactionType === 'INCOME' ? '+' :
-                    transaction.transactionType === 'EXPENSE' ? '-' : '';
-        return `${sign}$${Math.abs(transaction.amount).toFixed(2)}`;
-    };
 
 
     return (
-        <AnimatedPressable style = {styles.transactionItemContainer}>
+        <AnimatedPressable
+        style = {styles.transactionItemContainer}
+        onPress = {() => {
+            //From DashboardNavigator to HomeNavigator to RootNavigator where TransactionDetail is defined
+            navigation.getParent()?.getParent()?.navigate('TransactionDetail', {transactionId: transaction.transactionId});
+        }}
+        >
             <Text style = {[styles.transactionItemIcon, {backgroundColor: transaction.category.color}]}>{transaction.category.icon}</Text>
             <View style = {styles.transactionItemContent}>
                 <Text style = {styles.transactionItemTitle}>{truncateText(transaction.title, 15)}</Text>
                 <Text style = {styles.transactionItemSubInfoText}>{formatDate(new Date(transaction.transactionDate))} • {transaction.accountName}</Text>
             </View>
-            <Text style = {[getAmountStyle()]}>{formatAmount()}</Text>
+            <Text style = {[getAmountStyle()]}>{formatAmount(transaction.transactionType, transaction.amount)}</Text>
         </AnimatedPressable>
     );
 };

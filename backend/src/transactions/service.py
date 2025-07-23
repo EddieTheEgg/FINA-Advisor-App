@@ -119,7 +119,36 @@ def get_transaction_by_id(db: Session, transaction_id: UUID, user_id: UUID) -> T
         logging.warning(f"Transaction with id {transaction_id} not found for user {user_id}")
         raise InvalidUserForTransactionError(transaction_id)
     
-    return transaction
+    return TransactionResponse(
+        transaction_id = transaction.transaction_id,
+        account_id = transaction.account_id,
+        amount = transaction.amount,
+        title = transaction.title,
+        transaction_date = transaction.transaction_date,
+        transaction_type = transaction.transaction_type,
+        notes = transaction.notes,
+        location = transaction.location,
+        is_subscription = transaction.is_subscription,
+        subscription_frequency = transaction.subscription_frequency,
+        subscription_start_date = transaction.subscription_start_date,
+        subscription_end_date = transaction.subscription_end_date,
+        account_name = transaction.account.name,
+        to_account_name = transaction.to_account.name if transaction.to_account else None,
+        merchant = transaction.merchant,
+        created_at = transaction.created_at,
+        updated_at = transaction.updated_at,
+        category = CategoryResponse(
+            category_id = transaction.category.category_id,
+            category_name = transaction.category.category_name,
+            icon = transaction.category.icon,
+            color = transaction.category.color,
+            transaction_type = transaction.category.transaction_type,
+            category_description = transaction.category.category_description,
+            is_custom = transaction.category.is_custom,
+            created_at = transaction.category.created_at,
+            updated_at = transaction.category.updated_at
+        )
+    )
 
 def get_transaction_list(db: Session, user_id: UUID, request_data: TransactionListRequest, offset: int, limit: int) -> TransactionListResponse:
     start_date = request_data.transaction_timeframe

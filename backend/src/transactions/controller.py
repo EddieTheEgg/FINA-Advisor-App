@@ -21,7 +21,7 @@ def create_transactions(
 ):
     return service.create_transaction(db, transaction_create_request, current_user.get_uuid())
 
-@router.get("/single-transaction", response_model = TransactionResponse)
+@router.get("/get-transaction", response_model = TransactionResponse)
 def get_transaction_by_id(
     db: DbSession,
     transaction_id: UUID,

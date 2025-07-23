@@ -15,10 +15,15 @@ import { TransactionItem } from '../../components/TransactionItem/TransactionIte
 import { AnimatedPressable } from '../../../../components/AnimatedPressable/AnimatedPressable';
 import { FilterTransactionsModal } from '../../components/FilterTransactionsModal/FilterTransactionsModal';
 import { TransactionSummary } from '../../types';
+import { DashboardNavigationProps } from '../../../../navigation/types/DashboardNavigatorTypes';
 
 
 
-export const TransactionListScreen = () => {
+type TransactionListScreenProps = {
+    navigation: DashboardNavigationProps;
+};
+
+export const TransactionListScreen = ({navigation}: TransactionListScreenProps) => {
 
     const insets = useSafeAreaInsets();
     const canvasPadding = Dimensions.get('window').height * 0.04;
@@ -81,7 +86,7 @@ export const TransactionListScreen = () => {
 
     const renderTransactionItem = ({ item: transaction }: { item: TransactionSummary }) => (
         <View>
-            <TransactionItem transaction = {transaction} />
+            <TransactionItem transaction = {transaction} navigation = {navigation} />
             <View style = {styles.selectorDivider} key = {Math.random()} />
         </View>
     );
