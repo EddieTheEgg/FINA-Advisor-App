@@ -30,8 +30,8 @@ class TransactionListRequest(BaseModel):
     transaction_type: TransactionType
     transaction_timeframe: date # YYYY-MM-01 always 1st of the provided month and year
     
-    account_id: str | None = None
-    category_id: str | None = None
+    account_ids: list[str] | None = None
+    category_ids: list[str] | None = None
     
     sort_by: TransactionSortBy | None = None
     sort_order: SortOrder | None = None
@@ -127,6 +127,7 @@ class TransactionListResponse(BaseModel):
     transactions: list[TransactionSummary]
     pagination: PaginationResponse
     summary: SummaryResponse
+    possible_categories: list[CategoryResponse]
 
     class Config:
         from_attributes = True

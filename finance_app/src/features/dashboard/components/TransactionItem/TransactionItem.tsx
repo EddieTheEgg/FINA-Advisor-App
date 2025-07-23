@@ -1,4 +1,4 @@
-import { Text, View } from "react-native";
+import { Text, View } from 'react-native';
 import { TransactionSummary } from '../../types';
 import { AnimatedPressable } from '../../../../components/AnimatedPressable/AnimatedPressable';
 import { styles } from './TransactionItem.styles';
@@ -41,4 +41,5 @@ export const TransactionItem = ({transaction}: TransactionItemProps) => {
             <Text style = {[getAmountStyle()]}>{formatAmount()}</Text>
         </AnimatedPressable>
     );
-}; 
+};
+

@@ -37,7 +37,7 @@ def get_user_categories(
         skip: int = 0,
         limit: int = 10, #Default limit is 10
         include_system_default_categories: bool = True,
-        transaction_type: str | None = None,
+        transaction_type: str | TransactionType | None = None,
 ) -> CategoryListResponse:
     possibleCategories = db.query(Category)
 
@@ -49,11 +49,18 @@ def get_user_categories(
     else:
         possibleCategories = possibleCategories.filter((Category.user_id == user_id) & (Category.is_custom == True))
     
-    # Filter by transaction type if provided
+    # Filter by transaction type if provided (skip if ALL - means no filter)
     if transaction_type:
         try:
-            transaction_type_enum = TransactionType(transaction_type.upper())
-            possibleCategories = possibleCategories.filter(Category.transaction_type == transaction_type_enum)
+            # Handle both string and TransactionType enum inputs
+            if isinstance(transaction_type, TransactionType):
+                transaction_type_enum = transaction_type
+            else:
+                transaction_type_enum = TransactionType(transaction_type.upper())
+            
+            # Only apply filter if not ALL (ALL means show all types)
+            if transaction_type_enum != TransactionType.ALL:
+                possibleCategories = possibleCategories.filter(Category.transaction_type == transaction_type_enum)
         except ValueError:
             logging.warning(f"Invalid transaction type: {transaction_type}")
             raise InvalidTransactionTypeError(transaction_type)

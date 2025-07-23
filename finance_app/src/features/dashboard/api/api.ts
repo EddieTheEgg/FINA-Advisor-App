@@ -1,6 +1,7 @@
 import { DashboardData, BackendDashboardAccountInfo, BackendDashboardRecentTransaction, BackendTransactionListRequest, TransactionListResponse, BackendTransactionSummary } from '../types';
 import api from '../../../api/axios';
 import axios from 'axios';
+import { BackendCategoryResponse } from '../../transaction/types';
 
 // Fetches the user summary dashboard data specifically for dashboard home screen
 export const getDashboard = async ({month, year} : {month : number, year : number}) : Promise<DashboardData> => {
@@ -97,6 +98,14 @@ export const getTransactionList = async (skip: number, limit: number, requestDat
                 monthExpense: data.summary.month_expense,
                 monthTransfer: data.summary.month_transfer,
             },
+            possibleCategories: data.possible_categories.map((category: BackendCategoryResponse) => ({
+                categoryId: category.category_id,
+                categoryName: category.category_name,
+                icon: category.icon,
+                color: category.color,
+                isCustom: category.is_custom,
+                transactionType: category.transaction_type,
+            })),
         };
     } catch (error : unknown) {
         if (axios.isAxiosError(error) && error.response?.status === 404) {

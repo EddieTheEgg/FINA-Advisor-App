@@ -139,12 +139,15 @@ def get_transaction_list(db: Session, user_id: UUID, request_data: TransactionLi
     if request_data.transaction_type != TransactionType.ALL:
         base_filter.append(Transaction.transaction_type == request_data.transaction_type)
     
-    # Add optional filters if provided
-    if request_data.account_id:
-        base_filter.append(Transaction.account_id == UUID(request_data.account_id))
-    
-    if request_data.category_id:
-        base_filter.append(Transaction.category_id == UUID(request_data.category_id))
+    # Optional Filter logic
+    if request_data.account_ids:
+        # Convert string UUIDs to UUID objects for database filtering
+        account_uuids = [UUID(account_id) for account_id in request_data.account_ids]
+        base_filter.append(Transaction.account_id.in_(account_uuids))
+    if request_data.category_ids:
+        # Convert string UUIDs to UUID objects for database filtering
+        category_uuids = [UUID(category_id) for category_id in request_data.category_ids]
+        base_filter.append(Transaction.category_id.in_(category_uuids))
     
     # Determine sorting
     sort_field_mapping = {
@@ -220,6 +223,9 @@ def get_transaction_list(db: Session, user_id: UUID, request_data: TransactionLi
         to_account_name=x.to_account.name if x.to_account else None,
     ) for x in transactions]
     
+    # Get all possible categories for the user, 100 which we can accept as a limit for now
+    possible_categories = category_service.get_user_categories(db, user_id, 0, 100, True, request_data.transaction_type)
+    
     return TransactionListResponse(
         transactions=simplified_transactions,
         pagination=PaginationResponse(
@@ -231,7 +237,8 @@ def get_transaction_list(db: Session, user_id: UUID, request_data: TransactionLi
             month_income=float(summary_data.month_income),
             month_expense=float(summary_data.month_expense),
             month_transfer=float(summary_data.month_transfer)
-        )
+        ),
+        possible_categories=possible_categories.categories
     )
 
 # Updates a transaction entry in the database

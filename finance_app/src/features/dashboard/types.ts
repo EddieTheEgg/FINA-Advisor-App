@@ -21,14 +21,16 @@ export type BackendDashboardRecentTransaction = {
 }
 
 export type BackendTransactionListRequest = {
+    //Required Params
     transaction_type: 'ALL' | 'INCOME' | 'EXPENSE' | 'TRANSFER';
     transaction_timeframe: Date, //In format #YYYY-MM-01 (Always start at 01)
 
-    account_id?: string;
-    category_id?: string;
+    //Optional Filtering Params
+    account_ids?: string[];
+    category_ids?: string[];
 
-    sort_by?: 'transaction_date' | 'amount' | 'created_at';
-    sort_order?: 'asc' | 'desc';
+    sort_by?: 'TRANSACTION_DATE' | 'AMOUNT' | 'CREATED_AT';
+    sort_order?: 'ASC' | 'DESC';
 }
 
 export type BackendCategorySimplified = {
@@ -80,6 +82,7 @@ export type CategorySimplifiedData = {
     icon: string;
     color: string;
     isCustom: boolean;
+    transactionType: 'INCOME' | 'EXPENSE' | 'TRANSFER';
 }
 
 export type UserSimpleResponse = {
@@ -149,6 +152,7 @@ export type TransactionListResponse = {
         monthExpense: number;
         monthTransfer: number;
     }
+    possibleCategories: CategoryData[];
 }
 
 //Component Props
