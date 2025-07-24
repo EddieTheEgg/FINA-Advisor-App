@@ -12,6 +12,7 @@ import { MainCardSummary } from '../../components/MainCardSummary/MainCardSummar
 import { TransactionDetailsCard } from '../../components/TransactionDetailsCard/TransactionDetailsCard';
 import { TransactionNotesCard } from '../../components/TransactionNotesCard/TransactionNotesCard';
 import { TransactionSubscriptionCard } from '../../components/TransactionSubscriptionCard/TransactionSubscriptionCard';
+import { TransactionMetaInfo } from '../../components/TransactionMetaInfo/TransactionMetaInfo';
 
 
 export type TransactionDetailScreenProps = NativeStackScreenProps<RootStackParamList, 'TransactionDetail'>;
@@ -52,6 +53,7 @@ export const TransactionDetailScreen = ({route}: TransactionDetailScreenProps) =
             {transactionDetails.isSubscription && (
                 <TransactionSubscriptionCard transactionDetails = {transactionDetails} />
             )}
+            <TransactionMetaInfo transactionDetails = {transactionDetails} />
         </ScrollView>
     );
 };

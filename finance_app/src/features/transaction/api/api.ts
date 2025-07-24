@@ -118,8 +118,8 @@ export const getTransaction = async (transactionId: string) : Promise<Transactio
             toAccountIcon: data.to_account_icon,
             toAccountColor: data.to_account_color,
             merchant: data.merchant,
-            createdAt: data.created_at,
-            updatedAt: data.updated_at,
+            createdAt: new Date(data.created_at),
+            updatedAt: data.updated_at ? new Date(data.updated_at) : null,
             category: {
                 categoryId: data.category.category_id,
                 categoryName: data.category.category_name,
