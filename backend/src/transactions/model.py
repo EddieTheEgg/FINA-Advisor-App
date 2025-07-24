@@ -89,7 +89,11 @@ class TransactionResponse(BaseModel):
     subscription_start_date: datetime | None
     subscription_end_date: datetime | None
     account_name: str
+    account_icon: str
+    account_color: str   
     to_account_name: str | None
+    to_account_icon: str | None
+    to_account_color: str | None
     merchant: str | None
     created_at: datetime
     updated_at: datetime | None

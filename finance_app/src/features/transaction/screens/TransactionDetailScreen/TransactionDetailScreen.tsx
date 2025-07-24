@@ -1,6 +1,6 @@
 import { NativeStackScreenProps } from '@react-navigation/native-stack';
 import { RootStackParamList } from '../../../../navigation/types/RootNavigatorTypes';
-import { View, Text, Dimensions } from 'react-native';
+import { View, Text, Dimensions, ScrollView } from 'react-native';
 import BackButton from '../../../auth/components/GoBackButton/GoBackButton';
 import { styles } from './TransactionDetailScreen.styles';
 import { useSafeAreaInsets } from 'react-native-safe-area-context';
@@ -9,6 +9,8 @@ import { useGetTransaction } from '../../hooks/useGetTransaction';
 import LoadingScreen from '../../../../components/LoadingScreen/LoadingScreen';
 import { ErrorScreen } from '../../../../components/ErrorScreen/ErrorScreen';
 import { MainCardSummary } from '../../components/MainCardSummary/MainCardSummary';
+import { TransactionDetailsCard } from '../../components/TransactionDetailsCard/TransactionDetailsCard';
+import { TransactionNotesCard } from '../../components/TransactionNotesCard/TransactionNotesCard';
 
 export type TransactionDetailScreenProps = NativeStackScreenProps<RootStackParamList, 'TransactionDetail'>;
 
@@ -33,13 +35,20 @@ export const TransactionDetailScreen = ({route}: TransactionDetailScreenProps) =
     }
 
     return (
-        <View style = {[styles.container, {paddingTop: insets.top + canvasPadding, paddingBottom: insets.bottom + canvasPadding}]}>
+        <ScrollView
+        showsVerticalScrollIndicator = {false}
+        contentContainerStyle = {{paddingBottom: insets.bottom + canvasPadding * 2 }}
+        style = {[styles.container, {paddingTop: insets.top + canvasPadding}]}>
             <View style = {styles.header}>
                 <BackButton />
                 <Text style = {styles.headerTitle}>Transaction Details</Text>
                 <FontAwesome6 name="ellipsis" size={24} color="black" />
             </View>
             <MainCardSummary transactionDetails = {transactionDetails} />
-        </View>
+            <TransactionDetailsCard transactionDetails = {transactionDetails} />
+            {transactionDetails.notes && (
+                <TransactionNotesCard transactionNotes = {transactionDetails.notes} />
+            )}
+        </ScrollView>
     );
 };

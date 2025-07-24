@@ -52,11 +52,22 @@ def create_regular_transaction(
     account_service.update_account_balance(db, transaction_create_request.account_id, user_id, amount)
     
     if new_transaction.transaction_type == TransactionType.TRANSFER:
-        account_name = db.query(Account).filter(Account.account_id == transaction_create_request.account_id).first().name
-        to_account_name = db.query(Account).filter(Account.account_id == new_transaction.to_account_id).first().name
+        account = db.query(Account).filter(Account.account_id == transaction_create_request.account_id).first()
+        to_account = db.query(Account).filter(Account.account_id == new_transaction.to_account_id).first()
+        account_name = account.name
+        account_icon = account.icon
+        account_color = account.color
+        to_account_name = to_account.name
+        to_account_icon = to_account.icon
+        to_account_color = to_account.color
     else:
-        account_name = db.query(Account).filter(Account.account_id == transaction_create_request.account_id).first().name
+        account = db.query(Account).filter(Account.account_id == transaction_create_request.account_id).first()
+        account_name = account.name
+        account_icon = account.icon
+        account_color = account.color
         to_account_name = None
+        to_account_icon = None
+        to_account_color = None
     
     return TransactionResponse(
         transaction_id=new_transaction.transaction_id,
@@ -72,7 +83,11 @@ def create_regular_transaction(
         subscription_start_date=new_transaction.subscription_start_date,
         subscription_end_date=new_transaction.subscription_end_date,
         account_name=account_name,
+        account_icon=account_icon,
+        account_color=account_color,
         to_account_name=to_account_name,
+        to_account_icon=to_account_icon,
+        to_account_color=to_account_color,
         merchant=new_transaction.merchant,
         created_at=new_transaction.created_at,
         updated_at=new_transaction.updated_at,
@@ -109,7 +124,16 @@ def create_transaction(db: Session, transaction_create_request: TransactionCreat
 
 #Acquires a single transaction by id (transaction_id), helper for update and delete
 def get_transaction_by_id(db: Session, transaction_id: UUID, user_id: UUID) -> TransactionResponse:
-    transaction = db.query(Transaction).filter(Transaction.transaction_id == transaction_id, Transaction.user_id == user_id).first()
+    transaction = (
+        db.query(Transaction)
+        .options(
+            joinedload(Transaction.category),
+            joinedload(Transaction.account),
+            joinedload(Transaction.to_account)
+        )
+        .filter(Transaction.transaction_id == transaction_id, Transaction.user_id == user_id)
+        .first()
+    )
     
     if not transaction:
         logging.warning(f"Transaction with id {transaction_id} not found for user {user_id}")
@@ -133,7 +157,11 @@ def get_transaction_by_id(db: Session, transaction_id: UUID, user_id: UUID) -> T
         subscription_start_date = transaction.subscription_start_date,
         subscription_end_date = transaction.subscription_end_date,
         account_name = transaction.account.name,
+        account_icon = transaction.account.icon,
+        account_color = transaction.account.color,
         to_account_name = transaction.to_account.name if transaction.to_account else None,
+        to_account_icon = transaction.to_account.icon if transaction.to_account else None,
+        to_account_color = transaction.to_account.color if transaction.to_account else None,
         merchant = transaction.merchant,
         created_at = transaction.created_at,
         updated_at = transaction.updated_at,
