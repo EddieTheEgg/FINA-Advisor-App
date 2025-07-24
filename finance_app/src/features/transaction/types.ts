@@ -32,6 +32,7 @@ export type TransactionResponse = {
     subscriptionFrequency: 'DAILY' | 'WEEKLY' | 'MONTHLY' | 'YEARLY' | null,
     subscriptionStartDate: Date | null,
     subscriptionEndDate: Date | null,
+    subscriptionNextPaymentDate: Date | null,
     accountName: string,
     accountIcon: string,
     accountColor: string,

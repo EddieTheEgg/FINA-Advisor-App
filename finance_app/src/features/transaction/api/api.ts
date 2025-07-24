@@ -57,6 +57,7 @@ export const createTransaction = async (transaction: BackendTransactionCreateReq
             subscriptionFrequency: data.subscription_frequency,
             subscriptionStartDate: data.subscription_start_date,
             subscriptionEndDate: data.subscription_end_date,
+            subscriptionNextPaymentDate: data.subscription_next_payment_date,
             accountName: data.account_name,
             accountIcon: data.account_icon,
             accountColor: data.account_color,
@@ -104,8 +105,12 @@ export const getTransaction = async (transactionId: string) : Promise<Transactio
             location: data.location,
             isSubscription: data.is_subscription,
             subscriptionFrequency: data.subscription_frequency,
-            subscriptionStartDate: data.subscription_start_date,
-            subscriptionEndDate: data.subscription_end_date,
+
+            //Need to convert JSON date string to Typescript date object (Typescript Date does not equal Python Date)
+            subscriptionStartDate: data.subscription_start_date ? new Date(data.subscription_start_date) : null,
+            subscriptionEndDate: data.subscription_end_date ? new Date(data.subscription_end_date) : null,
+            subscriptionNextPaymentDate: data.subscription_next_payment_date ? new Date(data.subscription_next_payment_date) : null,
+
             accountName: data.account_name,
             accountIcon: data.account_icon,
             accountColor: data.account_color,

@@ -16,6 +16,11 @@ class SortOrder(Enum):
     ASC = "ASC"
     DESC = "DESC"
     
+class SubscriptionStatus(Enum):
+    ACTIVE = "ACTIVE"
+    PAUSED = "PAUSED"
+    INACTIVE = "INACTIVE"
+    
 class SnapshotType(Enum):
     ACCOUNT = "ACCOUNT"
     NET_WORTH = "NET_WORTH"

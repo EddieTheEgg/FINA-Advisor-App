@@ -4,7 +4,7 @@ from uuid import UUID
 from xml.etree.ElementTree import tostring
 from pytest import Session
 from typing import List, Tuple
-from datetime import datetime, timedelta
+from datetime import date, datetime, timedelta
 from sqlalchemy import desc, func, case
 from sqlalchemy.orm import joinedload
 
@@ -13,7 +13,7 @@ from backend.src.categories.model import CategoryResponse, CategorySimplifiedRes
 from backend.src.entities.account import Account
 from backend.src.entities.category import Category
 from backend.src.entities.transaction import Transaction, TransactionType
-from backend.src.entities.enums import TransactionSortBy, SortOrder
+from backend.src.entities.enums import SubscriptionFrequency, SubscriptionStatus, TransactionSortBy, SortOrder
 from backend.src.exceptions import TransferTransactionError, CreateTransactionError, CategoryNotFoundError, InvalidUserForCategoryError, InvalidUserForTransactionError, TransactionNotFoundError
 from backend.src.transactions.model import TransactionCreate, TransactionListRequest, TransactionResponse, TransactionSummary, TransactionUpdate, TransactionListResponse, TransferCreateRequest, TransferCreateResponse, PaginationResponse, SummaryResponse
 from backend.src.accounts import service as account_service
@@ -156,6 +156,7 @@ def get_transaction_by_id(db: Session, transaction_id: UUID, user_id: UUID) -> T
         subscription_frequency = transaction.subscription_frequency,
         subscription_start_date = transaction.subscription_start_date,
         subscription_end_date = transaction.subscription_end_date,
+        subscription_next_payment_date = calculate_next_payment_date(transaction.subscription_frequency, transaction.subscription_start_date, transaction.subscription_end_date),        
         account_name = transaction.account.name,
         account_icon = transaction.account.icon,
         account_color = transaction.account.color,
@@ -177,6 +178,51 @@ def get_transaction_by_id(db: Session, transaction_id: UUID, user_id: UUID) -> T
             updated_at = transaction.category.updated_at
         )
     )
+
+#Helper function to calculate the next payment date for a subscription
+def calculate_next_payment_date(
+    subscription_frequency: SubscriptionFrequency,
+    subscription_start_date: date | None,
+    subscription_end_date: date | None
+) -> date | None:
+    from dateutil.relativedelta import relativedelta
+    
+    if subscription_frequency is None or subscription_start_date is None:
+        return None
+    
+    # Work with dates only to avoid timezone complications
+    today = datetime.now().date()
+    start_date = subscription_start_date
+    end_date = subscription_end_date
+    
+    # If subscription ended, no next date
+    if end_date and today > end_date:
+        return None
+    
+    next_date = start_date
+    
+    # Calculate next occurrence after today
+    while next_date <= today:
+        if subscription_frequency == SubscriptionFrequency.DAILY:
+            next_date += timedelta(days=1)
+        elif subscription_frequency == SubscriptionFrequency.WEEKLY:
+            next_date += timedelta(weeks=1)  
+        elif subscription_frequency == SubscriptionFrequency.MONTHLY:
+            next_date += relativedelta(months=1)
+        elif subscription_frequency == SubscriptionFrequency.QUARTERLY:
+            next_date += relativedelta(months=3)
+        elif subscription_frequency == SubscriptionFrequency.YEARLY:
+            next_date += relativedelta(years=1)
+    
+    # Check if next date exceeds end date
+    if subscription_end_date and next_date > subscription_end_date:
+        return None
+    
+    return next_date
+    
+
+
+
 
 def get_transaction_list(db: Session, user_id: UUID, request_data: TransactionListRequest, offset: int, limit: int) -> TransactionListResponse:
     start_date = request_data.transaction_timeframe
