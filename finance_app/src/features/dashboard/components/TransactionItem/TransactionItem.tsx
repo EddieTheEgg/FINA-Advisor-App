@@ -40,7 +40,7 @@ export const TransactionItem = ({transaction, navigation}: TransactionItemProps)
             <Text style = {[styles.transactionItemIcon, {backgroundColor: transaction.category.color}]}>{transaction.category.icon}</Text>
             <View style = {styles.transactionItemContent}>
                 <Text style = {styles.transactionItemTitle}>{truncateText(transaction.title, 15)}</Text>
-                <Text style = {styles.transactionItemSubInfoText}>{formatDate(new Date(transaction.transactionDate))} • {transaction.accountName}</Text>
+                <Text style = {styles.transactionItemSubInfoText}>{formatDate(transaction.transactionDate)} • {transaction.accountName}</Text>
             </View>
             <Text style = {[getAmountStyle()]}>{formatAmount(transaction.transactionType, transaction.amount)}</Text>
         </AnimatedPressable>

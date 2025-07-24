@@ -11,6 +11,7 @@ import { ErrorScreen } from '../../../../components/ErrorScreen/ErrorScreen';
 import { MainCardSummary } from '../../components/MainCardSummary/MainCardSummary';
 import { TransactionDetailsCard } from '../../components/TransactionDetailsCard/TransactionDetailsCard';
 import { TransactionNotesCard } from '../../components/TransactionNotesCard/TransactionNotesCard';
+import { SubscriptionCard } from '../../components/SubscriptionCard/SubscriptionCard';
 
 export type TransactionDetailScreenProps = NativeStackScreenProps<RootStackParamList, 'TransactionDetail'>;
 
@@ -46,8 +47,9 @@ export const TransactionDetailScreen = ({route}: TransactionDetailScreenProps) =
             </View>
             <MainCardSummary transactionDetails = {transactionDetails} />
             <TransactionDetailsCard transactionDetails = {transactionDetails} />
-            {transactionDetails.notes && (
-                <TransactionNotesCard transactionNotes = {transactionDetails.notes} />
+            <TransactionNotesCard transactionNotes = {transactionDetails.notes ?? ''} />
+            {transactionDetails.isSubscription && (
+                <SubscriptionCard transactionDetails = {transactionDetails} />
             )}
         </ScrollView>
     );

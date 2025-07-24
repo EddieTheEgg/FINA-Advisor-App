@@ -65,7 +65,7 @@ export const TransactionPreview = ({transactionItem} : TransactionPreviewProps) 
                 </Text>
                 <View style={styles.subDescBar}>
                     <Text style={styles.accountText}>
-                        {formatDate(new Date(transactionItem.transactionDate))}
+                        {formatDate(transactionItem.transactionDate)}
                     </Text>
                     <Text style={styles.accountName}>
                         {truncateText(transactionItem.accountName, 15)}
