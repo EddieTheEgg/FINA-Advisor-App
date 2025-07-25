@@ -1,5 +1,4 @@
-import { NativeStackScreenProps } from '@react-navigation/native-stack';
-import { RootStackParamList } from '../../../../navigation/types/RootNavigatorTypes';
+import { RootNavigationProps, RootStackParamList } from '../../../../navigation/types/RootNavigatorTypes';
 import { View, Text, Dimensions, ScrollView } from 'react-native';
 import BackButton from '../../../auth/components/GoBackButton/GoBackButton';
 import { styles } from './TransactionDetailScreen.styles';
@@ -13,17 +12,26 @@ import { TransactionDetailsCard } from '../../components/TransactionDetailsCard/
 import { TransactionNotesCard } from '../../components/TransactionNotesCard/TransactionNotesCard';
 import { TransactionSubscriptionCard } from '../../components/TransactionSubscriptionCard/TransactionSubscriptionCard';
 import { TransactionMetaInfo } from '../../components/TransactionMetaInfo/TransactionMetaInfo';
+import { AnimatedPressable } from '../../../../components/AnimatedPressable/AnimatedPressable';
+import { colors } from '../../../../styles/colors';
+import { RouteProp } from '@react-navigation/native';
+import { TransferFlowCard } from '../../components/TransferFlowCard/TransferFlowCard';
 
 
-export type TransactionDetailScreenProps = NativeStackScreenProps<RootStackParamList, 'TransactionDetail'>;
 
-export const TransactionDetailScreen = ({route}: TransactionDetailScreenProps) => {
+type TransactionDetailScreenProps = {
+    navigation: RootNavigationProps;
+    route: RouteProp<RootStackParamList, 'TransactionDetail'>;
+}
+
+export const TransactionDetailScreen = ({route, navigation}: TransactionDetailScreenProps) => {
     const {transactionId} = route.params;
 
     const insets = useSafeAreaInsets();
     const canvasPadding = Dimensions.get('window').height * 0.02;
 
     const {data : transactionDetails, isPending, error} = useGetTransaction(transactionId);
+
 
     if (isPending || !transactionDetails) {
         return <LoadingScreen />;
@@ -37,6 +45,32 @@ export const TransactionDetailScreen = ({route}: TransactionDetailScreenProps) =
         />;
     }
 
+    const handleNavToEditTransaction = () => {
+        navigation.navigate('EditTransaction', {transactionId: transactionDetails.transactionId});
+    };
+
+
+    if (transactionDetails.transactionType === 'TRANSFER') {
+        return (
+            <ScrollView
+            showsVerticalScrollIndicator = {false}
+            contentContainerStyle = {{paddingBottom: insets.bottom + canvasPadding * 2 }}
+            style = {[styles.container, {paddingTop: insets.top + canvasPadding}]}>
+                <View style = {styles.header}>
+                    <BackButton />
+                    <Text style = {styles.headerTitle}>Transfer Details</Text>
+                    <AnimatedPressable
+                        onPress = {() => {}}
+                    >
+                        <FontAwesome6 name="trash" size={24} color={colors.red} />
+                    </AnimatedPressable>
+                </View>
+                <MainCardSummary transactionDetails = {transactionDetails} />
+                <TransferFlowCard transactionDetails = {transactionDetails} />
+            </ScrollView>
+        );
+    }
+
     return (
         <ScrollView
         showsVerticalScrollIndicator = {false}
@@ -45,7 +79,11 @@ export const TransactionDetailScreen = ({route}: TransactionDetailScreenProps) =
             <View style = {styles.header}>
                 <BackButton />
                 <Text style = {styles.headerTitle}>Transaction Details</Text>
-                <FontAwesome6 name="ellipsis" size={24} color="black" />
+                <AnimatedPressable
+                    onPress = {() => {}}
+                >
+                    <FontAwesome6 name="trash" size={24} color={colors.red} />
+                </AnimatedPressable>
             </View>
             <MainCardSummary transactionDetails = {transactionDetails} />
             <TransactionDetailsCard transactionDetails = {transactionDetails} />
@@ -54,6 +92,12 @@ export const TransactionDetailScreen = ({route}: TransactionDetailScreenProps) =
                 <TransactionSubscriptionCard transactionDetails = {transactionDetails} />
             )}
             <TransactionMetaInfo transactionDetails = {transactionDetails} />
+                <AnimatedPressable
+                    onPress = {handleNavToEditTransaction}
+                    style = {styles.editTransactionButton}
+                >
+                    <Text style = {styles.editTransactionButtonText}>Edit Transaction</Text>
+                </AnimatedPressable>
         </ScrollView>
     );
 };
