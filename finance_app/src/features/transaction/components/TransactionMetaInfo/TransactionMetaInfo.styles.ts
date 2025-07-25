@@ -27,12 +27,12 @@ export const styles = StyleSheet.create({
     },
     transactionInfoLabel : {
         fontSize: fontSize.sm,
-        color: colors.gray[400],
+        color: colors.gray[500],
         fontFamily: 'Poppins-SemiBold',
     },
     transactionInfoValue : {
         fontSize: fontSize.sm,
-        color: colors.gray[400],
+        color: colors.gray[600],
         fontFamily: 'Poppins-Medium',
     },
 });

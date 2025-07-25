@@ -39,6 +39,7 @@ export const styles = StyleSheet.create({
         borderWidth: 1.5,
         borderColor: colors.gray[200],
         maxWidth: '42%',
+        height: '100%',
     },
     transferAccountIcon: {
         fontSize: fontSize.xl,

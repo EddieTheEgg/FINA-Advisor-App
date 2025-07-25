@@ -16,6 +16,7 @@ import { AnimatedPressable } from '../../../../components/AnimatedPressable/Anim
 import { colors } from '../../../../styles/colors';
 import { RouteProp } from '@react-navigation/native';
 import { TransferFlowCard } from '../../components/TransferFlowCard/TransferFlowCard';
+import { TransferDetailsCard } from '../../components/TransferDetailsCard/TransferDetailsCard';
 
 
 
@@ -67,6 +68,15 @@ export const TransactionDetailScreen = ({route, navigation}: TransactionDetailSc
                 </View>
                 <MainCardSummary transactionDetails = {transactionDetails} />
                 <TransferFlowCard transactionDetails = {transactionDetails} />
+                <TransferDetailsCard transactionDetails = {transactionDetails} />
+                <TransactionNotesCard transactionNotes = {transactionDetails.notes ?? ''} />
+                <TransactionMetaInfo transactionDetails = {transactionDetails} title = "ℹ️ Transfer Info" />
+                <AnimatedPressable
+                    onPress = {handleNavToEditTransaction}
+                    style = {styles.editTransactionButton}
+                >
+                    <Text style = {styles.editTransactionButtonText}>Edit Transaction</Text>
+                </AnimatedPressable>
             </ScrollView>
         );
     }
@@ -91,13 +101,13 @@ export const TransactionDetailScreen = ({route, navigation}: TransactionDetailSc
             {transactionDetails.isSubscription && (
                 <TransactionSubscriptionCard transactionDetails = {transactionDetails} />
             )}
-            <TransactionMetaInfo transactionDetails = {transactionDetails} />
-                <AnimatedPressable
-                    onPress = {handleNavToEditTransaction}
-                    style = {styles.editTransactionButton}
-                >
-                    <Text style = {styles.editTransactionButtonText}>Edit Transaction</Text>
-                </AnimatedPressable>
+            <TransactionMetaInfo transactionDetails = {transactionDetails} title = "ℹ️ Transaction Info" />
+            <AnimatedPressable
+                onPress = {handleNavToEditTransaction}
+                style = {styles.editTransactionButton}
+            >
+                <Text style = {styles.editTransactionButtonText}>Edit Transaction</Text>
+            </AnimatedPressable>
         </ScrollView>
     );
 };

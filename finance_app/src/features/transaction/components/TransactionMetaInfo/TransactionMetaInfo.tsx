@@ -6,12 +6,11 @@ import { styles } from './TransactionMetaInfo.styles';
 
 type TransactionMetaInfoProps = {
     transactionDetails  : TransactionResponse;
+    title : string;
 }
 
 
-export const TransactionMetaInfo = ({transactionDetails} : TransactionMetaInfoProps) => {
-    console.log(transactionDetails.createdAt);
-
+export const TransactionMetaInfo = ({transactionDetails, title} : TransactionMetaInfoProps) => {
     const formatDateTimeToDisplay = (date: Date | null) => {
         if (!date) {
             return 'Never';
@@ -28,7 +27,7 @@ export const TransactionMetaInfo = ({transactionDetails} : TransactionMetaInfoPr
 
     return (
         <View style = {styles.transactionInfoContainer}>
-            <Text style = {styles.transactionInfoTitle}>ℹ️ Transaction Info</Text>
+            <Text style = {styles.transactionInfoTitle}>{title}</Text>
             <View style = {styles.divider} />
             <View style = {styles.transactionInfoRowContainer}>
                 <Text style = {styles.transactionInfoLabel}>Created</Text>
