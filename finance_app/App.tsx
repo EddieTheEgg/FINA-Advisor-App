@@ -11,6 +11,7 @@ import { createNativeStackNavigator } from '@react-navigation/native-stack';
 import { TransactionDetailScreen } from './src/features/transaction/screens/TransactionDetailScreen/TransactionDetailScreen';
 import { EditTransactionScreen } from './src/features/transaction/screens/EditTransactionScreen/EditTransactionScreen';
 import { RootStackParamList } from './src/navigation/types/RootNavigatorTypes';
+import { EditSelectAccountScreen } from './src/features/transaction/screens/EditSelectAccountScreen/EditSelectAccountScreen';
 
 const Stack = createNativeStackNavigator<RootStackParamList>();
 
@@ -30,6 +31,7 @@ const AppContent = () => {
               <Stack.Screen name= "Home" component={HomeNavigator} />
               <Stack.Screen name = "TransactionDetail" component={TransactionDetailScreen} />
               <Stack.Screen name =  "EditTransaction" component={EditTransactionScreen} />
+              <Stack.Screen name = "SelectEditAccount" component={EditSelectAccountScreen} />
             </>
           ) : (
             <Stack.Screen name="Auth" component={AuthNavigator} />

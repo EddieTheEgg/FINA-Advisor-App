@@ -5,7 +5,7 @@ from pydantic import BaseModel, Field, validator
 from enum import Enum
 
 from backend.src.categories.model import CategoryResponse, CategorySimplifiedResponse   
-from backend.src.entities.enums import SubscriptionStatus, TransactionType, PaymentType, SubscriptionFrequency, TransactionSortBy, SortOrder
+from backend.src.entities.enums import AccountType, SubscriptionStatus, TransactionType, PaymentType, SubscriptionFrequency, TransactionSortBy, SortOrder
 
 class TransactionCreate(BaseModel):
     transaction_type: TransactionType
@@ -92,9 +92,13 @@ class TransactionResponse(BaseModel):
     account_name: str
     account_icon: str
     account_color: str   
+    account_balance: float
+    account_type: AccountType
     to_account_name: str | None
     to_account_icon: str | None
     to_account_color: str | None
+    to_account_balance: float | None
+    to_account_type: AccountType | None
     merchant: str | None
     created_at: datetime
     updated_at: datetime | None

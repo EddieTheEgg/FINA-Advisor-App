@@ -18,4 +18,9 @@ export const styles = StyleSheet.create({
         fontSize: fontSize.xl,
         fontFamily: 'Poppins-SemiBold',
     },
+    expenseIncomeContainer : {
+        gap: spacing.md,
+        marginVertical: spacing.md,
+        marginHorizontal: spacing.md,
+    },
 });

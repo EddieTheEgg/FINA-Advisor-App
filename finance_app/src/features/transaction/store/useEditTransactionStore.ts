@@ -1,5 +1,6 @@
 import { create } from 'zustand';
 import { CategoryResponse } from '../types';
+import { AccountType } from '../../accounts/types';
 
 // Simplified account type for transaction editing
 type SimpleAccountInfo = {
@@ -7,6 +8,8 @@ type SimpleAccountInfo = {
     accountName: string;
     accountIcon: string;
     accountColor: string;
+    accountBalance: number;
+    accountType: AccountType;
 };
 
 type EditTransactionState = {
@@ -160,6 +163,8 @@ export const useEditTransactionStore = create<EditTransactionState & EditTransac
                 accountName: transaction.accountName,
                 accountIcon: transaction.accountIcon,
                 accountColor: transaction.accountColor,
+                accountBalance: transaction.accountBalance,
+                accountType: transaction.accountType,
             },
             amount: transaction.amount,
             title: transaction.title,
@@ -177,6 +182,8 @@ export const useEditTransactionStore = create<EditTransactionState & EditTransac
                 accountName: transaction.toAccountName,
                 accountIcon: transaction.toAccountIcon,
                 accountColor: transaction.toAccountColor,
+                accountBalance: transaction.toAccountBalance,
+                accountType: transaction.toAccountType,
             } : null,
 
             // Initialize draft with same values
@@ -186,6 +193,8 @@ export const useEditTransactionStore = create<EditTransactionState & EditTransac
                 accountName: transaction.accountName,
                 accountIcon: transaction.accountIcon,
                 accountColor: transaction.accountColor,
+                accountBalance: transaction.accountBalance,
+                accountType: transaction.accountType,
             },
             amountDraft: transaction.amount,
             titleDraft: transaction.title,
@@ -203,6 +212,8 @@ export const useEditTransactionStore = create<EditTransactionState & EditTransac
                 accountName: transaction.toAccountName,
                 accountIcon: transaction.toAccountIcon,
                 accountColor: transaction.toAccountColor,
+                accountBalance: transaction.toAccountBalance,
+                accountType: transaction.toAccountType,
             } : null,
         });
     },

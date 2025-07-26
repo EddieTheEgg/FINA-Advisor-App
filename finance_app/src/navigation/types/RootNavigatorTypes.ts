@@ -11,6 +11,7 @@ export type RootStackParamList = {
       transactionId: string;
       accountId?: string;
     };
+    SelectEditAccount: undefined;
   };
 
   export type RootNavigationProps = NativeStackNavigationProp<RootStackParamList>;
