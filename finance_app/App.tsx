@@ -31,7 +31,7 @@ const AppContent = () => {
               <Stack.Screen name= "Home" component={HomeNavigator} />
               <Stack.Screen name = "TransactionDetail" component={TransactionDetailScreen} />
               <Stack.Screen name =  "EditTransaction" component={EditTransactionScreen} />
-              <Stack.Screen name = "SelectEditAccount" component={EditSelectAccountScreen} />
+              <Stack.Screen name = "EditSelectAccount" component={EditSelectAccountScreen} />
             </>
           ) : (
             <Stack.Screen name="Auth" component={AuthNavigator} />

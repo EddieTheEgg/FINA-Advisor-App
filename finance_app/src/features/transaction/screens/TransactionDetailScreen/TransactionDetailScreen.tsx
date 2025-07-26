@@ -47,7 +47,10 @@ export const TransactionDetailScreen = ({route, navigation}: TransactionDetailSc
     }
 
     const handleNavToEditTransaction = () => {
-        navigation.navigate('EditTransaction', {transactionId: transactionDetails.transactionId});
+        navigation.navigate('EditTransaction', {
+            transactionId: transactionDetails.transactionId,
+            transactionDetails: transactionDetails,
+        });
     };
 
 

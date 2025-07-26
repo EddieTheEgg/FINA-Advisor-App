@@ -15,9 +15,9 @@ export const EditAccountSelector = ({ navigation } : AccountSelectorProps ) => {
     const {sourceAccountDraft} = useEditTransactionStore();
 
     const navigateToAccountSelection = () => {
-        console.log('Navigated to Account Selection Screen for editing');
-        navigation.navigate('SelectEditAccount');
+        navigation.navigate('EditSelectAccount');
     };
+
 
     return (
         <View style = {styles.accountSelectorContainer}>

@@ -5,6 +5,7 @@ export type TransactionNavigatorParamList = {
     SelectAccount: undefined;
     SelectCategory : undefined;
     CreateCategory: undefined;
+    EditSelectAccount: undefined;
 };
 
 export type TransactionNavigatorProps = NativeStackNavigationProp<TransactionNavigatorParamList>;
