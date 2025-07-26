@@ -56,3 +56,7 @@ class AccountType(Enum):
     LOAN = "loan"
     CASH = "cash"
     OTHER = "other" 
+    
+class AuditAction(Enum):
+    UPDATE = 'UPDATE',
+    DELETE = 'DELETE',
