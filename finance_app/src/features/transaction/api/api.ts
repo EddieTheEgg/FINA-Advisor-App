@@ -58,7 +58,7 @@ export const createTransaction = async (transaction: BackendTransactionCreateReq
             subscriptionStartDate: data.subscription_start_date,
             subscriptionEndDate: data.subscription_end_date,
             subscriptionNextPaymentDate: data.subscription_next_payment_date,
-           
+
             sourceAccount: {
                 accountId: data.source_account.account_id,
                 name: data.source_account.name,
@@ -68,6 +68,7 @@ export const createTransaction = async (transaction: BackendTransactionCreateReq
                 icon: data.source_account.icon,
                 creditLimit: data.source_account.credit_limit,
             },
+
             toAccount: data.to_account ? {
                 accountId: data.to_account.account_id,
                 name: data.to_account.name,

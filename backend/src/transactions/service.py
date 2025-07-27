@@ -84,6 +84,7 @@ def create_regular_transaction(
         subscription_frequency=new_transaction.subscription_frequency,
         subscription_start_date=new_transaction.subscription_start_date,
         subscription_end_date=new_transaction.subscription_end_date,
+        subscription_next_payment_date=calculate_next_payment_date(new_transaction.subscription_frequency, new_transaction.subscription_start_date, new_transaction.subscription_end_date),
         source_account=TransactionAccountResponse(
             account_id=new_transaction.account_id,
             name=account_name,

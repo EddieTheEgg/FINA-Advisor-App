@@ -1,15 +1,4 @@
-import { AccountResponse, AccountType } from '../accounts/types';
-
-//Frontend Types
-export type SimpleAccountInfo = {
-    accountId: string;
-    accountName: string;
-    accountIcon: string;
-    accountColor: string;
-    accountBalance: number;
-    accountType: AccountType;
-};
-
+import { AccountType } from '../accounts/types';
 
 export type CategoryResponse = {
     categoryId: string,
