@@ -1,4 +1,4 @@
-import { AccountType } from '../accounts/types';
+import { AccountResponse, AccountType } from '../accounts/types';
 
 //Frontend Types
 export type SimpleAccountInfo = {
@@ -31,6 +31,16 @@ export type CategoryListResponse = {
     pageSize: number,
 };
 
+export type TransactionAccountResponse = {
+    accountId: string,
+    name: string,
+    accountType: AccountType,
+    balance: number,
+    color: string,
+    icon: string | null,
+    creditLimit: number | null,
+}
+
 export type TransactionResponse = {
     transactionId: string,
     accountId: string,
@@ -45,16 +55,8 @@ export type TransactionResponse = {
     subscriptionStartDate: Date | null,
     subscriptionEndDate: Date | null,
     subscriptionNextPaymentDate: Date | null,
-    accountName: string,
-    accountIcon: string,
-    accountColor: string,
-    accountBalance: number,
-    accountType: AccountType,
-    toAccountName: string | null,
-    toAccountIcon: string | null,
-    toAccountColor: string | null,
-    toAccountBalance: number | null,
-    toAccountType : AccountType,
+    sourceAccount: TransactionAccountResponse,
+    toAccount: TransactionAccountResponse | null,
     merchant: string | null,
     createdAt: Date,
     updatedAt: Date | null,

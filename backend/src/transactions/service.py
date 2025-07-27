@@ -15,9 +15,8 @@ from backend.src.entities.category import Category
 from backend.src.entities.transaction import Transaction, TransactionType
 from backend.src.entities.enums import SubscriptionFrequency, SubscriptionStatus, TransactionSortBy, SortOrder
 from backend.src.exceptions import TransferTransactionError, CreateTransactionError, CategoryNotFoundError, InvalidUserForCategoryError, InvalidUserForTransactionError, TransactionNotFoundError
-from backend.src.transactions.model import TransactionCreate, TransactionListRequest, TransactionResponse, TransactionSummary, TransactionUpdate, TransactionListResponse, TransferCreateRequest, TransferCreateResponse, PaginationResponse, SummaryResponse
+from backend.src.transactions.model import TransactionCreate, TransactionListRequest, TransactionResponse, TransactionSummary, TransactionUpdate, TransactionListResponse, TransferCreateRequest, TransferCreateResponse, PaginationResponse, SummaryResponse, TransactionAccountResponse
 from backend.src.accounts import service as account_service
-
 
 def create_regular_transaction(
     db: Session,
@@ -51,8 +50,11 @@ def create_regular_transaction(
         amount = -1 * amount
     account_service.update_account_balance(db, transaction_create_request.account_id, user_id, amount)
     
+    # Query the account and category for the response
+    account = db.query(Account).filter(Account.account_id == transaction_create_request.account_id).first()
+    category = db.query(Category).filter(Category.category_id == transaction_create_request.category_id).first()
+    
     if new_transaction.transaction_type == TransactionType.TRANSFER:
-        account = db.query(Account).filter(Account.account_id == transaction_create_request.account_id).first()
         to_account = db.query(Account).filter(Account.account_id == new_transaction.to_account_id).first()
         account_name = account.name
         account_icon = account.icon
@@ -61,7 +63,7 @@ def create_regular_transaction(
         to_account_icon = to_account.icon
         to_account_color = to_account.color
     else:
-        account = db.query(Account).filter(Account.account_id == transaction_create_request.account_id).first()
+        to_account = None
         account_name = account.name
         account_icon = account.icon
         account_color = account.color
@@ -82,25 +84,37 @@ def create_regular_transaction(
         subscription_frequency=new_transaction.subscription_frequency,
         subscription_start_date=new_transaction.subscription_start_date,
         subscription_end_date=new_transaction.subscription_end_date,
-        account_name=account_name,
-        account_icon=account_icon,
-        account_color=account_color,
-        to_account_name=to_account_name,
-        to_account_icon=to_account_icon,
-        to_account_color=to_account_color,
+        source_account=TransactionAccountResponse(
+            account_id=new_transaction.account_id,
+            name=account_name,
+            account_type=account.account_type,
+            balance=account.balance,
+            color=account.color,
+            icon=account.icon,
+            credit_limit=account.credit_limit,
+        ),
+        to_account=TransactionAccountResponse(
+            account_id=new_transaction.to_account_id,
+            name=to_account_name,
+            account_type=to_account.account_type,
+            balance=to_account.balance,
+            color=to_account.color,
+            icon=to_account.icon,
+            credit_limit=to_account.credit_limit,
+        ) if to_account else None,
         merchant=new_transaction.merchant,
         created_at=new_transaction.created_at,
         updated_at=new_transaction.updated_at,
         category=CategoryResponse(
-            category_id=new_transaction.category.category_id,
-            category_name=new_transaction.category.category_name,
-            icon=new_transaction.category.icon,
-            color=new_transaction.category.color,
-            transaction_type=new_transaction.category.transaction_type,
-            category_description=new_transaction.category.category_description,
-            is_custom=new_transaction.category.is_custom,
-            created_at=new_transaction.category.created_at,
-            updated_at=new_transaction.category.updated_at
+            category_id=new_transaction.category_id,
+            category_name=category.category_name,
+            icon=category.icon,
+            color=category.color,
+            transaction_type=category.transaction_type,
+            category_description=category.category_description,
+            is_custom=category.is_custom,
+            created_at=category.created_at,
+            updated_at=category.updated_at
         )   
     )
 
@@ -157,16 +171,24 @@ def get_transaction_by_id(db: Session, transaction_id: UUID, user_id: UUID) -> T
         subscription_start_date = transaction.subscription_start_date,
         subscription_end_date = transaction.subscription_end_date,
         subscription_next_payment_date = calculate_next_payment_date(transaction.subscription_frequency, transaction.subscription_start_date, transaction.subscription_end_date),        
-        account_name = transaction.account.name,
-        account_icon = transaction.account.icon,
-        account_color = transaction.account.color,
-        account_balance = transaction.account.balance,
-        account_type = transaction.account.account_type,
-        to_account_name = transaction.to_account.name if transaction.to_account else None,
-        to_account_icon = transaction.to_account.icon if transaction.to_account else None,
-        to_account_color = transaction.to_account.color if transaction.to_account else None,
-        to_account_balance = transaction.to_account.balance if transaction.to_account else None,
-        to_account_type = transaction.to_account.account_type if transaction.to_account else None,
+        source_account = TransactionAccountResponse(
+            account_id = transaction.account.account_id,
+            name = transaction.account.name,
+            account_type = transaction.account.account_type,
+            balance = transaction.account.balance,
+            color = transaction.account.color,
+            icon = transaction.account.icon,
+            credit_limit = transaction.account.credit_limit,
+        ),
+        to_account = TransactionAccountResponse(
+            account_id = transaction.to_account.account_id,
+            name = transaction.to_account.name,
+            account_type = transaction.to_account.account_type,
+            balance = transaction.to_account.balance,
+            color = transaction.to_account.color,
+            icon = transaction.to_account.icon,
+            credit_limit = transaction.to_account.credit_limit,
+        ) if transaction.to_account else None,
         merchant = transaction.merchant,
         created_at = transaction.created_at,
         updated_at = transaction.updated_at,

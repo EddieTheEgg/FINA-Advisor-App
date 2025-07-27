@@ -3,7 +3,7 @@ from uuid import UUID
 from pydantic import BaseModel
 
 from backend.src.entities.enums import AccountType
-from backend.src.transactions.model import AccountTransactionResponse, TransactionResponse
+from backend.src.transactions.model import AccountTransactionResponse
 
 class AccountCreateRequest(BaseModel):
     name: str
@@ -65,3 +65,5 @@ class AccountTransactionHistoryResponse(BaseModel):
     transactions: List[AccountTransactionResponse]
     current_page: int
     next_page: int | None = None
+    
+    

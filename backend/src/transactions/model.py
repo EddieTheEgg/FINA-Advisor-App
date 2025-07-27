@@ -75,6 +75,25 @@ class AccountTransactionResponse(BaseModel):
         from_attributes = True
         arbitrary_types_allowed = True
         
+        
+        
+        
+        
+        
+        
+class TransactionAccountResponse(BaseModel):
+    account_id: UUID
+    name: str
+    account_type: AccountType
+    balance: float
+    color: str
+    icon: str | None = None
+    credit_limit: float | None = None
+    class Config:
+        from_attributes = True
+        arbitrary_types_allowed = True
+        
+        
 class TransactionResponse(BaseModel):
     transaction_id: UUID
     account_id: UUID
@@ -89,16 +108,8 @@ class TransactionResponse(BaseModel):
     subscription_start_date: date | None
     subscription_end_date: date | None
     subscription_next_payment_date: date | None
-    account_name: str
-    account_icon: str
-    account_color: str   
-    account_balance: float
-    account_type: AccountType
-    to_account_name: str | None
-    to_account_icon: str | None
-    to_account_color: str | None
-    to_account_balance: float | None
-    to_account_type: AccountType | None
+    source_account: TransactionAccountResponse
+    to_account: TransactionAccountResponse | None
     merchant: str | None
     created_at: datetime
     updated_at: datetime | None
@@ -107,6 +118,7 @@ class TransactionResponse(BaseModel):
     class Config:
         from_attributes = True
         arbitrary_types_allowed = True
+
 
 
 

@@ -2,12 +2,12 @@ import { Text, View } from 'react-native';
 import { truncateText } from '../../../../../utils/textFormat';
 import { formatBalance } from '../../../../../utils/balanceFormat';
 import {styles } from './EditSelectedAccountCard.styles';
-import { SimpleAccountInfo } from '../../../types';
+import { TransactionAccountResponse } from '../../../types';
 
 
 
 type SelectedAccountCardProps = {
-    accountItem: SimpleAccountInfo | null;
+    accountItem: TransactionAccountResponse | null;
 }
 
 export const EditSelectedAccountCard = ({accountItem} : SelectedAccountCardProps) => {
@@ -27,10 +27,10 @@ export const EditSelectedAccountCard = ({accountItem} : SelectedAccountCardProps
 
   return (
     <View style = {styles.accountCardContainer}>
-        <Text style = {[styles.accountIcon, {backgroundColor: accountItem.accountColor}]}>{accountItem.accountIcon}</Text>
+        <Text style = {[styles.accountIcon, {backgroundColor: accountItem.color}]}>{accountItem.icon ?? '?'}</Text>
         <View style = {styles.accountInfoContainer}>
-          <Text style = {styles.accountName}>{truncateText(accountItem.accountName, 15)}</Text>
-          <Text style = {styles.accountBalance}>Avaliable: ${formatBalance(accountItem.accountBalance)}</Text>
+          <Text style = {styles.accountName}>{truncateText(accountItem.name, 15)}</Text>
+          <Text style = {styles.accountBalance}>Avaliable: ${formatBalance(accountItem.balance)}</Text>
         </View>
         <Text style = {styles.arrowIcon}> {'>'}</Text>
     </View>

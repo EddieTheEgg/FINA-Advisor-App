@@ -1,15 +1,15 @@
 import { Text, View } from 'react-native';
-import { AccountResponse } from '../../../../accounts/types';
 import { AnimatedPressable } from '../../../../../components/AnimatedPressable/AnimatedPressable';
 import { styles } from './EditAccountSelectionCard.styles';
 import { capitalizeFirstLetter, truncateText } from '../../../../../utils/textFormat';
 import { formatBalance } from '../../../../../utils/balanceFormat';
 import { useEditTransactionStore } from '../../../store/useEditTransactionStore';
 import { RootNavigationProps } from '../../../../../navigation/types/RootNavigatorTypes';
+import { TransactionAccountResponse } from '../../../types';
 
 
 type EditAccountSelectionCardProps = {
-    accountItem : AccountResponse,
+    accountItem : TransactionAccountResponse,
     navigation: RootNavigationProps,
 }
 
@@ -17,16 +17,17 @@ type EditAccountSelectionCardProps = {
 
 export const EditAccountSelectionCard = ({accountItem, navigation} : EditAccountSelectionCardProps) => {
 
-    const {sourceAccountDraft, setSourceAccountDraft, transactionId} = useEditTransactionStore();
+    const {sourceAccountDraft, setSourceAccountDraft} = useEditTransactionStore();
 
     const handleNavToTransactionScreen = () => {
         setSourceAccountDraft({
             accountId: accountItem.accountId,
-            accountName: accountItem.name,
-            accountIcon: accountItem.icon,
-            accountColor: accountItem.color,
-            accountBalance: accountItem.balance,
+            name: accountItem.name,
             accountType: accountItem.accountType,
+            balance: accountItem.balance,
+            color: accountItem.color,
+            icon: accountItem.icon,
+            creditLimit: accountItem.creditLimit,
         });
         navigation.goBack();
     };
