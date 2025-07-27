@@ -11,6 +11,7 @@ export const styles = StyleSheet.create({
         paddingBottom: spacing.xxl,
         paddingTop: spacing.md,
         justifyContent: 'center',
+        backgroundColor: colors.white,
     },
     completeTransferButton: {
         backgroundColor: colors.darkerBackground,

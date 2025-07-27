@@ -4,12 +4,12 @@ import { useTransferStore } from '../../store/useTransferStore';
 import { TransferSubmission } from '../../types';
 import { useMutation, useQueryClient } from '@tanstack/react-query';
 import { submitTransfer } from '../../api/api';
-import { useNavigation } from '@react-navigation/native';
-import { AccountNavigatorProps } from '../../../../navigation/types/AccountNavigatorTypes';
+import { useNavigation, CommonActions } from '@react-navigation/native';
+import { HomeNavigationProps } from '../../../../navigation/types/HomeNavigatorTypes';
 import { AnimatedPressable } from '../../../../components/AnimatedPressable/AnimatedPressable';
 
 export const TransferSubmissionBar = () => {
-    const navigation = useNavigation<AccountNavigatorProps>();
+    const navigation = useNavigation<HomeNavigationProps>();
     const queryClient = useQueryClient();
 
     const currentDate = new Date();
@@ -75,7 +75,7 @@ export const TransferSubmissionBar = () => {
                 queryClient.invalidateQueries({ queryKey: ['account-transactions', toAccount?.accountId] }),
                 queryClient.invalidateQueries({ queryKey: ['dashboard', month, year] }),
             ]);
-            navigation.navigate('AccountsList');
+            // Reset transfer state - user can navigate back manually
             resetTransfer();
         },
         onError: (error) => {

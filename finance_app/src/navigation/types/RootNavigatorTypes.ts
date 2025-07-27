@@ -9,7 +9,7 @@ export type RootStackParamList = {
       accountId?: string;
     };
     EditTransaction: {
-      transactionId: string;
+      transactionDetails: TransactionResponse;
     };
     EditSelectAccount: undefined;
   };

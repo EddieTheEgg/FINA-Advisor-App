@@ -12,7 +12,7 @@ type AccountSelectorProps = {
 
 export const EditAccountSelector = ({ navigation } : AccountSelectorProps ) => {
 
-    const {sourceAccountDraft} = useEditTransactionStore();
+    const {sourceAccountDraft, accountError} = useEditTransactionStore();
 
     const navigateToAccountSelection = () => {
         navigation.navigate('EditSelectAccount');
@@ -29,6 +29,9 @@ export const EditAccountSelector = ({ navigation } : AccountSelectorProps ) => {
                     accountItem = {sourceAccountDraft}
                 />
             </AnimatedPressable>
+            {accountError && (
+                <Text style = {styles.selectedAccountError}>{accountError}</Text>
+            )}
         </View>
     );
 };

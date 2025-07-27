@@ -1,5 +1,6 @@
 import { create } from 'zustand';
 import { CategoryResponse, TransactionAccountResponse, TransactionResponse } from '../types';
+import { AccountType } from '../../accounts/types';
 
 
 type EditTransactionState = {
@@ -38,6 +39,9 @@ type EditTransactionStoreDraft = {
     subscriptionEndDateDraft: Date | null;
     toAccountDraft: TransactionAccountResponse | null;
 
+    amountError: string | null;
+    accountError: string | null;
+
     // Setters for draft state
     setTransactionTypeDraft: (transactionType: 'INCOME' | 'EXPENSE' | 'TRANSFER') => void;
     setSourceAccountDraft: (sourceAccount: TransactionAccountResponse | null) => void;
@@ -59,6 +63,9 @@ type EditTransactionStoreDraft = {
 
     // Reset draft to original values
     resetDraft: () => void;
+
+    //Validations
+    validateAmount: () => void;
 };
 
 const initialState: EditTransactionState = {
@@ -94,6 +101,9 @@ const initialDraftState = {
     subscriptionStartDateDraft: null,
     subscriptionEndDateDraft: null,
     toAccountDraft: null,
+
+    amountError: null,
+    accountError: null,
 };
 
 export const useEditTransactionStore = create<EditTransactionState & EditTransactionStoreDraft>((set, get) => ({
@@ -141,6 +151,14 @@ export const useEditTransactionStore = create<EditTransactionState & EditTransac
     },
     setToAccountDraft: (account) => {
         set({ toAccountDraft: account });
+    },
+
+    //Set Validation errors
+    setAmountError: (error: string | null) => {
+        set({ amountError: error });
+    },
+    setAccountError: (error: string | null) => {
+        set({ accountError: error });
     },
 
     initializeDraftFromTransaction: (transaction : TransactionResponse) => {
@@ -198,5 +216,92 @@ export const useEditTransactionStore = create<EditTransactionState & EditTransac
             subscriptionEndDateDraft: state.subscriptionEndDate,
             toAccountDraft: state.toAccount,
         });
+    },
+
+    validateSourceAccount: () => {
+        const {sourceAccountDraft} = get();
+
+        if (!sourceAccountDraft) {
+            set({accountError: 'Account is required'});
+            return false;
+        }
+
+        set({accountError: ''});
+        return true;
+    },
+
+    validateAmount: () => {
+        const {amountDraft, transactionTypeDraft, sourceAccountDraft} = get();
+
+        if (!sourceAccountDraft) {
+            set({amountError: 'Choose an account first to ensure this amount is valid'});
+            return false;
+        }
+
+        const {accountType, balance, creditLimit = 0} = sourceAccountDraft;
+
+        if (amountDraft <= 0.00) {
+            set({ amountError: 'Transaction amount must be greater than 0' });
+            return false;
+        }
+
+        if (transactionTypeDraft === 'EXPENSE') {
+            switch (accountType) {
+                case AccountType.CASH:
+                    if (amountDraft > balance) {
+                        set({amountError: 'Not enough cash to cover this transaction'});
+                        return false;
+                    }
+                    break;
+
+                case AccountType.CHECKING:
+                    //Note in future, if we support overdrafts, we need to add logic to handle that
+                    if (amountDraft > balance) {
+                        set({amountError: 'Insufficient funds'});
+                        return false;
+                    }
+                    break;
+
+                case AccountType.SAVINGS:
+                    if (amountDraft > balance) {
+                        set({amountError: 'Insufficient funds'});
+                        return false;
+                    }
+                    break;
+
+                case AccountType.CREDIT_CARD:
+                    if (creditLimit && Math.abs(amountDraft) > Math.abs(creditLimit - balance)) {
+                        set({amountError: `Exceeds the account's credit limit: $${creditLimit.toFixed(2)}`});
+                        return false;
+                    }
+                    break;
+
+                case AccountType.LOAN:
+                    if (amountDraft > balance) {
+                        set({amountError: 'Loan balance exceeded'});
+                        return false;
+                    }
+                    break;
+
+                case AccountType.INVESTMENT:
+                    // Optional: For the future, if we support withdrawing investments
+                    break;
+            }
+        }
+
+        if (transactionTypeDraft === 'INCOME') {
+            switch (accountType) {
+                case AccountType.LOAN:
+                    set({amountError: 'Cannot deposit income into a loan account'});
+                    return false;
+                case AccountType.CREDIT_CARD:
+                    // Putting income into a credit card is allowed (to pay down the credit, or if account
+                    // becomes positive, someone owes you credit)
+                    break;
+            }
+        }
+
+        set({amountError: ''});
+        return true;
     },
 }));

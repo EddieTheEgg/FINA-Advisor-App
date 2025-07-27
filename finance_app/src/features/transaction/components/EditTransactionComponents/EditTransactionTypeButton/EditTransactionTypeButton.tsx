@@ -12,10 +12,11 @@ type EditTransactionTypeButtonProps = {
 
 export const EditTransactionTypeButton = React.memo(({selectedTransactionType, label}: EditTransactionTypeButtonProps) => {
 
-    const {transactionTypeDraft, setTransactionTypeDraft} = useEditTransactionStore();
+    const {transactionTypeDraft, setTransactionTypeDraft, setAmountDraft, validateAmount} = useEditTransactionStore();
 
     const handleChangeTransactionType = () => {
         setTransactionTypeDraft(selectedTransactionType);
+        validateAmount();
     };
 
     return (

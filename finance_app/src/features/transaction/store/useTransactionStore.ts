@@ -6,7 +6,6 @@ type CreateTransactionState = {
     transactionType: 'INCOME' | 'EXPENSE' | 'TRANSFER';
     sourceAccount : AccountResponse | null;
     amount : number;
-    amountError: string,
     selectedCategory: CategoryResponse | null,
     title : string,
     date: Date;
@@ -40,6 +39,7 @@ type CreateTransactionState = {
     setRecurringTransactionEndDate: (recurringTransactionEndDate: Date | null) => void;
 
     // Validation errors
+    amountError: string,
     sourceAccountError: string;
     selectedCategoryError: string;
     recurringTransactionError: string;

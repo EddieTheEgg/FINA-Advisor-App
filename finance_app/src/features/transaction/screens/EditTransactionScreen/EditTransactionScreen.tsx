@@ -9,9 +9,7 @@ import { EditTransactionTypeCard } from '../../components/EditTransactionCompone
 import { useEditTransactionStore } from '../../store/useEditTransactionStore';
 import { EditAccountSelector } from '../../components/EditTransactionComponents/EditAccountSelector/EditAccountSelector';
 import { RouteProp } from '@react-navigation/native';
-import { useGetTransaction } from '../../hooks/useGetTransaction';
-import LoadingScreen from '../../../../components/LoadingScreen/LoadingScreen';
-import { ErrorScreen } from '../../../../components/ErrorScreen/ErrorScreen';
+import { EditAmountCard } from '../../components/EditTransactionComponents/EditAmountCard/EditAmountCard';
 
 type EditTransactionScreenNavigationProps = {
     navigation: RootNavigationProps;
@@ -19,11 +17,11 @@ type EditTransactionScreenNavigationProps = {
 }
     
 export const EditTransactionScreen = ({route, navigation}: EditTransactionScreenNavigationProps) => {
-    const { transactionId } = route.params;
+    const { transactionDetails } = route.params;
     const insets = useSafeAreaInsets();
     const canvasPadding = Dimensions.get('window').height * 0.02;
 
-    const { data: transactionDetails, isPending, error } = useGetTransaction(transactionId);
+
     const { transactionTypeDraft, initializeDraftFromTransaction } = useEditTransactionStore();
 
     useEffect(() => {
@@ -31,18 +29,6 @@ export const EditTransactionScreen = ({route, navigation}: EditTransactionScreen
             initializeDraftFromTransaction(transactionDetails);
         }
     }, [transactionDetails, initializeDraftFromTransaction]);
-
-    if (isPending || !transactionDetails) {
-        return <LoadingScreen />;
-    }
-
-    if (error) {
-        return <ErrorScreen
-            errorText="Error fetching transaction details"
-            errorSubText="Please try again later"
-            errorMessage={error.message}
-        />;
-    }
 
     return (
         <ScrollView
@@ -59,6 +45,7 @@ export const EditTransactionScreen = ({route, navigation}: EditTransactionScreen
             {(transactionTypeDraft === 'EXPENSE' || transactionTypeDraft === 'INCOME') && (
                 <View style = {styles.expenseIncomeContainer}>
                     <EditAccountSelector navigation = {navigation} />
+                    <EditAmountCard />
                 </View>
             )}
         </ScrollView>
