@@ -11,25 +11,42 @@ import { EditAccountSelector } from '../../components/EditTransactionComponents/
 import { RouteProp } from '@react-navigation/native';
 import { EditAmountCard } from '../../components/EditTransactionComponents/EditAmountCard/EditAmountCard';
 import { EditCategorySelector } from '../../components/EditTransactionComponents/EditCategorySelector/EditCategorySelector';
+import { useGetTransaction } from '../../hooks/useGetTransaction';
+import LoadingScreen from '../../../../components/LoadingScreen/LoadingScreen';
+import { ErrorScreen } from '../../../../components/ErrorScreen/ErrorScreen';
 
 type EditTransactionScreenNavigationProps = {
     navigation: RootNavigationProps;
     route: RouteProp<RootStackParamList, 'EditTransaction'>;
 }
-    
+
 export const EditTransactionScreen = ({route, navigation}: EditTransactionScreenNavigationProps) => {
-    const { transactionDetails } = route.params;
+    const { transactionId } = route.params;
     const insets = useSafeAreaInsets();
     const canvasPadding = Dimensions.get('window').height * 0.02;
 
-
+    const { data: transactionDetails, isPending, error } = useGetTransaction(transactionId);
     const { transactionTypeDraft, initializeDraftFromTransaction } = useEditTransactionStore();
+
 
     useEffect(() => {
         if (transactionDetails) {
             initializeDraftFromTransaction(transactionDetails);
         }
     }, [transactionDetails, initializeDraftFromTransaction]);
+
+
+    if (isPending || !transactionDetails) {
+        return <LoadingScreen />;
+    }
+
+    if (error) {
+        return <ErrorScreen
+            errorText = "Error fetching transaction details"
+            errorSubText = "Please try again later"
+            errorMessage = {error.message}
+        />;
+    }
 
     return (
         <ScrollView

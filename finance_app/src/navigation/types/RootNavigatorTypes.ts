@@ -1,5 +1,4 @@
 import { NativeStackNavigationProp } from '@react-navigation/native-stack';
-import { TransactionResponse } from '../../features/transaction/types';
 
 export type RootStackParamList = {
     Home: undefined;
@@ -9,7 +8,7 @@ export type RootStackParamList = {
       accountId?: string;
     };
     EditTransaction: {
-      transactionDetails: TransactionResponse;
+      transactionId: string;
     };
     EditSelectAccount: undefined;
     EditSelectCategory: undefined;
