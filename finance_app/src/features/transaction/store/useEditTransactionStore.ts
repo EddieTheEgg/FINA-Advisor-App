@@ -43,6 +43,7 @@ type EditTransactionStoreDraft = {
     accountError: string | null;
     categoryError: string | null;
     titleError : string | null;
+    subscriptionError: string | null;
 
     // Setters for draft state
     setTransactionTypeDraft: (transactionType: 'INCOME' | 'EXPENSE' | 'TRANSFER') => void;
@@ -67,9 +68,11 @@ type EditTransactionStoreDraft = {
     resetDraft: () => void;
 
     //Validations
+    validateSourceAccount: () => void;
     validateAmount: () => void;
     validateSelectedCategory: () => void;
     validateTitle: () => void;
+    validateSubscription: () => void;
 };
 
 const initialState: EditTransactionState = {
@@ -110,6 +113,7 @@ const initialDraftState = {
     accountError: null,
     categoryError: null,
     titleError: null,
+    subscriptionError: null,
 };
 
 export const useEditTransactionStore = create<EditTransactionState & EditTransactionStoreDraft>((set, get) => ({
@@ -213,6 +217,7 @@ export const useEditTransactionStore = create<EditTransactionState & EditTransac
             accountError: null,
             categoryError: null,
             titleError: null,
+            subscriptionError: null,
         });
     },
 
@@ -335,6 +340,25 @@ export const useEditTransactionStore = create<EditTransactionState & EditTransac
         }
 
         set({titleError: ''});
+        return true;
+    },
+
+    validateSubscription: () => {
+        const {isSubscriptionDraft, subscriptionStartDateDraft, subscriptionEndDateDraft} = get();
+
+        // If this is a subscription, start date is required
+        if (isSubscriptionDraft && !subscriptionStartDateDraft) {
+            set({subscriptionError: 'Start date is required for recurring transactions'});
+            return false;
+        }
+
+        // If both dates are provided, validate that start is before end
+        if (subscriptionStartDateDraft && subscriptionEndDateDraft && subscriptionStartDateDraft.getTime() >= subscriptionEndDateDraft.getTime()) {
+            set({subscriptionError: 'Start date must be before end date'});
+            return false;
+        }
+
+        set({subscriptionError: ''});
         return true;
     },
 }));

@@ -17,7 +17,7 @@ type EditAccountSelectionCardProps = {
 
 export const EditAccountSelectionCard = ({accountItem, navigation} : EditAccountSelectionCardProps) => {
 
-    const {sourceAccountDraft, setSourceAccountDraft} = useEditTransactionStore();
+    const {sourceAccountDraft, setSourceAccountDraft, validateSourceAccount} = useEditTransactionStore();
 
     const handleNavToTransactionScreen = () => {
         setSourceAccountDraft({
@@ -29,6 +29,7 @@ export const EditAccountSelectionCard = ({accountItem, navigation} : EditAccount
             icon: accountItem.icon,
             creditLimit: accountItem.creditLimit,
         });
+        validateSourceAccount();
         navigation.goBack();
     };
 

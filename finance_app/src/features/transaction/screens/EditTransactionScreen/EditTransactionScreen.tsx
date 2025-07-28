@@ -1,4 +1,4 @@
-import { View, Text, ScrollView, Pressable } from 'react-native';
+import { View, Text, ScrollView } from 'react-native';
 import { useEffect } from 'react';
 import { RootNavigationProps, RootStackParamList } from '../../../../navigation/types/RootNavigatorTypes';
 import { useSafeAreaInsets } from 'react-native-safe-area-context';
@@ -18,6 +18,7 @@ import { EditTransactionDateCard } from '../../components/EditTransactionCompone
 import { EditTransactionTitle } from '../../components/EditTransactionComponents/EditTransactionTitle/EditTransactionTitle';
 import FontAwesome6 from 'react-native-vector-icons/FontAwesome6';
 import { EditOptionalDetailsCard } from '../../components/EditTransactionComponents/EditOptionalDetailComponents/EditOptionalDetailsCard/EditOptionalDetailsCard';
+import { EditRecurringTransactionCard } from '../../components/EditTransactionComponents/EditRecurringTransactionCard/EditRecurringTransactionCard';
 
 
 //This screen is used to edit transactions that are not transfers (so income and expense)
@@ -53,7 +54,6 @@ export const EditTransactionScreen = ({route, navigation}: EditTransactionScreen
     if (isPending || !transactionDetails) {
         return <LoadingScreen />;
     }
-    
 
     if (error) {
         return <ErrorScreen
@@ -83,6 +83,7 @@ export const EditTransactionScreen = ({route, navigation}: EditTransactionScreen
                     <EditTransactionTitle />
                     <EditTransactionDateCard />
                     <EditOptionalDetailsCard />
+                    <EditRecurringTransactionCard />
                 </View>
         </ScrollView>
     );

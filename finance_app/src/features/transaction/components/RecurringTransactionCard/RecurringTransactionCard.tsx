@@ -22,6 +22,7 @@ export const RecurringTransactionCard = () => {
 
     const toggleRecurringTransaction = () => {
         setRecurringTransaction(!recurringTransaction);
+        validateRecurringTransaction();
     };
 
     const handleStartDateSelect = (date: Date) => {

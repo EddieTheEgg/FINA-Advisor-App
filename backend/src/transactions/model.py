@@ -25,6 +25,19 @@ class TransactionCreate(BaseModel):
     subscription_end_date: date | None = None
    
     to_account_id: str | None = None
+
+    @validator('subscription_start_date')
+    def validate_subscription_start_date(cls, v, values):
+        if values.get('is_subscription') and not v:
+            raise ValueError('Start date is required for subscriptions')
+        return v
+
+    @validator('subscription_end_date')
+    def validate_subscription_end_date(cls, v, values):
+        start_date = values.get('subscription_start_date')
+        if v and start_date and v <= start_date:
+            raise ValueError('End date must be after start date')
+        return v
     
 class TransactionListRequest(BaseModel):
     transaction_type: TransactionType
@@ -51,6 +64,20 @@ class TransactionUpdate(BaseModel):
     payment_type: PaymentType | None = None
     merchant: str | None = None
     to_account_id: UUID | None = None
+
+    @validator('subscription_start_date')
+    def validate_subscription_start_date(cls, v, values):
+        is_subscription = values.get('is_subscription')
+        if is_subscription is True and not v:
+            raise ValueError('Start date is required for subscriptions')
+        return v
+
+    @validator('subscription_end_date')
+    def validate_subscription_end_date(cls, v, values):
+        start_date = values.get('subscription_start_date')
+        if v and start_date and v <= start_date:
+            raise ValueError('End date must be after start date')
+        return v
 
 class AccountTransactionResponse(BaseModel):
     transaction_id: UUID

@@ -226,8 +226,20 @@ export const useCreateTransactionStore = create<CreateTransactionState>((set, ge
     },
 
     validateRecurringTransaction: () => {
-        const {recurringTransactionStartDate, recurringTransactionEndDate} = get();
+        const {recurringTransaction, recurringTransactionStartDate, recurringTransactionEndDate} = get();
 
+        if (!recurringTransaction) {
+            set({recurringTransactionError: ''});
+            return true;
+        }
+
+        // If this is a recurring transaction, start date is required
+        if (recurringTransaction && !recurringTransactionStartDate) {
+            set({recurringTransactionError: 'Start date is required for recurring transactions'});
+            return false;
+        }
+
+        // If both dates are provided, validate that start is before end
         if (recurringTransactionStartDate && recurringTransactionEndDate && recurringTransactionStartDate.getTime() >= recurringTransactionEndDate.getTime()) {
             set({recurringTransactionError: 'Start date must be before end date'});
             return false;
