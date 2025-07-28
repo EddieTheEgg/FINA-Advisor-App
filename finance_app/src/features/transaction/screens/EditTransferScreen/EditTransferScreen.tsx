@@ -3,14 +3,12 @@ import { useEffect } from 'react';
 import { RootNavigationProps, RootStackParamList } from '../../../../navigation/types/RootNavigatorTypes';
 import { useSafeAreaInsets } from 'react-native-safe-area-context';
 import { Dimensions } from 'react-native';
-import { styles } from './EditTransactionScreen.styles';
+import { styles } from './EditTransferScreen.styles';
 import BackButton from '../../../auth/components/GoBackButton/GoBackButton';
-import { EditTransactionTypeCard } from '../../components/EditTransactionComponents/EditTransactionTypeCard/EditTransactionTypeCard';
 import { useEditTransactionStore } from '../../store/useEditTransactionStore';
 import { EditAccountSelector } from '../../components/EditTransactionComponents/EditAccountSelector/EditAccountSelector';
 import { RouteProp } from '@react-navigation/native';
 import { EditAmountCard } from '../../components/EditTransactionComponents/EditAmountCard/EditAmountCard';
-import { EditCategorySelector } from '../../components/EditTransactionComponents/EditCategorySelector/EditCategorySelector';
 import { useGetTransaction } from '../../hooks/useGetTransaction';
 import LoadingScreen from '../../../../components/LoadingScreen/LoadingScreen';
 import { ErrorScreen } from '../../../../components/ErrorScreen/ErrorScreen';
@@ -18,13 +16,12 @@ import { EditTransactionDateCard } from '../../components/EditTransactionCompone
 import { EditTransactionTitle } from '../../components/EditTransactionComponents/EditTransactionTitle/EditTransactionTitle';
 import FontAwesome6 from 'react-native-vector-icons/FontAwesome6';
 
-{/** This screen is used to edit transactions that are not transfers (so income and expense) */}
-type EditTransactionScreenNavigationProps = {
+type EditTransferScreenNavigationProps = {
     navigation: RootNavigationProps;
-    route: RouteProp<RootStackParamList, 'EditTransaction'>;
+    route: RouteProp<RootStackParamList, 'EditTransfer'>;
 }
 
-export const EditTransactionScreen = ({route, navigation}: EditTransactionScreenNavigationProps) => {
+export const EditTransferScreen = ({route, navigation}: EditTransferScreenNavigationProps) => {
     const { transactionId } = route.params;
     const insets = useSafeAreaInsets();
     const canvasPadding = Dimensions.get('window').height * 0.02;
@@ -33,7 +30,6 @@ export const EditTransactionScreen = ({route, navigation}: EditTransactionScreen
     const {
         transactionTypeDraft,
         initializeDraftFromTransaction,
-        validateSelectedCategory,
         validateAmount,
         validateTitle,
     } = useEditTransactionStore();
@@ -42,11 +38,10 @@ export const EditTransactionScreen = ({route, navigation}: EditTransactionScreen
     useEffect(() => {
         if (transactionDetails) {
             initializeDraftFromTransaction(transactionDetails);
-            validateSelectedCategory();
             validateAmount();
             validateTitle();
         }
-    }, [transactionDetails, initializeDraftFromTransaction, validateSelectedCategory, validateAmount, validateTitle]);
+    }, [transactionDetails, initializeDraftFromTransaction, validateAmount, validateTitle]);
 
 
     if (isPending || !transactionDetails) {
@@ -61,6 +56,7 @@ export const EditTransactionScreen = ({route, navigation}: EditTransactionScreen
         />;
     }
 
+
     return (
         <ScrollView
         showsVerticalScrollIndicator = {false}
@@ -69,18 +65,16 @@ export const EditTransactionScreen = ({route, navigation}: EditTransactionScreen
         >
             <View style = {styles.header}>
                 <BackButton />
-                <Text style = {styles.headerTitle}>Edit Transaction</Text>
-                { /** TODO: This button will delete current transaction and move user to create transfer screen */}
+                <Text style = {styles.headerTitle}>Edit Transfer</Text>
+                { /** TODO: This button will delete current transfer and move user to create transaction screen */}
                 <FontAwesome6 name = "circle-question" size = {24} color = "black" />
             </View>
-            <EditTransactionTypeCard />
-                <View style = {styles.expenseIncomeContainer}>
-                    <EditAccountSelector navigation = {navigation} />
-                    <EditCategorySelector navigation = {navigation} />
-                    <EditAmountCard />
-                    <EditTransactionTitle />
-                    <EditTransactionDateCard />
-                </View>
+            <View style = {styles.expenseIncomeContainer}>
+                <EditAccountSelector navigation = {navigation} />
+                <EditAmountCard />
+                <EditTransactionTitle />
+                <EditTransactionDateCard />
+            </View>
         </ScrollView>
     );
 };

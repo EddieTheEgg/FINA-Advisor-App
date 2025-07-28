@@ -42,6 +42,7 @@ type EditTransactionStoreDraft = {
     amountError: string | null;
     accountError: string | null;
     categoryError: string | null;
+    titleError : string | null;
 
     // Setters for draft state
     setTransactionTypeDraft: (transactionType: 'INCOME' | 'EXPENSE' | 'TRANSFER') => void;
@@ -68,6 +69,7 @@ type EditTransactionStoreDraft = {
     //Validations
     validateAmount: () => void;
     validateSelectedCategory: () => void;
+    validateTitle: () => void;
 };
 
 const initialState: EditTransactionState = {
@@ -107,6 +109,7 @@ const initialDraftState = {
     amountError: null,
     accountError: null,
     categoryError: null,
+    titleError: null,
 };
 
 export const useEditTransactionStore = create<EditTransactionState & EditTransactionStoreDraft>((set, get) => ({
@@ -165,6 +168,9 @@ export const useEditTransactionStore = create<EditTransactionState & EditTransac
     },
     setCategoryError: (error: string | null) => {
         set({ categoryError: error });
+    },
+    setTitleError : (error: string | null) => {
+        set({titleError: error});
     },
 
     initializeDraftFromTransaction: (transaction : TransactionResponse) => {
@@ -319,6 +325,23 @@ export const useEditTransactionStore = create<EditTransactionState & EditTransac
         }
 
         set({amountError: ''});
+        return true;
+    },
+
+    validateTitle: () => {
+        const {titleDraft} = get();
+
+        if (!titleDraft) {
+            set({titleError: 'Title is required'});
+            return false;
+        }
+
+        if (titleDraft.length < 3) {
+            set({titleError: 'Title must be at least 3 characters long'});
+            return false;
+        }
+
+        set({titleError: ''});
         return true;
     },
 }));

@@ -47,9 +47,15 @@ export const TransactionDetailScreen = ({route, navigation}: TransactionDetailSc
     }
 
     const handleNavToEditTransaction = () => {
-        navigation.navigate('EditTransaction', {
-            transactionId: transactionId,
-        });
+        if (transactionDetails.transactionType === 'TRANSFER') {
+            navigation.navigate('EditTransfer', {
+                transactionId: transactionId,
+            });
+        } else {
+            navigation.navigate('EditTransaction', {
+                transactionId: transactionId,
+            });
+        }
     };
 
 
@@ -77,7 +83,7 @@ export const TransactionDetailScreen = ({route, navigation}: TransactionDetailSc
                     onPress = {handleNavToEditTransaction}
                     style = {styles.editTransactionButton}
                 >
-                    <Text style = {styles.editTransactionButtonText}>Edit Transaction</Text>
+                    <Text style = {styles.editTransactionButtonText}>Edit Transfer</Text>
                 </AnimatedPressable>
             </ScrollView>
         );

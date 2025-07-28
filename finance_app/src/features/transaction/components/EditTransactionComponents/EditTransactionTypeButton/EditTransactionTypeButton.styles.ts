@@ -7,7 +7,7 @@ export const styles = StyleSheet.create({
     activeTransactionType: {
         backgroundColor: colors.darkerBackground,
         padding: spacing.md,
-        paddingHorizontal: spacing.lg,
+        paddingHorizontal: spacing.xxl,
         borderRadius: 10,
         fontSize: fontSize.lg,
     },
@@ -18,7 +18,7 @@ export const styles = StyleSheet.create({
     inactiveTransactionType: {
         backgroundColor: colors.gray[100],
         padding: spacing.md,
-        paddingHorizontal: spacing.lg,
+        paddingHorizontal: spacing.xxl,
         borderRadius: 10,
     },
      inactiveTransactionTypeText : {

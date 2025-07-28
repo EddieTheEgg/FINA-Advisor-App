@@ -13,7 +13,6 @@ export const styles = StyleSheet.create({
         alignItems: 'center',
         justifyContent: 'space-between',
         marginHorizontal: spacing.md,
-        marginBottom: spacing.sm,
     },
     headerTitle : {
         fontSize: fontSize.xl,

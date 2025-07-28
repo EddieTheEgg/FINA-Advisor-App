@@ -16,10 +16,6 @@ export const EditTransactionTypeCard = () => {
                     selectedTransactionType = "INCOME"
                     label = "Income"
                 />
-                <EditTransactionTypeButton
-                    selectedTransactionType = "TRANSFER"
-                    label = "Transfer"
-                />
            </View>
            <View style = {styles.transactionTypeInfoContainer}>
                 <Text style = {styles.transactionTypeInfoText}>💡 Changing transaction type will affect how this impacts your account balance</Text>

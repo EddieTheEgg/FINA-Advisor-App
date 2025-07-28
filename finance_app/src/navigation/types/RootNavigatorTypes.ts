@@ -10,6 +10,9 @@ export type RootStackParamList = {
     EditTransaction: {
       transactionId: string;
     };
+    EditTransfer: {
+      transactionId: string;
+    };
     EditSelectAccount: undefined;
     EditSelectCategory: undefined;
     CreateCategory: undefined;
