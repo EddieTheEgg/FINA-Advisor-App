@@ -14,6 +14,7 @@ import { EditCategorySelector } from '../../components/EditTransactionComponents
 import { useGetTransaction } from '../../hooks/useGetTransaction';
 import LoadingScreen from '../../../../components/LoadingScreen/LoadingScreen';
 import { ErrorScreen } from '../../../../components/ErrorScreen/ErrorScreen';
+import { EditTransactionDateCard } from '../../components/EditTransactionComponents/EditTransactionDateCard/EditTransactionDateCard';
 
 type EditTransactionScreenNavigationProps = {
     navigation: RootNavigationProps;
@@ -26,12 +27,14 @@ export const EditTransactionScreen = ({route, navigation}: EditTransactionScreen
     const canvasPadding = Dimensions.get('window').height * 0.02;
 
     const { data: transactionDetails, isPending, error } = useGetTransaction(transactionId);
-    const { transactionTypeDraft, initializeDraftFromTransaction } = useEditTransactionStore();
+    const { transactionTypeDraft, initializeDraftFromTransaction, validateSelectedCategory, validateAmount } = useEditTransactionStore();
 
 
     useEffect(() => {
         if (transactionDetails) {
             initializeDraftFromTransaction(transactionDetails);
+            validateSelectedCategory();
+            validateAmount();
         }
     }, [transactionDetails, initializeDraftFromTransaction]);
 
@@ -65,6 +68,7 @@ export const EditTransactionScreen = ({route, navigation}: EditTransactionScreen
                     <EditAccountSelector navigation = {navigation} />
                     <EditAmountCard />
                     <EditCategorySelector navigation = {navigation} />
+                    <EditTransactionDateCard />
                 </View>
             )}
         </ScrollView>
