@@ -14,19 +14,19 @@ export const TransferFlowCard = ({transactionDetails}: TransferFlowCardProps) =>
             <Text style={styles.transferFlowTitle}>🔄 Transfer Flow</Text>
             <View style={styles.transferFlowContainer}>
                 <View style={styles.transferAccountContainer}>
-                    <Text style={[styles.transferAccountIcon, {backgroundColor: transactionDetails.accountColor}]}>
-                        {transactionDetails.accountIcon}
+                    <Text style={[styles.transferAccountIcon, {backgroundColor: transactionDetails.sourceAccount.color}]}>
+                        {transactionDetails.sourceAccount.icon}
                     </Text>
-                    <Text style={styles.transferAccountName}>{transactionDetails.accountName}</Text>
+                    <Text style={styles.transferAccountName}>{transactionDetails.sourceAccount.name}</Text>
                 </View>
                 <View style={styles.arrowContainer}>
                     <FontAwesome6 name="arrow-right" size={24} color={colors.darkerBackground} iconStyle="solid" />
                 </View>
                 <View style={styles.transferAccountContainer}>
-                    <Text style={[styles.transferAccountIcon, {backgroundColor: transactionDetails.toAccountColor || transactionDetails.accountColor}]}>
-                        {transactionDetails.toAccountIcon || transactionDetails.accountIcon}
+                    <Text style={[styles.transferAccountIcon, {backgroundColor: transactionDetails.toAccount?.color || transactionDetails.sourceAccount.color}]}>
+                        {transactionDetails.toAccount?.icon || transactionDetails.sourceAccount.icon}
                     </Text>
-                    <Text style={styles.transferAccountName}>{transactionDetails.toAccountName || 'Unknown Account'}</Text>
+                    <Text style={styles.transferAccountName}>{transactionDetails.toAccount?.name || 'Unknown Account'}</Text>
                 </View>
             </View>
         </View>

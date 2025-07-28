@@ -156,8 +156,8 @@ export const getTransaction = async (transactionId: string) : Promise<Transactio
                 transactionType: data.category.transaction_type,
                 categoryDescription: data.category.category_description,
                 isCustom: data.category.is_custom,
-                createdAt: data.category.created_at,
-                updatedAt: data.category.updated_at,
+                createdAt: new Date(data.category.created_at),
+                updatedAt: data.category.updated_at ? new Date(data.category.updated_at) : null,
             },
         };
 

@@ -8,8 +8,8 @@ export type CategoryResponse = {
     transactionType : 'INCOME' | 'EXPENSE' | 'TRANSFER',
     isCustom: boolean,
     categoryDescription: string | null,
-    createdAt: string,
-    updatedAt: string | null,
+    createdAt: Date,
+    updatedAt: Date | null,
 }
 
 export type CategoryListResponse = {

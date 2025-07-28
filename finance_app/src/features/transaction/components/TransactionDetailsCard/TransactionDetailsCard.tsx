@@ -27,8 +27,8 @@ export const TransactionDetailsCard = ({transactionDetails}: TransactionDetailsC
             <View style = {styles.transactionDetailContainer}>
                 <Text style = {styles.transactionDetailsLabel}>Account</Text>
                 <View style = {styles.accountDetailsContainer}>
-                    <Text style = {[styles.iconStyling, {backgroundColor: transactionDetails.accountColor}]}>{transactionDetails.accountIcon}</Text>
-                    <Text style = {styles.transactionDetailInfoText}>{transactionDetails.accountName}</Text>
+                    <Text style = {[styles.iconStyling, {backgroundColor: transactionDetails.sourceAccount.color}]}>{transactionDetails.sourceAccount.icon}</Text>
+                    <Text style = {styles.transactionDetailInfoText}>{transactionDetails.sourceAccount.name}</Text>
                 </View>
             </View>
             {lineSeperator()}
