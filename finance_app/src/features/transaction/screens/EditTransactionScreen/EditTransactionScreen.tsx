@@ -36,7 +36,7 @@ export const EditTransactionScreen = ({route, navigation}: EditTransactionScreen
             validateSelectedCategory();
             validateAmount();
         }
-    }, [transactionDetails, initializeDraftFromTransaction]);
+    }, [transactionDetails, initializeDraftFromTransaction, validateSelectedCategory, validateAmount]);
 
 
     if (isPending || !transactionDetails) {
