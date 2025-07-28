@@ -12,6 +12,8 @@ export type RootStackParamList = {
       transactionDetails: TransactionResponse;
     };
     EditSelectAccount: undefined;
+    EditSelectCategory: undefined;
+    CreateCategory: undefined;
   };
 
   export type RootNavigationProps = NativeStackNavigationProp<RootStackParamList>;

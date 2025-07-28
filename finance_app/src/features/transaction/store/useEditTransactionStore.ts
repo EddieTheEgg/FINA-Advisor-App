@@ -41,6 +41,7 @@ type EditTransactionStoreDraft = {
 
     amountError: string | null;
     accountError: string | null;
+    categoryError: string | null;
 
     // Setters for draft state
     setTransactionTypeDraft: (transactionType: 'INCOME' | 'EXPENSE' | 'TRANSFER') => void;
@@ -66,6 +67,7 @@ type EditTransactionStoreDraft = {
 
     //Validations
     validateAmount: () => void;
+    validateSelectedCategory: () => void;
 };
 
 const initialState: EditTransactionState = {
@@ -104,6 +106,7 @@ const initialDraftState = {
 
     amountError: null,
     accountError: null,
+    categoryError: null,
 };
 
 export const useEditTransactionStore = create<EditTransactionState & EditTransactionStoreDraft>((set, get) => ({
@@ -159,6 +162,9 @@ export const useEditTransactionStore = create<EditTransactionState & EditTransac
     },
     setAccountError: (error: string | null) => {
         set({ accountError: error });
+    },
+    setCategoryError: (error: string | null) => {
+        set({ categoryError: error });
     },
 
     initializeDraftFromTransaction: (transaction : TransactionResponse) => {
@@ -227,6 +233,17 @@ export const useEditTransactionStore = create<EditTransactionState & EditTransac
         }
 
         set({accountError: ''});
+        return true;
+    },
+
+    validateSelectedCategory: () => {
+        const {selectedCategoryDraft} = get();
+        if (!selectedCategoryDraft) {
+            set({categoryError: 'Category is required'});
+            return false;
+        }
+
+        set({categoryError: ''});
         return true;
     },
 

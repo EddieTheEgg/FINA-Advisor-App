@@ -10,6 +10,7 @@ import { useEditTransactionStore } from '../../store/useEditTransactionStore';
 import { EditAccountSelector } from '../../components/EditTransactionComponents/EditAccountSelector/EditAccountSelector';
 import { RouteProp } from '@react-navigation/native';
 import { EditAmountCard } from '../../components/EditTransactionComponents/EditAmountCard/EditAmountCard';
+import { EditCategorySelector } from '../../components/EditTransactionComponents/EditCategorySelector/EditCategorySelector';
 
 type EditTransactionScreenNavigationProps = {
     navigation: RootNavigationProps;
@@ -46,6 +47,7 @@ export const EditTransactionScreen = ({route, navigation}: EditTransactionScreen
                 <View style = {styles.expenseIncomeContainer}>
                     <EditAccountSelector navigation = {navigation} />
                     <EditAmountCard />
+                    <EditCategorySelector navigation = {navigation} />
                 </View>
             )}
         </ScrollView>
