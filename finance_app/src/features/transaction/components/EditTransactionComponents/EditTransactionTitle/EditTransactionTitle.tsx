@@ -15,6 +15,11 @@ export const EditTransactionTitle = ({
     const {titleDraft, setTitleDraft, validateTitle, titleError} = useEditTransactionStore();
     const [titleInput, setTitleInput] = useState(titleDraft);
 
+    // Sync local state with store value when it changes
+    useEffect(() => {
+        setTitleInput(titleDraft);
+    }, [titleDraft]);
+
     const storeValidTitle = () => {
         // Only store the title if it has changed
         if (titleInput.trim() !== titleDraft) {

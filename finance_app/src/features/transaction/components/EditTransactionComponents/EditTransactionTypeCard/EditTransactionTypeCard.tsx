@@ -18,7 +18,7 @@ export const EditTransactionTypeCard = () => {
                 />
            </View>
            <View style = {styles.transactionTypeInfoContainer}>
-                <Text style = {styles.transactionTypeInfoText}>💡 Changing transaction type will affect how this impacts your account balance</Text>
+                <Text style = {styles.transactionTypeInfoText}>💡 Changing transaction type will affect how the amount impacts your account balance</Text>
            </View>
         </View>
     );

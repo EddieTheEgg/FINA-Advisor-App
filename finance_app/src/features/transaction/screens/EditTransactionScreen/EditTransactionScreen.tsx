@@ -1,4 +1,4 @@
-import { View, Text, ScrollView } from 'react-native';
+import { View, Text, ScrollView, Pressable } from 'react-native';
 import { useEffect } from 'react';
 import { RootNavigationProps, RootStackParamList } from '../../../../navigation/types/RootNavigatorTypes';
 import { useSafeAreaInsets } from 'react-native-safe-area-context';
@@ -17,8 +17,10 @@ import { ErrorScreen } from '../../../../components/ErrorScreen/ErrorScreen';
 import { EditTransactionDateCard } from '../../components/EditTransactionComponents/EditTransactionDateCard/EditTransactionDateCard';
 import { EditTransactionTitle } from '../../components/EditTransactionComponents/EditTransactionTitle/EditTransactionTitle';
 import FontAwesome6 from 'react-native-vector-icons/FontAwesome6';
+import { EditOptionalDetailsCard } from '../../components/EditTransactionComponents/EditOptionalDetailComponents/EditOptionalDetailsCard/EditOptionalDetailsCard';
 
-{/** This screen is used to edit transactions that are not transfers (so income and expense) */}
+
+//This screen is used to edit transactions that are not transfers (so income and expense)
 type EditTransactionScreenNavigationProps = {
     navigation: RootNavigationProps;
     route: RouteProp<RootStackParamList, 'EditTransaction'>;
@@ -31,14 +33,13 @@ export const EditTransactionScreen = ({route, navigation}: EditTransactionScreen
 
     const { data: transactionDetails, isPending, error } = useGetTransaction(transactionId);
     const {
-        transactionTypeDraft,
         initializeDraftFromTransaction,
         validateSelectedCategory,
         validateAmount,
         validateTitle,
     } = useEditTransactionStore();
 
-
+    // Initialize draft when transaction details are available
     useEffect(() => {
         if (transactionDetails) {
             initializeDraftFromTransaction(transactionDetails);
@@ -46,12 +47,13 @@ export const EditTransactionScreen = ({route, navigation}: EditTransactionScreen
             validateAmount();
             validateTitle();
         }
-    }, [transactionDetails, initializeDraftFromTransaction, validateSelectedCategory, validateAmount, validateTitle]);
+    }, [transactionId, transactionDetails, initializeDraftFromTransaction, validateSelectedCategory, validateAmount, validateTitle]);
 
 
     if (isPending || !transactionDetails) {
         return <LoadingScreen />;
     }
+    
 
     if (error) {
         return <ErrorScreen
@@ -80,6 +82,7 @@ export const EditTransactionScreen = ({route, navigation}: EditTransactionScreen
                     <EditAmountCard />
                     <EditTransactionTitle />
                     <EditTransactionDateCard />
+                    <EditOptionalDetailsCard />
                 </View>
         </ScrollView>
     );

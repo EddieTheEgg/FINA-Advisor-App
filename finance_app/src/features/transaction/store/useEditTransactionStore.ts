@@ -207,26 +207,19 @@ export const useEditTransactionStore = create<EditTransactionState & EditTransac
             subscriptionStartDateDraft: transaction.subscriptionStartDate ? new Date(transaction.subscriptionStartDate) : null,
             subscriptionEndDateDraft: transaction.subscriptionEndDate ? new Date(transaction.subscriptionEndDate) : null,
             toAccountDraft: transaction.toAccount ? transaction.toAccount : null,
+
+            // Clear validation errors
+            amountError: null,
+            accountError: null,
+            categoryError: null,
+            titleError: null,
         });
     },
 
     resetDraft: () => {
-        const state = get();
         set({
-            transactionTypeDraft: state.transactionType,
-            sourceAccountDraft: state.sourceAccount,
-            amountDraft: state.amount,
-            titleDraft: state.title,
-            dateDraft: state.date,
-            selectedCategoryDraft: state.selectedCategory,
-            notesDraft: state.notes,
-            locationDraft: state.location,
-            merchantDraft: state.merchant,
-            isSubscriptionDraft: state.isSubscription,
-            subscriptionFrequencyDraft: state.subscriptionFrequency,
-            subscriptionStartDateDraft: state.subscriptionStartDate,
-            subscriptionEndDateDraft: state.subscriptionEndDate,
-            toAccountDraft: state.toAccount,
+            ...initialState,
+            ...initialDraftState,
         });
     },
 
