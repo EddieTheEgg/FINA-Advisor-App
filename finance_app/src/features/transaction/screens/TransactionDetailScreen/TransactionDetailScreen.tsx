@@ -14,6 +14,7 @@ import { TransactionSubscriptionCard } from '../../components/TransactionSubscri
 import { TransactionMetaInfo } from '../../components/TransactionMetaInfo/TransactionMetaInfo';
 import { AnimatedPressable } from '../../../../components/AnimatedPressable/AnimatedPressable';
 import { colors } from '../../../../styles/colors';
+import { spacing } from '../../../../styles/spacing';
 import { RouteProp } from '@react-navigation/native';
 import { TransferFlowCard } from '../../components/TransferFlowCard/TransferFlowCard';
 import { TransferDetailsCard } from '../../components/TransferDetailsCard/TransferDetailsCard';
@@ -61,61 +62,75 @@ export const TransactionDetailScreen = ({route, navigation}: TransactionDetailSc
 
     if (transactionDetails.transactionType === 'TRANSFER') {
         return (
-            <ScrollView
-            showsVerticalScrollIndicator = {false}
-            contentContainerStyle = {{paddingBottom: insets.bottom + canvasPadding * 2 }}
-            style = {[styles.container, {paddingTop: insets.top + canvasPadding}]}>
-                <View style = {styles.header}>
-                    <BackButton />
-                    <Text style = {styles.headerTitle}>Transfer Details</Text>
+            <View style={styles.container}>
+                <ScrollView
+                    showsVerticalScrollIndicator={false}
+                    contentContainerStyle={{
+                        paddingBottom: insets.bottom + 100, // Add extra padding for the button
+                        paddingTop: insets.top + canvasPadding,
+                    }}
+                    style={styles.scrollView}>
+                    <View style={styles.header}>
+                        <BackButton />
+                        <Text style={styles.headerTitle}>Transfer Details</Text>
+                        <AnimatedPressable
+                            onPress={() => {}}
+                        >
+                            <FontAwesome6 name="trash" size={24} color={colors.red} />
+                        </AnimatedPressable>
+                    </View>
+                    <MainCardSummary transactionDetails={transactionDetails} />
+                    <TransferFlowCard transactionDetails={transactionDetails} />
+                    <TransferDetailsCard transactionDetails={transactionDetails} />
+                    <TransactionNotesCard transactionNotes={transactionDetails.notes ?? ''} />
+                    <TransactionMetaInfo transactionDetails={transactionDetails} title="ℹ️ Transfer Info" />
+                </ScrollView>
+                <View style={[styles.editTransactionButtonContainer, { paddingBottom: insets.bottom + spacing.md }]}>
                     <AnimatedPressable
-                        onPress = {() => {}}
+                        onPress={handleNavToEditTransaction}
+                        style={styles.editTransactionButton}
                     >
-                        <FontAwesome6 name="trash" size={24} color={colors.red} />
+                        <Text style={styles.editTransactionButtonText}>Edit Transfer</Text>
                     </AnimatedPressable>
                 </View>
-                <MainCardSummary transactionDetails = {transactionDetails} />
-                <TransferFlowCard transactionDetails = {transactionDetails} />
-                <TransferDetailsCard transactionDetails = {transactionDetails} />
-                <TransactionNotesCard transactionNotes = {transactionDetails.notes ?? ''} />
-                <TransactionMetaInfo transactionDetails = {transactionDetails} title = "ℹ️ Transfer Info" />
-                <AnimatedPressable
-                    onPress = {handleNavToEditTransaction}
-                    style = {styles.editTransactionButton}
-                >
-                    <Text style = {styles.editTransactionButtonText}>Edit Transfer</Text>
-                </AnimatedPressable>
-            </ScrollView>
+            </View>
         );
     }
 
     return (
-        <ScrollView
-        showsVerticalScrollIndicator = {false}
-        contentContainerStyle = {{paddingBottom: insets.bottom + canvasPadding * 2 }}
-        style = {[styles.container, {paddingTop: insets.top + canvasPadding}]}>
-            <View style = {styles.header}>
-                <BackButton />
-                <Text style = {styles.headerTitle}>Transaction Details</Text>
+        <View style={styles.container}>
+            <ScrollView
+                showsVerticalScrollIndicator={false}
+                contentContainerStyle={{
+                    paddingBottom: insets.bottom + 100, // Add extra padding for the button
+                    paddingTop: insets.top + canvasPadding,
+                }}
+                style={styles.scrollView}>
+                <View style={styles.header}>
+                    <BackButton />
+                    <Text style={styles.headerTitle}>Transaction Details</Text>
+                    <AnimatedPressable
+                        onPress={() => {}}
+                    >
+                        <FontAwesome6 name="trash" size={24} color={colors.red} />
+                    </AnimatedPressable>
+                </View>
+                <MainCardSummary transactionDetails={transactionDetails} />
+                <TransactionDetailsCard transactionDetails={transactionDetails} />
+                <TransactionNotesCard transactionNotes={transactionDetails.notes ?? ''} />
+                {transactionDetails.isSubscription && (
+                    <TransactionSubscriptionCard transactionDetails={transactionDetails} />
+                )}
+                <TransactionMetaInfo transactionDetails={transactionDetails} title="ℹ️ Transaction Info" />
+            </ScrollView>
+            <View style={[styles.editTransactionButtonContainer, { paddingBottom: insets.bottom + spacing.md }]}>
                 <AnimatedPressable
-                    onPress = {() => {}}
+                    onPress={handleNavToEditTransaction}
+                    style={styles.editTransactionButton}
                 >
-                    <FontAwesome6 name="trash" size={24} color={colors.red} />
+                    <Text style={styles.editTransactionButtonText}>Edit Transaction</Text>
                 </AnimatedPressable>
             </View>
-            <MainCardSummary transactionDetails = {transactionDetails} />
-            <TransactionDetailsCard transactionDetails = {transactionDetails} />
-            <TransactionNotesCard transactionNotes = {transactionDetails.notes ?? ''} />
-            {transactionDetails.isSubscription && (
-                <TransactionSubscriptionCard transactionDetails = {transactionDetails} />
-            )}
-            <TransactionMetaInfo transactionDetails = {transactionDetails} title = "ℹ️ Transaction Info" />
-            <AnimatedPressable
-                onPress = {handleNavToEditTransaction}
-                style = {styles.editTransactionButton}
-            >
-                <Text style = {styles.editTransactionButtonText}>Edit Transaction</Text>
-            </AnimatedPressable>
-        </ScrollView>
+        </View>
     );
 };

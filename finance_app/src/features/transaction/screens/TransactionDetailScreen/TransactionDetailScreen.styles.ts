@@ -7,6 +7,10 @@ export const styles = StyleSheet.create({
     container : {
         flex: 1,
         backgroundColor: colors.background,
+        position: 'relative',
+    },
+    scrollView: {
+        flex: 1,
     },
     header : {
         marginHorizontal: spacing.md,
@@ -23,12 +27,20 @@ export const styles = StyleSheet.create({
         flexDirection: 'row',
         gap: spacing.sm,
     },
+    editTransactionButtonContainer: {
+        position: 'absolute',
+        left: 0,
+        right: 0,
+        bottom: 0,
+        backgroundColor: colors.white,
+        paddingTop: spacing.md,
+        paddingBottom: spacing.md,
+    },
     editTransactionButton: {
+        marginHorizontal: spacing.md,
         padding: spacing.md,
         backgroundColor: colors.darkerBackground,
         borderRadius: 10,
-        marginHorizontal: spacing.md,
-        marginTop: spacing.lg,
     },
     editTransactionButtonText : {
         color: colors.white,
