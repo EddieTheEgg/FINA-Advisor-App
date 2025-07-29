@@ -7,6 +7,7 @@ export const styles = StyleSheet.create({
     container: {
         flex: 1,
         backgroundColor: colors.background,
+        position: 'relative',
     },
     header : {
         flexDirection: 'row',
@@ -24,5 +25,27 @@ export const styles = StyleSheet.create({
         gap: spacing.md,
         marginVertical: spacing.md,
         marginHorizontal: spacing.md,
+    },
+    saveTransactionButtonContainer: {
+        position: 'absolute',
+        left: 0,
+        right: 0,
+        bottom: 0,
+        backgroundColor: colors.white,
+        paddingTop: spacing.md,
+        paddingBottom: spacing.md,
+    },
+    saveTransactionButton: {
+        marginHorizontal: spacing.md,
+        padding: spacing.md,
+        backgroundColor: colors.darkerBackground,
+        borderRadius: 10,
+    },
+    saveTransactionButtonText : {
+        color: colors.white,
+        fontFamily: 'Poppins-SemiBold',
+        fontSize: fontSize.lg,
+        textAlign: 'center',
+        flex: 1,
     },
 });

@@ -68,8 +68,7 @@ export const TransactionDetailScreen = ({route, navigation}: TransactionDetailSc
                     contentContainerStyle={{
                         paddingBottom: insets.bottom + 100, // Add extra padding for the button
                         paddingTop: insets.top + canvasPadding,
-                    }}
-                    style={styles.scrollView}>
+                    }}>
                     <View style={styles.header}>
                         <BackButton />
                         <Text style={styles.headerTitle}>Transfer Details</Text>
@@ -102,10 +101,9 @@ export const TransactionDetailScreen = ({route, navigation}: TransactionDetailSc
             <ScrollView
                 showsVerticalScrollIndicator={false}
                 contentContainerStyle={{
-                    paddingBottom: insets.bottom + 100, // Add extra padding for the button
+                    paddingBottom: insets.bottom + 100,
                     paddingTop: insets.top + canvasPadding,
-                }}
-                style={styles.scrollView}>
+                }}>
                 <View style={styles.header}>
                     <BackButton />
                     <Text style={styles.headerTitle}>Transaction Details</Text>

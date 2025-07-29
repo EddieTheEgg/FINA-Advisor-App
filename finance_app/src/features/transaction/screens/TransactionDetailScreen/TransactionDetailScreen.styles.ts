@@ -9,9 +9,6 @@ export const styles = StyleSheet.create({
         backgroundColor: colors.background,
         position: 'relative',
     },
-    scrollView: {
-        flex: 1,
-    },
     header : {
         marginHorizontal: spacing.md,
         justifyContent: 'space-between',

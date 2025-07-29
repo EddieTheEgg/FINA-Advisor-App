@@ -1,4 +1,4 @@
-import { View, Text, ScrollView, Pressable } from 'react-native';
+import { View, Text, ScrollView } from 'react-native';
 import { useEffect } from 'react';
 import { RootNavigationProps, RootStackParamList } from '../../../../navigation/types/RootNavigatorTypes';
 import { useSafeAreaInsets } from 'react-native-safe-area-context';
@@ -19,6 +19,8 @@ import { EditTransactionTitle } from '../../components/EditTransactionComponents
 import FontAwesome6 from 'react-native-vector-icons/FontAwesome6';
 import { EditOptionalDetailsCard } from '../../components/EditTransactionComponents/EditOptionalDetailComponents/EditOptionalDetailsCard/EditOptionalDetailsCard';
 import { RecurringTransactionCard } from '../../components/RecurringTransactionCard/RecurringTransactionCard';
+import { spacing } from '../../../../styles/spacing';
+import { AnimatedPressable } from '../../../../components/AnimatedPressable/AnimatedPressable';
 
 
 //This screen is used to edit transactions that are not transfers (so income and expense)
@@ -51,6 +53,10 @@ export const EditTransactionScreen = ({route, navigation}: EditTransactionScreen
     }, [transactionId, transactionDetails, initializeDraftFromTransaction, validateSelectedCategory, validateAmount, validateTitle]);
 
 
+    const handleSaveTransaction = () => {
+        console.log('Saving transaction');
+    }
+
     if (isPending || !transactionDetails) {
         return <LoadingScreen />;
     }
@@ -64,18 +70,20 @@ export const EditTransactionScreen = ({route, navigation}: EditTransactionScreen
     }
 
     return (
-        <ScrollView
-        showsVerticalScrollIndicator = {false}
-        contentContainerStyle = {{paddingBottom: insets.bottom + canvasPadding}}
-        style = {[styles.container, {paddingTop: insets.top + canvasPadding}]}
-        >
-            <View style = {styles.header}>
-                <BackButton />
-                <Text style = {styles.headerTitle}>Edit Transaction</Text>
-                { /** TODO: This button will delete current transaction and move user to create transfer screen */}
-                <FontAwesome6 name = "circle-question" size = {24} color = "black" />
-            </View>
-            <EditTransactionTypeCard />
+        <View style={styles.container}>
+            <ScrollView
+             showsVerticalScrollIndicator={false}
+             contentContainerStyle={{
+                 paddingBottom: insets.bottom + 100,
+                 paddingTop: insets.top + canvasPadding,
+             }}>
+                <View style = {styles.header}>
+                    <BackButton />
+                    <Text style = {styles.headerTitle}>Edit Transaction</Text>
+                    { /** TODO: This button will delete current transaction and move user to create transfer screen */}
+                    <FontAwesome6 name = "circle-question" size = {24} color = "black" />
+                </View>
+                <EditTransactionTypeCard />
                 <View style = {styles.expenseIncomeContainer}>
                     <EditAccountSelector navigation = {navigation} />
                     <EditCategorySelector navigation = {navigation} />
@@ -85,6 +93,15 @@ export const EditTransactionScreen = ({route, navigation}: EditTransactionScreen
                     <EditOptionalDetailsCard />
                     <RecurringTransactionCard />
                 </View>
-        </ScrollView>
+            </ScrollView>
+            <View style={[styles.saveTransactionButtonContainer, { paddingBottom: insets.bottom + spacing.md }]}>
+                <AnimatedPressable
+                    onPress={handleSaveTransaction}
+                    style={styles.saveTransactionButton}
+                >
+                    <Text style={styles.saveTransactionButtonText}>Save Transaction</Text>
+                </AnimatedPressable>
+            </View>
+        </View>
     );
 };
