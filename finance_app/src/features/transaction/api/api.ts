@@ -1,5 +1,5 @@
 import api from '../../../api/axios';
-import { BackendCategoryResponse, CategoryListResponse, BackendTransactionCreateRequest, TransactionResponse } from '../types';
+import { BackendCategoryResponse, CategoryListResponse, BackendTransactionCreateRequest, TransactionResponse, BackendTransactionUpdateRequest } from '../types';
 
 type userCategoriesParam = {
     skip: number,
@@ -164,6 +164,19 @@ export const getTransaction = async (transactionId: string) : Promise<Transactio
         return formattedTransaction;
     } catch (error) {
         console.error('Error fetching transaction:', error);
+        throw error;
+    }
+};
+
+export const updateTransaction = async (transaction: BackendTransactionUpdateRequest) : Promise<TransactionResponse> => {
+    try {
+        console.log('Sending update transaction request:', JSON.stringify(transaction, null, 2));
+        const response = await api.put('/transactions/update-transaction', transaction);
+        console.log('Update transaction response:', response.data);
+        return response.data;
+    } catch (error: any) {
+        console.error('Error updating transaction:', error);
+        console.error('Error details:', error.response?.data);
         throw error;
     }
 };

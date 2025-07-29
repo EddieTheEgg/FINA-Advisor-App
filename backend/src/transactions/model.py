@@ -1,4 +1,4 @@
-from datetime import datetime, date
+from datetime import datetime, date as Date
 from typing import List
 from uuid import UUID
 from pydantic import BaseModel, Field, validator
@@ -13,16 +13,16 @@ class TransactionCreate(BaseModel):
     category_id: str
     amount: float = Field(..., ge=0)
     title: str
-    transaction_date: date
+    transaction_date: Date
     
     notes: str | None = None
     location: str | None = None
     merchant: str | None = None
     
-    is_subscription: bool = False
+    is_subscription: bool = False   
     subscription_frequency: SubscriptionFrequency | None = None
-    subscription_start_date: date | None = None
-    subscription_end_date: date | None = None
+    subscription_start_date: Date | None = None
+    subscription_end_date: Date | None = None
    
     to_account_id: str | None = None
 
@@ -41,7 +41,7 @@ class TransactionCreate(BaseModel):
     
 class TransactionListRequest(BaseModel):
     transaction_type: TransactionType
-    transaction_timeframe: date # YYYY-MM-01 always 1st of the provided month and year
+    transaction_timeframe: Date # YYYY-MM-01 always 1st of the provided month and year
     
     account_ids: list[str] | None = None
     category_ids: list[str] | None = None
@@ -49,21 +49,38 @@ class TransactionListRequest(BaseModel):
     sort_by: TransactionSortBy | None = None
     sort_order: SortOrder | None = None
 
+
+
+
+
+
+
+
+class TransactionUpdateRequestAccount(BaseModel):
+    account_id: str
+    name: str
+    account_type: AccountType
+    balance: float
+    color: str
+    icon: str | None
+    credit_limit: float | None
+
 class TransactionUpdate(BaseModel):
-    amount: float | None = Field(None, ge = 0)
-    title: str | None = None
-    transaction_date: datetime | None = None
-    transaction_type: TransactionType | None = None
-    notes: str | None = None
-    location: str | None = None
-    is_subscription: bool | None = None
-    subscription_frequency: SubscriptionFrequency | None = None
-    subscription_start_date: datetime | None = None
-    subscription_end_date: datetime | None = None
-    category_id: UUID | None = None
-    payment_type: PaymentType | None = None
-    merchant: str | None = None
-    to_account_id: UUID | None = None
+    transaction_id: UUID
+    transaction_type: TransactionType
+    sourceAccount: TransactionUpdateRequestAccount
+    amount: float
+    title: str
+    date: str #YYYY-MM-DD
+    categoryId: str
+    notes: str | None
+    location: str | None
+    merchant: str | None
+    is_subscription: bool
+    subscription_frequency: SubscriptionFrequency | None
+    subscription_start_date: str | None #YYYY-MM-DD
+    subscription_end_date: str | None #YYYY-MM-DD
+    to_account: TransactionUpdateRequestAccount | None
 
     @validator('subscription_start_date')
     def validate_subscription_start_date(cls, v, values):
@@ -79,6 +96,16 @@ class TransactionUpdate(BaseModel):
             raise ValueError('End date must be after start date')
         return v
 
+
+
+
+
+
+
+
+
+
+
 class AccountTransactionResponse(BaseModel):
     transaction_id: UUID
     amount: float
@@ -89,8 +116,8 @@ class AccountTransactionResponse(BaseModel):
     location: str | None
     is_subscription: bool
     subscription_frequency: SubscriptionFrequency | None
-    subscription_start_date: datetime | None
-    subscription_end_date: datetime | None
+    subscription_start_date: Date | None
+    subscription_end_date: Date | None
     account_name: str
     to_account_name: str | None
     merchant: str | None
@@ -126,15 +153,15 @@ class TransactionResponse(BaseModel):
     account_id: UUID
     amount: float
     title: str
-    transaction_date: date
+    transaction_date: Date
     transaction_type: TransactionType
     notes: str | None
     location: str | None
     is_subscription: bool
     subscription_frequency: SubscriptionFrequency | None
-    subscription_start_date: date | None
-    subscription_end_date: date | None
-    subscription_next_payment_date: date | None
+    subscription_start_date: Date | None
+    subscription_end_date: Date | None
+    subscription_next_payment_date: Date | None
     source_account: TransactionAccountResponse
     to_account: TransactionAccountResponse | None
     merchant: str | None
@@ -155,7 +182,7 @@ class TransactionSummary(BaseModel):
     transaction_id: UUID
     amount: float
     title: str
-    transaction_date: date
+    transaction_date: Date
     transaction_type: TransactionType
     category: CategorySimplifiedResponse
     account_name: str

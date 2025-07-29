@@ -41,14 +41,14 @@ def get_transaction_list(
     return service.get_transaction_list(db, current_user.get_uuid(), request_data, offset, limit)
 
 
+#Updates transactions that is either expense or income type
 @router.put("/update-transaction", response_model = TransactionResponse, status_code = status.HTTP_200_OK)
 def update_transactions(
     db: DbSession,
-    transaction_id: UUID,
     transaction_update_request: TransactionUpdate,
     current_user: CurrentUser
 ):
-    return service.update_transaction(db, transaction_id, transaction_update_request, current_user.get_uuid())    
+    return service.update_transaction(db, transaction_update_request, current_user.get_uuid())    
 
 @router.delete("/delete-transaction", status_code = status.HTTP_204_NO_CONTENT)
 def delete_transactions(

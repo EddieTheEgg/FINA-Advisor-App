@@ -61,8 +61,8 @@ export type BackendCategoryResponse = {
     transaction_type: 'INCOME' | 'EXPENSE' | 'TRANSFER',
     category_description: string | null,
     is_custom: boolean,
-    created_at: string, //Returns a datetime
-    updated_at: string | null, //Returns a datetime
+    created_at: string, //Returns a datetime string (YYYY-MM-DD HH:MM:SS)
+    updated_at: string | null, //Returns a datetime string (YYYY-MM-DD HH:MM:SS)
 }
 
 export type BackendCategoryListResponse = {
@@ -117,3 +117,34 @@ export type BackendTransactionResponse = {
     updated_at: Date | null,
     category: BackendCategoryResponse,
 };
+
+
+
+export type BackendTransactionUpdateRequestAccount = {
+    account_id: string;
+    name: string;
+    account_type: AccountType;
+    balance: number;
+    color: string;
+    icon: string | null;
+    credit_limit: number | null;
+}
+
+export type BackendTransactionUpdateRequest = {
+    transaction_id: string,
+    transaction_type: 'INCOME' | 'EXPENSE' | 'TRANSFER',
+    sourceAccount: BackendTransactionUpdateRequestAccount;
+    amount: number;
+    title: string;
+    date: string; //YYYY-MM-DD
+    categoryId: string;
+    notes: string | null;
+    location: string | null;
+    merchant: string | null;
+    is_subscription: boolean;
+    subscription_frequency: 'DAILY' | 'WEEKLY' | 'MONTHLY' | 'YEARLY' | null;
+    subscription_start_date: string | null; //YYYY-MM-DD
+    subscription_end_date: string | null; //YYYY-MM-DD
+    to_account: BackendTransactionUpdateRequestAccount | null; //Only for transfers
+}; 
+

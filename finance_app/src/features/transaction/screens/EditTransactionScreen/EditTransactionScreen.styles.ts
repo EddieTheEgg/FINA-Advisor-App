@@ -48,4 +48,10 @@ export const styles = StyleSheet.create({
         textAlign: 'center',
         flex: 1,
     },
+    errorText: {
+        fontSize: fontSize.base,
+        fontFamily: 'Poppins-Regular',
+        color: colors.red,
+        marginBottom: spacing.sm,
+    },
 });

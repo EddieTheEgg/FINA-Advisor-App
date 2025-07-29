@@ -8,7 +8,7 @@ from backend.src.categories.model import CategorySimplifiedResponse
 from backend.src.entities.account import Account
 from backend.src.entities.enums import TransactionType
 from backend.src.entities.transaction import Transaction
-from backend.src.exceptions import AccountCreationError, AccountNotFoundError, AccountTransactionHistoryNotFoundError, AccountTransactionHistoryProcessingError, GroupedAccountNotFoundError, NetWorthCalculationError
+from backend.src.exceptions import AccountCreationError, AccountNotFoundError, NoAccountsFoundError, AccountTransactionHistoryNotFoundError, AccountTransactionHistoryProcessingError, GroupedAccountNotFoundError, NetWorthCalculationError
 from backend.src.accounts.constants import ACCOUNT_GROUPS
 from backend.src.snapshots import service as snapshots_service
 from backend.src.transactions.model import AccountTransactionResponse, TransactionResponse
@@ -87,7 +87,7 @@ def get_user_accounts(db: Session, user_id: UUID) -> List[AccountResponse]:
         ) for account in accounts]
     except Exception as e:
         logging.warning(f"Failed to get user accounts for user {user_id}. Error: {str(e)}")
-        raise AccountNotFoundError(user_id)
+        raise NoAccountsFoundError(user_id)
 
 
 
@@ -104,7 +104,7 @@ def get_all_account_information(db: Session, user_id: UUID) -> List[AccountBalan
         return account_infos
     except Exception as e:
         logging.warning(f"Failed to get all account information for user {user_id}. Error: {str(e)}")
-        raise AccountNotFoundError(user_id)
+        raise NoAccountsFoundError(user_id)
     
 def update_account_balance(db: Session, account_id: UUID, user_id: UUID, amount: float) -> AccountBalance:
     try:

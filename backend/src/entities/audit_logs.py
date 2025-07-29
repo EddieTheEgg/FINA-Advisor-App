@@ -1,9 +1,8 @@
 
 
 
-from enum import Enum
 import uuid
-from sqlalchemy import JSON, UUID, Column, DateTime, ForeignKey, func
+from sqlalchemy import JSON, UUID, Column, DateTime, ForeignKey, func, Enum
 from sqlalchemy.orm import relationship
 
 from backend.src.database.core import Base
@@ -16,7 +15,7 @@ class AuditLog(Base):
     audit_id = Column(UUID(as_uuid=True), primary_key=True, default=uuid.uuid4)
     
     user_id = Column(UUID(as_uuid=True), ForeignKey("users.user_id"), index=True)
-    action = Column(Enum(AuditAction, name='audit_action'), nullable=False)
+    action = Column(Enum(AuditAction), nullable=False)
     record_id = Column(UUID(as_uuid=True), nullable=False)
     old_data = Column(JSON, nullable=True)
     new_data = Column(JSON, nullable=True)

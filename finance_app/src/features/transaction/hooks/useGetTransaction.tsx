@@ -1,6 +1,5 @@
-import { useQuery, UseQueryOptions } from '@tanstack/react-query';
+import { useQuery } from '@tanstack/react-query';
 import { getTransaction } from '../api/api';
-import { TransactionResponse } from '../types';
 
 export const useGetTransaction = (transactionId: string) => {
     const {data, isPending, error} = useQuery({

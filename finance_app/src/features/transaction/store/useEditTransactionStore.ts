@@ -1,5 +1,5 @@
 import { create } from 'zustand';
-import { CategoryResponse, TransactionAccountResponse, TransactionResponse } from '../types';
+import { BackendTransactionUpdateRequest, CategoryResponse, TransactionAccountResponse, TransactionResponse } from '../types';
 import { AccountType } from '../../accounts/types';
 
 
@@ -68,11 +68,15 @@ type EditTransactionStoreDraft = {
     resetDraft: () => void;
 
     //Validations
-    validateSourceAccount: () => void;
-    validateAmount: () => void;
-    validateSelectedCategory: () => void;
-    validateTitle: () => void;
-    validateSubscription: () => void;
+    validateSourceAccount: () => boolean;
+    validateAmount: () => boolean;
+    validateSelectedCategory: () => boolean;
+    validateTitle: () => boolean;
+    validateSubscription: () => boolean;
+    validateEditTransaction: () => boolean;
+
+    //Formatting
+    formatEditTransactionForBackend: () => BackendTransactionUpdateRequest;
 };
 
 const initialState: EditTransactionState = {
@@ -360,5 +364,72 @@ export const useEditTransactionStore = create<EditTransactionState & EditTransac
 
         set({subscriptionError: ''});
         return true;
+    },
+
+    // Make sure all fields (that have validation) are valid before creating a transaction
+    validateEditTransaction: () => {
+        const {validateTitle, validateAmount, validateSelectedCategory, validateSourceAccount, validateSubscription} = get();
+
+        const titleValid = validateTitle();
+        const amountValid = validateAmount();
+        const subscriptionValid = validateSubscription();
+        const selectedCategoryValid = validateSelectedCategory();
+        const sourceAccountValid = validateSourceAccount();
+
+        return titleValid && amountValid && subscriptionValid && selectedCategoryValid && sourceAccountValid;
+    },
+
+    formatEditTransactionForBackend: (): BackendTransactionUpdateRequest => {
+        const {
+            transactionId,
+            transactionTypeDraft,
+            sourceAccountDraft,
+            amountDraft,
+            titleDraft,
+            dateDraft,
+            selectedCategoryDraft,
+            notesDraft,
+            locationDraft,
+            merchantDraft,
+            isSubscriptionDraft,
+            subscriptionFrequencyDraft,
+            subscriptionStartDateDraft,
+            subscriptionEndDateDraft,
+            toAccountDraft
+        } = get();
+
+        return {
+            transaction_id: transactionId!,
+            transaction_type: transactionTypeDraft as 'INCOME' | 'EXPENSE',
+            sourceAccount: {
+                account_id: sourceAccountDraft!.accountId,
+                name: sourceAccountDraft!.name,
+                account_type: sourceAccountDraft!.accountType,
+                balance: sourceAccountDraft!.balance,
+                color: sourceAccountDraft!.color,
+                icon: sourceAccountDraft!.icon,
+                credit_limit: sourceAccountDraft!.creditLimit
+            },
+            amount: amountDraft,
+            title: titleDraft,
+            date: dateDraft.toISOString().split('T')[0], // Convert to YYYY-MM-DD format
+            categoryId: selectedCategoryDraft!.categoryId,
+            notes: notesDraft,
+            location: locationDraft,
+            merchant: merchantDraft,
+            is_subscription: isSubscriptionDraft,
+            subscription_frequency: subscriptionFrequencyDraft,
+            subscription_start_date: subscriptionStartDateDraft ? subscriptionStartDateDraft.toISOString().split('T')[0] : null,
+            subscription_end_date: subscriptionEndDateDraft ? subscriptionEndDateDraft.toISOString().split('T')[0] : null,
+            to_account: toAccountDraft ? {
+                account_id: toAccountDraft.accountId,
+                name: toAccountDraft.name,
+                account_type: toAccountDraft.accountType,
+                balance: toAccountDraft.balance,
+                color: toAccountDraft.color,
+                icon: toAccountDraft.icon,
+                credit_limit: toAccountDraft.creditLimit
+            } : null
+        };
     },
 }));

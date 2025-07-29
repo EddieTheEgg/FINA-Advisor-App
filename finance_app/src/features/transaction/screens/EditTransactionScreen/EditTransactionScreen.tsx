@@ -1,5 +1,5 @@
 import { View, Text, ScrollView } from 'react-native';
-import { useEffect } from 'react';
+import { useEffect, useState } from 'react';
 import { RootNavigationProps, RootStackParamList } from '../../../../navigation/types/RootNavigatorTypes';
 import { useSafeAreaInsets } from 'react-native-safe-area-context';
 import { Dimensions } from 'react-native';
@@ -21,6 +21,8 @@ import { EditOptionalDetailsCard } from '../../components/EditTransactionCompone
 import { RecurringTransactionCard } from '../../components/RecurringTransactionCard/RecurringTransactionCard';
 import { spacing } from '../../../../styles/spacing';
 import { AnimatedPressable } from '../../../../components/AnimatedPressable/AnimatedPressable';
+import { useUpdateTransaction } from '../../hooks/useUpdateTransaction';
+import { UpdatingTransaction } from '../../components/UpdatingTransaction/UpdatingTransaction';
 
 
 //This screen is used to edit transactions that are not transfers (so income and expense)
@@ -34,12 +36,18 @@ export const EditTransactionScreen = ({route, navigation}: EditTransactionScreen
     const insets = useSafeAreaInsets();
     const canvasPadding = Dimensions.get('window').height * 0.02;
 
-    const { data: transactionDetails, isPending, error } = useGetTransaction(transactionId);
+    const [showError, setShowError] = useState(false);
+
+    const { mutate, isPending: isUpdatingTransaction, error: updateTransactionError } = useUpdateTransaction();
+
+    const { data: transactionDetails, isPending: isFetchingTransaction, error: fetchTransactionError } = useGetTransaction(transactionId);
     const {
         initializeDraftFromTransaction,
         validateSelectedCategory,
         validateAmount,
         validateTitle,
+        validateEditTransaction,
+        formatEditTransactionForBackend,
     } = useEditTransactionStore();
 
     // Initialize draft when transaction details are available
@@ -54,18 +62,31 @@ export const EditTransactionScreen = ({route, navigation}: EditTransactionScreen
 
 
     const handleSaveTransaction = () => {
-        console.log('Saving transaction');
+        const isValid = validateEditTransaction();
+        if (!isValid) {
+            setShowError(true);
+        } else {
+            setShowError(false);
+            const formattedTransaction = formatEditTransactionForBackend();
+
+            console.log('Sending transaction to backend:', formattedTransaction);
+            mutate(formattedTransaction);
+        }
+    };
+
+    if (isUpdatingTransaction) {
+        return <UpdatingTransaction />;
     }
 
-    if (isPending || !transactionDetails) {
+    if (isFetchingTransaction || !transactionDetails) {
         return <LoadingScreen />;
     }
 
-    if (error) {
+    if (fetchTransactionError || updateTransactionError) {
         return <ErrorScreen
             errorText = "Error fetching transaction details"
             errorSubText = "Please try again later"
-            errorMessage = {error.message}
+            errorMessage = {fetchTransactionError?.message || updateTransactionError?.message || 'An unknown error occurred'}
         />;
     }
 
@@ -99,6 +120,9 @@ export const EditTransactionScreen = ({route, navigation}: EditTransactionScreen
                     onPress={handleSaveTransaction}
                     style={styles.saveTransactionButton}
                 >
+                    {showError && (
+                        <Text style={styles.errorText}>Some fields above are invalid</Text>
+                    )}
                     <Text style={styles.saveTransactionButtonText}>Save Transaction</Text>
                 </AnimatedPressable>
             </View>

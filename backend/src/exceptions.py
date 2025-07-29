@@ -87,6 +87,10 @@ class TransferTransactionError(TransactionError):
 class CreateTransactionError(TransactionError):
     def __init__(self, message: str = "Error creating transaction"):
         super().__init__(status_code=400, detail=message)
+        
+class UpdateTransactionError(TransactionError):
+    def __init__(self, message: str = "Error updating a transaction"):
+        super().__init__(status_code=400, detail=message)
 
 
 
@@ -149,6 +153,10 @@ class AccountCreationError(AccountError):
         super().__init__(status_code=400, detail=f"Failed to create account for user {user_id}")
 
 class AccountNotFoundError(AccountError):
+    def __init__(self, account_id: UUID):
+        super().__init__(status_code=404, detail=f"Account with id {account_id} not found")
+
+class NoAccountsFoundError(AccountError):
     def __init__(self, user_id: UUID):
         super().__init__(status_code=404, detail=f"No accounts found for user {user_id}")
 

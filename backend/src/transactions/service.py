@@ -2,7 +2,7 @@
 import logging
 from uuid import UUID
 from xml.etree.ElementTree import tostring
-from pytest import Session
+from sqlalchemy.orm import Session
 from typing import List, Tuple
 from datetime import date, datetime, timedelta
 from sqlalchemy import desc, func, case
@@ -11,10 +11,11 @@ from sqlalchemy.orm import joinedload
 from backend.src.categories import service as category_service
 from backend.src.categories.model import CategoryResponse, CategorySimplifiedResponse
 from backend.src.entities.account import Account
+from backend.src.entities.audit_logs import AuditLog
 from backend.src.entities.category import Category
 from backend.src.entities.transaction import Transaction, TransactionType
-from backend.src.entities.enums import SubscriptionFrequency, SubscriptionStatus, TransactionSortBy, SortOrder
-from backend.src.exceptions import TransferTransactionError, CreateTransactionError, CategoryNotFoundError, InvalidUserForCategoryError, InvalidUserForTransactionError, TransactionNotFoundError
+from backend.src.entities.enums import AuditAction, SubscriptionFrequency, SubscriptionStatus, TransactionSortBy, SortOrder
+from backend.src.exceptions import TransferTransactionError, CreateTransactionError, CategoryNotFoundError, InvalidUserForCategoryError, InvalidUserForTransactionError, TransactionNotFoundError, UpdateTransactionError
 from backend.src.transactions.model import TransactionCreate, TransactionListRequest, TransactionResponse, TransactionSummary, TransactionUpdate, TransactionListResponse, TransferCreateRequest, TransferCreateResponse, PaginationResponse, SummaryResponse, TransactionAccountResponse
 from backend.src.accounts import service as account_service
 
@@ -50,9 +51,9 @@ def create_regular_transaction(
         amount = -1 * amount
     account_service.update_account_balance(db, transaction_create_request.account_id, user_id, amount)
     
-    # Query the account and category for the response
-    account = db.query(Account).filter(Account.account_id == transaction_create_request.account_id).first()
-    category = db.query(Category).filter(Category.category_id == transaction_create_request.category_id).first()
+    # Query the account and category for the response (account already validated in create_transaction)
+    account = db.query(Account).filter(Account.account_id == transaction_create_request.account_id, Account.user_id == user_id).first()
+    category = db.query(Category).filter(Category.category_id == transaction_create_request.category_id, Category.user_id == user_id).first()
     
     if new_transaction.transaction_type == TransactionType.TRANSFER:
         to_account = db.query(Account).filter(Account.account_id == new_transaction.to_account_id).first()
@@ -122,6 +123,7 @@ def create_regular_transaction(
 # Creates a new transaction entry in the database
 def create_transaction(db: Session, transaction_create_request: TransactionCreate, user_id: UUID) -> TransactionResponse:
     try:
+        # Validate category belongs to user
         category = db.query(Category).filter(Category.category_id == transaction_create_request.category_id).first()
         if not category:
             raise CategoryNotFoundError(transaction_create_request.category_id)
@@ -129,6 +131,12 @@ def create_transaction(db: Session, transaction_create_request: TransactionCreat
         if category.user_id != user_id:
             logging.warning(f"Category with id {transaction_create_request.category_id} not valid for this user")
             raise InvalidUserForCategoryError(transaction_create_request.category_id)
+        
+        # Validate account belongs to user
+        account = db.query(Account).filter(Account.account_id == transaction_create_request.account_id, Account.user_id == user_id).first()
+        if not account:
+            logging.warning(f"Account with id {transaction_create_request.account_id} not found for user {user_id}")
+            raise InvalidUserForTransactionError(transaction_create_request.account_id)
         
         new_transaction = create_regular_transaction(db, transaction_create_request, user_id)
         logging.info(f"Created new transaction for user {user_id} : {new_transaction.title}")
@@ -372,34 +380,163 @@ def get_transaction_list(db: Session, user_id: UUID, request_data: TransactionLi
     )
 
 # Updates a transaction entry in the database
-def update_transaction(db: Session, transaction_id: UUID, transaction_update_request: TransactionUpdate, user_id: UUID) -> TransactionResponse:
-    transaction = get_transaction_by_id(db, transaction_id, user_id)
+def update_transaction(db: Session, transaction_update_request: TransactionUpdate, user_id: UUID) -> TransactionResponse:
     
-    # Check if the category (could be new or existing) exists and belongs to the user
-    new_existing_category = category_service.get_category_by_id(db, transaction_update_request.category_id, user_id)
-    
-    transaction.amount = transaction_update_request.amount
-    transaction.title = transaction_update_request.title
-    transaction.transaction_date = transaction_update_request.transaction_date
-    transaction.is_income = transaction_update_request.is_income
-    transaction.notes = transaction_update_request.notes
-    transaction.location = transaction_update_request.location
-    transaction.is_subscription = transaction_update_request.is_subscription
-    transaction.subscription_frequency = transaction_update_request.subscription_frequency
-    transaction.subscription_start_date = transaction_update_request.subscription_start_date
-    transaction.subscription_end_date = transaction_update_request.subscription_end_date
-    transaction.category_id = new_existing_category.category_id
-    transaction.payment_type = transaction_update_request.payment_type
-    transaction.merchant = transaction_update_request.merchant
-    transaction.payment_account = transaction_update_request.payment_account
+    try:
+        # Get the transaction with all related data
+        transaction = (
+            db.query(Transaction)
+            .options(
+                joinedload(Transaction.category),
+                joinedload(Transaction.account),
+                joinedload(Transaction.to_account)
+            )
+            .filter(Transaction.transaction_id == transaction_update_request.transaction_id, Transaction.user_id == user_id)
+            .first()
+        )
+        
+        if not transaction:
+            raise TransactionNotFoundError(transaction_update_request.transaction_id)
 
-    db.commit()
-    db.refresh(transaction)
-    logging.info(f"Updated transaction {transaction_id} for user {user_id}")
-    return transaction
+        # Store old values for balance adjustment
+        old_amount = transaction.amount
+        old_transaction_type = transaction.transaction_type
+        old_account_id = transaction.account_id
+        
+        # Create audit log with old data
+        old_transaction_data = {
+            'amount': transaction.amount,
+            'title': transaction.title,
+            'transaction_date': transaction.transaction_date.isoformat() if transaction.transaction_date else None,
+            'transaction_type': transaction.transaction_type.value if transaction.transaction_type else None,
+            'notes': transaction.notes,
+            'location': transaction.location,
+            'is_subscription': transaction.is_subscription,
+            'subscription_frequency': transaction.subscription_frequency.value if transaction.subscription_frequency else None,
+            'subscription_start_date': transaction.subscription_start_date.isoformat() if transaction.subscription_start_date else None,
+            'subscription_end_date': transaction.subscription_end_date.isoformat() if transaction.subscription_end_date else None,
+            'category_id': str(transaction.category_id) if transaction.category_id else None,
+            'account_id': str(transaction.account_id) if transaction.account_id else None,
+            'to_account_id': str(transaction.to_account_id) if transaction.to_account_id else None,
+            'merchant': transaction.merchant
+        }
+
+        
+        # Update the transaction fields
+        transaction.amount = transaction_update_request.amount
+        transaction.title = transaction_update_request.title
+        # Convert string date to Date object
+        transaction.transaction_date = datetime.strptime(transaction_update_request.date, '%Y-%m-%d').date()
+        transaction.transaction_type = transaction_update_request.transaction_type
+        transaction.notes = transaction_update_request.notes
+        transaction.location = transaction_update_request.location
+        transaction.merchant = transaction_update_request.merchant
+        transaction.is_subscription = transaction_update_request.is_subscription
+        transaction.subscription_frequency = transaction_update_request.subscription_frequency
+        # Convert string dates to Date objects if they exist
+        transaction.subscription_start_date = datetime.strptime(transaction_update_request.subscription_start_date, '%Y-%m-%d').date() if transaction_update_request.subscription_start_date else None
+        transaction.subscription_end_date = datetime.strptime(transaction_update_request.subscription_end_date, '%Y-%m-%d').date() if transaction_update_request.subscription_end_date else None
+        
+        # Update category if changed
+        if transaction_update_request.categoryId:
+            new_category_id = UUID(transaction_update_request.categoryId)
+            # Verify the category belongs to the user
+            category = db.query(Category).filter(Category.category_id == new_category_id, Category.user_id == user_id).first()
+            if not category:
+                raise InvalidUserForCategoryError(new_category_id)
+            transaction.category_id = new_category_id
+        
+        # Update account if changed
+        if transaction_update_request.sourceAccount:
+            new_account_id = UUID(transaction_update_request.sourceAccount.account_id)
+            # Verify the account belongs to the user
+            account = db.query(Account).filter(Account.account_id == new_account_id, Account.user_id == user_id).first()
+            if not account:
+                print('THis was called uh oh')
+                raise InvalidUserForTransactionError(new_account_id)
+            transaction.account_id = new_account_id
+        
+        # Update to_account if it's a transfer
+        if transaction_update_request.to_account:
+            new_to_account_id = UUID(transaction_update_request.to_account.account_id)
+            # Verify the to_account belongs to the user
+            to_account = db.query(Account).filter(Account.account_id == new_to_account_id, Account.user_id == user_id).first()
+            if not to_account:
+                raise InvalidUserForTransactionError(new_to_account_id)
+            transaction.to_account_id = new_to_account_id
+        else:
+            transaction.to_account_id = None
+
+        # Update account balances
+        # First, reverse the old transaction's effect on account balance
+        if old_transaction_type == TransactionType.EXPENSE:
+            account_service.update_account_balance(db, old_account_id, user_id, old_amount)
+        elif old_transaction_type == TransactionType.INCOME:
+            account_service.update_account_balance(db, old_account_id, user_id, -old_amount)
+        elif old_transaction_type == TransactionType.TRANSFER:
+            # For transfers, we need to reverse both accounts
+            if transaction.to_account_id:
+                account_service.update_account_balance(db, old_account_id, user_id, old_amount)
+                account_service.update_account_balance(db, transaction.to_account_id, user_id, -old_amount)
+        
+        # Then apply the new transaction's effect on account balance
+        if transaction_update_request.transaction_type == TransactionType.EXPENSE:
+            account_service.update_account_balance(db, transaction.account_id, user_id, -transaction_update_request.amount)
+        elif transaction_update_request.transaction_type == TransactionType.INCOME:
+            account_service.update_account_balance(db, transaction.account_id, user_id, transaction_update_request.amount)
+        elif transaction_update_request.transaction_type == TransactionType.TRANSFER:
+            # For transfers, update both accounts
+            if transaction.to_account_id:
+                account_service.update_account_balance(db, transaction.account_id, user_id, -transaction_update_request.amount)
+                account_service.update_account_balance(db, transaction.to_account_id, user_id, transaction_update_request.amount)
+
+        db.commit()
+        db.refresh(transaction)
+        
+        # Return the updated transaction as TransactionResponse
+        return get_transaction_by_id(db, transaction_update_request.transaction_id, user_id)
+        
+    except Exception as e:
+        db.rollback()
+        logging.error(f"Error updating transaction {transaction_update_request.transaction_id} for user {user_id}: {str(e)}")
+        raise UpdateTransactionError(str(e))
+
+
+
+
 
 def delete_transaction(db: Session, transaction_id: UUID, user_id: UUID) -> None:
-    transaction = get_transaction_by_id(db, transaction_id, user_id)
+    # Get the actual transaction entity, not the response
+    transaction = (
+        db.query(Transaction)
+        .filter(Transaction.transaction_id == transaction_id, Transaction.user_id == user_id)
+        .first()
+    )
+    
+    if not transaction:
+        raise TransactionNotFoundError(transaction_id)
+    
+    # Store old values for balance adjustment
+    old_amount = transaction.amount
+    old_transaction_type = transaction.transaction_type
+    old_account_id = transaction.account_id
+    old_to_account_id = transaction.to_account_id
+    
+    # Reverse the transaction's effect on account balance
+    try:
+        if old_transaction_type == TransactionType.EXPENSE:
+            account_service.update_account_balance(db, old_account_id, user_id, old_amount)
+        elif old_transaction_type == TransactionType.INCOME:
+            account_service.update_account_balance(db, old_account_id, user_id, -old_amount)
+        elif old_transaction_type == TransactionType.TRANSFER:
+            # For transfers, reverse both accounts
+            if old_to_account_id:
+                account_service.update_account_balance(db, old_account_id, user_id, old_amount)
+                account_service.update_account_balance(db, old_to_account_id, user_id, -old_amount)
+    except Exception as e:
+        logging.warning(f"Failed to reverse transaction balance during deletion: {str(e)}")
+        # Continue with deletion even if balance reversal fails
+    
     db.delete(transaction)
     db.commit()
     logging.info(f"Deleted transaction {transaction_id} for user {user_id}")
