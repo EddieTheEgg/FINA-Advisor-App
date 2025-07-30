@@ -418,8 +418,8 @@ def update_transaction(db: Session, transaction_update_request: TransactionUpdat
         transaction.subscription_end_date = datetime.strptime(transaction_update_request.subscription_end_date, '%Y-%m-%d').date() if transaction_update_request.subscription_end_date else None
         
         # Update category if changed
-        if transaction_update_request.categoryId:
-            new_category_id = UUID(transaction_update_request.categoryId)
+        if transaction_update_request.category_id:
+            new_category_id = UUID(transaction_update_request.category_id)
             # Verify the category belongs to the user
             category = db.query(Category).filter(Category.category_id == new_category_id, Category.user_id == user_id).first()
             if not category:
@@ -427,8 +427,8 @@ def update_transaction(db: Session, transaction_update_request: TransactionUpdat
             transaction.category_id = new_category_id
         
         # Update source account if changed
-        if transaction_update_request.sourceAccount:
-            new_account_id = UUID(transaction_update_request.sourceAccount.account_id)
+        if transaction_update_request.source_account:
+            new_account_id = UUID(transaction_update_request.source_account.account_id)
             # Verify the account belongs to the user
             account = db.query(Account).filter(Account.account_id == new_account_id, Account.user_id == user_id).first()
             if not account:
@@ -436,8 +436,8 @@ def update_transaction(db: Session, transaction_update_request: TransactionUpdat
             transaction.account_id = new_account_id
             
         # Update to-account if changed (only for transfers)
-        if transaction_update_request.toAccount:
-            new_to_account_id = UUID(transaction_update_request.toAccount.account_id)
+        if transaction_update_request.to_account:
+            new_to_account_id = UUID(transaction_update_request.to_account.account_id)
             # Verify the account belongs to the user
             to_account = db.query(Account).filter(Account.account_id == new_to_account_id, Account.user_id == user_id).first()
             if not to_account:

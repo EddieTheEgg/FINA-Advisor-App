@@ -133,11 +133,11 @@ export type BackendTransactionUpdateRequestAccount = {
 export type BackendTransactionUpdateRequest = {
     transaction_id: string,
     transaction_type: 'INCOME' | 'EXPENSE' | 'TRANSFER',
-    sourceAccount: BackendTransactionUpdateRequestAccount;
+    source_account: BackendTransactionUpdateRequestAccount;
     amount: number;
     title: string;
     date: string; //YYYY-MM-DD
-    categoryId: string;
+    category_id: string;
     notes: string | null;
     location: string | null;
     merchant: string | null;

@@ -401,7 +401,7 @@ export const useEditTransactionStore = create<EditTransactionState & EditTransac
         return {
             transaction_id: transactionId!,
             transaction_type: transactionTypeDraft as 'INCOME' | 'EXPENSE',
-            sourceAccount: {
+            source_account: {
                 account_id: sourceAccountDraft!.accountId,
                 name: sourceAccountDraft!.name,
                 account_type: sourceAccountDraft!.accountType,
@@ -413,7 +413,7 @@ export const useEditTransactionStore = create<EditTransactionState & EditTransac
             amount: amountDraft,
             title: titleDraft,
             date: dateDraft.toISOString().split('T')[0], // Convert to YYYY-MM-DD format
-            categoryId: selectedCategoryDraft!.categoryId,
+            category_id: selectedCategoryDraft!.categoryId,
             notes: notesDraft,
             location: locationDraft,
             merchant: merchantDraft,
@@ -428,8 +428,8 @@ export const useEditTransactionStore = create<EditTransactionState & EditTransac
                 balance: toAccountDraft.balance,
                 color: toAccountDraft.color,
                 icon: toAccountDraft.icon,
-                credit_limit: toAccountDraft.creditLimit
-            } : null
+                credit_limit: toAccountDraft.creditLimit,
+            } : null,
         };
     },
 }));

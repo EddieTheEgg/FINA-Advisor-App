@@ -68,11 +68,11 @@ class TransactionUpdateRequestAccount(BaseModel):
 class TransactionUpdate(BaseModel):
     transaction_id: UUID
     transaction_type: TransactionType
-    sourceAccount: TransactionUpdateRequestAccount
+    source_account: TransactionUpdateRequestAccount
     amount: float
     title: str
     date: str #YYYY-MM-DD
-    categoryId: str
+    category_id: str
     notes: str | None
     location: str | None
     merchant: str | None
