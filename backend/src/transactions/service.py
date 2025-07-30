@@ -402,30 +402,11 @@ def update_transaction(db: Session, transaction_update_request: TransactionUpdat
         old_amount = transaction.amount
         old_transaction_type = transaction.transaction_type
         old_account_id = transaction.account_id
-        
-        # Create audit log with old data
-        old_transaction_data = {
-            'amount': transaction.amount,
-            'title': transaction.title,
-            'transaction_date': transaction.transaction_date.isoformat() if transaction.transaction_date else None,
-            'transaction_type': transaction.transaction_type.value if transaction.transaction_type else None,
-            'notes': transaction.notes,
-            'location': transaction.location,
-            'is_subscription': transaction.is_subscription,
-            'subscription_frequency': transaction.subscription_frequency.value if transaction.subscription_frequency else None,
-            'subscription_start_date': transaction.subscription_start_date.isoformat() if transaction.subscription_start_date else None,
-            'subscription_end_date': transaction.subscription_end_date.isoformat() if transaction.subscription_end_date else None,
-            'category_id': str(transaction.category_id) if transaction.category_id else None,
-            'account_id': str(transaction.account_id) if transaction.account_id else None,
-            'to_account_id': str(transaction.to_account_id) if transaction.to_account_id else None,
-            'merchant': transaction.merchant
-        }
 
         
         # Update the transaction fields
         transaction.amount = transaction_update_request.amount
         transaction.title = transaction_update_request.title
-        # Convert string date to Date object
         transaction.transaction_date = datetime.strptime(transaction_update_request.date, '%Y-%m-%d').date()
         transaction.transaction_type = transaction_update_request.transaction_type
         transaction.notes = transaction_update_request.notes
@@ -433,7 +414,6 @@ def update_transaction(db: Session, transaction_update_request: TransactionUpdat
         transaction.merchant = transaction_update_request.merchant
         transaction.is_subscription = transaction_update_request.is_subscription
         transaction.subscription_frequency = transaction_update_request.subscription_frequency
-        # Convert string dates to Date objects if they exist
         transaction.subscription_start_date = datetime.strptime(transaction_update_request.subscription_start_date, '%Y-%m-%d').date() if transaction_update_request.subscription_start_date else None
         transaction.subscription_end_date = datetime.strptime(transaction_update_request.subscription_end_date, '%Y-%m-%d').date() if transaction_update_request.subscription_end_date else None
         
@@ -446,27 +426,24 @@ def update_transaction(db: Session, transaction_update_request: TransactionUpdat
                 raise InvalidUserForCategoryError(new_category_id)
             transaction.category_id = new_category_id
         
-        # Update account if changed
+        # Update source account if changed
         if transaction_update_request.sourceAccount:
             new_account_id = UUID(transaction_update_request.sourceAccount.account_id)
             # Verify the account belongs to the user
             account = db.query(Account).filter(Account.account_id == new_account_id, Account.user_id == user_id).first()
             if not account:
-                print('THis was called uh oh')
                 raise InvalidUserForTransactionError(new_account_id)
             transaction.account_id = new_account_id
-        
-        # Update to_account if it's a transfer
-        if transaction_update_request.to_account:
-            new_to_account_id = UUID(transaction_update_request.to_account.account_id)
-            # Verify the to_account belongs to the user
+            
+        # Update to-account if changed (only for transfers)
+        if transaction_update_request.toAccount:
+            new_to_account_id = UUID(transaction_update_request.toAccount.account_id)
+            # Verify the account belongs to the user
             to_account = db.query(Account).filter(Account.account_id == new_to_account_id, Account.user_id == user_id).first()
             if not to_account:
                 raise InvalidUserForTransactionError(new_to_account_id)
             transaction.to_account_id = new_to_account_id
-        else:
-            transaction.to_account_id = None
-
+        
         # Update account balances
         # First, reverse the old transaction's effect on account balance
         if old_transaction_type == TransactionType.EXPENSE:
@@ -486,20 +463,67 @@ def update_transaction(db: Session, transaction_update_request: TransactionUpdat
             account_service.update_account_balance(db, transaction.account_id, user_id, transaction_update_request.amount)
         elif transaction_update_request.transaction_type == TransactionType.TRANSFER:
             # For transfers, update both accounts
-            if transaction.to_account_id:
-                account_service.update_account_balance(db, transaction.account_id, user_id, -transaction_update_request.amount)
-                account_service.update_account_balance(db, transaction.to_account_id, user_id, transaction_update_request.amount)
-
-        db.commit()
+            account_service.update_account_balance(db, transaction.account_id, user_id, -transaction_update_request.amount)
+            account_service.update_account_balance(db, transaction.to_account_id, user_id, transaction_update_request.amount)
+        
         db.refresh(transaction)
         
-        # Return the updated transaction as TransactionResponse
+        # Create audit log
+        new_transaction_data = get_transaction_by_id(db, transaction_update_request.transaction_id, user_id)
+        
+         # Create audit log with old data JSON-serializable format
+        old_transaction_data = {
+            'amount': transaction.amount,
+            'title': transaction.title,
+            'transaction_date': transaction.transaction_date.isoformat() if transaction.transaction_date else None,
+            'transaction_type': transaction.transaction_type.value if transaction.transaction_type else None,
+            'notes': transaction.notes,
+            'location': transaction.location,
+            'is_subscription': transaction.is_subscription,
+            'subscription_frequency': transaction.subscription_frequency.value if transaction.subscription_frequency else None,
+            'subscription_start_date': transaction.subscription_start_date.isoformat() if transaction.subscription_start_date else None,
+            'subscription_end_date': transaction.subscription_end_date.isoformat() if transaction.subscription_end_date else None,
+            'category_id': str(transaction.category_id) if transaction.category_id else None,
+            'account_id': str(transaction.account_id) if transaction.account_id else None,
+            'to_account_id': str(transaction.to_account_id) if transaction.to_account_id else None,
+            'merchant': transaction.merchant
+        }
+
+        # Convert TransactionResponse to JSON-serializable format
+        new_transaction_dict = {
+            'amount': new_transaction_data.amount,
+            'title': new_transaction_data.title,
+            'transaction_date': new_transaction_data.transaction_date.isoformat() if new_transaction_data.transaction_date else None,
+            'transaction_type': new_transaction_data.transaction_type.value if new_transaction_data.transaction_type else None,
+            'notes': new_transaction_data.notes,
+            'location': new_transaction_data.location,
+            'is_subscription': new_transaction_data.is_subscription,
+            'subscription_frequency': new_transaction_data.subscription_frequency.value if new_transaction_data.subscription_frequency else None,
+            'subscription_start_date': new_transaction_data.subscription_start_date.isoformat() if new_transaction_data.subscription_start_date else None,
+            'subscription_end_date': new_transaction_data.subscription_end_date.isoformat() if new_transaction_data.subscription_end_date else None,
+            'category_id': str(new_transaction_data.category.category_id) if new_transaction_data.category else None,
+            'account_id': str(new_transaction_data.account_id) if new_transaction_data.account_id else None,
+            'to_account_id': str(new_transaction_data.to_account.account_id) if new_transaction_data.to_account else None,
+            'merchant': new_transaction_data.merchant
+        }
+        
+        audit_transaction = AuditLog(
+            user_id=user_id,
+            action=AuditAction.UPDATE,
+            record_id=transaction_update_request.transaction_id,
+            old_data=old_transaction_data,
+            new_data=new_transaction_dict
+        )
+        db.add(audit_transaction)
+        db.commit()
+
         return get_transaction_by_id(db, transaction_update_request.transaction_id, user_id)
         
     except Exception as e:
         db.rollback()
         logging.error(f"Error updating transaction {transaction_update_request.transaction_id} for user {user_id}: {str(e)}")
         raise UpdateTransactionError(str(e))
+
 
 
 
