@@ -3,9 +3,9 @@ import { BackendTransactionUpdateRequest } from '../types';
 import { updateTransaction } from '../api/api';
 
 export const useUpdateTransaction = () => {
-    const {mutate, isPending, error} = useMutation({
+    const {mutate, isPending, error, isSuccess} = useMutation({
         mutationFn: (transaction: BackendTransactionUpdateRequest) => updateTransaction(transaction),
     });
 
-    return {mutate, isPending, error};
+    return {mutate, isPending, error, isSuccess};
 };

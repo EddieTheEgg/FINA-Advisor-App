@@ -23,6 +23,7 @@ import { spacing } from '../../../../styles/spacing';
 import { AnimatedPressable } from '../../../../components/AnimatedPressable/AnimatedPressable';
 import { useUpdateTransaction } from '../../hooks/useUpdateTransaction';
 import { UpdatingTransaction } from '../../components/UpdatingTransaction/UpdatingTransaction';
+import { useQueryClient } from '@tanstack/react-query';
 
 
 //This screen is used to edit transactions that are not transfers (so income and expense)
@@ -33,12 +34,13 @@ type EditTransactionScreenNavigationProps = {
 
 export const EditTransactionScreen = ({route, navigation}: EditTransactionScreenNavigationProps) => {
     const { transactionId } = route.params;
+    const queryClient = useQueryClient();
     const insets = useSafeAreaInsets();
     const canvasPadding = Dimensions.get('window').height * 0.02;
 
     const [showError, setShowError] = useState(false);
 
-    const { mutate, isPending: isUpdatingTransaction, error: updateTransactionError } = useUpdateTransaction();
+    const { mutate, isPending: isUpdatingTransaction, error: updateTransactionError, isSuccess: isUpdateTransactionSuccess } = useUpdateTransaction();
 
     const { data: transactionDetails, isPending: isFetchingTransaction, error: fetchTransactionError } = useGetTransaction(transactionId);
     const {
@@ -74,6 +76,19 @@ export const EditTransactionScreen = ({route, navigation}: EditTransactionScreen
         }
     };
 
+    useEffect(() => {
+        if (isUpdateTransactionSuccess && transactionDetails) {
+            Promise.all([
+                queryClient.invalidateQueries({queryKey: ['transaction', transactionId]}),
+                queryClient.invalidateQueries({queryKey: ['transactionList']}), //Invalidate all transaction lists
+                queryClient.invalidateQueries({queryKey: ['grouped-accounts']}),
+                queryClient.invalidateQueries({queryKey: ['account-transactions', transactionDetails.accountId]}),
+                queryClient.invalidateQueries({queryKey: ['dashboard', new Date(transactionDetails.transactionDate).getMonth() + 1, new Date(transactionDetails.transactionDate).getFullYear()]}),
+            ]);
+            navigation.goBack();
+        }
+    }, [isUpdateTransactionSuccess, transactionDetails, queryClient, transactionId, navigation]);
+
     if (isUpdatingTransaction) {
         return <UpdatingTransaction />;
     }
@@ -89,6 +104,8 @@ export const EditTransactionScreen = ({route, navigation}: EditTransactionScreen
             errorMessage = {fetchTransactionError?.message || updateTransactionError?.message || 'An unknown error occurred'}
         />;
     }
+
+
 
     return (
         <View style={styles.container}>

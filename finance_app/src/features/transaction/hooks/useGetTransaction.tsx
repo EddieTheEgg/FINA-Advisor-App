@@ -5,7 +5,7 @@ export const useGetTransaction = (transactionId: string) => {
     const {data, isPending, error} = useQuery({
         queryKey: ['transaction', transactionId],
         queryFn: () => getTransaction(transactionId),
-        staleTime: 1000 * 60 * 5, // 5 minutes
+        staleTime: 0,
     });
 
     return {data, isPending, error};
