@@ -50,6 +50,7 @@ export const EditTransactionScreen = ({route, navigation}: EditTransactionScreen
         validateTitle,
         validateEditTransaction,
         formatEditTransactionForBackend,
+        resetDraft,
     } = useEditTransactionStore();
 
     // Initialize draft when transaction details are available
@@ -85,12 +86,14 @@ export const EditTransactionScreen = ({route, navigation}: EditTransactionScreen
                 queryClient.invalidateQueries({queryKey: ['account-transactions', transactionDetails.accountId]}),
                 queryClient.invalidateQueries({queryKey: ['dashboard', new Date(transactionDetails.transactionDate).getMonth() + 1, new Date(transactionDetails.transactionDate).getFullYear()]}),
             ]);
+            setShowError(false);
+            resetDraft();
             navigation.goBack();
         }
-    }, [isUpdateTransactionSuccess, transactionDetails, queryClient, transactionId, navigation]);
+    }, [isUpdateTransactionSuccess, transactionDetails, queryClient, transactionId, navigation, resetDraft]);
 
     if (isUpdatingTransaction) {
-        return <UpdatingTransaction />;
+        return <UpdatingTransaction loadingText = "Updating Transaction" />;
     }
 
     if (isFetchingTransaction || !transactionDetails) {

@@ -7,6 +7,7 @@ export const styles = StyleSheet.create({
     container: {
         flex: 1,
         backgroundColor: colors.background,
+        position: 'relative',
     },
     header : {
         flexDirection: 'row',
@@ -28,5 +29,33 @@ export const styles = StyleSheet.create({
         marginHorizontal: spacing.md,
         alignSelf: 'center',
         marginVertical: spacing.sm,
+    },
+    saveTransferButtonContainer: {
+        position: 'absolute',
+        left: 0,
+        right: 0,
+        bottom: 0,
+        backgroundColor: colors.white,
+        paddingTop: spacing.md,
+        paddingBottom: spacing.xl,
+    },
+    saveTransferButton: {
+        marginHorizontal: spacing.md,
+        padding: spacing.md,
+        backgroundColor: colors.darkerBackground,
+        borderRadius: 10,
+    },
+    saveTransferButtonText : {
+        color: colors.white,
+        fontFamily: 'Poppins-SemiBold',
+        fontSize: fontSize.lg,
+        textAlign: 'center',
+        flex: 1,
+    },
+    errorText: {
+        fontSize: fontSize.base,
+        fontFamily: 'Poppins-Regular',
+        color: colors.red,
+        marginBottom: spacing.sm,
     },
 });
