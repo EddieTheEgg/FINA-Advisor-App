@@ -1,5 +1,5 @@
 import { RootNavigationProps, RootStackParamList } from '../../../../navigation/types/RootNavigatorTypes';
-import { View, Text, Dimensions, ScrollView } from 'react-native';
+import { View, Text, Dimensions, ScrollView, Modal, Image } from 'react-native';
 import BackButton from '../../../auth/components/GoBackButton/GoBackButton';
 import { styles } from './TransactionDetailScreen.styles';
 import { useSafeAreaInsets } from 'react-native-safe-area-context';
@@ -18,6 +18,7 @@ import { spacing } from '../../../../styles/spacing';
 import { RouteProp } from '@react-navigation/native';
 import { TransferFlowCard } from '../../components/TransferFlowCard/TransferFlowCard';
 import { TransferDetailsCard } from '../../components/TransferDetailsCard/TransferDetailsCard';
+import { useState } from 'react';
 
 
 
@@ -28,7 +29,7 @@ type TransactionDetailScreenProps = {
 
 export const TransactionDetailScreen = ({route, navigation}: TransactionDetailScreenProps) => {
     const {transactionId} = route.params;
-
+    const [isDeletionModalVisible, setIsDeletionModalVisible] = useState(false);
     const insets = useSafeAreaInsets();
     const canvasPadding = Dimensions.get('window').height * 0.02;
 
@@ -60,6 +61,8 @@ export const TransactionDetailScreen = ({route, navigation}: TransactionDetailSc
     };
 
 
+
+
     if (transactionDetails.transactionType === 'TRANSFER') {
         return (
             <View style={styles.container}>
@@ -73,7 +76,7 @@ export const TransactionDetailScreen = ({route, navigation}: TransactionDetailSc
                         <BackButton />
                         <Text style={styles.headerTitle}>Transfer Details</Text>
                         <AnimatedPressable
-                            onPress={() => {}}
+                            onPress={() => {setIsDeletionModalVisible(true)}}
                         >
                             <FontAwesome6 name="trash" size={24} color={colors.red} />
                         </AnimatedPressable>
@@ -92,6 +95,32 @@ export const TransactionDetailScreen = ({route, navigation}: TransactionDetailSc
                         <Text style={styles.editTransactionButtonText}>Edit Transfer</Text>
                     </AnimatedPressable>
                 </View>
+                <Modal
+                    visible={isDeletionModalVisible}
+                    transparent={true}
+                    animationType="fade"
+                    onRequestClose={() => {setIsDeletionModalVisible(false)}}
+                >
+                    <View style={styles.deletionModalContainer}>
+                        <View style={styles.deletionModalContent}>
+                            <Text style={styles.deletionModalTitle}>Delete Transaction</Text>
+                            <Text style={styles.deletionModalText}>Are you sure you want to delete this transaction?</Text>
+                            <View style={styles.deletionModalButtons}>
+                                <AnimatedPressable
+                                    onPress={() => {setIsDeletionModalVisible(false)}}
+                                    style={styles.deletionModalButton}>
+                                    <Text style={styles.deletionModalButtonText}>Cancel</Text>
+                                </AnimatedPressable>
+                                <AnimatedPressable
+                                    onPress={() => {}}
+                                    style={styles.deletionModalButton}
+                                >
+                                    <Text style={styles.deletionModalButtonText}>Delete</Text>
+                                </AnimatedPressable>
+                            </View>
+                        </View>
+                    </View>
+                </Modal>
             </View>
         );
     }
@@ -108,7 +137,7 @@ export const TransactionDetailScreen = ({route, navigation}: TransactionDetailSc
                     <BackButton />
                     <Text style={styles.headerTitle}>Transaction Details</Text>
                     <AnimatedPressable
-                        onPress={() => {}}
+                        onPress={() => {setIsDeletionModalVisible(true)}}
                     >
                         <FontAwesome6 name="trash" size={24} color={colors.red} />
                     </AnimatedPressable>
@@ -129,6 +158,34 @@ export const TransactionDetailScreen = ({route, navigation}: TransactionDetailSc
                     <Text style={styles.editTransactionButtonText}>Edit Transaction</Text>
                 </AnimatedPressable>
             </View>
+            <Modal
+                visible={isDeletionModalVisible}
+                transparent={true}
+                animationType="fade"
+                onRequestClose={() => {setIsDeletionModalVisible(false)}}
+            >
+                <View style={styles.deletionModalContainer}>
+                    <View style={styles.deletionModalContent}>
+                        <Image source={require('../../../../assets/images/delete_transaction.png')} style={styles.deletionModalImage} />
+                        <Text style={styles.deletionModalTitle}>Delete Transaction?</Text>
+                        <Text style={styles.deletionModalText}>This transaction will be permanently deleted and cannot be recovered.</Text>
+                        <View style={styles.deletionModalButtons}>
+                            <AnimatedPressable
+                                onPress={() => {}}
+                                style={styles.deletionModalButton}
+                            >
+                                <Text style={styles.deletionModalButtonText}>Delete</Text>
+                            </AnimatedPressable>
+                            <AnimatedPressable
+                                onPress={() => {setIsDeletionModalVisible(false)}}
+                                style={styles.cancelModalButton}>
+                                <Text style={styles.cancelModalButtonText}>Cancel</Text>
+                            </AnimatedPressable>
+
+                        </View>
+                    </View>
+                </View>
+            </Modal>
         </View>
     );
 };

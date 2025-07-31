@@ -19,6 +19,7 @@ export const colors = {
 
     red: '#F30004',
     lighterRed: '#FBE2E2',
+    darkerRed: '#C9413A',
 
     gray: {
         50: '#F9FAFB',
