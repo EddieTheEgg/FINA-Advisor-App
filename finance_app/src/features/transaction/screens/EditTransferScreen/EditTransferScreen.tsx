@@ -48,6 +48,7 @@ export const EditTransferScreen = ({route, navigation}: EditTransferScreenNaviga
         validateEditTransaction,
         formatEditTransactionForBackend,
         resetDraft,
+        validateTransferAccounts,
     } = useEditTransactionStore();
     const [showError, setShowError] = useState(false);
 
@@ -61,7 +62,7 @@ export const EditTransferScreen = ({route, navigation}: EditTransferScreenNaviga
     }, [transactionDetails, initializeDraftFromTransaction, validateAmount, validateTitle]);
 
     const handleSaveTransfer = () => {
-        const isValid = validateEditTransaction();
+        const isValid = validateEditTransaction() && validateTransferAccounts();
         if (!isValid) {
             setShowError(true);
         } else {
@@ -115,7 +116,7 @@ export const EditTransferScreen = ({route, navigation}: EditTransferScreenNaviga
             <ScrollView
             showsVerticalScrollIndicator = {false}
             contentContainerStyle={{
-                paddingBottom: Platform.OS === 'ios' ? insets.bottom + canvasPadding * 5 : insets.bottom + canvasPadding * 10,
+                paddingBottom: Platform.OS === 'ios' ? insets.bottom + canvasPadding * 7 : insets.bottom + canvasPadding * 10,
                 paddingTop: insets.top + canvasPadding,
             }}
             >
@@ -139,13 +140,13 @@ export const EditTransferScreen = ({route, navigation}: EditTransferScreenNaviga
                 </View>
             </ScrollView>
             <View style = {styles.saveTransferButtonContainer}>
+                {showError && (
+                        <Text style={styles.errorText}>Some fields above are invalid</Text>
+                )}
                 <AnimatedPressable
                     onPress={handleSaveTransfer}
                     style={styles.saveTransferButton}
                 >
-                    {showError && (
-                        <Text style={styles.errorText}>Some fields above are invalid</Text>
-                    )}
                     <Text style={styles.saveTransferButtonText}>Update Transfer</Text>
                 </AnimatedPressable>
             </View>

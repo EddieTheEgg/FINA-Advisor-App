@@ -136,13 +136,13 @@ export const EditTransactionScreen = ({route, navigation}: EditTransactionScreen
                 </View>
             </ScrollView>
             <View style={[styles.saveTransactionButtonContainer, { paddingBottom: insets.bottom + spacing.md }]}>
+                {showError && (
+                        <Text style={styles.errorText}>Some fields above are invalid</Text>
+                )}
                 <AnimatedPressable
                     onPress={handleSaveTransaction}
                     style={styles.saveTransactionButton}
                 >
-                    {showError && (
-                        <Text style={styles.errorText}>Some fields above are invalid</Text>
-                    )}
                     <Text style={styles.saveTransactionButtonText}>Save Transaction</Text>
                 </AnimatedPressable>
             </View>

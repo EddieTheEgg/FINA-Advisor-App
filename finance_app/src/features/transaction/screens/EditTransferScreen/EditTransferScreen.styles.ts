@@ -53,6 +53,7 @@ export const styles = StyleSheet.create({
         flex: 1,
     },
     errorText: {
+        alignSelf: 'center',
         fontSize: fontSize.base,
         fontFamily: 'Poppins-Regular',
         color: colors.red,
