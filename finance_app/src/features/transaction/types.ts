@@ -146,5 +146,6 @@ export type BackendTransactionUpdateRequest = {
     subscription_start_date: string | null; //YYYY-MM-DD
     subscription_end_date: string | null; //YYYY-MM-DD
     to_account: BackendTransactionUpdateRequestAccount | null; //Only for transfers
-}; 
+};
+
 
