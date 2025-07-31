@@ -44,6 +44,7 @@ type EditTransactionStoreDraft = {
     categoryError: string | null;
     titleError : string | null;
     subscriptionError: string | null;
+    transferAmountError: string | null;
 
     // Setters for draft state
     setTransactionTypeDraft: (transactionType: 'INCOME' | 'EXPENSE' | 'TRANSFER') => void;
@@ -75,6 +76,9 @@ type EditTransactionStoreDraft = {
     validateSubscription: () => boolean;
     validateEditTransaction: () => boolean;
     validateTransferAccounts: () => boolean;
+
+    //Transfer Specific Validation
+    validateTransferAmount: () => boolean;
 
     //Formatting
     formatEditTransactionForBackend: () => BackendTransactionUpdateRequest;
@@ -119,6 +123,7 @@ const initialDraftState = {
     categoryError: null,
     titleError: null,
     subscriptionError: null,
+    transferAmountError: null,
 };
 
 export const useEditTransactionStore = create<EditTransactionState & EditTransactionStoreDraft>((set, get) => ({
@@ -439,16 +444,38 @@ export const useEditTransactionStore = create<EditTransactionState & EditTransac
         const {sourceAccountDraft, toAccountDraft} = get();
 
         if (!sourceAccountDraft || !toAccountDraft) {
-            set({accountError: 'Both source and to accounts are required'});
+            set({accountError: 'Both source and recipient accounts are required'});
             return false;
         }
 
         if (sourceAccountDraft.accountId === toAccountDraft.accountId) {
-            set({accountError: 'From and To accounts cannot be the same'});
+            set({accountError: 'Source and recipient accounts cannot be the same'});
             return false;
         }
 
         set({accountError: ''});
+        return true;
+    },
+
+    validateTransferAmount: () => {
+        const {sourceAccountDraft, toAccountDraft, amountDraft} = get();
+
+        if (!sourceAccountDraft || !toAccountDraft) {
+            set({transferAmountError: 'Both source and to accounts must be selected first'});
+            return false;
+        }
+
+        if(sourceAccountDraft.accountId === toAccountDraft.accountId) {
+            set({transferAmountError: 'Cannot transfer from the same source and recipient account'});
+            return false;
+        }
+
+        if(amountDraft > sourceAccountDraft.balance) {
+            set({transferAmountError: 'Insufficient funds from the source account for this amount'});
+            return false;
+        }
+
+        set({transferAmountError: null});
         return true;
     }
 }));

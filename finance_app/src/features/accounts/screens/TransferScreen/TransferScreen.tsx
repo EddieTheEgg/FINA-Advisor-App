@@ -91,7 +91,7 @@ export const TransferScreen = ({ navigation }: TransferScreenProps) => {
                 <ScrollView
                     contentContainerStyle = {{paddingBottom: insets.bottom + responsivePadding}}>
                     <View style = {styles.accountToFromContainer}>
-                        <Text style = {styles.accountToFromTitle}>From</Text>
+                        <Text style = {styles.accountToFromTitle}>Source Account</Text>
                         <AnimatedPressable
                             onPress={handleNavigateFromAccountSelection}
                             delay={200}
@@ -113,7 +113,7 @@ export const TransferScreen = ({ navigation }: TransferScreenProps) => {
                         <FontAwesome6 name="arrow-down" size = {24} color = {colors.darkerBackground} />
                     </View>
                     <View style = {styles.accountToFromContainer}>
-                        <Text style = {styles.accountToFromTitle}>To</Text>
+                        <Text style = {styles.accountToFromTitle}>Recipient Account</Text>
                         <AnimatedPressable
                             onPress={handleNavigateToAccountSelection}
                             delay={200}

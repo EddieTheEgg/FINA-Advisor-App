@@ -48,10 +48,10 @@ export const EditSelectTransferAccountScreen = ( {navigation, route} : EditSelec
             <View style = {styles.selectAccountHeader}>
                 <BackButton />
                 {accountType === 'source' && (
-                    <Text style = {styles.selectAccountTitle}> From Account</Text>
+                    <Text style = {styles.selectAccountTitle}> Source Account</Text>
                 )}
                 {accountType === 'to' && (
-                    <Text style = {styles.selectAccountTitle}> To Account</Text>
+                    <Text style = {styles.selectAccountTitle}> Recipient Account</Text>
                 )}
             </View>
             <View

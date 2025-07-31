@@ -24,6 +24,7 @@ export const EditTransferAccountSelectionCard = ({accountItem, navigation, accou
         setSourceAccountDraft,
         setToAccountDraft,
         validateTransferAccounts,
+        validateTransferAmount,
     } = useEditTransactionStore();
 
     const handleNavToTransactionScreen = () => {
@@ -32,6 +33,7 @@ export const EditTransferAccountSelectionCard = ({accountItem, navigation, accou
         } else {
             setToAccountDraft(accountItem);
         }
+        validateTransferAmount();
         validateTransferAccounts();
         navigation.goBack();
     };

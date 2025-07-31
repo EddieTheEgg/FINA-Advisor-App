@@ -21,6 +21,7 @@ import { AnimatedPressable } from '../../../../components/AnimatedPressable/Anim
 import { useQueryClient } from '@tanstack/react-query';
 import { useUpdateTransaction } from '../../hooks/useUpdateTransaction';
 import { UpdatingTransaction } from '../../components/UpdatingTransaction/UpdatingTransaction';
+import { EditTransferAmount } from '../../components/EditTransferComponents/EditTransferAmount/EditTransferAmount';
 
 type EditTransferScreenNavigationProps = {
     navigation: RootNavigationProps;
@@ -134,6 +135,7 @@ export const EditTransferScreen = ({route, navigation}: EditTransferScreenNaviga
                     <EditTransferTitle />
                     <EditTransferNote />
                     <EditTransferLocation />
+                    <EditTransferAmount />
                 </View>
             </ScrollView>
             <View style = {styles.saveTransferButtonContainer}>

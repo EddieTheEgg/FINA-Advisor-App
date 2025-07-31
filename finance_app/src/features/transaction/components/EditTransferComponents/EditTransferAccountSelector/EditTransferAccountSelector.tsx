@@ -24,7 +24,7 @@ export const EditTransferAccountSelector = ({ navigation, accountType } :   Edit
     if (accountType === 'source') {
         return (
             <View style = {styles.accountSelectorContainer}>
-            <Text style = {styles.accountTitle}>From</Text>
+            <Text style = {styles.accountTitle}>Source Account</Text>
             <AnimatedPressable
                 onPress = {navigateToEditTransferSelectAccount}
             >
@@ -46,7 +46,7 @@ export const EditTransferAccountSelector = ({ navigation, accountType } :   Edit
    if (accountType === 'to') {
     return (
         <View style = {styles.accountSelectorContainer}>
-            <Text style = {styles.accountTitle}>To</Text>
+            <Text style = {styles.accountTitle}>Recipient Account</Text>
             <AnimatedPressable
                 onPress = {navigateToEditTransferSelectAccount}
             >
