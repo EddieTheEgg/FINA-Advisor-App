@@ -401,7 +401,7 @@ export const useEditTransactionStore = create<EditTransactionState & EditTransac
             subscriptionFrequencyDraft,
             subscriptionStartDateDraft,
             subscriptionEndDateDraft,
-            toAccountDraft
+            toAccountDraft,
         } = get();
 
         return {
@@ -414,7 +414,7 @@ export const useEditTransactionStore = create<EditTransactionState & EditTransac
                 balance: sourceAccountDraft!.balance,
                 color: sourceAccountDraft!.color,
                 icon: sourceAccountDraft!.icon,
-                credit_limit: sourceAccountDraft!.creditLimit
+                credit_limit: sourceAccountDraft!.creditLimit,
             },
             amount: amountDraft,
             title: titleDraft,
@@ -477,5 +477,5 @@ export const useEditTransactionStore = create<EditTransactionState & EditTransac
 
         set({transferAmountError: null});
         return true;
-    }
+    },
 }));
