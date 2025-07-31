@@ -7,16 +7,16 @@ import { styles } from './EditTransferScreen.styles';
 import BackButton from '../../../auth/components/GoBackButton/GoBackButton';
 import { useEditTransactionStore } from '../../store/useEditTransactionStore';
 import { RouteProp } from '@react-navigation/native';
-import { EditAmountCard } from '../../components/EditTransactionComponents/EditAmountCard/EditAmountCard';
 import { useGetTransaction } from '../../hooks/useGetTransaction';
 import LoadingScreen from '../../../../components/LoadingScreen/LoadingScreen';
 import { ErrorScreen } from '../../../../components/ErrorScreen/ErrorScreen';
-import { EditTransactionDateCard } from '../../components/EditTransactionComponents/EditTransactionDateCard/EditTransactionDateCard';
-import { EditTransactionTitle } from '../../components/EditTransactionComponents/EditTransactionTitle/EditTransactionTitle';
 import FontAwesome6 from 'react-native-vector-icons/FontAwesome6';
 import { TransferBalanceImpactCard } from '../../components/EditTransferComponents/TransferBalanceImpactCard/TransferBalanceImpactCard';
 import { EditTransferAccountSelector } from '../../components/EditTransferComponents/EditTransferAccountSelector/EditTransferAccountSelector';
 import { colors } from '../../../../styles/colors';
+import { EditTransferTitle } from '../../components/EditTransferComponents/EditTransferTitle/EditTransferTitle';
+import { EditTransferNote } from '../../components/EditTransferComponents/EditTransferNote/EditTransferNote';
+import { EditTransferLocation } from '../../components/EditTransferComponents/EditTransferLocation/EditTransferLocation';
 
 type EditTransferScreenNavigationProps = {
     navigation: RootNavigationProps;
@@ -77,6 +77,9 @@ export const EditTransferScreen = ({route, navigation}: EditTransferScreenNaviga
                         <FontAwesome6 name="arrow-down" size = {24} color = {colors.darkerBackground} />
                     </View>
                 <EditTransferAccountSelector navigation = {navigation} accountType = "to" />
+                <EditTransferTitle />
+                <EditTransferNote />
+                <EditTransferLocation />
             </View>
         </ScrollView>
     );
