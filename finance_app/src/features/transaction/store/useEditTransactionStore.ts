@@ -74,6 +74,7 @@ type EditTransactionStoreDraft = {
     validateTitle: () => boolean;
     validateSubscription: () => boolean;
     validateEditTransaction: () => boolean;
+    validateTransferAccounts: () => boolean;
 
     //Formatting
     formatEditTransactionForBackend: () => BackendTransactionUpdateRequest;
@@ -432,4 +433,22 @@ export const useEditTransactionStore = create<EditTransactionState & EditTransac
             } : null,
         };
     },
+
+
+    validateTransferAccounts: () => {
+        const {sourceAccountDraft, toAccountDraft} = get();
+
+        if (!sourceAccountDraft || !toAccountDraft) {
+            set({accountError: 'Both source and to accounts are required'});
+            return false;
+        }
+
+        if (sourceAccountDraft.accountId === toAccountDraft.accountId) {
+            set({accountError: 'From and To accounts cannot be the same'});
+            return false;
+        }
+
+        set({accountError: ''});
+        return true;
+    }
 }));

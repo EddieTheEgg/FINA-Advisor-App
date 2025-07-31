@@ -24,4 +24,9 @@ export const styles = StyleSheet.create({
         marginVertical: spacing.md,
         marginHorizontal: spacing.md,
     },
+    downArrowContainer : {
+        marginHorizontal: spacing.md,
+        alignSelf: 'center',
+        marginVertical: spacing.sm,
+    },
 });

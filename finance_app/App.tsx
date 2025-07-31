@@ -15,6 +15,7 @@ import { EditSelectAccountScreen } from './src/features/transaction/screens/Edit
 import { EditSelectCategoryScreen } from './src/features/transaction/screens/EditSelectCategoryScreen/EditSelectCategoryScreen.tsx';
 import CreateCategoryScreen from './src/features/categories/screens/CreateCategoryScreen/CreateCategoryScreen.tsx';
 import { EditTransferScreen } from './src/features/transaction/screens/EditTransferScreen/EditTransferScreen.tsx';
+import { EditSelectTransferAccountScreen } from './src/features/transaction/screens/EditSelectTransferAccountScreen/EditSelectTransferAccountScreen.tsx';
 
 const Stack = createNativeStackNavigator<RootStackParamList>();
 
@@ -35,6 +36,7 @@ const AppContent = () => {
               <Stack.Screen name = "TransactionDetail" component={TransactionDetailScreen} />
               <Stack.Screen name =  "EditTransaction" component={EditTransactionScreen} />
               <Stack.Screen name = "EditTransfer" component={EditTransferScreen} />
+              <Stack.Screen name = "EditSelectTransferAccount" component={EditSelectTransferAccountScreen} />
               <Stack.Screen name = "EditSelectAccount" component={EditSelectAccountScreen} />
               <Stack.Screen name = "EditSelectCategory" component={EditSelectCategoryScreen} />
               <Stack.Screen name = "CreateCategory" component={CreateCategoryScreen} />

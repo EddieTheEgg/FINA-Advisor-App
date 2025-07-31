@@ -10,6 +10,9 @@ export const colors = {
     darkerBackground: '#95664C',
     yellowBackground: '#FDE68D',
 
+    lightBlue: '#E1EDFC',
+    darkBlue: '#1F3F80',
+
     green: '#3ECD58',
     lighterGreen : '#E2FBE8',
     darkerGreen: '#1BA44C',

@@ -15,6 +15,9 @@ export type RootStackParamList = {
     };
     EditSelectAccount: undefined;
     EditSelectCategory: undefined;
+    EditSelectTransferAccount: {
+      accountType: 'source' | 'to';
+    };
     CreateCategory: undefined;
   };
 
