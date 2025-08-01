@@ -15,7 +15,7 @@ from backend.src.entities.audit_logs import AuditLog
 from backend.src.entities.category import Category
 from backend.src.entities.transaction import Transaction, TransactionType
 from backend.src.entities.enums import AuditAction, SubscriptionFrequency, SubscriptionStatus, TransactionSortBy, SortOrder
-from backend.src.exceptions import TransferTransactionError, CreateTransactionError, CategoryNotFoundError, InvalidUserForCategoryError, InvalidUserForTransactionError, TransactionNotFoundError, UpdateTransactionError
+from backend.src.exceptions import DeleteTransactionError, TransferTransactionError, CreateTransactionError, CategoryNotFoundError, InvalidUserForCategoryError, InvalidUserForTransactionError, TransactionNotFoundError, UpdateTransactionError
 from backend.src.transactions.model import TransactionCreate, TransactionListRequest, TransactionResponse, TransactionSummary, TransactionUpdate, TransactionListResponse, TransferCreateRequest, TransferCreateResponse, PaginationResponse, SummaryResponse, TransactionAccountResponse
 from backend.src.accounts import service as account_service
 
@@ -530,40 +530,71 @@ def update_transaction(db: Session, transaction_update_request: TransactionUpdat
 
 
 def delete_transaction(db: Session, transaction_id: UUID, user_id: UUID) -> None:
-    # Get the actual transaction entity, not the response
-    transaction = (
-        db.query(Transaction)
-        .filter(Transaction.transaction_id == transaction_id, Transaction.user_id == user_id)
-        .first()
-    )
-    
-    if not transaction:
-        raise TransactionNotFoundError(transaction_id)
-    
-    # Store old values for balance adjustment
-    old_amount = transaction.amount
-    old_transaction_type = transaction.transaction_type
-    old_account_id = transaction.account_id
-    old_to_account_id = transaction.to_account_id
-    
-    # Reverse the transaction's effect on account balance
     try:
-        if old_transaction_type == TransactionType.EXPENSE:
-            account_service.update_account_balance(db, old_account_id, user_id, old_amount)
-        elif old_transaction_type == TransactionType.INCOME:
-            account_service.update_account_balance(db, old_account_id, user_id, -old_amount)
-        elif old_transaction_type == TransactionType.TRANSFER:
-            # For transfers, reverse both accounts
-            if old_to_account_id:
+        # Get the actual transaction entity, not the response
+        transaction = (
+            db.query(Transaction)
+            .filter(Transaction.transaction_id == transaction_id, Transaction.user_id == user_id)
+            .first()
+        )
+        
+        if not transaction:
+            raise TransactionNotFoundError(transaction_id)
+        
+        # Store old values for balance adjustment
+        old_amount = transaction.amount
+        old_transaction_type = transaction.transaction_type
+        old_account_id = transaction.account_id
+        old_to_account_id = transaction.to_account_id
+        
+        #Create audit log with old data
+        old_transaction_data = {
+            'amount': transaction.amount,
+            'title': transaction.title,
+            'transaction_date': transaction.transaction_date.isoformat() if transaction.transaction_date else None,
+            'transaction_type': transaction.transaction_type.value if transaction.transaction_type else None,
+            'notes': transaction.notes,
+            'location': transaction.location,
+            'is_subscription': transaction.is_subscription,
+            'subscription_frequency': transaction.subscription_frequency.value if transaction.subscription_frequency else None,
+            'subscription_start_date': transaction.subscription_start_date.isoformat() if transaction.subscription_start_date else None,
+            'subscription_end_date': transaction.subscription_end_date.isoformat() if transaction.subscription_end_date else None,
+            'category_id': str(transaction.category_id) if transaction.category_id else None,
+            'account_id': str(transaction.account_id) if transaction.account_id else None,
+            'to_account_id': str(transaction.to_account_id) if transaction.to_account_id else None,
+            'merchant': transaction.merchant
+        }
+        
+        audit_transaction = AuditLog(
+            user_id=user_id,
+            action=AuditAction.DELETE,
+            record_id=transaction_id,
+            old_data=old_transaction_data,
+            new_data=None
+        )
+        
+        # Reverse the transaction's effect on account balance
+        try:
+            if old_transaction_type == TransactionType.EXPENSE:
                 account_service.update_account_balance(db, old_account_id, user_id, old_amount)
-                account_service.update_account_balance(db, old_to_account_id, user_id, -old_amount)
+            elif old_transaction_type == TransactionType.INCOME:
+                account_service.update_account_balance(db, old_account_id, user_id, -old_amount)
+            elif old_transaction_type == TransactionType.TRANSFER:
+                # For transfers, reverse both accounts
+                if old_to_account_id:
+                    account_service.update_account_balance(db, old_account_id, user_id, old_amount)
+                    account_service.update_account_balance(db, old_to_account_id, user_id, -old_amount)
+        except Exception as e:
+            logging.warning(f"Failed to reverse transaction balance during deletion: {str(e)}")
+        
+        db.delete(transaction)
+        db.commit()
+        logging.info(f"Deleted transaction {transaction_id} for user {user_id}")
+        
     except Exception as e:
-        logging.warning(f"Failed to reverse transaction balance during deletion: {str(e)}")
-        # Continue with deletion even if balance reversal fails
-    
-    db.delete(transaction)
-    db.commit()
-    logging.info(f"Deleted transaction {transaction_id} for user {user_id}")
+        db.rollback()
+        logging.error(f"Error deleting transaction {transaction_id} for user {user_id}: {str(e)}")
+        raise DeleteTransactionError(str(e))
 
 
 def create_transfer_transaction(

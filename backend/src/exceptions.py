@@ -92,6 +92,12 @@ class UpdateTransactionError(TransactionError):
     def __init__(self, message: str = "Error updating a transaction"):
         super().__init__(status_code=400, detail=message)
 
+class DeleteTransactionError(TransactionError):
+    def __init__(self, message: str = "Error deleting transaction"):
+        super().__init__(status_code=400, detail=message)
+
+
+
 
 
 

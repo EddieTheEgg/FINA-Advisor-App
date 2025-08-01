@@ -18,7 +18,10 @@ import { spacing } from '../../../../styles/spacing';
 import { RouteProp } from '@react-navigation/native';
 import { TransferFlowCard } from '../../components/TransferFlowCard/TransferFlowCard';
 import { TransferDetailsCard } from '../../components/TransferDetailsCard/TransferDetailsCard';
-import { useState } from 'react';
+import { useEffect, useState } from 'react';
+import { useDeleteTransaction } from '../../hooks/useDeleteTransaction';
+import { UpdatingTransaction } from '../../components/UpdatingTransaction/UpdatingTransaction';
+import { useQueryClient } from '@tanstack/react-query';
 
 
 
@@ -30,22 +33,31 @@ type TransactionDetailScreenProps = {
 export const TransactionDetailScreen = ({route, navigation}: TransactionDetailScreenProps) => {
     const {transactionId} = route.params;
     const [isDeletionModalVisible, setIsDeletionModalVisible] = useState(false);
+    const queryClient = useQueryClient();
     const insets = useSafeAreaInsets();
     const canvasPadding = Dimensions.get('window').height * 0.02;
 
-    const {data : transactionDetails, isPending, error} = useGetTransaction(transactionId);
+    const {data : transactionDetails, isPending, error: getTransactionError} = useGetTransaction(transactionId);
+    const {mutate: deleteTransaction, isPending: isDeleting, isSuccess: isDeleteSuccess, error: deleteError} = useDeleteTransaction({transactionId});
+
+    useEffect(() => {
+        if (isDeleteSuccess && transactionDetails) {
+            // Remove specific transaction from cache since it no longer exists
+            queryClient.removeQueries({queryKey: ['transaction', transactionId]});
+
+            Promise.all([
+                queryClient.invalidateQueries({queryKey: ['transactionList']}),
+                queryClient.invalidateQueries({queryKey: ['grouped-accounts']}),
+                queryClient.invalidateQueries({queryKey: ['account-transactions', transactionDetails.accountId]}),
+                queryClient.invalidateQueries({queryKey: ['dashboard', new Date(transactionDetails.transactionDate).getMonth() + 1, new Date(transactionDetails.transactionDate).getFullYear()]}),
+            ]);
+            navigation.goBack();
+        }
+    }, [isDeleteSuccess, transactionDetails, queryClient, transactionId, navigation]);
 
 
     if (isPending || !transactionDetails) {
         return <LoadingScreen />;
-    }
-
-    if (error) {
-        return <ErrorScreen
-            errorText = "Error fetching transaction details"
-            errorSubText = "Please try again later"
-            errorMessage = {error.message}
-        />;
     }
 
     const handleNavToEditTransaction = () => {
@@ -60,8 +72,23 @@ export const TransactionDetailScreen = ({route, navigation}: TransactionDetailSc
         }
     };
 
+    const handleDeleteTransaction = () => {
+        setIsDeletionModalVisible(false);
+        deleteTransaction();
+    };
 
 
+    if (isDeleting) {
+        return <UpdatingTransaction loadingText="Deleting transaction" />;
+    }
+
+    if (deleteError || getTransactionError) {
+        return <ErrorScreen
+            errorText="Error deleting transaction"
+            errorSubText="Please try again later"
+            errorMessage={deleteError?.message || getTransactionError?.message || 'An unknown error occurred'}
+        />;
+    }
 
     if (transactionDetails.transactionType === 'TRANSFER') {
         return (
@@ -101,25 +128,27 @@ export const TransactionDetailScreen = ({route, navigation}: TransactionDetailSc
                     animationType="fade"
                     onRequestClose={() => {setIsDeletionModalVisible(false)}}
                 >
-                    <View style={styles.deletionModalContainer}>
-                        <View style={styles.deletionModalContent}>
-                            <Text style={styles.deletionModalTitle}>Delete Transaction</Text>
-                            <Text style={styles.deletionModalText}>Are you sure you want to delete this transaction?</Text>
-                            <View style={styles.deletionModalButtons}>
-                                <AnimatedPressable
-                                    onPress={() => {setIsDeletionModalVisible(false)}}
-                                    style={styles.deletionModalButton}>
-                                    <Text style={styles.deletionModalButtonText}>Cancel</Text>
-                                </AnimatedPressable>
-                                <AnimatedPressable
-                                    onPress={() => {}}
-                                    style={styles.deletionModalButton}
-                                >
-                                    <Text style={styles.deletionModalButtonText}>Delete</Text>
-                                </AnimatedPressable>
-                            </View>
+                <View style={styles.deletionModalContainer}>
+                    <View style={styles.deletionModalContent}>
+                        <Image source={require('../../../../assets/images/delete_transaction.png')} style={styles.deletionModalImage} />
+                        <Text style={styles.deletionModalTitle}>Delete Transfer?</Text>
+                        <Text style={styles.deletionModalText}>This transfer will be permanently deleted and cannot be recovered.</Text>
+                        <View style={styles.deletionModalButtons}>
+                            <AnimatedPressable
+                                onPress={handleDeleteTransaction}
+                                style={styles.deletionModalButton}
+                            >
+                                <Text style={styles.deletionModalButtonText}>Delete</Text>
+                            </AnimatedPressable>
+                            <AnimatedPressable
+                                onPress={() => {setIsDeletionModalVisible(false)}}
+                                style={styles.cancelModalButton}>
+                                <Text style={styles.cancelModalButtonText}>Cancel</Text>
+                            </AnimatedPressable>
+
                         </View>
                     </View>
+                </View>
                 </Modal>
             </View>
         );
@@ -171,7 +200,7 @@ export const TransactionDetailScreen = ({route, navigation}: TransactionDetailSc
                         <Text style={styles.deletionModalText}>This transaction will be permanently deleted and cannot be recovered.</Text>
                         <View style={styles.deletionModalButtons}>
                             <AnimatedPressable
-                                onPress={() => {}}
+                                onPress={handleDeleteTransaction}
                                 style={styles.deletionModalButton}
                             >
                                 <Text style={styles.deletionModalButtonText}>Delete</Text>

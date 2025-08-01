@@ -181,3 +181,12 @@ export const updateTransaction = async (transaction: BackendTransactionUpdateReq
     }
 };
 
+export const deleteTransaction = async (transactionId: string) : Promise<void> => {
+    try {
+        await api.delete('/transactions/delete-transaction', {params: {transaction_id: transactionId}});
+    } catch (error : any) {
+        console.error('Error deleting transaction:', error);
+        throw error;
+    }
+};
+

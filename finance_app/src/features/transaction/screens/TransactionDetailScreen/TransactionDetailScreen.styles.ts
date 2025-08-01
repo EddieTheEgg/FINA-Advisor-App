@@ -71,6 +71,7 @@ export const styles = StyleSheet.create({
         alignSelf: 'center',
         fontSize: fontSize.xl,
         fontFamily: 'Poppins-SemiBold',
+        marginTop: spacing.sm,
     },
     deletionModalText: {
         textAlign: 'center',
