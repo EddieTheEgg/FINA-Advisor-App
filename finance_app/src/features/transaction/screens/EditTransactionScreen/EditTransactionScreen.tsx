@@ -1,4 +1,4 @@
-import { View, Text, ScrollView } from 'react-native';
+import { View, Text, ScrollView, Modal, Image } from 'react-native';
 import { useEffect, useState } from 'react';
 import { RootNavigationProps, RootStackParamList } from '../../../../navigation/types/RootNavigatorTypes';
 import { useSafeAreaInsets } from 'react-native-safe-area-context';
@@ -39,6 +39,7 @@ export const EditTransactionScreen = ({route, navigation}: EditTransactionScreen
     const canvasPadding = Dimensions.get('window').height * 0.02;
 
     const [showError, setShowError] = useState(false);
+    const [showConfirmation, setShowConfirmation] = useState(false);
 
     const { mutate, isPending: isUpdatingTransaction, error: updateTransactionError, isSuccess: isUpdateTransactionSuccess } = useUpdateTransaction();
 
@@ -77,6 +78,11 @@ export const EditTransactionScreen = ({route, navigation}: EditTransactionScreen
         }
     };
 
+    const handleContinueConfirmation = () => {
+        setShowConfirmation(false);
+        navigation.goBack();
+    };
+
     useEffect(() => {
         if (isUpdateTransactionSuccess && transactionDetails) {
             Promise.all([
@@ -88,7 +94,7 @@ export const EditTransactionScreen = ({route, navigation}: EditTransactionScreen
             ]);
             setShowError(false);
             resetDraft();
-            navigation.goBack();
+            setShowConfirmation(true);
         }
     }, [isUpdateTransactionSuccess, transactionDetails, queryClient, transactionId, navigation, resetDraft]);
 
@@ -146,6 +152,28 @@ export const EditTransactionScreen = ({route, navigation}: EditTransactionScreen
                     <Text style={styles.saveTransactionButtonText}>Save Transaction</Text>
                 </AnimatedPressable>
             </View>
+            <Modal
+                visible={showConfirmation}
+                transparent={true}
+                animationType="fade"
+                onRequestClose={() => {setShowConfirmation(false)}}
+            >
+                <View style={styles.deletionModalContainer}>
+                    <View style={styles.deletionModalContent}>
+                        <Image source={require('../../../../assets/images/confirmation.png')} style={styles.deletionModalImage} />
+                        <Text style={styles.deletionModalTitle}>Update Success!</Text>
+                        <Text style={styles.deletionModalText}>Your transaction has been updated successfully</Text>
+                        <View style={styles.deletionModalButtons}>
+                            <AnimatedPressable
+                                onPress={(handleContinueConfirmation)}
+                                style={styles.continueButton}
+                            >
+                                <Text style={styles.continueButtonText}>Continue</Text>
+                            </AnimatedPressable>
+                        </View>
+                    </View>
+                </View>
+            </Modal>
         </View>
     );
 };
