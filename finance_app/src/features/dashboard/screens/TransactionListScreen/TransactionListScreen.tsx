@@ -18,7 +18,6 @@ import { TransactionSummary } from '../../types';
 import { DashboardNavigationProps } from '../../../../navigation/types/DashboardNavigatorTypes';
 
 
-
 type TransactionListScreenProps = {
     navigation: DashboardNavigationProps;
 };
@@ -54,6 +53,7 @@ export const TransactionListScreen = ({navigation}: TransactionListScreenProps) 
 
     const {data, isPending, error, fetchNextPage, hasNextPage} = useTransactionList(request);
 
+
     const handleApplyFilters = () => {
         applyDraftFilters();
         setFilterTransactionsModalVisible(false);
@@ -85,9 +85,9 @@ export const TransactionListScreen = ({navigation}: TransactionListScreenProps) 
 
 
     const renderTransactionItem = ({ item: transaction }: { item: TransactionSummary }) => (
-        <View>
+        <View key={transaction.transactionId}>
             <TransactionItem transaction = {transaction} navigation = {navigation} />
-            <View style = {styles.selectorDivider} key = {Math.random()} />
+            <View style = {styles.selectorDivider} />
         </View>
     );
 

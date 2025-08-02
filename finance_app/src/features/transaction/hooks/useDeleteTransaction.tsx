@@ -17,4 +17,4 @@ export const useDeleteTransaction = ({transactionId}: UseDeleteTransactionProps)
         isSuccess,
         error,
     };
-}
+};

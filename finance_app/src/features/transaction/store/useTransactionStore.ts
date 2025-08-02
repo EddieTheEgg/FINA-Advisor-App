@@ -23,6 +23,9 @@ type CreateTransactionState = {
     isTransactionProcessing: boolean;
     setIsTransactionProcessing: (isProcessing: boolean) => void;
 
+    transactionSuccess: boolean;
+    setTransactionSuccess: (success: boolean) => void;
+
     setTransactionType : (transactionType : 'INCOME' | 'EXPENSE' | 'TRANSFER') => void;
     setSourceAccount : (sourceAccount : AccountResponse) => void;
     setAmount : (amount : number) => void;
@@ -76,6 +79,7 @@ const initialState = {
 
     transactionProcessingError: null,
     isTransactionProcessing: false,
+    transactionSuccess: false,
 
     // Validation errors
     sourceAccountError: '',
@@ -106,8 +110,12 @@ export const useCreateTransactionStore = create<CreateTransactionState>((set, ge
     // Transaction processing
     setTransactionProcessingError: (error) => set({transactionProcessingError: error}),
     setIsTransactionProcessing: (isProcessing) => set({isTransactionProcessing: isProcessing}),
+    setTransactionSuccess: (success) => set({transactionSuccess: success}),
 
-    resetToInitialState: () => set(initialState),
+    resetToInitialState: () => {
+        const { transactionSuccess } = get();
+        set({ ...initialState, transactionSuccess }); // Keep the transactionSuccess state, which resets when user confirms
+    },
 
     validateSourceAccount: () => {
         const {sourceAccount} = get();

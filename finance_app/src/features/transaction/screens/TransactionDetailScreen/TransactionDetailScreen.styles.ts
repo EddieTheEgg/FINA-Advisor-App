@@ -105,4 +105,14 @@ export const styles = StyleSheet.create({
         color: colors.black,
         fontFamily: 'Poppins-SemiBold',
     },
+    continueButton : {
+        backgroundColor: colors.blue,
+        padding: spacing.md,
+        paddingHorizontal: spacing.xxl * 2.3,
+        borderRadius: 10,
+    },
+    continueButtonText: {
+        color: colors.white,
+        fontFamily: 'Poppins-SemiBold',
+    },
 });

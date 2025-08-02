@@ -4,10 +4,10 @@ import { BackendTransactionCreateRequest, TransactionResponse } from '../types';
 import { useCreateTransactionStore } from '../store/useTransactionStore';
 
 export const useCreateTransaction = () => {
-    const { resetToInitialState } = useCreateTransactionStore();
+    const { resetToInitialState, setTransactionSuccess } = useCreateTransactionStore();
 
     const queryClient = useQueryClient();
-    const {mutate, isPending, error} = useMutation({
+    const {mutate, isPending, error, isSuccess} = useMutation({
         mutationFn: (transaction: BackendTransactionCreateRequest) : Promise<TransactionResponse> => createTransaction(transaction),
         onSuccess: async (data: TransactionResponse) => {
             const currentDate = new Date(data.transactionDate);
@@ -22,6 +22,8 @@ export const useCreateTransaction = () => {
                 queryClient.invalidateQueries({queryKey: ['dashboard', month, year]}),
             ]);
 
+            // Set success state and reset other fields
+            setTransactionSuccess(true);
             resetToInitialState();
         },
         onError: (err : any) => {
@@ -29,5 +31,5 @@ export const useCreateTransaction = () => {
         },
     });
 
-    return {mutate, isPending, error};
+    return {mutate, isPending, error, isSuccess};
 };

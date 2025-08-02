@@ -16,7 +16,7 @@ import { AnimatedPressable } from '../../../../components/AnimatedPressable/Anim
 import FontAwesome6 from 'react-native-vector-icons/FontAwesome6';
 import { ProcessingTransaction } from '../../components/ProcessingTransaction/ProcessingTransaction';
 import { ErrorScreen } from '../../../../components/ErrorScreen/ErrorScreen';
-import { useState } from 'react';
+import { useEffect, useState } from 'react';
 
 type CreateTransactionScreenProps = {
     navigation : TransactionNavigatorProps;
@@ -48,7 +48,13 @@ export const CreateTransactionScreen = ( { navigation }: CreateTransactionScreen
     const canvasPadding = height * 0.03;
     const [showConfirmation, setShowConfirmation] = useState(false);
 
-    const {transactionType, isTransactionProcessing, transactionProcessingError} = useCreateTransactionStore();
+    const {transactionType, isTransactionProcessing, transactionProcessingError, transactionSuccess} = useCreateTransactionStore();
+
+    useEffect(() => {
+        if (transactionSuccess) {
+            setShowConfirmation(true);
+        }
+    }, [transactionSuccess]);
 
     if (isTransactionProcessing) {
         return <ProcessingTransaction />;
@@ -60,8 +66,10 @@ export const CreateTransactionScreen = ( { navigation }: CreateTransactionScreen
 
     const handleContinueConfirmation = () => {
         setShowConfirmation(false);
-        navigation.goBack();
+        navigation.getParent()?.navigate('Dashboard');
     };
+
+
 
 
 
@@ -110,7 +118,7 @@ export const CreateTransactionScreen = ( { navigation }: CreateTransactionScreen
                         </View>
                     </View>
                 </View>
-            </Modal>
+             </Modal>
         </View>
     );
 };
