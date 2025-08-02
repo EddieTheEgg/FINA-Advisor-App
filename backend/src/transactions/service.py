@@ -572,6 +572,7 @@ def delete_transaction(db: Session, transaction_id: UUID, user_id: UUID) -> None
             old_data=old_transaction_data,
             new_data=None
         )
+        db.add(audit_transaction)
         
         # Reverse the transaction's effect on account balance
         try:
