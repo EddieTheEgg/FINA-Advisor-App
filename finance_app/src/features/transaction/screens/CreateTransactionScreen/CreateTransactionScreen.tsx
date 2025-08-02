@@ -47,7 +47,7 @@ export const CreateTransactionScreen = ( { navigation }: CreateTransactionScreen
     const height = Dimensions.get('window').height;
     const canvasPadding = height * 0.03;
     const [showConfirmation, setShowConfirmation] = useState(false);
-    
+
     const {transactionType, isTransactionProcessing, transactionProcessingError} = useCreateTransactionStore();
 
     if (isTransactionProcessing) {
@@ -93,7 +93,7 @@ export const CreateTransactionScreen = ( { navigation }: CreateTransactionScreen
             <Modal
                 visible={showConfirmation}
                 animationType="fade"
-                onRequestClose={() => {setShowConfirmation(false)}}
+                onRequestClose={() => {setShowConfirmation(false);}}
             >
                 <View style={styles.deletionModalContainer}>
                     <View style={styles.deletionModalContent}>

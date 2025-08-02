@@ -39,7 +39,7 @@ export const useCreateTransfer = () => {
         onError: (_error) => {
             // Reset processing state on error
             useTransferStore.getState().setIsTransferProcessing(false);
-        }
+        },
     });
 
     return {mutate, isPending, transferError, isSuccess};

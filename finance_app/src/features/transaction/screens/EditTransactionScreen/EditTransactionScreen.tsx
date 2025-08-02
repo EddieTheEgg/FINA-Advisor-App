@@ -155,7 +155,7 @@ export const EditTransactionScreen = ({route, navigation}: EditTransactionScreen
             <Modal
                 visible={showConfirmation}
                 animationType="fade"
-                onRequestClose={() => {setShowConfirmation(false)}}
+                onRequestClose={() => {setShowConfirmation(false);}}
             >
                 <View style={styles.deletionModalContainer}>
                     <View style={styles.deletionModalContent}>

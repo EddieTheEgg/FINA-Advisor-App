@@ -89,7 +89,7 @@ export const TransferScreen = ({ navigation }: TransferScreenProps) => {
                     showsVerticalScrollIndicator={false}
                     contentContainerStyle={{
                         paddingBottom: insets.bottom + responsivePadding,
-                        paddingTop: responsivePaddingTop
+                        paddingTop: responsivePaddingTop,
                     }}
                 >
                     <View style={styles.headerSection}>

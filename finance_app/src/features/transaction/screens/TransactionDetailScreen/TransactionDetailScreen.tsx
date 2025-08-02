@@ -103,7 +103,7 @@ export const TransactionDetailScreen = ({route, navigation}: TransactionDetailSc
                         <BackButton />
                         <Text style={styles.headerTitle}>Transfer Details</Text>
                         <AnimatedPressable
-                            onPress={() => {setIsDeletionModalVisible(true)}}
+                            onPress={() => {setIsDeletionModalVisible(true);}}
                         >
                             <FontAwesome6 name="trash" size={24} color={colors.red} />
                         </AnimatedPressable>
@@ -126,7 +126,7 @@ export const TransactionDetailScreen = ({route, navigation}: TransactionDetailSc
                     visible={isDeletionModalVisible}
                     transparent={true}
                     animationType="fade"
-                    onRequestClose={() => {setIsDeletionModalVisible(false)}}
+                    onRequestClose={() => {setIsDeletionModalVisible(false);}}
                 >
                 <View style={styles.deletionModalContainer}>
                     <View style={styles.deletionModalContent}>
@@ -141,7 +141,7 @@ export const TransactionDetailScreen = ({route, navigation}: TransactionDetailSc
                                 <Text style={styles.deletionModalButtonText}>Delete</Text>
                             </AnimatedPressable>
                             <AnimatedPressable
-                                onPress={() => {setIsDeletionModalVisible(false)}}
+                                onPress={() => {setIsDeletionModalVisible(false);}}
                                 style={styles.cancelModalButton}>
                                 <Text style={styles.cancelModalButtonText}>Cancel</Text>
                             </AnimatedPressable>
@@ -166,7 +166,7 @@ export const TransactionDetailScreen = ({route, navigation}: TransactionDetailSc
                     <BackButton />
                     <Text style={styles.headerTitle}>Transaction Details</Text>
                     <AnimatedPressable
-                        onPress={() => {setIsDeletionModalVisible(true)}}
+                        onPress={() => {setIsDeletionModalVisible(true);}}
                     >
                         <FontAwesome6 name="trash" size={24} color={colors.red} />
                     </AnimatedPressable>
@@ -190,7 +190,7 @@ export const TransactionDetailScreen = ({route, navigation}: TransactionDetailSc
             <Modal
                 visible={isDeletionModalVisible}
                 animationType="fade"
-                onRequestClose={() => {setIsDeletionModalVisible(false)}}
+                onRequestClose={() => {setIsDeletionModalVisible(false);}}
             >
                 <View style={styles.deletionModalContainer}>
                     <View style={styles.deletionModalContent}>
@@ -205,7 +205,7 @@ export const TransactionDetailScreen = ({route, navigation}: TransactionDetailSc
                                 <Text style={styles.deletionModalButtonText}>Delete</Text>
                             </AnimatedPressable>
                             <AnimatedPressable
-                                onPress={() => {setIsDeletionModalVisible(false)}}
+                                onPress={() => {setIsDeletionModalVisible(false);}}
                                 style={styles.cancelModalButton}>
                                 <Text style={styles.cancelModalButtonText}>Cancel</Text>
                             </AnimatedPressable>
