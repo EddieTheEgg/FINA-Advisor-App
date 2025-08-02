@@ -17,10 +17,11 @@ type AccountSelectionCardProps = {
 
 export const AccountSelectionCard = ({accountItem, navigation} : AccountSelectionCardProps) => {
 
-    const {sourceAccount, setSourceAccount} = useCreateTransactionStore();
+    const {sourceAccount, setSourceAccount, validateSourceAccount} = useCreateTransactionStore();
 
     const handleNavToTransactionScreen = () => {
         setSourceAccount(accountItem);
+        validateSourceAccount();
         navigation.navigate('CreateTransaction');
     };
 

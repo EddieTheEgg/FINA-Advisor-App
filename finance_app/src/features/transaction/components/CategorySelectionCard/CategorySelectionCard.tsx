@@ -14,10 +14,11 @@ type CategorySelectionCardProps = {
 
 export const CategorySelectionCard = ({categoryItem, navigation}: CategorySelectionCardProps) => {
 
-    const {selectedCategory, setSelectedCategory} = useCreateTransactionStore();
+    const {selectedCategory, setSelectedCategory, validateSelectedCategory} = useCreateTransactionStore();
 
     const handleNavToTransactionScreen = () => {
         setSelectedCategory(categoryItem);
+        validateSelectedCategory();
         navigation.navigate('CreateTransaction');
     };
 

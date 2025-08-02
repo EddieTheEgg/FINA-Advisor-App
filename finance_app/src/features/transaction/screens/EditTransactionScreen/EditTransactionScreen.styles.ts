@@ -92,27 +92,6 @@ export const styles = StyleSheet.create({
         flexDirection: 'row',
         justifyContent: 'space-around',
     },
-    deletionModalButton : {
-        padding: spacing.md,
-        paddingHorizontal: spacing.lg * 2.2,
-        backgroundColor: colors.darkerRed,
-        borderRadius: 10,
-    },
-    deletionModalButtonText : {
-        color: colors.white,
-        fontFamily: 'Poppins-SemiBold',
-    },
-    cancelModalButton: {
-        padding: spacing.md,
-        paddingHorizontal: spacing.lg * 2.2,
-        borderWidth: 1.5,
-        borderColor: colors.gray[300],
-        borderRadius: 10,
-    },
-    cancelModalButtonText : {
-        color: colors.black,
-        fontFamily: 'Poppins-SemiBold',
-    },
     continueButton : {
         backgroundColor: colors.blue,
         padding: spacing.md,
