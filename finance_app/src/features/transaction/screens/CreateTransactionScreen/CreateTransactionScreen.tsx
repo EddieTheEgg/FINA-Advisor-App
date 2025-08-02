@@ -92,7 +92,6 @@ export const CreateTransactionScreen = ( { navigation }: CreateTransactionScreen
             </ScrollView>
             <Modal
                 visible={showConfirmation}
-                transparent={true}
                 animationType="fade"
                 onRequestClose={() => {setShowConfirmation(false)}}
             >

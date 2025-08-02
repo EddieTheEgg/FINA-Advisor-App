@@ -1,4 +1,4 @@
-import { View, Text, ScrollView, Platform } from 'react-native';
+import { View, Text, ScrollView, Platform, Modal, Image } from 'react-native';
 import { useEffect, useState } from 'react';
 import { RootNavigationProps, RootStackParamList } from '../../../../navigation/types/RootNavigatorTypes';
 import { useSafeAreaInsets } from 'react-native-safe-area-context';
@@ -51,6 +51,7 @@ export const EditTransferScreen = ({route, navigation}: EditTransferScreenNaviga
         validateTransferAccounts,
     } = useEditTransactionStore();
     const [showError, setShowError] = useState(false);
+    const [transferUpdateModal, setTransferUpdateModal] = useState(false);
 
 
     useEffect(() => {
@@ -72,6 +73,11 @@ export const EditTransferScreen = ({route, navigation}: EditTransferScreenNaviga
         }
     };
 
+    const handleContinueConfirmation = () => {
+        setTransferUpdateModal(false);
+        navigation.goBack();
+    };
+
     useEffect(() => {
         if (isUpdatedTransfer && transactionDetails) {
             Promise.all([
@@ -89,7 +95,7 @@ export const EditTransferScreen = ({route, navigation}: EditTransferScreenNaviga
             ]);
             setShowError(false);
             resetDraft();
-            navigation.goBack();
+            setTransferUpdateModal(true);
         }
     }, [isUpdatedTransfer, transactionDetails, queryClient, transactionId, navigation, resetDraft]);
 
@@ -150,6 +156,27 @@ export const EditTransferScreen = ({route, navigation}: EditTransferScreenNaviga
                     <Text style={styles.saveTransferButtonText}>Update Transfer</Text>
                 </AnimatedPressable>
             </View>
+            <Modal
+                visible={transferUpdateModal}
+                animationType="fade"
+                onRequestClose={() => {setTransferUpdateModal(false);}}
+            >
+                <View style={styles.deletionModalContainer}>
+                    <View style={styles.deletionModalContent}>
+                        <Image source={require('../../../../assets/images/confirmation.png')} style={styles.deletionModalImage} />
+                        <Text style={styles.deletionModalTitle}>Transfer Updated!</Text>
+                        <Text style={styles.deletionModalText}>This transfer has been updated successfully</Text>
+                        <View style={styles.deletionModalButtons}>
+                            <AnimatedPressable
+                                onPress={(handleContinueConfirmation)}
+                                style={styles.continueButton}
+                            >
+                                <Text style={styles.continueButtonText}>Continue</Text>
+                            </AnimatedPressable>
+                        </View>
+                    </View>
+                </View>
+            </Modal>
         </View>
     );
 };

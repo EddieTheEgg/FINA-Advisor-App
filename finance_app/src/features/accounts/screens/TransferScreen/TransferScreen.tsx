@@ -1,4 +1,4 @@
-import { View, Text, ScrollView, KeyboardAvoidingView, Platform, Dimensions } from 'react-native';
+import { View, Text, ScrollView, KeyboardAvoidingView, Platform, Dimensions, Modal, Image } from 'react-native';
 import { useSafeAreaInsets } from 'react-native-safe-area-context';
 import { AccountNavigatorProps } from '../../../../navigation/types/AccountNavigatorTypes';
 import { styles } from './TransferScreen.styles';
@@ -12,7 +12,6 @@ import { TransferTitleInput } from '../../components/TransferTitleInput/Transfer
 import { TransferNoteCard } from '../../components/TransferNoteCard/TransferNoteCard';
 import { TransferLocationCard } from '../../components/TransferLocationCard/TransferLocationCard';
 import { useTransferStore } from '../../store/useTransferStore';
-import { ProcessingTransfer } from '../../components/ProcessingTransfer/ProcessingTransfer';
 import { AnimatedPressable } from '../../../../components/AnimatedPressable/AnimatedPressable';
 
 type TransferScreenProps = {
@@ -33,8 +32,8 @@ export const TransferScreen = ({ navigation }: TransferScreenProps) => {
         setNote,
         setLocation,
         validateTransfer,
-        transferError,
-        isTransferProcessing,
+        openTransferSuccessModal,
+        setOpenTransferSuccessModal,
     } = useTransferStore();
 
     const insets = useSafeAreaInsets();
@@ -70,64 +69,71 @@ export const TransferScreen = ({ navigation }: TransferScreenProps) => {
         setAmount(amountNumber);
     };
 
+    const handleNavToAccountListScreen = () => {
+        navigation.navigate('AccountsList');
+        setOpenTransferSuccessModal(false);
+    };
+
     // Validate amount whenever relevant state changes
     useEffect(() => {
         validateTransfer();
     }, [amount, title, fromAccount, toAccount, validateTransfer]);
 
     return (
-        isTransferProcessing ? (
-            <ProcessingTransfer />
-        ) : (
-        <KeyboardAvoidingView
-            style = {styles.keyboardAvoidingView}
-            behavior={Platform.OS === 'ios' ? 'padding' : 'height'}
+        <View style={styles.container}>
+            <KeyboardAvoidingView
+                style={styles.keyboardAvoidingView}
+                behavior={Platform.OS === 'ios' ? 'padding' : 'height'}
             >
-            <View style = {[styles.transferScreenContainer,{paddingTop: responsivePaddingTop}]}>
-                <View style = {styles.headerSection}>
-                    <GoBackButton />
-                    <Text style = {styles.headerTitle}>Transfer Money</Text>
-                </View>
                 <ScrollView
-                    contentContainerStyle = {{paddingBottom: insets.bottom + responsivePadding}}>
-                    <View style = {styles.accountToFromContainer}>
-                        <Text style = {styles.accountToFromTitle}>Source Account</Text>
+                    showsVerticalScrollIndicator={false}
+                    contentContainerStyle={{
+                        paddingBottom: insets.bottom + responsivePadding,
+                        paddingTop: responsivePaddingTop
+                    }}
+                >
+                    <View style={styles.headerSection}>
+                        <GoBackButton />
+                        <Text style={styles.headerTitle}>Transfer Money</Text>
+                    </View>
+                    <View style={styles.accountToFromContainer}>
+                        <Text style={styles.accountToFromTitle}>Source Account</Text>
                         <AnimatedPressable
                             onPress={handleNavigateFromAccountSelection}
                             delay={200}
                         >
                             {fromAccount ? (
-                            <TransferAccountCard
+                                <TransferAccountCard
                                     emptyCard={false}
-                                    accountColor = {fromAccount.color}
-                                    accountIcon = {fromAccount.icon}
-                                    accountBalance = {fromAccount.balance}
-                                    accountName = {fromAccount.name}
-                            />
+                                    accountColor={fromAccount.color}
+                                    accountIcon={fromAccount.icon}
+                                    accountBalance={fromAccount.balance}
+                                    accountName={fromAccount.name}
+                                />
                             ) : (
-                            <TransferAccountCard emptyCard={true} />
+                                <TransferAccountCard emptyCard={true} />
                             )}
                         </AnimatedPressable>
                     </View>
-                    <View style = {styles.downArrowContainer}>
-                        <FontAwesome6 name="arrow-down" size = {24} color = {colors.darkerBackground} />
+                    <View style={styles.downArrowContainer}>
+                        <FontAwesome6 name="arrow-down" size={24} color={colors.darkerBackground} />
                     </View>
-                    <View style = {styles.accountToFromContainer}>
-                        <Text style = {styles.accountToFromTitle}>Recipient Account</Text>
+                    <View style={styles.accountToFromContainer}>
+                        <Text style={styles.accountToFromTitle}>Recipient Account</Text>
                         <AnimatedPressable
                             onPress={handleNavigateToAccountSelection}
                             delay={200}
                         >
                             {toAccount ? (
-                            <TransferAccountCard
+                                <TransferAccountCard
                                     emptyCard={false}
-                                    accountColor = {toAccount.color}
-                                    accountIcon = {toAccount.icon}
-                                    accountBalance = {toAccount.balance}
-                                    accountName = {toAccount.name}
-                            />
+                                    accountColor={toAccount.color}
+                                    accountIcon={toAccount.icon}
+                                    accountBalance={toAccount.balance}
+                                    accountName={toAccount.name}
+                                />
                             ) : (
-                            <TransferAccountCard emptyCard={true} />
+                                <TransferAccountCard emptyCard={true} />
                             )}
                         </AnimatedPressable>
                     </View>
@@ -137,32 +143,47 @@ export const TransferScreen = ({ navigation }: TransferScreenProps) => {
                             onTitleChange={setTitle}
                         />
                     </View>
-                    <View style = {styles.optionalDetailsContainer}>
+                    <View style={styles.optionalDetailsContainer}>
                         <TransferNoteCard
                             note={note}
                             onNoteChange={setNote}
-                            maxLength = {150}                    />
+                            maxLength={150}
+                        />
                     </View>
-                    <View style = {styles.optionalDetailsContainer}>
+                    <View style={styles.optionalDetailsContainer}>
                         <TransferLocationCard
                             location={location}
                             onLocationChange={setLocation}
-                            maxLength = {50}
+                            maxLength={50}
                         />
                     </View>
-                    <View style = {styles.transferAmountCardContainer}>
+                    <View style={styles.transferAmountCardContainer}>
                         <TransferAmountCard
-                            amount = {amount}
-                            onAmountChange = {handleAmountChange}
-                            error = {amountError}
+                            amount={amount}
+                            onAmountChange={handleAmountChange}
+                            error={amountError}
                         />
                     </View>
-                    {transferError && (
-                        <Text style={styles.errorText}>{transferError}</Text>
-                    )}
                 </ScrollView>
-                </View>
+                <Modal
+                    visible={openTransferSuccessModal}
+                    animationType="fade"
+                    onRequestClose={() => {setOpenTransferSuccessModal(false);}}
+                >
+                    <View style={styles.deletionModalContainer}>
+                        <View style={styles.deletionModalContent}>
+                            <Image source={require('../../../../assets/images/confirmation.png')} style={styles.deletionModalImage} />
+                            <Text style={styles.deletionModalTitle}>Transfer Complete!</Text>
+                            <Text style={styles.deletionModalText}>The transfers have been processed successfully</Text>
+                            <AnimatedPressable
+                                onPress={handleNavToAccountListScreen}
+                                style={styles.continueButton}>
+                                <Text style={styles.continueButtonText}>Continue</Text>
+                            </AnimatedPressable>
+                        </View>
+                    </View>
+                </Modal>
             </KeyboardAvoidingView>
-        )
+        </View>
     );
 };

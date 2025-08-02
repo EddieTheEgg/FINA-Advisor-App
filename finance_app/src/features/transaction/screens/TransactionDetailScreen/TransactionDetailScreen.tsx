@@ -189,7 +189,6 @@ export const TransactionDetailScreen = ({route, navigation}: TransactionDetailSc
             </View>
             <Modal
                 visible={isDeletionModalVisible}
-                transparent={true}
                 animationType="fade"
                 onRequestClose={() => {setIsDeletionModalVisible(false)}}
             >

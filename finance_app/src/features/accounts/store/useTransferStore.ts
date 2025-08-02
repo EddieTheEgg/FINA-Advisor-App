@@ -13,6 +13,7 @@ type TransferState = {
   titleError: string;
   transferError: string;
   isTransferProcessing: boolean;
+  openTransferSuccessModal: boolean;
 
   // Actions
   setFromAccount: (account: AccountResponse | null) => void;
@@ -29,6 +30,7 @@ type TransferState = {
   // Utility actions
   resetTransfer: () => void;
   validateTransfer: () => boolean;
+  setOpenTransferSuccessModal: (open: boolean) => void;
 }
 
 const initialState = {
@@ -44,6 +46,7 @@ const initialState = {
   isTransferProcessing: false,
   allAccounts: [],
   availableAccounts: [],
+  openTransferSuccessModal: false,
 };
 
 //Zustand store for client state management on transfer screen
@@ -60,7 +63,7 @@ export const useTransferStore = create<TransferState>((set, get) => ({
   setTitleError: (error) => set({titleError: error}),
   setTransferError: (error) => set({ transferError: error }),
   setIsTransferProcessing: (isProcessing) => set({ isTransferProcessing: isProcessing }),
-
+  setOpenTransferSuccessModal: (open) => set({ openTransferSuccessModal: open }),
   resetTransfer: () => set(initialState),
 
   validateTransfer: () => {

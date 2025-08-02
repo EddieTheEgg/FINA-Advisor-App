@@ -4,6 +4,11 @@ import { colors } from '../../../../styles/colors';
 import { fontSize } from '../../../../styles/fontSizes';
 
 export const styles = StyleSheet.create({
+    container: {
+        flex: 1,
+        backgroundColor: colors.background,
+        position: 'relative',
+    },
     keyboardAvoidingView : {
         flex: 1,
     },
@@ -60,5 +65,53 @@ export const styles = StyleSheet.create({
         marginHorizontal: spacing.md,
         marginTop: spacing.md,
         fontFamily: 'Poppins-Medium',
+    },
+    deletionModalContainer : {
+        alignSelf: 'center',
+        justifyContent: 'center',
+        backgroundColor: 'rgba(0, 0, 0, 0.6)',
+        flex: 1,
+        width: '100%',
+    },
+    deletionModalContent : {
+        backgroundColor: colors.white,
+        marginHorizontal: spacing.lg,
+        padding: spacing.md,
+        borderRadius: 20,
+        alignContent: 'center',
+    },
+    deletionModalImage : {
+        alignSelf: 'center',
+        width: 80,
+        height: 80,
+        resizeMode: 'contain',
+    },
+    deletionModalTitle : {
+        alignSelf: 'center',
+        fontSize: fontSize.xl,
+        fontFamily: 'Poppins-SemiBold',
+        marginTop: spacing.sm,
+    },
+    deletionModalText: {
+        textAlign: 'center',
+        marginVertical: spacing.sm,
+        fontSize: fontSize.sm,
+        fontFamily: 'Poppins-Regular',
+    },
+    deletionModalButtons : {
+        marginTop: spacing.md,
+        flexDirection: 'row',
+        justifyContent: 'space-around',
+    },
+    continueButton : {
+        backgroundColor: colors.blue,
+        padding: spacing.md,
+        paddingHorizontal: spacing.xxl * 2.3,
+        borderRadius: 10,
+        alignSelf: 'center',
+    },
+    continueButtonText: {
+        color: colors.white,
+        fontFamily: 'Poppins-SemiBold',
     },
 });

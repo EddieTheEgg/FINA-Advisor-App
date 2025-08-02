@@ -2,20 +2,11 @@ import { Text, View } from 'react-native';
 import { styles } from './TransferSubmissionBar.styles';
 import { useTransferStore } from '../../store/useTransferStore';
 import { TransferSubmission } from '../../types';
-import { useMutation, useQueryClient } from '@tanstack/react-query';
-import { submitTransfer } from '../../api/api';
-import { useNavigation, CommonActions } from '@react-navigation/native';
-import { HomeNavigationProps } from '../../../../navigation/types/HomeNavigatorTypes';
 import { AnimatedPressable } from '../../../../components/AnimatedPressable/AnimatedPressable';
+import { useCreateTransfer } from '../../hooks/useCreateTransfer';
+import { useEffect, useState } from 'react';
 
 export const TransferSubmissionBar = () => {
-    const navigation = useNavigation<HomeNavigationProps>();
-    const queryClient = useQueryClient();
-
-    const currentDate = new Date();
-    const month = currentDate.getMonth() + 1;
-    const year = currentDate.getFullYear();
-
     const {
         fromAccount,
         toAccount,
@@ -23,12 +14,26 @@ export const TransferSubmissionBar = () => {
         title,
         note,
         location,
-        resetTransfer,
         setTransferError,
         amountError,
         validateTransfer,
         setIsTransferProcessing,
     } = useTransferStore();
+
+    const {mutate, isPending: processingTransfer, transferError} = useCreateTransfer();
+    const [showError, setShowError] = useState(false);
+
+    // Sync loading state with API call state
+    useEffect(() => {
+        setIsTransferProcessing(processingTransfer);
+    }, [processingTransfer, setIsTransferProcessing]);
+
+    // Handle transfer error - reset processing state
+    useEffect(() => {
+        if (transferError) {
+            setIsTransferProcessing(false);
+        }
+    }, [transferError, setIsTransferProcessing]);
 
     const handleTransferSubmission = async() => {
         // Clear any previous transfer errors
@@ -36,18 +41,12 @@ export const TransferSubmissionBar = () => {
         validateTransfer();
 
         // Validation checks with specific error messages
-
-        if (fromAccount === null || toAccount === null) {
+        if (fromAccount === null || toAccount === null || amountError) {
+            setShowError(true);
             return;
         }
 
-        if (amountError) {
-            setTransferError('You have missing or invalid fields');
-            return;
-        }
-
-        setIsTransferProcessing(true);
-
+        setShowError(false);
         const transferSubmissionData : TransferSubmission = {
             fromAccount: fromAccount.accountId,
             toAccount: toAccount.accountId,
@@ -57,41 +56,27 @@ export const TransferSubmissionBar = () => {
             location,
         };
 
+        // Set processing state immediately before API call
+        setIsTransferProcessing(true);
         mutate(transferSubmissionData);
     };
 
-    const {mutate} = useMutation({
-        mutationFn: async (transferSubmissionData: TransferSubmission) => {
-            return await submitTransfer(transferSubmissionData);
-        },
-        //Might need to use preFetchQuery and preFetchInfiniteQuery instead of invalidateQueries for better performance
-        onSuccess: async () => {
-            console.log('Transfer successful!');
-            await Promise.all([
-                queryClient.invalidateQueries({ queryKey: ['grouped-accounts'] }),
-                queryClient.invalidateQueries({ queryKey: ['account-details', fromAccount?.accountId] }),
-                queryClient.invalidateQueries({ queryKey: ['account-details', toAccount?.accountId] }),
-                queryClient.invalidateQueries({ queryKey: ['account-transactions', fromAccount?.accountId] }),
-                queryClient.invalidateQueries({ queryKey: ['account-transactions', toAccount?.accountId] }),
-                queryClient.invalidateQueries({ queryKey: ['dashboard', month, year] }),
-            ]);
-            // Reset transfer state - user can navigate back manually
-            resetTransfer();
-        },
-        onError: (error) => {
-            console.error('Transfer failed:', error);
-            setTransferError(`Transfer failed: ${error.message || 'An unexpected error occurred'}`);
-        },
-    });
-
     return (
         <View style={styles.transferSubmissionBar}>
+            <View style={styles.errorContainer}>
+                {showError && (
+                    <Text style={styles.errorText}>Some fields above are invalid</Text>
+                )}
+            </View>
             <AnimatedPressable
                 style={styles.completeTransferButton}
                 onPress={handleTransferSubmission}
                 scaleValue={0.9}
+                disabled={processingTransfer}
             >
-                <Text style={styles.completeTransferButtonText}>Complete Transfer</Text>
+                <Text style={styles.completeTransferButtonText}>
+                    {processingTransfer ? 'Processing...' : 'Complete Transfer'}
+                </Text>
             </AnimatedPressable>
         </View>
     );
