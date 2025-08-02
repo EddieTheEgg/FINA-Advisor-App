@@ -10,6 +10,7 @@ export const styles = StyleSheet.create({
         alignItems: 'center',
         paddingVertical: spacing.sm,
         paddingHorizontal: spacing.xs,
+        gap: spacing.md,
     },
     iconContainer : {
         borderRadius: 15,
@@ -19,13 +20,12 @@ export const styles = StyleSheet.create({
         marginRight: spacing.md,
     },
     contentContainer: {
-        flex: 1,
-        justifyContent: 'center',
+        flex: 2,
+        gap: spacing.xs,
     },
     transactionTitle : {
-        fontSize: fontSize.base,
-        fontWeight: '600',
-        color: colors.black,
+        fontSize: fontSize.lg,
+        fontFamily: 'Poppins-SemiBold',
     },
     accountName: {
         fontSize: fontSize.sm,
@@ -36,7 +36,7 @@ export const styles = StyleSheet.create({
         fontFamily: 'Poppins-Regular',
     },
     transactionAmount: {
-        fontSize: fontSize.base,
+        fontSize: fontSize.lg,
         textAlign: 'right',
         fontFamily: 'Poppins-SemiBold',
     },
@@ -53,13 +53,20 @@ export const styles = StyleSheet.create({
         flexDirection: 'row',
         alignItems: Platform.OS === 'ios' ? 'center' : 'flex-start',
         gap: spacing.xs,
+        marginTop: spacing.xs,
     },
     accountText: {
         fontSize: fontSize.sm,
-        color: colors.gray[600],
+        fontWeight: 500,
+        fontFamily: 'Poppins-Regular',
+        color: colors.gray[500],
     },
     iconText: {
-        fontSize: 24,
+        fontSize: fontSize.xl,
+        padding: spacing.sm + 5,
+        borderRadius: 10,
+        alignSelf: 'flex-start',
     },
 });
+
 

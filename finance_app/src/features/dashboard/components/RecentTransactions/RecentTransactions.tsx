@@ -36,7 +36,7 @@ export const RecentTransactions = ({recentTransactions, navigation}: RecentTrans
             </View>
             <FlatList
                 data = {recentTransactions}
-                renderItem = {({item}) => <TransactionPreview transactionItem={item}/>}
+                renderItem = {({item}) => <TransactionPreview transactionItem={item} navigation={navigation}/>}
                 keyExtractor = {(item) => item.transactionId}
                 showsVerticalScrollIndicator = {false}
                 ItemSeparatorComponent={SeparatorComponent}

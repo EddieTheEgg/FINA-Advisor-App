@@ -2,6 +2,8 @@ import { Text, View } from 'react-native';
 import { CategoryData} from '../../types';
 import { styles } from './TransactionPreview.styles';
 import { formatDate } from '../../../../utils/formatDate';
+import { AnimatedPressable } from '../../../../components/AnimatedPressable/AnimatedPressable';
+import { DashboardNavigationProps } from '../../../../navigation/types/DashboardNavigatorTypes';
 
 
 
@@ -21,9 +23,10 @@ type Transaction = {
 
 type TransactionPreviewProps = {
     transactionItem : Transaction
+    navigation: DashboardNavigationProps;
 }
 
-export const TransactionPreview = ({transactionItem} : TransactionPreviewProps) => {
+export const TransactionPreview = ({transactionItem, navigation} : TransactionPreviewProps) => {
     const truncateText = (text: string, maxLength: number) => {
         if (text.length <= maxLength) {
             return text;
@@ -50,32 +53,27 @@ export const TransactionPreview = ({transactionItem} : TransactionPreviewProps) 
         return `${sign}$${Math.abs(transactionItem.amount).toFixed(2)}`;
     };
 
+    const handleNavToTransactionDetails = () => {
+        navigation.getParent()?.getParent()?.navigate('TransactionDetail', {
+            transactionId: transactionItem.transactionId,
+        });
+    };
+
 
     return (
-        <View style={styles.transactionItemContainer}>
-            <View style={[
-                styles.iconContainer,
-                { backgroundColor: transactionItem.category.color || '#808080' },
-            ]}>
-                <Text style={styles.iconText}>{transactionItem.category.icon}</Text>
-            </View>
-            <View style={styles.contentContainer}>
-                <Text style={styles.transactionTitle}>
-                    {truncateText(transactionItem.title, 18)}
-                </Text>
-                <View style={styles.subDescBar}>
-                    <Text style={styles.accountText}>
-                        {formatDate(transactionItem.transactionDate)}
-                    </Text>
-                    <Text style={styles.accountName}>
-                        {truncateText(transactionItem.accountName, 15)}
-                    </Text>
+        <AnimatedPressable
+        onPress = {handleNavToTransactionDetails}>
+            <View style={styles.transactionItemContainer}>
+                <Text style={[styles.iconText, {backgroundColor: transactionItem.category.color}]}>{transactionItem.category.icon}</Text>
+                <View style={styles.contentContainer}>
+                    <Text style={styles.transactionTitle}>{truncateText(transactionItem.title, 15)}</Text>
+                    <Text style={styles.accountText}>{formatDate(transactionItem.transactionDate)} • {truncateText(transactionItem.accountName, 15)}</Text>
                 </View>
+                <Text style={getAmountStyle()}>
+                    {formatAmount()}
+                </Text>
             </View>
-            <Text style={getAmountStyle()}>
-                {formatAmount()}
-            </Text>
-        </View>
+        </AnimatedPressable>
     );
 };
 
