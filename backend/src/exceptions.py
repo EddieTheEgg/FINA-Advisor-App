@@ -246,3 +246,19 @@ class NetWorthCalculationError(SnapshotError):
 class MonthlySnapshotsJobError(SnapshotError):
     def __init__(self):
         super().__init__(status_code=500, detail="Failed to run monthly snapshots job")
+
+
+
+
+
+class InsightsError(HTTPException):
+    """Base exception for insight-related errors"""
+    pass
+
+class MonthlyIncomeFetchError(InsightsError):
+    def __init__(self, message: str = "Error fetching monthly income"):
+        super().__init__(status_code=500, detail=message)
+
+class MonthlyExpenseFetchError(InsightsError):
+    def __init__(self, message: str = "Error fetching monthly expense"):
+        super().__init__(status_code=500, detail=message)
