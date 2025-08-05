@@ -48,7 +48,7 @@ export const CreateTransactionScreen = ( { navigation }: CreateTransactionScreen
     const canvasPadding = height * 0.03;
     const [showConfirmation, setShowConfirmation] = useState(false);
 
-    const {transactionType, isTransactionProcessing, transactionProcessingError, transactionSuccess} = useCreateTransactionStore();
+    const {transactionType, isTransactionProcessing, transactionProcessingError, transactionSuccess, setTransactionSuccess} = useCreateTransactionStore();
 
     useEffect(() => {
         if (transactionSuccess) {
@@ -66,6 +66,7 @@ export const CreateTransactionScreen = ( { navigation }: CreateTransactionScreen
 
     const handleContinueConfirmation = () => {
         setShowConfirmation(false);
+        setTransactionSuccess(false);
         navigation.getParent()?.navigate('Dashboard');
     };
 
