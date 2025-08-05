@@ -23,7 +23,6 @@ import { spacing } from '../../../../styles/spacing';
 import { AnimatedPressable } from '../../../../components/AnimatedPressable/AnimatedPressable';
 import { useUpdateTransaction } from '../../hooks/useUpdateTransaction';
 import { UpdatingTransaction } from '../../components/UpdatingTransaction/UpdatingTransaction';
-import { useQueryClient } from '@tanstack/react-query';
 
 
 //This screen is used to edit transactions that are not transfers (so income and expense)
@@ -34,7 +33,6 @@ type EditTransactionScreenNavigationProps = {
 
 export const EditTransactionScreen = ({route, navigation}: EditTransactionScreenNavigationProps) => {
     const { transactionId } = route.params;
-    const queryClient = useQueryClient();
     const insets = useSafeAreaInsets();
     const canvasPadding = Dimensions.get('window').height * 0.02;
 
@@ -84,19 +82,12 @@ export const EditTransactionScreen = ({route, navigation}: EditTransactionScreen
     };
 
     useEffect(() => {
-        if (isUpdateTransactionSuccess && transactionDetails) {
-            Promise.all([
-                queryClient.invalidateQueries({queryKey: ['transaction', transactionId]}),
-                queryClient.invalidateQueries({queryKey: ['transactionList']}), //Invalidate all transaction lists
-                queryClient.invalidateQueries({queryKey: ['grouped-accounts']}),
-                queryClient.invalidateQueries({queryKey: ['account-transactions', transactionDetails.accountId]}),
-                queryClient.invalidateQueries({queryKey: ['dashboard', new Date(transactionDetails.transactionDate).getMonth() + 1, new Date(transactionDetails.transactionDate).getFullYear()]}),
-            ]);
+        if (isUpdateTransactionSuccess) {
             setShowError(false);
             resetDraft();
             setShowConfirmation(true);
         }
-    }, [isUpdateTransactionSuccess, transactionDetails, queryClient, transactionId, navigation, resetDraft]);
+    }, [isUpdateTransactionSuccess, resetDraft]);
 
     if (isUpdatingTransaction) {
         return <UpdatingTransaction loadingText = "Updating Transaction" />;

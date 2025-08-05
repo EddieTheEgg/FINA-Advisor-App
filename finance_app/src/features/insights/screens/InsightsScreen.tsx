@@ -17,7 +17,7 @@ export const InsightsScreen = () => {
     }
 
     if (error) {
-        return <ErrorScreen 
+        return <ErrorScreen
             errorText = "An error occured!"
             errorSubText = "There was a problem fetching insights, please try again later"
             errorMessage = {error.message}

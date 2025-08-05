@@ -1,14 +1,14 @@
 from datetime import datetime
 import logging
-from sqlalchemy import Float, func
+from sqlalchemy import Float, extract, func
 from sqlalchemy.orm import Session
 from uuid import UUID
 
-from backend.src.entities.enums import KeyInsightsStatus, SavingsStatus, TransactionType
+from backend.src.entities.enums import KeyInsightsStatus, TransactionType
 from backend.src.entities.transaction import Transaction
 from backend.src.entities.category import Category
 from backend.src.exceptions import KeyInsightsFetchError, MonthlyExpenseFetchError, MonthlyIncomeFetchError, MonthlySpendingTrendFetchError
-from backend.src.insights.model import KeyInsightsResponse, MonthlyFinancialHealthResponse, MonthlySavingsRateResponse, MonthlySpendingTrend, TopSpendingCategoryResponse
+from backend.src.insights.model import KeyInsightsResponse, MonthlyFinancialHealthResponse, MonthlySavingsRateResponse, MonthlySpendingTrend, MonthlyTopSpendingCategoryResponse
 
 def get_monthly_health(db: Session, user_id: UUID, month: int, year: int):
     
@@ -80,8 +80,8 @@ def get_top_spending_category(db: Session, user_id: UUID, month: int, year: int)
         ).filter(
             Transaction.user_id == user_id,
             Transaction.transaction_type == TransactionType.EXPENSE,
-            Transaction.transaction_date.month == month,
-            Transaction.transaction_date.year == year
+            extract("month", Transaction.transaction_date) == month,
+            extract("year", Transaction.transaction_date) == year,
         #Then group these transactions by category_id so that each category has like their "list" of transactions 
         ).group_by(Category.category_id
         # Order the table by the calculating the sum of the transaction amounts in each category group
@@ -98,7 +98,8 @@ def get_top_spending_category(db: Session, user_id: UUID, month: int, year: int)
         total_spent = top_spending_category_query[1]
         percentage_spent = (total_spent / total_expenses * 100) if total_expenses > 0 else 0
         
-        return TopSpendingCategoryResponse(
+        return MonthlyTopSpendingCategoryResponse(
+            status = KeyInsightsStatus.NEUTRAL,
             category = category,
             total_spent = total_spent,
             percentage_spent = percentage_spent
@@ -140,8 +141,8 @@ def get_monthly_income(db: Session, user_id: UUID, month: int, year: int):
         sum_income_query = db.query(func.sum(Transaction.amount)).filter(
             Transaction.user_id == user_id,
             Transaction.transaction_type == TransactionType.INCOME,
-            Transaction.transaction_date.month == month,
-            Transaction.transaction_date.year == year
+            extract("month", Transaction.transaction_date) == month,
+            extract("year", Transaction.transaction_date) == year,
         )
         return sum_income_query.scalar() or 0.0
     except Exception as e:
@@ -153,8 +154,8 @@ def get_monthly_expense(db: Session, user_id: UUID, month: int, year: int):
         sum_expense_query = db.query(func.sum(Transaction.amount)).filter(
         Transaction.user_id == user_id,
         Transaction.transaction_type == TransactionType.EXPENSE,
-        Transaction.transaction_date.month == month,
-            Transaction.transaction_date.year == year
+        extract("month", Transaction.transaction_date) == month,
+        extract("year", Transaction.transaction_date) == year,
         )
         return sum_expense_query.scalar() or 0.0
     except Exception as e:

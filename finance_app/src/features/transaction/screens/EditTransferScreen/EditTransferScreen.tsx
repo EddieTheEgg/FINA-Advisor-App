@@ -18,7 +18,7 @@ import { EditTransferTitle } from '../../components/EditTransferComponents/EditT
 import { EditTransferNote } from '../../components/EditTransferComponents/EditTransferNote/EditTransferNote';
 import { EditTransferLocation } from '../../components/EditTransferComponents/EditTransferLocation/EditTransferLocation';
 import { AnimatedPressable } from '../../../../components/AnimatedPressable/AnimatedPressable';
-import { useQueryClient } from '@tanstack/react-query';
+
 import { useUpdateTransaction } from '../../hooks/useUpdateTransaction';
 import { UpdatingTransaction } from '../../components/UpdatingTransaction/UpdatingTransaction';
 import { EditTransferAmount } from '../../components/EditTransferComponents/EditTransferAmount/EditTransferAmount';
@@ -38,7 +38,6 @@ export const EditTransferScreen = ({route, navigation}: EditTransferScreenNaviga
     // Hooks
     const { mutate: updateTransfer, isPending: isUpdatingTransfer, isSuccess: isUpdatedTransfer, error: updateTransferError } = useUpdateTransaction();
     const { data: transactionDetails, isPending, error } = useGetTransaction(transactionId);
-    const queryClient = useQueryClient();
 
     // Global and local states
     const {
@@ -47,7 +46,6 @@ export const EditTransferScreen = ({route, navigation}: EditTransferScreenNaviga
         validateTitle,
         validateEditTransaction,
         formatEditTransactionForBackend,
-        resetDraft,
         validateTransferAccounts,
     } = useEditTransactionStore();
     const [showError, setShowError] = useState(false);
@@ -79,25 +77,11 @@ export const EditTransferScreen = ({route, navigation}: EditTransferScreenNaviga
     };
 
     useEffect(() => {
-        if (isUpdatedTransfer && transactionDetails) {
-            Promise.all([
-                queryClient.invalidateQueries({queryKey: ['transaction', transactionId]}),
-                queryClient.invalidateQueries({queryKey: ['transactionList']}), //Invalidate all transaction lists
-                queryClient.invalidateQueries({queryKey: ['grouped-accounts']}),
-                queryClient.invalidateQueries({queryKey: ['account-transactions', transactionDetails.accountId]}),
-                queryClient.invalidateQueries({queryKey: ['account-details', transactionDetails.accountId]}),
-                // For transfers, also invalidate the destination account queries
-                ...(transactionDetails.toAccount ? [
-                    queryClient.invalidateQueries({queryKey: ['account-transactions', transactionDetails.toAccount.accountId]}),
-                    queryClient.invalidateQueries({queryKey: ['account-details', transactionDetails.toAccount.accountId]}),
-                ] : []),
-                queryClient.invalidateQueries({queryKey: ['dashboard', new Date(transactionDetails.transactionDate).getMonth() + 1, new Date(transactionDetails.transactionDate).getFullYear()]}),
-            ]);
+        if (isUpdatedTransfer) {
             setShowError(false);
-            resetDraft();
             setTransferUpdateModal(true);
         }
-    }, [isUpdatedTransfer, transactionDetails, queryClient, transactionId, navigation, resetDraft]);
+    }, [isUpdatedTransfer]);
 
     if (isUpdatingTransfer) {
         return <UpdatingTransaction loadingText = "Updating Transfer" />;
