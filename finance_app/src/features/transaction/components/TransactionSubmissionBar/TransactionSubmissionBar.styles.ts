@@ -10,6 +10,7 @@ export const styles = StyleSheet.create({
         paddingBottom: Platform.OS === 'android' ? spacing.lg : spacing.xxl,
         paddingTop: spacing.md,
         justifyContent: 'center',
+        backgroundColor: colors.white,
     },
     completeTransactionButton: {
         backgroundColor: colors.darkerBackground,
