@@ -262,3 +262,11 @@ class MonthlyIncomeFetchError(InsightsError):
 class MonthlyExpenseFetchError(InsightsError):
     def __init__(self, message: str = "Error fetching monthly expense"):
         super().__init__(status_code=500, detail=message)
+        
+class KeyInsightsFetchError(InsightsError):
+    def __init__(self, message: str = "Error fetching key insights"):
+        super().__init__(status_code=500, detail=message)
+        
+class MonthlySpendingTrendFetchError(InsightsError):
+    def __init__(self, message: str = "Error fetching monthly spending trend"):
+        super().__init__(status_code=500, detail=message)

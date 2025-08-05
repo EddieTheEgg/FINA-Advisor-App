@@ -21,8 +21,8 @@ import logging
 load_dotenv()
 
 # For Swagger UI test purposes, will still use /login mainly in the front, this is for testing purposes only
-oauth2_bearer = OAuth2PasswordBearer(tokenUrl='auth/token')
-bcrypt_context = CryptContext(schemes=['bcrypt'], deprecated = 'auto')
+oauth2_bearer = OAuth2PasswordBearer(tokenUrl='auth/token') # This will be used to get the access token from the client
+bcrypt_context = CryptContext(schemes=['bcrypt'], deprecated = 'auto') # This will be used to hash and verify passwords
 
 # Verifies a plaintext password against a hashed password using bcrypt
 def verify_password(plain_password: str, hashed_password: str) -> bool:

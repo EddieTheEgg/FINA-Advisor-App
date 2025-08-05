@@ -60,3 +60,9 @@ class AccountType(Enum):
 class AuditAction(Enum):
     UPDATE = 'UPDATE',
     DELETE = 'DELETE',
+    
+class KeyInsightsStatus(Enum):
+    POSITIVE = "POSITIVE"
+    NEGATIVE = "NEGATIVE"
+    WARNING = "WARNING"
+    NEUTRAL = "NEUTRAL"
