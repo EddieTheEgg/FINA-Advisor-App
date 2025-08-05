@@ -21,7 +21,6 @@ import { TransferDetailsCard } from '../../components/TransferDetailsCard/Transf
 import { useEffect, useState } from 'react';
 import { useDeleteTransaction } from '../../hooks/useDeleteTransaction';
 import { UpdatingTransaction } from '../../components/UpdatingTransaction/UpdatingTransaction';
-import { useQueryClient } from '@tanstack/react-query';
 
 
 
@@ -33,28 +32,26 @@ type TransactionDetailScreenProps = {
 export const TransactionDetailScreen = ({route, navigation}: TransactionDetailScreenProps) => {
     const {transactionId} = route.params;
     const [isDeletionModalVisible, setIsDeletionModalVisible] = useState(false);
-    const [successDeleteModalVisible, setSuccessDeleteModalVisible] = useState(false);
-    const queryClient = useQueryClient();
     const insets = useSafeAreaInsets();
     const canvasPadding = Dimensions.get('window').height * 0.02;
 
-    const {data : transactionDetails, isPending, error: getTransactionError} = useGetTransaction(transactionId);
-    const {mutate: deleteTransaction, isPending: isDeleting, isSuccess: isDeleteSuccess, error: deleteError} = useDeleteTransaction({transactionId});
+    const [shouldDisableQuery, setShouldDisableQuery] = useState(false);
+    const {data : transactionDetails, error: getTransactionError} = useGetTransaction(transactionId, !shouldDisableQuery);
+    const {mutate: deleteTransaction, isPending: isDeleting, isSuccess: isDeleteSuccess, error: deleteError} = useDeleteTransaction({transactionId, transactionDetails});
 
     useEffect(() => {
-        if (isDeleteSuccess && transactionDetails) {
-            // Cache is already cleared in the hook, just invalidate related queries
-            Promise.all([
-                queryClient.invalidateQueries({queryKey: ['grouped-accounts']}),
-                queryClient.invalidateQueries({queryKey: ['account-transactions', transactionDetails.accountId]}),
-                queryClient.invalidateQueries({queryKey: ['dashboard', new Date(transactionDetails.transactionDate).getMonth() + 1, new Date(transactionDetails.transactionDate).getFullYear()]}),
-            ]);
-            setSuccessDeleteModalVisible(true);
+        if (isDeleting) {
+            setShouldDisableQuery(true);
         }
-    }, [isDeleteSuccess, transactionDetails, queryClient, transactionId, navigation]);
+        if (isDeleteSuccess) {
+            // Navigate back immediately after successful deletion
+            navigation.goBack();
+        }
+    }, [isDeleting, isDeleteSuccess, navigation]);
 
 
-    if (isPending || !transactionDetails) {
+    // Show loading if we don't have transaction details yet
+    if (!transactionDetails) {
         return <LoadingScreen />;
     }
 
@@ -75,10 +72,7 @@ export const TransactionDetailScreen = ({route, navigation}: TransactionDetailSc
         deleteTransaction();
     };
 
-    const handleContinueConfirmation = () => {
-        setSuccessDeleteModalVisible(false);
-        navigation.goBack();
-    };
+
 
 
     if (isDeleting) {
@@ -213,27 +207,6 @@ export const TransactionDetailScreen = ({route, navigation}: TransactionDetailSc
                                 <Text style={styles.cancelModalButtonText}>Cancel</Text>
                             </AnimatedPressable>
 
-                        </View>
-                    </View>
-                </View>
-            </Modal>
-            <Modal
-                visible={successDeleteModalVisible}
-                animationType="fade"
-                onRequestClose={() => {setSuccessDeleteModalVisible(false);}}
-            >
-                <View style={styles.deletionModalContainer}>
-                    <View style={styles.deletionModalContent}>
-                        <Image source={require('../../../../assets/images/confirmation.png')} style={styles.deletionModalImage} />
-                        <Text style={styles.deletionModalTitle}>Transaction Deleted!</Text>
-                        <Text style={styles.deletionModalText}>This transaction has been deleted successfully</Text>
-                        <View style={styles.deletionModalButtons}>
-                            <AnimatedPressable
-                                onPress={(handleContinueConfirmation)}
-                                style={styles.continueButton}
-                            >
-                                <Text style={styles.continueButtonText}>Continue</Text>
-                            </AnimatedPressable>
                         </View>
                     </View>
                 </View>
