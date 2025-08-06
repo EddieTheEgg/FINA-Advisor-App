@@ -1,4 +1,4 @@
-import { View, Text, ScrollView } from 'react-native';
+import { View, Text, ScrollView, useWindowDimensions, Platform } from 'react-native';
 import { useSafeAreaInsets } from 'react-native-safe-area-context';
 import { styles } from './InsightsScreen.styles';
 import { useGetInsights } from '../hooks/useGetInsights';
@@ -7,10 +7,12 @@ import { ErrorScreen } from '../../../components/ErrorScreen/ErrorScreen';
 import { MonthlyFinancialHealthCard } from '../components/MonthlyFinancialHealthCard/MonthlyFinancialHealthCard';
 import { MonthlySavingsRateCard } from '../components/MonthlySavingsRateCard/MonthlySavingsRateCard';
 import { MonthlyTopSpendingCategoryCard } from '../components/MonthlyTopSpendingCategoryCard/MonthlyTopSpendingCategoryCard';
+import { MonthlySpendingTrendCard } from '../components/MonthlySpendingTrendCard/MonthlySpendingTrendCard';
 
 export const InsightsScreen = () => {
 
     const insets = useSafeAreaInsets();
+    const canvasPadding = useWindowDimensions().height * 0.05;
 
     const { data: insightsData, isPending, error} = useGetInsights();
 
@@ -29,9 +31,9 @@ export const InsightsScreen = () => {
 
     return (
         <ScrollView
-        style={[styles.container, {paddingTop: insets.top}]}
+        style={[styles.container, {paddingTop: insets.top, paddingBottom: insets.bottom}]}
         showsVerticalScrollIndicator = {false}
-        contentContainerStyle = {styles.scrollViewContent}
+        contentContainerStyle = {[styles.scrollViewContent, {paddingBottom: Platform.OS === 'android' ? insets.bottom + canvasPadding * 2 : insets.bottom + canvasPadding}]}
         >
             <Text style = {styles.title}>This Month's Insights</Text>
             <View style = {styles.keyInsightsSection}>
@@ -43,6 +45,7 @@ export const InsightsScreen = () => {
                     <MonthlyFinancialHealthCard data = {insightsData.monthlyFinancialHealth} />
                     <MonthlySavingsRateCard data = {insightsData.monthlySavingsRate} />
                     {insightsData.monthlyTopSpendingCategory && <MonthlyTopSpendingCategoryCard data = {insightsData.monthlyTopSpendingCategory} />}
+                    <MonthlySpendingTrendCard data = {insightsData.monthlySpendingTrend} />
                 </View>
             </View>
         </ScrollView>
