@@ -50,6 +50,5 @@ export const styles = StyleSheet.create({
         padding: spacing.sm,
         borderRadius: 10,
         textAlign: 'left',
-        flexWrap: 'wrap',
     },
 });

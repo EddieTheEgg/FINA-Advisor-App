@@ -24,7 +24,17 @@ export const getInsightsData = async () : Promise<KeyInsightsResponse> => {
             },
             monthlyTopSpendingCategory: insightsData.monthly_top_spending_category ? {
                 status: insightsData.monthly_top_spending_category.status,
-                category: insightsData.monthly_top_spending_category.category,
+                category: {
+                    categoryId: insightsData.monthly_top_spending_category.category.category_id,
+                    categoryName: insightsData.monthly_top_spending_category.category.category_name,
+                    icon: insightsData.monthly_top_spending_category.category.icon,
+                    color: insightsData.monthly_top_spending_category.category.color,
+                    transactionType: insightsData.monthly_top_spending_category.category.transaction_type,
+                    isCustom: insightsData.monthly_top_spending_category.category.is_custom,
+                    categoryDescription: insightsData.monthly_top_spending_category.category.category_description,
+                    createdAt: insightsData.monthly_top_spending_category.category.created_at,
+                    updatedAt: insightsData.monthly_top_spending_category.category.updated_at,
+                },
                 totalSpent: insightsData.monthly_top_spending_category.total_spent,
                 percentageSpent: insightsData.monthly_top_spending_category.percentage_spent,
             } : null,

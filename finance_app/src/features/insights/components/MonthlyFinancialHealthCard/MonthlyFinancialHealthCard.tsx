@@ -1,34 +1,13 @@
 import { Text, View } from 'react-native';
-import { KeyInsightsStatus, MonthlyFinancialHealthResponse } from '../../types';
+import { MonthlyFinancialHealthResponse } from '../../types';
 import { styles } from './MonthlyFinancialHealthCard.styles';
-import { colors } from '../../../../styles/colors';
+import { getStatusColor } from '../../utils/getStatusColor';
 
 type MonthlyFinancialHealthCardProps = {
     data: MonthlyFinancialHealthResponse
 };
 
 export const MonthlyFinancialHealthCard = ({data} : MonthlyFinancialHealthCardProps) => {
-
-    const getStatusColor = (status : KeyInsightsStatus) => {
-        if (status === KeyInsightsStatus.POSITIVE) {
-            return {
-                backgroundColor: colors.green,
-            }
-        }
-        if (status === KeyInsightsStatus.NEGATIVE) {
-            return {
-                backgroundColor: colors.red,
-            }
-        }
-        if (status === KeyInsightsStatus.WARNING) {
-            return {
-                backgroundColor: colors.yellowBackground,
-            }
-        }
-        return {
-            backgroundColor: colors.gray[500],
-        };
-    };
 
 
     return (

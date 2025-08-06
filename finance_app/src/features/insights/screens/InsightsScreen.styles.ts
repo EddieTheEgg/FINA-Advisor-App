@@ -9,6 +9,9 @@ export const styles = StyleSheet.create({
         flex: 1,
         backgroundColor: colors.background,
     },
+    scrollViewContent : {
+        paddingBottom: spacing.lg,
+    },
     title : {
         fontSize: fontSize.xl,
         fontFamily: 'Poppins-SemiBold',
@@ -37,6 +40,8 @@ export const styles = StyleSheet.create({
         paddingHorizontal: spacing.md,
         borderRadius: 20,
         includeFontPadding: false,
-    }
-
+    },
+    keyInsightsCardsContainer : {
+        gap: spacing.md,
+    },
 });
