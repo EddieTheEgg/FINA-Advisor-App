@@ -22,6 +22,8 @@ export const colors = {
     lighterRed: '#FBE2E2',
     darkerRed: '#C9413A',
 
+    purple: '#8B5CF6',
+
     gray: {
         50: '#F9FAFB',
         100: '#F3F4F6',

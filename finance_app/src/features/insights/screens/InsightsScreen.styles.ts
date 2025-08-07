@@ -21,7 +21,10 @@ export const styles = StyleSheet.create({
         marginHorizontal: spacing.md,
         marginVertical: spacing.lg,
     },
-    keyInsightsTitleContainer : {
+    aiInsightsSection: {
+        marginHorizontal: spacing.md,
+    },
+    insightsTitleContainer : {
         flexDirection: 'row',
         gap: spacing.sm,
         alignItems: 'baseline',
@@ -42,6 +45,23 @@ export const styles = StyleSheet.create({
         includeFontPadding: false,
     },
     keyInsightsCardsContainer : {
+        gap: spacing.md,
+    },
+    aiInsightsTitle : {
+        fontSize: fontSize.base,
+        fontFamily: 'Poppins-SemiBold',
+    },
+    aiAnalysisText : {
+        fontSize: fontSize.sm,
+        fontFamily: 'Poppins-SemiBold',
+        color: colors.white,
+        backgroundColor: colors.purple,
+        letterSpacing: -0.5,
+        paddingHorizontal: spacing.md,
+        borderRadius: 20,
+        includeFontPadding: false,
+    },
+    aiInsightsCardContainer : {
         gap: spacing.md,
     },
 });

@@ -19,7 +19,7 @@ export const MonthlyTopSpendingCategoryCard = ({data} : MonthlyTopSpendingCatego
                     <Text style = {styles.title}>Top Spending Category</Text>
                 </View>
                 <Text style = {styles.detailStats}><Text style = {styles.boldText}>{data.category.categoryName}</Text> is your biggest expense this month</Text>
-                <Text style = {styles.analysisText}>${data.totalSpent} spent ({roundPercentage(data.percentageSpent)}% of your total expenses)</Text>
+                <Text style = {styles.analysisText}> <Text style = {styles.boldText}>${data.totalSpent} spent</Text> ({roundPercentage(data.percentageSpent)}% of your total expenses)</Text>
             </View>
         </View>
     );

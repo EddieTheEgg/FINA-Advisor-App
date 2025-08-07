@@ -37,7 +37,7 @@ export const InsightsScreen = () => {
         >
             <Text style = {styles.title}>This Month's Insights</Text>
             <View style = {styles.keyInsightsSection}>
-                <View style = {styles.keyInsightsTitleContainer}>
+                <View style = {styles.insightsTitleContainer}>
                     <Text style = {styles.keyInsightsTitleText}>💡 Key Insights</Text>
                     <Text style = {styles.liveAnalysisText}>Live Analysis</Text>
                 </View>
@@ -46,6 +46,15 @@ export const InsightsScreen = () => {
                     <MonthlySavingsRateCard data = {insightsData.monthlySavingsRate} />
                     {insightsData.monthlyTopSpendingCategory && <MonthlyTopSpendingCategoryCard data = {insightsData.monthlyTopSpendingCategory} />}
                     <MonthlySpendingTrendCard data = {insightsData.monthlySpendingTrend} />
+                </View>
+            </View>
+            <View style = {styles.aiInsightsSection}>
+                <View style = {styles.insightsTitleContainer}>
+                    <Text style = {styles.aiInsightsTitle}>🧠 AI Insights</Text>
+                    <Text style = {styles.aiAnalysisText}>AI Generated</Text>
+                </View>
+                <View style = {styles.aiInsightsCardContainer}>
+                    
                 </View>
             </View>
         </ScrollView>
