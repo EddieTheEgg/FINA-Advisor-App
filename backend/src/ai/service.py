@@ -30,7 +30,7 @@ from backend.src.entities.category_suggestions import CategoryTraining
 from backend.src.insights.service import get_monthly_income, get_monthly_expense
 
 from backend.src.ai.config import client
-from backend.src.transactions.model import TransactionType
+from backend.src.entities.enums import TransactionType, TipDifficulty
 
 def get_openai_client() -> OpenAI:
     return client
@@ -375,6 +375,8 @@ async def generate_smart_saving_tip(
             "confidence": 0.85
         }}
 
+        IMPORTANT: The difficulty field must be exactly one of: "Easy", "Medium", or "Hard" (not "Moderate" or any other value).
+
         Example:
         {{
             "title": "Brew Coffee at Home 3 Days Per Week",
@@ -421,7 +423,7 @@ async def generate_smart_saving_tip(
                 potential_savings=float(tip_data['potential_savings']),
                 timeframe=tip_data['timeframe'],
                 category=tip_data.get('category'),  # Optional field
-                difficulty=tip_data['difficulty'],
+                difficulty=TipDifficulty(tip_data['difficulty']),
                 confidence=float(tip_data['confidence']),
                 method="openai",
                 client_reference=request.client_reference
