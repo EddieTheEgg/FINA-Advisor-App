@@ -52,5 +52,5 @@ export const styles = StyleSheet.create({
         textAlign: 'left',
         color: colors.gray[700],
         marginTop: spacing.sm,
-    }
+    },
 });
