@@ -12,6 +12,7 @@ export enum TipDifficulty {
     EASY = 'EASY',
     MEDIUM = 'MEDIUM',
     HARD = 'HARD',
+    UNKNOWN = 'UNKNOWN',
 }
 
 export type MonthlyFinancialHealthResponse = {

@@ -59,7 +59,7 @@ class FinancialContext(BaseModel):
     monthly_expenses: float
     monthly_savings: float
     top_spending_categories: List[dict]  # List of {category_name: str, amount: float, percentage: float}
-    recent_transactions: List[dict]  # List of recent transaction summaries
+    recent_transactions: List[dict]  # List of recent transaction summaries (Each transaction holds contextual details except id, and create/updated)
     savings_goal: float | None = None
     current_savings_rate: float  # Percentage of income saved
     

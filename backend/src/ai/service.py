@@ -300,9 +300,16 @@ async def gather_financial_context(
         
         # Get recent transactions (max 10)
         recent_transactions_query = db.query(
+            Transaction.notes,
             Transaction.title,
             Transaction.amount,
-            Category.category_name
+            Category.category_name,
+            Transaction.location,
+            Transaction.merchant,
+            Transaction.is_subscription,
+            Transaction.subscription_frequency,
+            Transaction.subscription_start_date,
+            Transaction.subscription_end_date
         ).join(Category, Transaction.category_id == Category.category_id).filter(
             Transaction.user_id == user_id,
             Transaction.transaction_date >= current_month_start,
@@ -310,11 +317,18 @@ async def gather_financial_context(
         ).order_by(Transaction.transaction_date.desc()).limit(10)
         
         recent_transactions = []
-        for title, amount, category_name in recent_transactions_query.all():
+        for notes, title, amount, category_name, location, merchant, is_subscription, subscription_frequency, subscription_start_date, subscription_end_date in recent_transactions_query.all():
             recent_transactions.append({
+                'notes': notes,
                 'title': title,
                 'amount': float(amount),
-                'category': category_name
+                'category': category_name,
+                'location': location,
+                'merchant': merchant,
+                'is_subscription': is_subscription,
+                'subscription_frequency': subscription_frequency.value if subscription_frequency else None,
+                'subscription_start_date': subscription_start_date.isoformat() if subscription_start_date else None,
+                'subscription_end_date': subscription_end_date.isoformat() if subscription_end_date else None
             })
         
         return FinancialContext(
@@ -339,6 +353,20 @@ async def generate_smart_saving_tip(
     try:
         context = request.financial_context
         
+        # If there's no transaciton context provided, return a dummy placeholder until user creates a transactions for this month (to prevent uneeded AI calls)
+        if len(context.recent_transactions) <= 0:
+            return SmartSavingTipResponse(
+                tip_id= uuid.uuid4(),
+                title = "No Transactions Found!",
+                description= "There were no transactions found for this month! Please enter at least one transaction for this month.",
+                potential_savings= 0,
+                timeframe= "Unknown",
+                category= None,
+                difficulty= TipDifficulty.UNKNOWN,
+                confidence= 1.0,
+                client_reference=request.client_reference
+            )
+        
         # Create a comprehensive prompt for generating smart saving tips
         prompt = f"""You are a financial advisor AI assistant. Your task is to generate personalized smart saving tips based on the user's financial data.
 
@@ -362,29 +390,32 @@ async def generate_smart_saving_tip(
         4. Make the tip personalized and specific to their situation
         5. Include a realistic potential savings amount and timeframe
         6. Consider their current savings rate and financial goals
+        7. Keep the description SHORT and CONCISE - maximum 2-3 sentences for mobile display
+        8. If you suggest/explain something, back it up with some example evidence you saw in your analysis.
 
         RESPONSE FORMAT:
         Respond with ONLY a valid JSON object in this exact format:
         {{
-            "title": "short, catchy title",
-            "description": "detailed explanation of the tip with specific actionable steps",
+            "title": "short, catchy title (max 6 words)",
+            "description": "brief, actionable tip in 2-3 sentences max",
             "potential_savings": 25.0,
             "timeframe": "per month",
             "category": "Food & Dining",
-            "difficulty": "Easy",
+            "difficulty": "EASY",
             "confidence": 0.85
         }}
 
-        IMPORTANT: The difficulty field must be exactly one of: "Easy", "Medium", or "Hard" (not "Moderate" or any other value).
+        IMPORTANT: The difficulty field must be exactly one of: "EASY", "MEDIUM", or "HARD" (not "Moderate" or any other value).
 
         Example:
         {{
             "title": "Brew Coffee at Home 3 Days Per Week",
-            "description": "Consider brewing coffee at home 3 days per week to save money while maintaining your café routine. Based on your $45/week coffee spending pattern, this could save significant money.",
+            "description": "Consider brewing coffee at home 3 days per week to save money while maintaining your café routine. We noticed you go to the cafe regularly which could be a problem for your expenses. 
+            Try brewing coffee at home, which could save you $25 monthly based on your current spending.",
             "potential_savings": 25.0,
             "timeframe": "per month",
             "category": "Food & Dining",
-            "difficulty": "Easy",
+            "difficulty": "EASY",
             "confidence": 0.85
         }}
 
@@ -414,10 +445,8 @@ async def generate_smart_saving_tip(
                     logging.warning(f"Missing required field '{field}' in OpenAI response: {content}")
                     raise OpenAIResponseError()
             
-            tip_id = uuid.uuid4()
-            
             return SmartSavingTipResponse(
-                tip_id=tip_id,
+                tip_id=uuid.uuid4(),
                 title=tip_data['title'],
                 description=tip_data['description'],
                 potential_savings=float(tip_data['potential_savings']),
@@ -458,9 +487,28 @@ def _format_recent_transactions(transactions: List[dict]) -> str:
         title = transaction['title']
         amount = transaction['amount']
         category = transaction['category']
-        formatted_transactions.append(
-            f"- {title}: ${amount:.2f} ({category})"
-        )
+        location = transaction.get('location', 'N/A')
+        merchant = transaction.get('merchant', 'N/A')
+        is_subscription = transaction.get('is_subscription', False)
+        subscription_frequency = transaction.get('subscription_frequency', 'N/A')
+        
+        # Build the transaction description
+        transaction_desc = f"- {title}: ${amount:.2f} ({category})"
+        
+        # Add location if available
+        if location and location != 'N/A':
+            transaction_desc += f" | Location: {location}"
+        
+        # Add merchant if available
+        if merchant and merchant != 'N/A':
+            transaction_desc += f" | Merchant: {merchant}"
+        
+        # Add subscription info if it's a subscription
+        if is_subscription:
+            transaction_desc += f" | Subscription: {subscription_frequency}"
+        
+        formatted_transactions.append(transaction_desc)
+    
     return '\n'.join(formatted_transactions)
 
 

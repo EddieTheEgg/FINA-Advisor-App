@@ -68,6 +68,7 @@ class KeyInsightsStatus(Enum):
     NEUTRAL = "NEUTRAL"
     
 class TipDifficulty(Enum):
-    EASY = "Easy"
-    MEDIUM = "Medium"
-    HARD = "Hard"
+    EASY = "EASY"
+    MEDIUM = "MEDIUM"
+    HARD = "HARD"
+    UNKNOWN = "UNKNOWN"
