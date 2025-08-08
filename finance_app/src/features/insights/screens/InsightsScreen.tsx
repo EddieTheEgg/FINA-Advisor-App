@@ -8,6 +8,7 @@ import { MonthlyFinancialHealthCard } from '../components/MonthlyFinancialHealth
 import { MonthlySavingsRateCard } from '../components/MonthlySavingsRateCard/MonthlySavingsRateCard';
 import { MonthlyTopSpendingCategoryCard } from '../components/MonthlyTopSpendingCategoryCard/MonthlyTopSpendingCategoryCard';
 import { MonthlySpendingTrendCard } from '../components/MonthlySpendingTrendCard/MonthlySpendingTrendCard';
+import { AILoadingCard } from '../components/AILoadingCard/AILoadingCard';
 
 export const InsightsScreen = () => {
 
@@ -33,7 +34,7 @@ export const InsightsScreen = () => {
         <ScrollView
         style={[styles.container, {paddingTop: insets.top, paddingBottom: insets.bottom}]}
         showsVerticalScrollIndicator = {false}
-        contentContainerStyle = {[styles.scrollViewContent, {paddingBottom: Platform.OS === 'android' ? insets.bottom + canvasPadding * 2 : insets.bottom + canvasPadding}]}
+        contentContainerStyle = {[styles.scrollViewContent, {paddingBottom: Platform.OS === 'android' ? insets.bottom + canvasPadding * 3 : insets.bottom + canvasPadding * 2}]}
         >
             <Text style = {styles.title}>This Month's Insights</Text>
             <View style = {styles.keyInsightsSection}>
@@ -54,7 +55,7 @@ export const InsightsScreen = () => {
                     <Text style = {styles.aiAnalysisText}>AI Generated</Text>
                 </View>
                 <View style = {styles.aiInsightsCardContainer}>
-                    
+                    <AILoadingCard />
                 </View>
             </View>
         </ScrollView>
