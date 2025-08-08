@@ -8,6 +8,12 @@ export enum KeyInsightsStatus {
     NEUTRAL = 'NEUTRAL',
 }
 
+export enum TipDifficulty {
+    EASY = 'EASY',
+    MEDIUM = 'MEDIUM',
+    HARD = 'HARD',
+}
+
 export type MonthlyFinancialHealthResponse = {
     analysisDetail: string;
     icon: string;
@@ -50,3 +56,15 @@ export type KeyInsightsResponse = {
 }
 
 
+
+export type AISmartSavingTipResponse = {
+    tipId: string;
+    title: string;
+    description: string;
+    potentialSavings: number;
+    timeframe: string;
+    category: string | null;
+    difficulty: TipDifficulty;
+    confidence: number;
+    clientReference: string | null;
+};

@@ -66,6 +66,7 @@ async def get_smart_saving_tip_auto(
     db: DbSession,
     month: int = Query(None, ge=1, le=12, description="Month (1-12) - optional, defaults to current month"),
     year: int = Query(None, description="Year - optional, defaults to current year"),
+    client_reference: str = Query(None, description="Client reference for tracking - optional"),
 ):
     # Gather financial context automatically
     financial_context = await gather_financial_context(
@@ -78,7 +79,7 @@ async def get_smart_saving_tip_auto(
     # Create request with gathered context
     request = SmartSavingTipRequest(
         financial_context=financial_context,
-        client_reference=None
+        client_reference=client_reference
     )
     
     return await generate_smart_saving_tip(

@@ -1,9 +1,8 @@
 import axios from 'axios';
 import api from '../../../api/axios';
-import { KeyInsightsResponse } from '../types';
+import { KeyInsightsResponse, AISmartSavingTipResponse } from '../types';
 
-
-export const getInsightsData = async () : Promise<KeyInsightsResponse> => {
+export const getInsightsData = async (): Promise<KeyInsightsResponse> => {
     try {
         const response = await api.get('/insights/monthly-insights');
         const insightsData = response.data;
@@ -46,17 +45,47 @@ export const getInsightsData = async () : Promise<KeyInsightsResponse> => {
                 icon: insightsData.monthly_spending_trend.icon,
             },
         };
-
-    } catch (error : unknown) {
-            if (axios.isAxiosError(error) && error.response?.status === 404) {
-                throw new Error('Insights data not found');
-            }
-            if (axios.isAxiosError(error) && error.response?.status === 401) {
-                throw new Error('Unauthorized access to fetch insight data');
-            }
-            if (axios.isAxiosError(error) && error.response?.status === 500) {
-                throw new Error('Server error while fetching insight data');
-            }
+    } catch (error: unknown) {
+        if (axios.isAxiosError(error) && error.response?.status === 404) {
+            throw new Error('Insights data not found');
+        }
+        if (axios.isAxiosError(error) && error.response?.status === 401) {
+            throw new Error('Unauthorized access to fetch insight data');
+        }
+        if (axios.isAxiosError(error) && error.response?.status === 500) {
+            throw new Error('Server error while fetching insight data');
+        }
         throw new Error('Failed to fetch insight data');
+    }
+};
+
+export const getAIInsightsData = async (clientReference?: string): Promise<AISmartSavingTipResponse> => {
+    try {
+        const response = await api.get('/ai/smart-saving-tip/auto', {
+            params: clientReference ? { client_reference: clientReference } : {},
+        });
+        const aiData = response.data;
+        return {
+            tipId: aiData.tip_id,
+            title: aiData.title,
+            description: aiData.description,
+            potentialSavings: aiData.potential_savings,
+            timeframe: aiData.timeframe,
+            category: aiData.category || null,
+            difficulty: aiData.difficulty,
+            confidence: aiData.confidence,
+            clientReference: aiData.client_reference || null,
+        };
+    } catch (error: unknown) {
+        if (axios.isAxiosError(error) && error.response?.status === 404) {
+            throw new Error('AI insights data not found');
+        }
+        if (axios.isAxiosError(error) && error.response?.status === 401) {
+            throw new Error('Unauthorized access to fetch AI insight data');
+        }
+        if (axios.isAxiosError(error) && error.response?.status === 500) {
+            throw new Error('Server error while fetching AI insight data');
+        }
+        throw new Error('Failed to fetch AI insight data');
     }
 };

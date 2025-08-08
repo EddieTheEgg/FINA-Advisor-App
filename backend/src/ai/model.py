@@ -84,7 +84,6 @@ class SmartSavingTipResponse(BaseModel):
     category: str | None = None  # Related spending category
     difficulty: TipDifficulty  # How hard is it to implement the tip?
     confidence: float
-    method: str = "openai"
     client_reference: str | None = None
 
     class Config:

@@ -425,7 +425,6 @@ async def generate_smart_saving_tip(
                 category=tip_data.get('category'),  # Optional field
                 difficulty=TipDifficulty(tip_data['difficulty']),
                 confidence=float(tip_data['confidence']),
-                method="openai",
                 client_reference=request.client_reference
             )
             

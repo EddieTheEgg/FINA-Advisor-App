@@ -8,7 +8,7 @@ import { MonthlyFinancialHealthCard } from '../components/MonthlyFinancialHealth
 import { MonthlySavingsRateCard } from '../components/MonthlySavingsRateCard/MonthlySavingsRateCard';
 import { MonthlyTopSpendingCategoryCard } from '../components/MonthlyTopSpendingCategoryCard/MonthlyTopSpendingCategoryCard';
 import { MonthlySpendingTrendCard } from '../components/MonthlySpendingTrendCard/MonthlySpendingTrendCard';
-import { AILoadingCard } from '../components/AILoadingCard/AILoadingCard';
+import { AISmartSavingTipCard } from '../components/AISmartSavingTipCard/AISmartSavingTipCard';
 
 export const InsightsScreen = () => {
 
@@ -55,7 +55,7 @@ export const InsightsScreen = () => {
                     <Text style = {styles.aiAnalysisText}>AI Generated</Text>
                 </View>
                 <View style = {styles.aiInsightsCardContainer}>
-                    <AILoadingCard />
+                    <AISmartSavingTipCard />
                 </View>
             </View>
         </ScrollView>
