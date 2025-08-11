@@ -58,8 +58,8 @@ class AccountType(Enum):
     OTHER = "other" 
     
 class AuditAction(Enum):
-    UPDATE = 'UPDATE',
-    DELETE = 'DELETE',
+    UPDATE = 'UPDATE'
+    DELETE = 'DELETE'
     
 class KeyInsightsStatus(Enum):
     POSITIVE = "POSITIVE"
@@ -72,3 +72,9 @@ class TipDifficulty(Enum):
     MEDIUM = "MEDIUM"
     HARD = "HARD"
     UNKNOWN = "UNKNOWN"
+    
+    
+class BudgetType(Enum):
+    CATEGORY = "CATEGORY"
+    TOTAL = "TOTAL"
+    

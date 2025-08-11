@@ -270,3 +270,31 @@ class KeyInsightsFetchError(InsightsError):
 class MonthlySpendingTrendFetchError(InsightsError):
     def __init__(self, message: str = "Error fetching monthly spending trend"):
         super().__init__(status_code=500, detail=message)
+        
+        
+        
+        
+class BudgetError(HTTPException):
+    """Base exception for budget-related errors"""
+    pass
+
+class BudgetCreationError(BudgetError):
+    def __init__(self, message: str = "Error creating budget"):
+        super().__init__(status_code=400, detail=message)
+
+class BudgetNotFoundError(BudgetError):
+    def __init__(self, budget_id: UUID):
+        super().__init__(status_code=404, detail=f"Budget with id {budget_id} not found")
+        
+class BudgetCategoryFetchError(BudgetError):
+    def __init__(self, category_id: UUID):
+        super().__init__(status_code=404, detail=f"Category with id {category_id} for this budget not found")
+        
+class BudgetSpentFetchError(BudgetError):
+    def __init__(self, message: str = "Error getting budget spent"):
+        super().__init__(status_code=500, detail=message)
+        
+class BudgetAlreadyExistsError(BudgetError):
+    def __init__(self, message: str = "Budget already exists"):
+        super().__init__(status_code=400, detail=message)
+        

@@ -35,6 +35,7 @@ from backend.src.entities.category import Category
 from backend.src.entities.transaction import Transaction
 from backend.src.entities.account import Account
 from backend.src.entities.audit_logs import AuditLog
+from backend.src.entities.budgets import Budget
 
 # Set target_metadata for autogenerate
 target_metadata = Base.metadata
