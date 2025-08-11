@@ -1,11 +1,11 @@
 import { BottomTabBarProps, createBottomTabNavigator } from '@react-navigation/bottom-tabs';
 import { InsightsScreen } from '../features/insights/screens/InsightsScreen';
-import { ProfileScreen } from '../features/user/screens/ProfileScreen';
 import { AccountsNavigator } from './AccountsNavigator';
 import { TransactionNavigator } from './TransactionNavigator';
 import { CustomTabBar } from '../components/CustomTabBar/CustomTabBar';
 import { HomeStackParamList } from './types/HomeNavigatorTypes';
 import { DashboardNavigator } from './DashboardNavigator';
+import { BudgetsNavigator } from './BudgetsNavigator';
 
 const Tab = createBottomTabNavigator<HomeStackParamList>();
 
@@ -24,7 +24,7 @@ export const HomeNavigator = () => {
             <Tab.Screen name="Accounts" component={AccountsNavigator}/>
             <Tab.Screen name="Transactions" component={TransactionNavigator} />
             <Tab.Screen name="Insights" component={InsightsScreen} />
-            <Tab.Screen name="Profile" component={ProfileScreen} />
+            <Tab.Screen name="Budgets" component={BudgetsNavigator} />
         </Tab.Navigator>
     );
 };

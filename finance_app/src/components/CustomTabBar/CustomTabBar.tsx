@@ -22,8 +22,8 @@ const getTabBarIcon = ({ route, size, focused }: any) => {
       iconName = 'plus';
     } else if (route.name === 'Insights') {
       iconName = 'chart-line';
-    } else if (route.name === 'Profile') {
-      iconName = 'user';
+    } else if (route.name === 'Budgets') {
+      iconName = 'list-check';
     }
 
     const isTransactionsTab = route.name === 'Transactions';
