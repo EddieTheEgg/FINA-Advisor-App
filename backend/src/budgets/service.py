@@ -2,12 +2,14 @@ from datetime import timedelta, date
 from dateutil.relativedelta import relativedelta
 from sqlalchemy import func
 import logging
-from backend.src.budgets.model import BudgetCreateRequest, BudgetResponse
+from backend.src.budgets.model import BudgetCategoryResponse, BudgetCreateRequest, BudgetResponse
 from sqlalchemy.orm import Session
 from uuid import UUID
 
+from backend.src.categories.model import CategoryResponse
 from backend.src.entities.category import Category
 from backend.src.entities.budgets import Budget
+from backend.src.entities.enums import TransactionType
 from backend.src.entities.transaction import Transaction
 from backend.src.exceptions import BudgetAlreadyExistsError, BudgetCategoryFetchError, BudgetCreationError, BudgetSpentFetchError
 from backend.src.categories import service as category_service
@@ -84,3 +86,45 @@ def get_budget_spent(
     except Exception as e:
         logging.error(f"Error getting budget spent: {e}")
         raise BudgetSpentFetchError(f"Error getting budget spent: {e}")
+    
+    
+# Fetches all categories that don't have budgets for the specified month
+def get_unbudgeted_categories_service(
+    db: Session,
+    user_id: UUID,
+    month_date: date,
+    skip: int,
+    limit: int,
+) -> list[BudgetCategoryResponse]:
+    try : 
+        # Join budget table to main category table
+        available_categories = db.query(Category).outerjoin(
+            #Outerjoin is used to get all categories and match them with budgets, and returns all categories even if some don't have budgets
+            Budget,
+            (Category.category_id == Budget.category_id) &
+            (Budget.user_id == user_id) & 
+            (Budget.budget_month == month_date)
+            #Filter out the categories above (that has matched and unmatched categories/budgets to only those with no budgets)
+        ).filter(
+            Category.user_id == user_id,
+            Category.transaction_type == TransactionType.EXPENSE,
+            Budget.category_id.is_(None)
+        ).offset(skip).limit(limit).all()
+        
+        # Convert to response models
+        category_responses = []
+        for category in available_categories:
+            category_data = BudgetCategoryResponse(
+                category_id=category.category_id,
+                category_name=category.category_name,
+                category_description=category.category_description,
+                category_icon=category.icon,
+                category_color=category.color,
+            )
+            category_responses.append(category_data)
+
+        return category_responses
+
+    except Exception as e:
+        logging.error(f"Error getting unbudgeted categories: {e}")
+        raise BudgetCategoryFetchError(f"Error getting unbudgeted categories: {e}")

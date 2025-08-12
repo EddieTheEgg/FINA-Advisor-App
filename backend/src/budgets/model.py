@@ -20,7 +20,14 @@ class BudgetResponse(BaseModel):
     
     class Config:
         orm_mode = True    
-    
+        
+        
+class BudgetCategoryResponse(BaseModel):
+    category_id: UUID
+    category_icon: str
+    category_color: str
+    category_name: str
+    category_description: str | None
 
 
 
