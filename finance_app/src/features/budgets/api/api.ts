@@ -22,7 +22,7 @@ export const getUnBudgetedCategories = async ({monthDate, skip, limit}: GetUnBud
 
         // Transform snake_case to camelCase and convert UUIDs to strings
         return {
-            categories: data.map((category: BackendBudgetCategoryDataResponse) => ({
+            categories: data.categories.map((category: BackendBudgetCategoryDataResponse) => ({
                 categoryId: category.category_id.toString(),
                 categoryIcon: category.category_icon,
                 categoryColor: category.category_color,

@@ -2,7 +2,7 @@ from datetime import timedelta, date
 from dateutil.relativedelta import relativedelta
 from sqlalchemy import func
 import logging
-from backend.src.budgets.model import BudgetCategoryResponse, BudgetCreateRequest, BudgetResponse
+from backend.src.budgets.model import BudgetCategoryResponse, BudgetCategoryListResponse, BudgetCreateRequest, BudgetResponse
 from sqlalchemy.orm import Session
 from uuid import UUID
 
@@ -93,7 +93,7 @@ def get_unbudgeted_categories_service(
     month_date: date,
     skip: int,
     limit: int,
-) -> list[BudgetCategoryResponse]:
+) -> BudgetCategoryListResponse:
     try : 
         # Join budget table to main category table
         available_categories = db.query(Category).outerjoin(
@@ -109,6 +109,18 @@ def get_unbudgeted_categories_service(
             Budget.category_id.is_(None)
         ).offset(skip).limit(limit).all()
         
+        # Get total count for pagination
+        total_categories = db.query(Category).outerjoin(
+            Budget,
+            (Category.category_id == Budget.category_id) &
+            (Budget.user_id == user_id) & 
+            (Budget.budget_month == month_date)
+        ).filter(
+            Category.user_id == user_id,
+            Category.transaction_type == TransactionType.EXPENSE,
+            Budget.category_id.is_(None)
+        ).count()
+
         # Convert to response models
         category_responses = []
         for category in available_categories:
@@ -121,7 +133,12 @@ def get_unbudgeted_categories_service(
             )
             category_responses.append(category_data)
 
-        return category_responses
+        return BudgetCategoryListResponse(
+            categories=category_responses,
+            has_next=skip + limit < total_categories,
+            current_page=skip // limit + 1,
+            page_size=limit
+        )
 
     except Exception as e:
         logging.error(f"Error getting unbudgeted categories: {e}")

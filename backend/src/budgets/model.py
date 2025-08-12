@@ -8,6 +8,22 @@ class BudgetCreateRequest(BaseModel):
     budget_amount: float
     budget_month: date #Always the first day of the month to keep consistency since only month digit matters    
     
+     
+        
+# Fetches categories that don't have a budget when creating budgets
+class BudgetCategoryResponse(BaseModel):
+    category_id: UUID
+    category_icon: str
+    category_color: str
+    category_name: str
+    category_description: str | None
+    
+class BudgetCategoryListResponse(BaseModel):
+    categories: list[BudgetCategoryResponse]
+    has_next: bool
+    current_page: int
+    page_size: int
+    
     
 class BudgetResponse(BaseModel):
     budget_id: UUID
@@ -17,15 +33,13 @@ class BudgetResponse(BaseModel):
     budget_month: date
     
     class Config:
-        orm_mode = True    
-        
-        
-class BudgetCategoryResponse(BaseModel):
-    category_id: UUID
-    category_icon: str
-    category_color: str
-    category_name: str
-    category_description: str | None
+        orm_mode = True   
+class BudgetListResponse(BaseModel):
+    budgets: list[BudgetResponse]
+    
+    
+    
+
 
 
 
