@@ -25,13 +25,16 @@ const years = Array.from({ length: 30 }, (_, i) => 2025 - i);
 
 export const BudgetMonthSelector = () => {
 
-    const {budgetMonth, setBudgetMonth} = useCreateBudgetStore();
+    const {budgetMonth, setBudgetMonth, setSelectedCategoryInfo, setCategoryId, budgetMonthError, validateBudgetMonth} = useCreateBudgetStore();
     const [isModalVisible, setIsModalVisible] = useState(false);
     const [tempMonth, setTempMonth] = useState(budgetMonth.getMonth());
     const [tempYear, setTempYear] = useState(budgetMonth.getFullYear());
 
     const handleSet = () => {
         setBudgetMonth(new Date(tempYear, tempMonth, 1));
+        setSelectedCategoryInfo(null);
+        setCategoryId('');
+        validateBudgetMonth();
         setIsModalVisible(false);
     };
 
@@ -53,44 +56,45 @@ export const BudgetMonthSelector = () => {
                     </Text>
                 </AnimatedPressable>
             </View>
+            {budgetMonthError && <Text style={styles.errorText}>{budgetMonthError}</Text>}
             <Modal visible={isModalVisible} transparent animationType="slide">
-            <View style={styles.modalOverlay}>
-                <Pressable style={styles.modalOverlay} onPress={() => setIsModalVisible(false)} />
-                <View style={styles.modalContent}>
-                    <View style={styles.columns}>
-                        <View style={styles.pickerContainer}>
-                            <Picker
-                                selectedValue={tempMonth}
-                                onValueChange={(itemValue: number) => {
-                                    setTempMonth(itemValue);
-                                }}
-                                style={styles.picker}
-                            >
-                                {months.map((m, index) => (
-                                    <Picker.Item key={m} label={m} value={index} />
-                                ))}
-                            </Picker>
+                <View style={styles.modalOverlay}>
+                    <Pressable style={styles.modalOverlay} onPress={() => setIsModalVisible(false)} />
+                    <View style={styles.modalContent}>
+                        <View style={styles.columns}>
+                            <View style={styles.pickerContainer}>
+                                <Picker
+                                    selectedValue={tempMonth}
+                                    onValueChange={(itemValue: number) => {
+                                        setTempMonth(itemValue);
+                                    }}
+                                    style={styles.picker}
+                                >
+                                    {months.map((m, index) => (
+                                        <Picker.Item key={m} label={m} value={index} />
+                                    ))}
+                                </Picker>
+                            </View>
+                            <View style={styles.pickerContainer}>
+                                <Picker
+                                    selectedValue={tempYear}
+                                    onValueChange={(itemValue: number) => {
+                                        setTempYear(itemValue);
+                                    }}
+                                    style={styles.picker}
+                                >
+                                    {years.map((y) => (
+                                        <Picker.Item key={y} label={String(y)} value={y} />
+                                    ))}
+                                </Picker>
+                            </View>
                         </View>
-                        <View style={styles.pickerContainer}>
-                            <Picker
-                                selectedValue={tempYear}
-                                onValueChange={(itemValue: number) => {
-                                    setTempYear(itemValue);
-                                }}
-                                style={styles.picker}
-                            >
-                                {years.map((y) => (
-                                    <Picker.Item key={y} label={String(y)} value={y} />
-                                ))}
-                            </Picker>
-                        </View>
+                        <Pressable style={styles.setButtonContainer} onPress={handleSet}>
+                            <Text style={styles.setButtonText}>Set</Text>
+                        </Pressable>
                     </View>
-                    <Pressable style={styles.setButtonContainer} onPress={handleSet}>
-                        <Text style={styles.setButtonText}>Set</Text>
-                    </Pressable>
                 </View>
-            </View>
-        </Modal>
+            </Modal>
         </View>
     );
 };

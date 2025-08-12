@@ -13,16 +13,23 @@ type CreateBudgetState = {
     setCategoryId: (categoryId: string) => void;
     setBudgetAmount: (budgetAmount: number) => void;
     setBudgetMonth: (budgetMonth: Date) => void;
-    setSelectedCategoryInfo: (selectedCategoryInfo: BudgetCategoryData) => void;
+    setSelectedCategoryInfo: (selectedCategoryInfo: BudgetCategoryData | null) => void;
 
     budgetAmountError : string;
     setBudgetAmountError: (budgetAmountError: string) => void;
 
-    validateBudgetAmount: () => boolean;
-    
-    
+    budgetMonthError : string;
+    categorySelectedError : string;
+
+
     createSuccessModal: boolean;
     setCreateSuccessModal: (createSuccessModal: boolean) => void;
+
+    validateBudgetAmount: () => boolean;
+    validateBudgetMonth: () => boolean;
+    validateSelectedCategory: () => boolean;
+
+    resetCreateBudgetStore: () => void;
 };
 
 const initialCreateBudgetState = {
@@ -33,6 +40,8 @@ const initialCreateBudgetState = {
     selectedCategoryInfo: null,
 
     budgetAmountError : '',
+    budgetMonthError : '',
+    categorySelectedError : '',
     createSuccessModal: false,
 };
 
@@ -41,9 +50,26 @@ export const useCreateBudgetStore = create<CreateBudgetState>((set, get) => ({
     setCategoryId: (categoryId: string) => set({ categoryId }),
     setBudgetAmount: (budgetAmount: number) => set({ budgetAmount }),
     setBudgetMonth: (budgetMonth: Date) => set({ budgetMonth }),
-    setSelectedCategoryInfo: (newSelectedCategoryInfo: BudgetCategoryData) => set({selectedCategoryInfo : newSelectedCategoryInfo}),
+    setSelectedCategoryInfo: (newSelectedCategoryInfo: BudgetCategoryData | null) => set({selectedCategoryInfo : newSelectedCategoryInfo}),
     setBudgetAmountError: (budgetAmountError: string) => set({budgetAmountError}),
-
+    validateBudgetMonth: () => {
+        const {budgetMonth} = get();
+        if (budgetMonth === null) {
+            set({budgetMonthError: 'Please select a budget month'});
+            return false;
+        }
+        set({budgetMonthError: ''});
+        return true;
+    },
+    validateSelectedCategory: () => {
+        const {categoryId, selectedCategoryInfo} = get();
+        if (categoryId === '' || selectedCategoryInfo === null) {
+            set({categorySelectedError: 'Please select a category'});
+            return false;
+        }
+        set({categorySelectedError: ''});
+        return true;
+    },
     validateBudgetAmount: () => {
         const {budgetAmount} = get();
 
@@ -55,7 +81,8 @@ export const useCreateBudgetStore = create<CreateBudgetState>((set, get) => ({
         set({budgetAmountError: ''});
         return true;
     },
-    setCreateSuccessModal: (createSuccessModal: boolean) => set({createSuccessModal})
+    setCreateSuccessModal: (createSuccessModal: boolean) => set({createSuccessModal}),
+    resetCreateBudgetStore: () => set(initialCreateBudgetState),
 }));
 
 

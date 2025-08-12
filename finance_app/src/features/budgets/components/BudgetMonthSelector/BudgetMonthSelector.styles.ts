@@ -77,5 +77,11 @@ export const styles = StyleSheet.create({
         color: 'white',
         fontSize: fontSize.lg,
     },
+    errorText: {
+        color: 'red',
+        fontSize: fontSize.sm,
+        fontFamily: 'Poppins-Regular',
+        marginTop: spacing.sm,
+    },
 });
 

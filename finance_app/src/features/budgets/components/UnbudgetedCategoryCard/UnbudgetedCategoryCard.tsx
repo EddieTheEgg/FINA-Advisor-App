@@ -13,11 +13,12 @@ type UnbudgetedCategoryCardProps = {
 
 export const UnbudgetedCategoryCard = ({data, navigation} : UnbudgetedCategoryCardProps) => {
 
-    const {selectedCategoryInfo, setSelectedCategoryInfo, setCategoryId} = useCreateBudgetStore();
+    const {selectedCategoryInfo, setSelectedCategoryInfo, setCategoryId, validateSelectedCategory} = useCreateBudgetStore();
 
     const handlePress = () => {
         setSelectedCategoryInfo(data);
         setCategoryId(data.categoryId); // Also set the categoryId
+        validateSelectedCategory();
         navigation.navigate('CreateBudget');
     };
 

@@ -3,12 +3,15 @@ import { AnimatedPressable } from '../../../../components/AnimatedPressable/Anim
 import { SelectedCategoryCard } from '../SelectedCategoryCard/SelectedCategoryCard';
 import { styles } from './BudgetCategorySelector.styles';
 import { BudgetsNavigatorProps } from '../../../../navigation/types/BudgetsNavigatorTypes';
+import { useCreateBudgetStore } from '../../store/useCreateBudgetStore';
 
 type BudgetCategorySelectorProps = {
     navigation: BudgetsNavigatorProps;
 }
 
 export const BudgetCategorySelector = ({navigation} : BudgetCategorySelectorProps) => {
+    const {categorySelectedError} = useCreateBudgetStore();
+    
     return (
         <View style = {styles.categorySelectorContainer}>
             <Text style = {styles.categorySelectorTitle}>Category</Text>
@@ -19,6 +22,9 @@ export const BudgetCategorySelector = ({navigation} : BudgetCategorySelectorProp
             >
                 <SelectedCategoryCard />
             </AnimatedPressable>
+            {categorySelectedError && (
+                <Text style={styles.errorText}>{categorySelectedError}</Text>
+            )}
         </View>
     );
 };

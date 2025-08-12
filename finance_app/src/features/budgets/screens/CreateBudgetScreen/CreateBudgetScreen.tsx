@@ -1,4 +1,4 @@
-import { View, Text, ScrollView } from 'react-native';
+import { View, Text, ScrollView, Modal, Image } from 'react-native';
 import { useSafeAreaInsets } from 'react-native-safe-area-context';
 import { styles } from './CreateBudgetScreen.styles';
 import { BudgetMonthSelector } from '../../components/BudgetMonthSelector/BudgetMonthSelector';
@@ -33,15 +33,36 @@ const BudgetHomeBackButton = () => {
 
 export const CreateBudgetScreen = ({navigation} : CreateBudgetScreenProps) => {
     const {mutate: createBudget, isPending, error: createBudgetError} = useCreateBudget();
-    const {categoryId, budgetAmount, budgetMonth} = useCreateBudgetStore();
+    const {categoryId,
+         budgetAmount,
+         budgetMonth,
+         createSuccessModal,
+         setCreateSuccessModal,
+         resetCreateBudgetStore,
+         validateBudgetAmount,
+         validateBudgetMonth,
+         validateSelectedCategory} = useCreateBudgetStore();
     const insets = useSafeAreaInsets();
 
     const handleCreateBudget = () => {
-        createBudget({
-            category_id: categoryId,
-            budget_amount: budgetAmount,
-            budget_month: budgetMonth.toISOString().split('T')[0], // Convert to YYYY-MM-DD format
-        });
+        // Validate these fields, storing in variables for now so easier for debugging
+        const amountValid = validateBudgetAmount();
+        const monthValid = validateBudgetMonth();
+        const categoryValid = validateSelectedCategory();
+
+        if (amountValid && monthValid && categoryValid) {
+            createBudget({
+                category_id: categoryId,
+                budget_amount: budgetAmount,
+                budget_month: budgetMonth.toISOString().split('T')[0], // Convert to YYYY-MM-DD format
+            });
+        }
+    };
+
+    const handleContinueConfirmation = () => {
+        resetCreateBudgetStore();
+        setCreateSuccessModal(false);
+        navigation.navigate('BudgetsHome');
     };
 
 
@@ -56,6 +77,8 @@ export const CreateBudgetScreen = ({navigation} : CreateBudgetScreenProps) => {
             errorMessage={createBudgetError.message}
         />;
     }
+
+
 
     return (
         <View style = {[styles.container, {paddingTop: insets.top}]}>
@@ -75,6 +98,27 @@ export const CreateBudgetScreen = ({navigation} : CreateBudgetScreenProps) => {
                 onPress={handleCreateBudget}>
                 <Text style = {styles.createBudgetButtonText}>Create</Text>
             </AnimatedPressable>
+            <Modal
+                visible={createSuccessModal}
+                animationType="fade"
+                onRequestClose={() => {setCreateSuccessModal(false);}}
+            >
+            <View style={styles.createSuccessModalContainer}>
+                <View style={styles.createSuccessModalContent}>
+                    <Image source={require('../../../../assets/images/confirmation.png')} style={styles.createSuccessModalImage} />
+                    <Text style={styles.createSuccessModalTitle}>Budget Created!</Text>
+                    <Text style={styles.createSuccessModalText}>Your budget has been created successfully</Text>
+                    <View style={styles.createSuccessModalButtons}>
+                        <AnimatedPressable
+                            onPress={(handleContinueConfirmation)}
+                            style={styles.continueButton}
+                        >
+                            <Text style={styles.continueButtonText}>Continue</Text>
+                        </AnimatedPressable>
+                    </View>
+                </View>
+            </View>
+        </Modal>
         </View>
     );
 };

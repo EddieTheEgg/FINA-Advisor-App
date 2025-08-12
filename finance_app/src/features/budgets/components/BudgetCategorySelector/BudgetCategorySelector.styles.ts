@@ -15,4 +15,11 @@ export const styles = StyleSheet.create({
         fontSize: fontSize.lg,
         marginBottom: spacing.sm,
     },
+    errorText: {
+        color: colors.red,
+        fontSize: fontSize.base,
+        fontFamily: 'Poppins-Regular',
+        marginTop: spacing.xs,
+        alignSelf: 'center',
+    },
 });

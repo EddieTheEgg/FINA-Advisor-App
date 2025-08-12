@@ -5,7 +5,7 @@ import { useCreateBudgetStore } from '../store/useCreateBudgetStore';
 
 export const useCreateBudget = () => {
     const queryClient = useQueryClient();
-    const {setCreateSuccessModal} = useCreateBudgetStore();
+    const {setCreateSuccessModal, resetCreateBudgetStore} = useCreateBudgetStore();
     const {mutate, isPending, error} = useMutation({
         mutationFn: (budgetData: CreateBudgetPayload) : Promise<void> => createBudget(budgetData),
         onSuccess : (_, variables) => {
@@ -13,6 +13,9 @@ export const useCreateBudget = () => {
             const budgetMonthDate = new Date(variables.budget_month);
             queryClient.invalidateQueries({queryKey: ['unbudgeted-categories', budgetMonthDate]});
             setCreateSuccessModal(true);
+        },
+        onError: () => {
+            resetCreateBudgetStore();
         },
     });
 
