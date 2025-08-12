@@ -14,6 +14,12 @@ export type BudgetCategoryListData = {
     pageSize: number,
 }
 
+export type CreateBudgetPayload = {
+    category_id: string,
+    budget_amount: number,
+    budget_month: string, // YYYY-MM-DD format for backend
+}
+
 
 
 

@@ -1,5 +1,5 @@
 from datetime import date
-from fastapi import APIRouter
+from fastapi import APIRouter, status
 from backend.src.budgets.model import BudgetCategoryResponse, BudgetCreateRequest, BudgetResponse
 from backend.src.budgets.service import create_budget as create_budget_service, get_unbudgeted_categories_service
 from backend.src.database.core import DbSession
@@ -17,12 +17,12 @@ async def get_budgets():
     pass
 
 
-@router.post("/createBudget")
+@router.post("/createBudget", status_code = status.HTTP_201_CREATED)
 async def create_budget(
     db: DbSession,
     current_user: CurrentUser,
     budget: BudgetCreateRequest
-) -> BudgetResponse:
+) -> None:
     return create_budget_service(db, current_user.get_uuid(), budget)
 
 

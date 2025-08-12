@@ -18,7 +18,7 @@ def create_budget(
     db: Session,
     user_id: UUID,
     budget_request: BudgetCreateRequest
-) -> BudgetResponse:
+) -> None:
     
     try : 
         #Check if budget already exists for this category and month
@@ -30,7 +30,7 @@ def create_budget(
         
         if existing_budget:
             logging.warning(f"Budget already exists for category {budget_request.category_id} in month {budget_request.budget_month}")
-            raise BudgetAlreadyExistsError(f"Budget already exists for category {budget_request.category_id} in month {budget_request.budget_month}, do you want to update instead?")
+            raise BudgetAlreadyExistsError(f"Budget already exists for this given category {budget_request.category_id} in month {budget_request.budget_month}, do you want to update it instead?")
         
         budget_data = Budget(
             user_id = user_id,

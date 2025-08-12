@@ -1,6 +1,6 @@
 import { AxiosError } from 'axios';
 import api from '../../../api/axios';
-import { BackendBudgetCategoryDataResponse, BudgetCategoryListData } from '../types';
+import { BackendBudgetCategoryDataResponse, BudgetCategoryListData, CreateBudgetPayload } from '../types';
 
 type GetUnBudgetedCategoriesProps = {
     monthDate: Date;
@@ -43,3 +43,27 @@ export const getUnBudgetedCategories = async ({monthDate, skip, limit}: GetUnBud
         }
     }
 };
+
+// Creates a new budget for a category, with response only being server status code 201 if successful, no actual data
+export const createBudget = async (budgetData: CreateBudgetPayload) : Promise<void> => {
+    try {
+        const response = await api.post('/budgets/createBudget', budgetData);
+        if (response.status === 201) {
+            return;
+        }
+    } catch (error : unknown) {
+        if (error instanceof AxiosError && error.response?.status === 401) {
+            throw new Error('Unauthorized: Please login to continue');
+        } else if (error instanceof AxiosError && error.response?.status === 400) {
+            const errorDetail = error.response?.data?.detail;
+            if (errorDetail && errorDetail.includes('Budget already exists')) {
+                throw new Error(errorDetail);
+            } else {
+                throw new Error('Bad Request: Please check your request and try again');
+            }
+        } else {
+            throw new Error('Error creating budget: Please try again later' + error);
+        }
+    }
+};
+
