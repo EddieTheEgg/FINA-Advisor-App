@@ -35,7 +35,6 @@ def create_budget(
         budget_data = Budget(
             user_id = user_id,
             category_id = UUID(budget_request.category_id),
-            budget_name = budget_request.budget_name,
             budget_amount = budget_request.budget_amount,
             budget_month = budget_request.budget_month,
         )
@@ -54,7 +53,6 @@ def create_budget(
         return BudgetResponse(
             budget_id = budget_data.budget_id,
             category_data = category_data,
-            budget_name = budget_data.budget_name,
             budget_spent = get_budget_spent(db, budget_data.category_id, user_id, budget_data.budget_month),
             budget_amount = budget_data.budget_amount,
             budget_month = budget_data.budget_month,
