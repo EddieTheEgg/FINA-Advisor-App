@@ -18,12 +18,12 @@ type BudgetsHomeScreenProps = {
 const seperator = () => {
     return <View style={{height: spacing.md}} />;
   };
-  
+
 export const BudgetsHomeScreen = ({navigation}: BudgetsHomeScreenProps) => {
 
     const insets = useSafeAreaInsets();
     const [selectedMonth, setSelectedMonth] = useState<Date>(new Date(new Date().getFullYear(), new Date().getMonth(), 1));
-    
+
     const {data, isPending, error, fetchNextPage, hasNextPage, isFetchingNextPage} = useGetBudgets(selectedMonth);
 
     if (isPending || !data) {
@@ -54,7 +54,7 @@ export const BudgetsHomeScreen = ({navigation}: BudgetsHomeScreenProps) => {
             />
             <View style = {styles.budgetsContainer}>
                 <Text style = {styles.subBudgetTitle}>Active Budgets</Text>
-                <FlatList 
+                <FlatList
                     data = {data.pages.flatMap((page) => page.budgets)}
                     renderItem = {({item}) => (
                         <BudgetDisplayCard budgetData = {item} />

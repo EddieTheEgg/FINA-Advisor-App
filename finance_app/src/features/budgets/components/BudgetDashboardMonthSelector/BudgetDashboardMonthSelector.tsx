@@ -74,4 +74,5 @@ export const BudgetDashboardMonthSelector = ({ selectedMonth, setSelectedMonth }
         </Modal>
     </View>
   );
-}
+};
+

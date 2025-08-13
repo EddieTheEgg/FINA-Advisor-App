@@ -1,5 +1,5 @@
-import { useInfiniteQuery } from '@tanstack/react-query'
-import { getBudgets } from '../api/api'
+import { useInfiniteQuery } from '@tanstack/react-query';
+import { getBudgets } from '../api/api';
 
 export const useGetBudgets = (monthDate : Date) => {
     const {data, isPending, error, fetchNextPage, hasNextPage, isFetchingNextPage} = useInfiniteQuery({
