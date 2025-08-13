@@ -2,7 +2,7 @@ from datetime import timedelta, date
 from dateutil.relativedelta import relativedelta
 from sqlalchemy import func
 import logging
-from backend.src.budgets.model import BudgetCategoryResponse, BudgetCategoryListResponse, BudgetCreateRequest, BudgetResponse
+from backend.src.budgets.model import BudgetCategoryResponse, BudgetCategoryListResponse, BudgetCreateRequest, BudgetListResponse, BudgetResponse
 from sqlalchemy.orm import Session
 from uuid import UUID
 
@@ -11,7 +11,7 @@ from backend.src.entities.category import Category
 from backend.src.entities.budgets import Budget
 from backend.src.entities.enums import TransactionType
 from backend.src.entities.transaction import Transaction
-from backend.src.exceptions import BudgetAlreadyExistsError, BudgetCategoryFetchError, BudgetCreationError, BudgetSpentFetchError
+from backend.src.exceptions import BudgetAlreadyExistsError, BudgetCategoryFetchError, BudgetCreationError, BudgetFetchError, BudgetSpentFetchError
 from backend.src.categories import service as category_service
 
 def create_budget(
@@ -50,28 +50,18 @@ def create_budget(
             logging.error(f"Category with id {budget_data.category_id} not found")
             raise BudgetCategoryFetchError(f"Category with id {budget_data.category_id} for this budget not found")
         
-        return BudgetResponse(
-            budget_id = budget_data.budget_id,
-            category_data = category_data,
-            budget_spent = get_budget_spent(db, budget_data.category_id, user_id, budget_data.budget_month),
-            budget_amount = budget_data.budget_amount,
-            budget_month = budget_data.budget_month,
-        )
-        
     except Exception as e:
         logging.error(f"Error creating budget: {e}")
         raise BudgetCreationError(f"Error creating budget: {e}")
     
     
+# Returns the amount spent on a given category for a given user in a given month
 def get_budget_spent(
     db: Session,
     budget_category_id: UUID,
     user_id: UUID,
     budget_month: date
 ) -> float:
-    """
-    Returns the amount spent on a given category for a given user in a given month
-    """
     try : 
         end_of_month = budget_month + relativedelta(months=1) - timedelta(days=1)
         
@@ -143,3 +133,57 @@ def get_unbudgeted_categories_service(
     except Exception as e:
         logging.error(f"Error getting unbudgeted categories: {e}")
         raise BudgetCategoryFetchError(f"Error getting unbudgeted categories: {e}")
+
+
+def get_budgets_service(
+    db: Session,
+    user_id: UUID,
+    month_date: date,
+    skip: int,
+    limit: int,
+) -> BudgetListResponse:
+    try :
+        # Get the base query
+        base_query = db.query(Budget).filter(
+            Budget.user_id == user_id,
+            Budget.budget_month == month_date
+        )
+        
+        # Get paginated results and total count in one query
+        budgets = base_query.offset(skip).limit(limit).all()
+        total_budget_count = base_query.count()
+        
+        budget_responses = []
+        for budget in budgets:
+            # Get category data for each budget
+            category_data = category_service.get_category_by_id(db, budget.category_id, user_id)
+            formatted_category_data = BudgetCategoryResponse(
+                category_id=category_data.category_id,
+                category_name=category_data.category_name,
+                category_description=category_data.category_description,
+                category_icon=category_data.icon,
+                category_color=category_data.color,
+            )
+            if not category_data:
+                logging.warning(f"Category not found for budget {budget.budget_id}")
+                continue
+                
+            budget_data = BudgetResponse(
+                budget_id=budget.budget_id,
+                category_data=formatted_category_data,
+                budget_spent=get_budget_spent(db, budget.category_id, user_id, budget.budget_month),
+                budget_amount=budget.budget_amount,
+                budget_month=budget.budget_month
+            )
+            budget_responses.append(budget_data)
+        
+        return BudgetListResponse(
+            budgets=budget_responses,
+            has_next = (skip + limit) < total_budget_count,
+            current_page = skip // limit + 1,
+            page_size = limit
+        )
+    
+    except Exception as e:
+        logging.error(f"Error getting budgets: {e}")
+        raise BudgetFetchError(f"Error getting budgets: {e}")

@@ -21,6 +21,22 @@ export type CreateBudgetPayload = {
 }
 
 
+export type BudgetData = {
+    budgetId: string,
+    categoryData: BudgetCategoryData
+    budgetSpent: number,
+    budgetAmount: number,
+    budgetMonth: Date,
+}
+
+export type BudgetListData = {
+    budgets: BudgetData[],
+    hasNext: boolean,
+    currentPage: number,
+    pageSize: number,
+}
+
+
 
 
 //Backend
@@ -31,3 +47,11 @@ export type BackendBudgetCategoryDataResponse = {
     category_name: string,
     category_description: string | null,
 };
+
+export type BackendBudgetDataResponse = {
+    budget_id: string,
+    category_data: BackendBudgetCategoryDataResponse,
+    budget_spent: number,
+    budget_amount: number,
+    budget_month: Date,
+}

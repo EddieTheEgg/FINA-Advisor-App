@@ -1,7 +1,7 @@
 from datetime import date
 from fastapi import APIRouter, status
-from backend.src.budgets.model import BudgetCategoryListResponse, BudgetCategoryResponse, BudgetCreateRequest, BudgetResponse
-from backend.src.budgets.service import create_budget as create_budget_service, get_unbudgeted_categories_service
+from backend.src.budgets.model import BudgetCategoryListResponse, BudgetCreateRequest, BudgetListResponse
+from backend.src.budgets.service import create_budget as create_budget_service, get_unbudgeted_categories_service, get_budgets_service
 from backend.src.database.core import DbSession
 from backend.src.auth.service import CurrentUser
 
@@ -19,9 +19,8 @@ async def get_budgets(
     month_date: str,
     skip: int,
     limit: int,
-) -> BudgetResponse:
-    #return get_budget_service(db, current_user.get_uuid(), month_date, skip, limit)
-    pass
+) -> BudgetListResponse:
+    return get_budgets_service(db, current_user.get_uuid(), date.fromisoformat(month_date), skip, limit)
 
 @router.post("/createBudget", status_code = status.HTTP_201_CREATED)
 async def create_budget(
@@ -36,7 +35,7 @@ async def create_budget(
 async def get_unbudgeted_categories(
     db: DbSession,
     current_user: CurrentUser,
-    month_date: str,
+    month_date: str, # Must be in the form YYY-MM-01 for matching to work in row iterations
     skip: int,
     limit: int,
 ) -> BudgetCategoryListResponse:

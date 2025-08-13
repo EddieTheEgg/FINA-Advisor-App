@@ -298,3 +298,7 @@ class BudgetAlreadyExistsError(BudgetError):
     def __init__(self, message: str = "Budget already exists"):
         super().__init__(status_code=400, detail=message)
         
+class BudgetFetchError(BudgetError):
+    def __init__(self, message: str = "Error getting budgets"):
+        super().__init__(status_code=500, detail=message)
+        

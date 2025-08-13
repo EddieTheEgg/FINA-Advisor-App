@@ -25,17 +25,22 @@ class BudgetCategoryListResponse(BaseModel):
     page_size: int
     
     
+# Fetches active budgets for the given month
 class BudgetResponse(BaseModel):
     budget_id: UUID
-    category_data: CategoryResponse
+    category_data: BudgetCategoryResponse
     budget_spent: float
     budget_amount: float
     budget_month: date
     
     class Config:
         orm_mode = True   
+        
 class BudgetListResponse(BaseModel):
     budgets: list[BudgetResponse]
+    has_next: bool
+    current_page: int
+    page_size: int
     
     
     
