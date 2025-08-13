@@ -2,6 +2,8 @@ from pydantic import BaseModel
 from datetime import date
 from uuid import UUID
 from backend.src.categories.model import CategoryResponse
+from backend.src.entities.enums import BudgetSpendingStatus
+from backend.src.transactions.model import TransactionResponse
 
 class BudgetCreateRequest(BaseModel):
     category_id: str
@@ -41,6 +43,44 @@ class BudgetListResponse(BaseModel):
     has_next: bool
     current_page: int
     page_size: int
+    
+    
+    
+class BudgetTransactionSummary(BaseModel):
+    category_color: str
+    category_icon: str
+    transaction_title: str
+    transaction_date: date #Which we will turn to Month(abrev) DateNum in the frontend
+    transaction_amount: float
+    
+class BudgetInsightResponse(BaseModel):
+    status_type: BudgetSpendingStatus
+    icon: str
+    projected_spent: float
+
+    
+
+class CoreBudgetData(BaseModel):
+    budget_title: str
+    budget_color: str
+    budget_icon: str
+    budget_period: date #In the form of YYYY-MM-01
+    daily_average: float
+    budget_amount: float
+    spent_amount: float
+    days_remaining: int
+    projected_total: float
+
+class BudgetInsightData(BaseModel):
+    status_type: BudgetSpendingStatus
+    daily_allowance_limit: float
+    
+class BudgetDetailResponse(BaseModel):
+    core_budget_data: CoreBudgetData
+    budget_insight: BudgetInsightData
+    recent_budget_transactions: list[BudgetTransactionSummary] #Limit is 5 transactions to display
+
+    
     
     
     

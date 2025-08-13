@@ -77,4 +77,14 @@ class TipDifficulty(Enum):
 class BudgetType(Enum):
     CATEGORY = "CATEGORY"
     TOTAL = "TOTAL"
+
+#Status to show how on track the user is to spending the budget for the remainder of the month    
+class BudgetSpendingStatus(Enum):
+    NO_DATA = "NO_DATA" #No data/spending on the budget
+    EXCELLENT = "EXCELLENT" #Spending <70% of budget
+    ON_TRACK = "ON_TRACK" #Spending 70-100% of budget
+    WARNING = "WARNING" #Spending 100-110% of the budget
+    OVER_BUDGET = "OVER_BUDGET" #Spending > 110% of the budget
+    
+    
     

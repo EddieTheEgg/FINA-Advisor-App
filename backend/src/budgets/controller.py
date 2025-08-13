@@ -1,7 +1,8 @@
 from datetime import date
+from uuid import UUID
 from fastapi import APIRouter, status
-from backend.src.budgets.model import BudgetCategoryListResponse, BudgetCreateRequest, BudgetListResponse
-from backend.src.budgets.service import create_budget as create_budget_service, get_unbudgeted_categories_service, get_budgets_service
+from backend.src.budgets.model import BudgetCategoryListResponse, BudgetCreateRequest, BudgetDetailResponse, BudgetListResponse
+from backend.src.budgets.service import create_budget as create_budget_service, get_budget_details_service, get_unbudgeted_categories_service, get_budgets_service
 from backend.src.database.core import DbSession
 from backend.src.auth.service import CurrentUser
 
@@ -40,3 +41,11 @@ async def get_unbudgeted_categories(
     limit: int,
 ) -> BudgetCategoryListResponse:
     return get_unbudgeted_categories_service(db, current_user.get_uuid(), date.fromisoformat(month_date), skip, limit)
+
+@router.get("/getBudgetDetails")
+async def get_budget_details(
+    db: DbSession,
+    current_user: CurrentUser,
+    budget_id: str,
+) -> BudgetDetailResponse:
+    return get_budget_details_service(db, current_user.get_uuid(), UUID(budget_id))
