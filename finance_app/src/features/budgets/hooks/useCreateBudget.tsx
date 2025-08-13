@@ -12,6 +12,7 @@ export const useCreateBudget = () => {
             // Convert the string date back to Date object for query invalidation
             const budgetMonthDate = new Date(variables.budget_month);
             queryClient.invalidateQueries({queryKey: ['unbudgeted-categories', budgetMonthDate]});
+            queryClient.invalidateQueries({queryKey: ['getBudgets', budgetMonthDate]});
             setCreateSuccessModal(true);
         },
         onError: () => {

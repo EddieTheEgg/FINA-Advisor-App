@@ -48,7 +48,7 @@ export const BudgetDisplayCard = ({budgetData}: BudgetDisplayCardProps) => {
                     </View>
                 </View>
                 <View style = {styles.budgetProgressContainer}>
-                    <View style = {[styles.budgetProgress, 
+                    <View style = {[styles.budgetProgress,
                         // eslint-disable-next-line react-native/no-inline-styles
                         {width: percentageSpent > 100 ? '100%' : `${percentageSpent}%`},
                         {backgroundColor: colorSignal()}]} />
