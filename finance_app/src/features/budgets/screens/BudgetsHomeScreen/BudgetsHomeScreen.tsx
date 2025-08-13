@@ -1,4 +1,4 @@
-import { View, Text, Image, FlatList } from 'react-native';
+import { View, Text, Image, FlatList, Platform } from 'react-native';
 import { useSafeAreaInsets } from 'react-native-safe-area-context';
 import { styles } from './BudgetsHomeScreen.styles';
 import { AnimatedPressable } from '../../../../components/AnimatedPressable/AnimatedPressable';
@@ -56,8 +56,13 @@ export const BudgetsHomeScreen = ({navigation}: BudgetsHomeScreenProps) => {
                 <Text style = {styles.subBudgetTitle}>Active Budgets</Text>
                 <FlatList
                     data = {data.pages.flatMap((page) => page.budgets)}
+                    contentContainerStyle = {styles.flatListContent}
                     renderItem = {({item}) => (
-                        <BudgetDisplayCard budgetData = {item} />
+                        <AnimatedPressable
+                            onPress = {() => navigation.navigate('BudgetDetails', {budgetId: item.budgetId})}
+                        >
+                            <BudgetDisplayCard budgetData = {item} />
+                        </AnimatedPressable>
                     )}
                     keyExtractor = {(item) => item.budgetId}
                     onEndReached = {() => {
@@ -72,7 +77,7 @@ export const BudgetsHomeScreen = ({navigation}: BudgetsHomeScreenProps) => {
             </View>
              <AnimatedPressable
                 onPress = {() => navigation.navigate('CreateBudget')}
-                style={[styles.createBudgetButton, {bottom: insets.bottom * 3}]}
+                style={[styles.createBudgetButton, {bottom: Platform.OS === 'ios' ? insets.bottom + spacing.xxl * 1.3 : insets.bottom + spacing.xxl * 2}]}
             >
                 <Text style = {styles.createBudgetButtonText}>Create Budget</Text>
             </AnimatedPressable>

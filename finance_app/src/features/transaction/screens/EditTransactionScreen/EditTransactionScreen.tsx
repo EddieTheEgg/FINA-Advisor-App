@@ -23,6 +23,7 @@ import { spacing } from '../../../../styles/spacing';
 import { AnimatedPressable } from '../../../../components/AnimatedPressable/AnimatedPressable';
 import { useUpdateTransaction } from '../../hooks/useUpdateTransaction';
 import { UpdatingTransaction } from '../../components/UpdatingTransaction/UpdatingTransaction';
+import { useQueryClient } from '@tanstack/react-query';
 
 
 //This screen is used to edit transactions that are not transfers (so income and expense)
@@ -39,6 +40,7 @@ export const EditTransactionScreen = ({route, navigation}: EditTransactionScreen
     const [showError, setShowError] = useState(false);
     const [showConfirmation, setShowConfirmation] = useState(false);
 
+    const queryClient = useQueryClient();
     const { mutate, isPending: isUpdatingTransaction, error: updateTransactionError, isSuccess: isUpdateTransactionSuccess } = useUpdateTransaction();
 
     const { data: transactionDetails, isPending: isFetchingTransaction, error: fetchTransactionError } = useGetTransaction(transactionId);
@@ -76,8 +78,9 @@ export const EditTransactionScreen = ({route, navigation}: EditTransactionScreen
         }
     };
 
-    const handleContinueConfirmation = () => {
+    const handleContinueConfirmation = async () => {
         setShowConfirmation(false);
+        await queryClient.refetchQueries({queryKey: ['transaction', transactionId]});
         navigation.goBack();
     };
 

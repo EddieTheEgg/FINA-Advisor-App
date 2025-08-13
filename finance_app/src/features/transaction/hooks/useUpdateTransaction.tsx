@@ -8,9 +8,6 @@ export const useUpdateTransaction = () => {
     const {mutate, isPending, error, isSuccess} = useMutation({
         mutationFn: (transaction: BackendTransactionUpdateRequest): Promise<TransactionResponse> => updateTransaction(transaction),
         onSuccess: async (data: TransactionResponse) => {
-            const currentDate = new Date(data.transactionDate);
-            const month = currentDate.getMonth() + 1;
-            const year = currentDate.getFullYear();
 
             // Invalidate all queries that could be affected by the updated transaction
             await Promise.all([
@@ -24,8 +21,11 @@ export const useUpdateTransaction = () => {
                     queryClient.invalidateQueries({queryKey: ['account-transactions', data.toAccount.accountId]}),
                     queryClient.invalidateQueries({queryKey: ['account-details', data.toAccount.accountId]}),
                 ] : []),
-                queryClient.invalidateQueries({queryKey: ['dashboard', month, year]}),
+                // Invalidate all dashboard queries
+                queryClient.invalidateQueries({queryKey: ['dashboard']}),
+                queryClient.invalidateQueries({queryKey: ['getBudgets', new Date(new Date(data.transactionDate).getFullYear(), new Date(data.transactionDate).getMonth(), 1)]}),
             ]);
+
         },
         onError: (err: any) => {
             console.error('Error updating transaction:', err);

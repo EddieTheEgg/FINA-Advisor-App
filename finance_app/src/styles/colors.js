@@ -18,9 +18,11 @@ export const colors = {
     lighterGreen : '#E2FBE8',
     darkerGreen: '#1BA44C',
 
-    red: '#F30004',
+    red: '#DC2625',
     lighterRed: '#FBE2E2',
     darkerRed: '#C9413A',
+
+    orange: '#F59E0C',
 
     purple: '#8B5CF6',
     lighterPurple: '#ECE7FF',

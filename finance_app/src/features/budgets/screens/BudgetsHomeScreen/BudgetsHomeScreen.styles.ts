@@ -1,4 +1,4 @@
-import { StyleSheet } from 'react-native';
+import { Platform, StyleSheet } from 'react-native';
 
 import { colors } from '../../../../styles/colors';
 import { spacing } from '../../../../styles/spacing';
@@ -44,14 +44,16 @@ export const styles = StyleSheet.create({
         fontSize: fontSize.xl,
         fontFamily: 'Poppins-SemiBold',
         alignSelf: 'center',
+        marginTop: Platform.OS === 'ios' ? 0 : spacing.md,
     },
     subBudgetTitle : {
-        fontSize: fontSize.base,
+        fontSize: fontSize.lg,
         fontFamily: 'Poppins-SemiBold',
+        marginHorizontal: spacing.md,
+        marginBottom: spacing.sm,
     },
     budgetsContainer: {
         marginTop: spacing.md,
-        paddingHorizontal: spacing.md,
         flex: 1,
     },
     subBudgetsTitle: {
@@ -59,5 +61,8 @@ export const styles = StyleSheet.create({
         fontFamily: 'Poppins-SemiBold',
         color: colors.white,
         marginBottom: spacing.sm,
+    },
+    flatListContent: {
+        paddingBottom: spacing.xxl * 5,
     },
 });

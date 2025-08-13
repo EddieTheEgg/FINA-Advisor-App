@@ -13,6 +13,7 @@ import { useCreateBudgetStore } from '../../store/useCreateBudgetStore';
 import React from 'react';
 import { CreatingBudgetIndicator } from '../../components/CreatingBudgetIndicator/CreatingBudgetIndicator';
 import { ErrorScreen } from '../../../../components/ErrorScreen/ErrorScreen';
+import { spacing } from '../../../../styles/spacing';
 
 type CreateBudgetScreenProps = {
     navigation: BudgetsNavigatorProps;
@@ -83,7 +84,7 @@ export const CreateBudgetScreen = ({navigation} : CreateBudgetScreenProps) => {
     return (
         <View style = {[styles.container, {paddingTop: insets.top}]}>
             <ScrollView
-                contentContainerStyle = {styles.scrollViewContent}
+                contentContainerStyle = {[styles.scrollViewContent, {paddingBottom: insets.bottom + spacing.xxl * 5}]}
             >
                 <View style = {styles.headerRowContainer}>
                     <BudgetHomeBackButton />

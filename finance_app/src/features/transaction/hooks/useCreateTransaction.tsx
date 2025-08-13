@@ -20,6 +20,7 @@ export const useCreateTransaction = () => {
                 queryClient.invalidateQueries({queryKey: ['grouped-accounts']}),
                 queryClient.invalidateQueries({queryKey: ['account-details', data.accountId]}),
                 queryClient.invalidateQueries({queryKey: ['dashboard', month, year]}),
+                queryClient.invalidateQueries({queryKey: ['getBudgets', new Date(year, month, 1)]}),
             ]);
 
             // Set success state and reset other fields

@@ -114,7 +114,12 @@ export const useCreateTransactionStore = create<CreateTransactionState>((set, ge
 
     resetToInitialState: () => {
         const { transactionSuccess } = get();
-        set({ ...initialState, transactionSuccess }); // Keep the transactionSuccess state, which resets when user confirms
+        set({
+            ...initialState,
+            transactionSuccess,
+            isTransactionProcessing: false, // Ensure processing state is reset
+            transactionProcessingError: null, // Clear any processing errors
+        }); // Keep the transactionSuccess state, which resets when user confirms
     },
 
     validateSourceAccount: () => {
