@@ -8,4 +8,3 @@ export type BudgetsNavigatorParamList = {
 };
 
 export type BudgetsNavigatorProps = NativeStackNavigationProp<BudgetsNavigatorParamList>;
- 

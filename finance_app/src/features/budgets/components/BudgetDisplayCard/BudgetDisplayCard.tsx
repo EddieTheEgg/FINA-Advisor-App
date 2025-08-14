@@ -2,7 +2,7 @@ import { View, Text } from 'react-native';
 import { styles } from './BudgetDisplayCard.styles';
 import { BudgetData } from '../../types';
 import { formatCurrencyWithConditionalDecimals } from '../../../../utils/formatAmount';
-import { colors } from '../../../../styles/colors';
+import { getBudgetColorStatus } from '../../utils/getBudgetColorStatus';
 
 type BudgetDisplayCardProps = {
     budgetData: BudgetData
@@ -11,22 +11,7 @@ type BudgetDisplayCardProps = {
 export const BudgetDisplayCard = ({budgetData}: BudgetDisplayCardProps) => {
 
     const percentageSpent = Math.round((budgetData.budgetSpent / budgetData.budgetAmount) * 100);
-
-
-    const colorSignal = () => {
-        if (percentageSpent > 100) {
-            return colors.red;
-        }
-        else if (percentageSpent > 80) {
-            return colors.orange;
-        }
-        else if (percentageSpent > 0) {
-            return colors.darkerGreen;
-        }
-        else {
-            return colors.gray[500];
-        }
-    };
+    const colorStatus = getBudgetColorStatus(budgetData.budgetSpent, budgetData.budgetAmount);
 
     const handleRemainingBudgetText = () => {
         const remainingBudget = budgetData.budgetAmount - budgetData.budgetSpent;
@@ -40,7 +25,7 @@ export const BudgetDisplayCard = ({budgetData}: BudgetDisplayCardProps) => {
 
 
     return (
-        <View style = {[styles.container, {backgroundColor: colorSignal()}]}>
+        <View style = {[styles.container, {backgroundColor: colorStatus}]}>
             <View style = {styles.budgetContentContainer}>
                 <View style = {styles.budgetTopSectionContainer}>
                     <Text style = {[styles.budgetIcon, {backgroundColor: budgetData.categoryData.categoryColor}]}>{budgetData.categoryData.categoryIcon}</Text>
@@ -54,11 +39,11 @@ export const BudgetDisplayCard = ({budgetData}: BudgetDisplayCardProps) => {
                     <View style = {[styles.budgetProgress,
                         // eslint-disable-next-line react-native/no-inline-styles
                         {width: percentageSpent > 100 ? '100%' : `${percentageSpent}%`},
-                        {backgroundColor: colorSignal()}]} />
+                        {backgroundColor: colorStatus}]} />
                 </View>
                 <View style = {styles.budgetProgressDetailFooter}>
                     <Text style = {styles.percentageUsedText}>{percentageSpent}% used</Text>
-                    <Text style = {[styles.remainingBudgetText, {color: colorSignal()}]}>{handleRemainingBudgetText()}</Text>
+                    <Text style = {[styles.remainingBudgetText, {color: colorStatus}]}>{handleRemainingBudgetText()}</Text>
                 </View>
             </View>
         </View>

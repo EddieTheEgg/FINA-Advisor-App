@@ -148,7 +148,7 @@ export const getBudgetDetails = async (budgetId: string) : Promise<BudgetDetailD
                 transactionDate: transaction.transaction_date,
                 transactionAmount: transaction.transaction_amount,
             })),
-        }
+        };
         return formattedData;
     } catch (error : unknown) {
         if (error instanceof AxiosError && error.response?.status === 401) {

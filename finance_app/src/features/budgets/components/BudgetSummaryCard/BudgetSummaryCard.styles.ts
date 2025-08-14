@@ -9,7 +9,7 @@ export const styles = StyleSheet.create({
     },
     actualContentContainer : {
         backgroundColor: colors.white,
-        padding: spacing.xl,
+        padding: spacing.md,
         marginLeft: spacing.xs,
         borderRadius: 20,
         alignItems: 'center',

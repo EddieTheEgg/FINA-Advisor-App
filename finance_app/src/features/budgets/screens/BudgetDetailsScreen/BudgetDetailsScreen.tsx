@@ -12,6 +12,7 @@ import FontAwesome6 from 'react-native-vector-icons/FontAwesome6';
 import { AnimatedPressable } from '../../../../components/AnimatedPressable/AnimatedPressable';
 import { spacing } from '../../../../styles/spacing';
 import { BudgetSummaryCard } from '../../components/BudgetSummaryCard/BudgetSummaryCard';
+import { BudgetProgressCard } from '../../components/BudgetProgressCard/BudgetProgressCard';
 
 type BudgetDetailsScreenprops = {
     route: RouteProp<BudgetsNavigatorParamList, 'BudgetDetails'>;
@@ -53,6 +54,7 @@ export const BudgetDetailsScreen = ({route, navigation}: BudgetDetailsScreenprop
                     </AnimatedPressable>
                 </View>
                 <BudgetSummaryCard data = {data.coreBudgetData} />
+                <BudgetProgressCard data = {data.coreBudgetData} />
             </ScrollView>
         </View>
     );

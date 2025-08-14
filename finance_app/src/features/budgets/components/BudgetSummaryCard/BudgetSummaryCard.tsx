@@ -1,10 +1,10 @@
 import { View, Text } from 'react-native';
 import { CoreBudgetData } from '../../types';
 import { styles } from './BudgetSummaryCard.styles';
-import { colors } from '../../../../styles/colors';
 import { fontSize } from '../../../../styles/fontSizes';
 import { formatCurrencyWithConditionalDecimals } from '../../../../utils/formatAmount';
 import { formatDateMonthYear } from '../../../../utils/formatDate';
+import { getBudgetColorStatus } from '../../utils/getBudgetColorStatus';
 
 
 type BudgetSummaryCardProps = {
@@ -14,21 +14,7 @@ type BudgetSummaryCardProps = {
 export const BudgetSummaryCard = ({data}: BudgetSummaryCardProps) => {
 
     const percentageSpent = Math.round((data.spentAmount / data.budgetAmount) * 100);
-
-
-    const colorSignal = () => {
-        if (percentageSpent > 100) {
-            return colors.red;
-        }
-        else if (percentageSpent > 80) {
-            return colors.orange;
-        }
-        else if (percentageSpent > 0) {
-            return colors.darkerGreen;
-        } else{
-            return colors.gray[500];
-        }
-    };
+    const colorStatus = getBudgetColorStatus(data.spentAmount, data.budgetAmount);
 
     const getResponsiveFontSize = (amount: number) => {
         const amountString = amount.toString();
@@ -48,15 +34,15 @@ export const BudgetSummaryCard = ({data}: BudgetSummaryCardProps) => {
 
 
     return (
-        <View style = {[styles.backgroundContainer, {backgroundColor: colorSignal()}]}>
+        <View style = {[styles.backgroundContainer, {backgroundColor: colorStatus}]}>
             <View style = {styles.actualContentContainer}>
                 <Text style = {[styles.budgetIcon, {backgroundColor: data.budgetColor}]}>{data.budgetIcon}</Text>
-                <Text style = {[styles.budgetAmount, {fontSize: getResponsiveFontSize(data.budgetAmount), color: colorSignal()}]}>
+                <Text style = {[styles.budgetAmount, {fontSize: getResponsiveFontSize(data.budgetAmount), color: colorStatus}]}>
                     ${formatCurrencyWithConditionalDecimals(data.spentAmount)}
                 </Text>
                 <Text style = {styles.budgetTitle}>{data.budgetTitle}</Text>
                 <Text style = {styles.budgetPeriod}>{formatDateMonthYear(data.budgetPeriod)}</Text>
-                <Text style = {[styles.percentageUsedText, {backgroundColor: colorSignal()}]}>{percentageSpent}% used</Text>
+                <Text style = {[styles.percentageUsedText, {backgroundColor: colorStatus}]}>{percentageSpent}% used</Text>
             </View>
         </View>
     );
