@@ -13,6 +13,7 @@ import { AnimatedPressable } from '../../../../components/AnimatedPressable/Anim
 import { spacing } from '../../../../styles/spacing';
 import { BudgetSummaryCard } from '../../components/BudgetSummaryCard/BudgetSummaryCard';
 import { BudgetProgressCard } from '../../components/BudgetProgressCard/BudgetProgressCard';
+import { BudgetDetailsCard } from '../../components/BudgetDetailsCard/BudgetDetailsCard';
 
 type BudgetDetailsScreenprops = {
     route: RouteProp<BudgetsNavigatorParamList, 'BudgetDetails'>;
@@ -42,7 +43,7 @@ export const BudgetDetailsScreen = ({route, navigation}: BudgetDetailsScreenprop
         <View style={[styles.container, {paddingTop: insets.top}]}>
             <ScrollView
                 showsVerticalScrollIndicator={false}
-                contentContainerStyle = {[styles.scrollViewContent, {paddingBottom: insets.bottom + spacing.lg}]}
+                contentContainerStyle = {[styles.scrollViewContent, {paddingBottom: insets.bottom + spacing.lg * 5}]}
             >
                 <View style = {styles.headerSection}>
                     <BackButton />
@@ -55,6 +56,7 @@ export const BudgetDetailsScreen = ({route, navigation}: BudgetDetailsScreenprop
                 </View>
                 <BudgetSummaryCard data = {data.coreBudgetData} />
                 <BudgetProgressCard data = {data.coreBudgetData} />
+                <BudgetDetailsCard data = {data.coreBudgetData} />
             </ScrollView>
         </View>
     );

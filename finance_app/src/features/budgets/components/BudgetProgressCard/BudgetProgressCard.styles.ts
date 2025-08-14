@@ -8,6 +8,7 @@ export const styles = StyleSheet.create({
         backgroundColor: colors.white,
         padding: spacing.md,
         borderRadius: 20,
+        boxShadow: '0 2px 2px 0 rgba(0, 0, 0, 0.3)',
     },
     budgetProgressTitle: {
         fontSize: fontSize.lg,
@@ -24,6 +25,7 @@ export const styles = StyleSheet.create({
     spentAmount : {
         fontSize: fontSize.lg,
         fontFamily: 'Poppins-SemiBold',
+        includeFontPadding: false,
     },
     spentLabel : {
         fontFamily: 'Poppins-Medium',
