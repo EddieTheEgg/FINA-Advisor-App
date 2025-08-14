@@ -29,3 +29,9 @@ export const formatDate = (date: Date | string) => {
         return parsedDate.toLocaleDateString('en-US', { month: 'short', day: 'numeric' });
     }
 };
+
+
+// Return the date as someting like December 2024
+export const formatDateMonthYear = (date: Date) => {
+    return date.toLocaleDateString('en-US', { month: 'long', year: 'numeric' });
+};

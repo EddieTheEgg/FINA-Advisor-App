@@ -1,6 +1,6 @@
 import { AxiosError } from 'axios';
 import api from '../../../api/axios';
-import { BackendBudgetCategoryDataResponse, BackendBudgetDataResponse, BudgetCategoryListData, BudgetListData, CreateBudgetPayload } from '../types';
+import { BackendBudgetCategoryDataResponse, BackendBudgetDataResponse, BackendBudgetTransactionSummary, BudgetCategoryListData, BudgetDetailData, BudgetListData, CreateBudgetPayload } from '../types';
 
 type GetUnBudgetedCategoriesProps = {
     monthDate: Date;
@@ -99,7 +99,7 @@ export const getBudgets = async ({monthDate, skip, limit} : GetBudgetProps) : Pr
                 },
                 budgetSpent: budget.budget_spent,
                 budgetAmount: budget.budget_amount,
-                budgetMonth: budget.budget_month,
+                budgetMonth: new Date(budget.budget_month + 'T00:00:00'),
             })),
             hasNext: data.has_next,
             currentPage: data.current_page,
@@ -115,4 +115,50 @@ export const getBudgets = async ({monthDate, skip, limit} : GetBudgetProps) : Pr
         }
     }
 };
+
+
+export const getBudgetDetails = async (budgetId: string) : Promise<BudgetDetailData> => {
+    try {
+        const response = await api.get('/budgets/getBudgetDetails', {
+            params: {
+                budget_id: budgetId,
+            },
+        });
+        const data = response.data;
+        const formattedData = {
+            coreBudgetData: {
+                budgetTitle: data.core_budget_data.budget_title,
+                budgetColor: data.core_budget_data.budget_color,
+                budgetIcon: data.core_budget_data.budget_icon,
+                budgetPeriod: new Date(data.core_budget_data.budget_period + 'T00:00:00'),
+                dailyAverage: data.core_budget_data.daily_average,
+                budgetAmount: data.core_budget_data.budget_amount,
+                spentAmount: data.core_budget_data.spent_amount,
+                daysRemaining: data.core_budget_data.days_remaining,
+                projectedTotal: data.core_budget_data.projected_total,
+            },
+            budgetInsight: {
+                statusType: data.budget_insight.status_type,
+                dailyAllowanceLimit: data.budget_insight.daily_allowance_limit,
+            },
+            recentBudgetTransactions: data.recent_budget_transactions.map((transaction: BackendBudgetTransactionSummary) => ({
+                categoryColor: transaction.category_color,
+                categoryIcon: transaction.category_icon,
+                transactionTitle: transaction.transaction_title,
+                transactionDate: transaction.transaction_date,
+                transactionAmount: transaction.transaction_amount,
+            })),
+        }
+        return formattedData;
+    } catch (error : unknown) {
+        if (error instanceof AxiosError && error.response?.status === 401) {
+            throw new Error('Unauthorized: Please login to continue');
+        } else if (error instanceof AxiosError && error.response?.status === 400) {
+            throw new Error('Bad Request: Please check your request and try again');
+        } else {
+            throw new Error('Error fetching budget details: Please try again later' + error);
+        }
+    }
+};
+
 

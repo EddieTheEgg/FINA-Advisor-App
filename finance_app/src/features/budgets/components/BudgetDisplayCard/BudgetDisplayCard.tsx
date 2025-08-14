@@ -20,8 +20,11 @@ export const BudgetDisplayCard = ({budgetData}: BudgetDisplayCardProps) => {
         else if (percentageSpent > 80) {
             return colors.orange;
         }
-        else {
+        else if (percentageSpent > 0) {
             return colors.darkerGreen;
+        }
+        else {
+            return colors.gray[500];
         }
     };
 

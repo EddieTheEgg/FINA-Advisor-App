@@ -1,3 +1,12 @@
+export enum BudgetSpendingStatus {
+    NO_DATA = 'NO_DATA',
+    ON_TRACK = 'ON_TRACK',
+    WARNING = 'WARNING',
+    OVER_BUDGET = 'OVER_BUDGET',
+}
+
+
+
 export type BudgetCategoryData = {
     categoryId: string,
     categoryIcon: string,
@@ -39,6 +48,40 @@ export type BudgetListData = {
 
 
 
+export type CoreBudgetData = {
+    budgetTitle: string,
+    budgetColor: string,
+    budgetIcon: string,
+    budgetPeriod: Date,
+    dailyAverage: number,
+    budgetAmount: number,
+    spentAmount: number,
+    daysRemaining: number,
+    projectedTotal: number,
+}
+
+export type BudgetInsightData = {
+    statusType: BudgetSpendingStatus,
+    dailyAllowanceLimit: number,
+}
+
+export type BudgetTransactionSummary = {
+    categoryColor: string,
+    categoryIcon: string,
+    transactionTitle: string,
+    transactionDate: Date,
+    transactionAmount: number,
+}
+
+export type BudgetDetailData = {
+    coreBudgetData : CoreBudgetData,
+    budgetInsight: BudgetInsightData,
+    recentBudgetTransactions: BudgetTransactionSummary[]
+}
+
+
+
+
 //Backend
 export type BackendBudgetCategoryDataResponse = {
     category_id: string,
@@ -54,4 +97,12 @@ export type BackendBudgetDataResponse = {
     budget_spent: number,
     budget_amount: number,
     budget_month: Date,
+}
+
+export type BackendBudgetTransactionSummary = {
+    category_color: string,
+    category_icon: string,
+    transaction_title: string,
+    transaction_date: Date,
+    transaction_amount: number,
 }
