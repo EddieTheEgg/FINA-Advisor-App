@@ -1,6 +1,6 @@
 import { AxiosError } from 'axios';
 import api from '../../../api/axios';
-import { BackendBudgetCategoryDataResponse, BackendBudgetDataResponse, BackendBudgetTransactionSummary, BudgetCategoryListData, BudgetDetailData, BudgetListData, CreateBudgetPayload } from '../types';
+import { BackendBudgetCategoryDataResponse, BackendBudgetDataResponse, BackendBudgetTransactionSummary, BudgetCategoryListData, BudgetDetailData, BudgetListData, BudgetTransactionsData, CreateBudgetPayload } from '../types';
 
 type GetUnBudgetedCategoriesProps = {
     monthDate: Date;
@@ -158,6 +158,47 @@ export const getBudgetDetails = async (budgetId: string) : Promise<BudgetDetailD
             throw new Error('Bad Request: Please check your request and try again');
         } else {
             throw new Error('Error fetching budget details: Please try again later' + error);
+        }
+    }
+};
+
+type GetBudgetTransactionsProps = {
+    budgetId: string;
+    skip: number;
+    limit: number;
+}
+
+export const getBudgetTransactions = async ({budgetId, skip, limit} : GetBudgetTransactionsProps) : Promise<BudgetTransactionsData> => {
+    try {
+        const response = await api.get('/budgets/getBudgetTransactions', {
+            params: {
+                budget_id: budgetId,
+                skip,
+                limit,
+            },
+        });
+        const data = response.data;
+        return {
+            transactions: data.transactions.map((transaction: BackendBudgetTransactionSummary) => ({
+                categoryColor: transaction.category_color,
+                categoryIcon: transaction.category_icon,
+                transactionTitle: transaction.transaction_title,
+                transactionDate: transaction.transaction_date,
+                transactionAmount: transaction.transaction_amount,
+                transactionId: transaction.transaction_id,
+            })),
+            transactionCount: data.transaction_count,
+            hasNext: data.has_next,
+            currentPage: data.current_page,
+            pageSize: data.page_size,
+        };
+    } catch (error : unknown) {
+        if (error instanceof AxiosError && error.response?.status === 401) {
+            throw new Error('Unauthorized: Please login to continue');
+        } else if (error instanceof AxiosError && error.response?.status === 400) {
+            throw new Error('Bad Request: Please check your request and try again');
+        } else {
+            throw new Error('Error fetching budget transactions: Please try again later' + error);
         }
     }
 };

@@ -80,6 +80,15 @@ export type BudgetDetailData = {
     recentBudgetTransactions: BudgetTransactionSummary[]
 }
 
+export type BudgetTransactionsData = {
+    transactions: BudgetTransactionSummary[],
+    transactionCount: number,
+    hasNext: boolean,
+    currentPage: number,
+    pageSize: number,
+}
+
+
 
 
 
@@ -108,3 +117,5 @@ export type BackendBudgetTransactionSummary = {
     transaction_amount: number,
     transaction_id: string,
 }
+
+

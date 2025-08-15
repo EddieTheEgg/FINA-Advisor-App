@@ -2,7 +2,7 @@ from datetime import timedelta, date
 from dateutil.relativedelta import relativedelta
 from sqlalchemy import func
 import logging
-from backend.src.budgets.model import BudgetCategoryResponse, BudgetCategoryListResponse, BudgetCreateRequest, BudgetDetailResponse, BudgetInsightData, BudgetListResponse, BudgetResponse, BudgetTransactionSummary, CoreBudgetData
+from backend.src.budgets.model import BudgetCategoryResponse, BudgetCategoryListResponse, BudgetCreateRequest, BudgetDetailResponse, BudgetInsightData, BudgetListResponse, BudgetResponse, BudgetTransactionSummary, CoreBudgetData, BudgetTransactionsResponse
 from sqlalchemy.orm import Session
 from uuid import UUID
 
@@ -272,3 +272,53 @@ def get_budget_details_service(
         logging.error(f"Error getting budget details: {e}")
         raise BudgetFetchError(f"Error getting budget details: {e}")
         
+        
+def get_budget_transactions_service(
+    db: Session,
+    user_id: UUID,
+    budget_id: UUID,
+    skip: int,
+    limit: int,
+) -> BudgetTransactionsResponse:
+    try:
+        budget = db.query(Budget).filter(Budget.budget_id == budget_id, Budget.user_id == user_id).first()
+        
+        if not budget:
+            logging.error(f"Error getting budget transactions: Budget not found")
+            raise BudgetFetchError(f"Error getting budget transactions: Budget not found")
+        
+        budget_transactions = db.query(Transaction).join(
+            Category, Transaction.category_id == Category.category_id
+        ).filter(
+            Transaction.category_id == budget.category_id,
+            Transaction.user_id == user_id,
+        ).order_by(Transaction.transaction_date.desc()).offset(skip).limit(limit).all()
+        
+        transaction_list = []
+        for transaction in budget_transactions:
+            transaction_data = BudgetTransactionSummary(
+                category_color = transaction.category.color,
+                category_icon = transaction.category.icon,
+                transaction_title = transaction.title,
+                transaction_date = transaction.transaction_date,
+                transaction_amount = transaction.amount,
+                transaction_id = transaction.transaction_id,
+            )
+            transaction_list.append(transaction_data)
+            
+        # Get total count of all transactions for this budget category
+        total_transaction_count = db.query(Transaction).filter(
+            Transaction.category_id == budget.category_id,
+            Transaction.user_id == user_id,
+        ).count()
+        
+        return BudgetTransactionsResponse(
+            transactions = transaction_list,
+            transaction_count = total_transaction_count,
+            has_next = skip + limit < total_transaction_count,
+            current_page = skip // limit + 1,
+            page_size = limit,
+        )
+    except Exception as e:
+        logging.error(f"Error getting budget transactions: {e}")
+        raise BudgetFetchError(f"Error getting budget transactions: {e}")

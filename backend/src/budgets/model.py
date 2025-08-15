@@ -82,6 +82,14 @@ class BudgetDetailResponse(BaseModel):
     recent_budget_transactions: list[BudgetTransactionSummary] #Limit is 5 transactions to display
 
     
+
+class BudgetTransactionsResponse(BaseModel):
+    transactions: list[BudgetTransactionSummary]
+    transaction_count: int
+    has_next: bool
+    current_page: int
+    page_size: int
+    
     
     
     
