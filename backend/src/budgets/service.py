@@ -219,11 +219,11 @@ def get_budget_details_service(
         
         projected_total = round(total_spent + (days_remaining * daily_average), 2)
         
-        if (projected_total / budget.budget_amount <= 0):
+        if (projected_total == 0):
             status_type = BudgetSpendingStatus.NO_DATA
-        elif (projected_total / budget.budget_amount <= 1):
+        elif (projected_total <= budget.budget_amount):
             status_type = BudgetSpendingStatus.ON_TRACK
-        elif (projected_total / budget.budget_amount <= 1.2):
+        elif (projected_total > budget.budget_amount and total_spent < budget.budget_amount):
             status_type = BudgetSpendingStatus.WARNING
         else:
             status_type = BudgetSpendingStatus.OVER_BUDGET

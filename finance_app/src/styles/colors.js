@@ -15,14 +15,21 @@ export const colors = {
     blue: '#0050F4',
 
     green: '#3ECD58',
+    veryLightGreen: '#F2FAF3',
     lighterGreen : '#E2FBE8',
-    darkerGreen: '#1BA44C',
+    darkerGreen: '#1e8743ff',
 
     red: '#DC2625',
+    veryLightRed: '#FDF2F2',
     lighterRed: '#FBE2E2',
-    darkerRed: '#C9413A',
+    darkerRed: '#9C1910',
 
     orange: '#F59E0C',
+
+
+    yellow: '#ffeaacff',
+    veryLightYellow: '#fffaeaff',
+    darkerYellow: '#8a6212ff',
 
     purple: '#8B5CF6',
     lighterPurple: '#ECE7FF',

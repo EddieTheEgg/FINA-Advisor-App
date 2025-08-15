@@ -14,6 +14,8 @@ import { spacing } from '../../../../styles/spacing';
 import { BudgetSummaryCard } from '../../components/BudgetSummaryCard/BudgetSummaryCard';
 import { BudgetProgressCard } from '../../components/BudgetProgressCard/BudgetProgressCard';
 import { BudgetDetailsCard } from '../../components/BudgetDetailsCard/BudgetDetailsCard';
+import { BudgetInsightsCard } from '../../components/BudgetInsightsCard/BudgetInsightsCard';
+import { truncateText } from '../../../../utils/textFormat';
 
 type BudgetDetailsScreenprops = {
     route: RouteProp<BudgetsNavigatorParamList, 'BudgetDetails'>;
@@ -47,7 +49,7 @@ export const BudgetDetailsScreen = ({route, navigation}: BudgetDetailsScreenprop
             >
                 <View style = {styles.headerSection}>
                     <BackButton />
-                    <Text style = {styles.headerTitle}>{data.coreBudgetData.budgetTitle} Details</Text>
+                    <Text style = {styles.headerTitle}>{truncateText(data.coreBudgetData.budgetTitle, 18)} Details</Text>
                     <AnimatedPressable
                         onPress = {() => {}}
                     >
@@ -57,6 +59,7 @@ export const BudgetDetailsScreen = ({route, navigation}: BudgetDetailsScreenprop
                 <BudgetSummaryCard data = {data.coreBudgetData} />
                 <BudgetProgressCard data = {data.coreBudgetData} />
                 <BudgetDetailsCard data = {data.coreBudgetData} />
+                <BudgetInsightsCard data = {data} />
             </ScrollView>
         </View>
     );
