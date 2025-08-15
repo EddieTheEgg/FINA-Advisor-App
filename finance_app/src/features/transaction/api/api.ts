@@ -58,7 +58,6 @@ export const createTransaction = async (transaction: BackendTransactionCreateReq
             subscriptionStartDate: data.subscription_start_date,
             subscriptionEndDate: data.subscription_end_date,
             subscriptionNextPaymentDate: data.subscription_next_payment_date,
-
             sourceAccount: {
                 accountId: data.source_account.account_id,
                 name: data.source_account.name,
@@ -93,6 +92,7 @@ export const createTransaction = async (transaction: BackendTransactionCreateReq
                 createdAt: data.category.created_at,
                 updatedAt: data.category.updated_at,
             },
+            budgetIdAffected: data.budget_id_affected,
         };
 
         return formattedTransaction;
@@ -159,6 +159,7 @@ export const getTransaction = async (transactionId: string) : Promise<Transactio
                 createdAt: new Date(data.category.created_at),
                 updatedAt: data.category.updated_at ? new Date(data.category.updated_at) : null,
             },
+            budgetIdAffected: data.budget_id_affected,
         };
 
         return formattedTransaction;

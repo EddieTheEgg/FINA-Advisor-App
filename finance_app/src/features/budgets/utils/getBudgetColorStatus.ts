@@ -1,7 +1,7 @@
 import { colors } from '../../../styles/colors';
 
 export const getBudgetColorStatus = (spentAmount: number, budgetAmount: number): string => {
-    const percentageSpent = Math.round((spentAmount / budgetAmount) * 100);
+    const percentageSpent = Math.floor((spentAmount / budgetAmount) * 100);
 
     if (percentageSpent > 100) {
         return colors.red;

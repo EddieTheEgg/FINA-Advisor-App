@@ -13,7 +13,7 @@ type BudgetSummaryCardProps = {
 
 export const BudgetSummaryCard = ({data}: BudgetSummaryCardProps) => {
 
-    const percentageSpent = Math.round((data.spentAmount / data.budgetAmount) * 100);
+    const percentageSpent = Math.floor((data.spentAmount / data.budgetAmount) * 100);
     const colorStatus = getBudgetColorStatus(data.spentAmount, data.budgetAmount);
 
     const getResponsiveFontSize = (amount: number) => {

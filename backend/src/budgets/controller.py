@@ -2,7 +2,7 @@ from datetime import date
 from uuid import UUID
 from fastapi import APIRouter, status
 from backend.src.budgets.model import BudgetCategoryListResponse, BudgetCreateRequest, BudgetDetailResponse, BudgetListResponse, BudgetTransactionsResponse
-from backend.src.budgets.service import create_budget as create_budget_service, get_budget_details_service, get_budget_transactions_service, get_unbudgeted_categories_service, get_budgets_service
+from backend.src.budgets.service import create_budget as create_budget_service, delete_budget_service, get_budget_details_service, get_budget_transactions_service, get_unbudgeted_categories_service, get_budgets_service
 from backend.src.database.core import DbSession
 from backend.src.auth.service import CurrentUser
 
@@ -59,3 +59,11 @@ async def get_budget_transactions(
     limit: int,
 ) -> BudgetTransactionsResponse:
     return get_budget_transactions_service(db, current_user.get_uuid(), UUID(budget_id), skip, limit)
+
+@router.delete("/deleteBudget", status_code = status.HTTP_200_OK)
+async def delete_budget(
+    db: DbSession,
+    current_user: CurrentUser,
+    budget_id: str,
+) -> None:
+    return delete_budget_service(db, current_user.get_uuid(), UUID(budget_id))

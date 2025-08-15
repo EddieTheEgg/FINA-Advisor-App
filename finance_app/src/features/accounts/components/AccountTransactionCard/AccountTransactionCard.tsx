@@ -1,6 +1,7 @@
 import { View, Text } from 'react-native';
 import { AccountTransactionResponse } from '../../types';
 import { styles } from './AccountTransactionCard.styles';
+import { formatDate } from '../../../../utils/formatDate';
 
 type AccountTransactionCardProps = {
     transactionData : AccountTransactionResponse
@@ -8,13 +9,6 @@ type AccountTransactionCardProps = {
 
 
 export const AccountTransactionCard = ({transactionData} : AccountTransactionCardProps) => {
-
-    const formatDate = (date : string) => {
-        const dateObj = new Date(date);
-        const day = dateObj.getDate();
-        const month = dateObj.toLocaleString('default', { month: 'short' });
-        return `${month} ${day}`;
-    };
 
     const formatBalance = () => {
         const amount = Math.abs(transactionData.amount);

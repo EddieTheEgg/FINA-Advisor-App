@@ -18,6 +18,7 @@ from backend.src.entities.enums import AuditAction, SubscriptionFrequency, Subsc
 from backend.src.exceptions import DeleteTransactionError, TransferTransactionError, CreateTransactionError, CategoryNotFoundError, InvalidUserForCategoryError, InvalidUserForTransactionError, TransactionNotFoundError, UpdateTransactionError
 from backend.src.transactions.model import TransactionCreate, TransactionListRequest, TransactionResponse, TransactionSummary, TransactionUpdate, TransactionListResponse, TransferCreateRequest, TransferCreateResponse, PaginationResponse, SummaryResponse, TransactionAccountResponse
 from backend.src.accounts import service as account_service
+from backend.src.entities.budgets import Budget
 
 def create_regular_transaction(
     db: Session,
@@ -71,6 +72,16 @@ def create_regular_transaction(
         to_account_name = None
         to_account_icon = None
         to_account_color = None
+        
+        
+    # Get the budget associated with the transaction expense if it exists (and if this transaction is an expense)
+    budget_result = (
+        db.query(Budget.budget_id)
+        .filter(Budget.category_id == new_transaction.category_id, Budget.user_id == user_id)
+        .first()
+        if new_transaction.transaction_type == TransactionType.EXPENSE else None
+    )
+    budget_id_affected = str(budget_result[0]) if budget_result else None
     
     return TransactionResponse(
         transaction_id=new_transaction.transaction_id,
@@ -117,7 +128,8 @@ def create_regular_transaction(
             is_custom=category.is_custom,
             created_at=category.created_at,
             updated_at=category.updated_at
-        )   
+        ),
+        budget_id_affected=budget_id_affected
     )
 
 # Creates a new transaction entry in the database
@@ -166,6 +178,15 @@ def get_transaction_by_id(db: Session, transaction_id: UUID, user_id: UUID) -> T
         logging.warning(f"Transaction with id {transaction_id} not found for user {user_id}")
         raise InvalidUserForTransactionError(transaction_id)
     
+    # Get the budget associated with the transaction expense if it exists
+    budget_result = (
+        db.query(Budget.budget_id)
+        .filter(Budget.category_id == transaction.category_id, Budget.user_id == user_id)
+        .first()
+        if transaction.transaction_type == TransactionType.EXPENSE else None
+    )
+    budget_id_affected = str(budget_result[0]) if budget_result else None
+    
     return TransactionResponse(
         transaction_id = transaction.transaction_id,
         account_id = transaction.account_id,
@@ -211,7 +232,8 @@ def get_transaction_by_id(db: Session, transaction_id: UUID, user_id: UUID) -> T
             is_custom = transaction.category.is_custom,
             created_at = transaction.category.created_at,
             updated_at = transaction.category.updated_at
-        )
+        ),
+        budget_id_affected = budget_id_affected
     )
 
 #Helper function to calculate the next payment date for a subscription

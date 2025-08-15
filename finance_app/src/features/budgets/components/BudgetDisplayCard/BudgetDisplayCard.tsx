@@ -10,7 +10,7 @@ type BudgetDisplayCardProps = {
 
 export const BudgetDisplayCard = ({budgetData}: BudgetDisplayCardProps) => {
 
-    const percentageSpent = Math.round((budgetData.budgetSpent / budgetData.budgetAmount) * 100);
+    const percentageSpent = Math.floor((budgetData.budgetSpent / budgetData.budgetAmount) * 100);
     const colorStatus = getBudgetColorStatus(budgetData.budgetSpent, budgetData.budgetAmount);
 
     const handleRemainingBudgetText = () => {

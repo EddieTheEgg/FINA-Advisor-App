@@ -1,4 +1,4 @@
-import { View, Text, ScrollView } from 'react-native';
+import { View, Text, ScrollView, Modal, Image } from 'react-native';
 import { useGetBudgetDetails } from '../../hooks/useGetBudgetDetails';
 import { BudgetsNavigatorParamList, BudgetsNavigatorProps } from '../../../../navigation/types/BudgetsNavigatorTypes';
 import { RouteProp } from '@react-navigation/native';
@@ -17,6 +17,9 @@ import { BudgetDetailsCard } from '../../components/BudgetDetailsCard/BudgetDeta
 import { BudgetInsightsCard } from '../../components/BudgetInsightsCard/BudgetInsightsCard';
 import { truncateText } from '../../../../utils/textFormat';
 import { BudgetRecentTransactionsCard } from '../../components/BudgetRecentTransactionsCard/BudgetRecentTransactionsCard';
+import { useState, useEffect } from 'react';
+import { useDeleteBudget } from '../../hooks/useDeleteBudget';
+import { LoadingDots } from '../../../../components/LoadingDots/LoadingDots';
 
 type BudgetDetailsScreenprops = {
     route: RouteProp<BudgetsNavigatorParamList, 'BudgetDetails'>;
@@ -29,6 +32,16 @@ export const BudgetDetailsScreen = ({route, navigation}: BudgetDetailsScreenprop
     const {budgetId} = route.params;
 
     const {data, isPending, error} = useGetBudgetDetails(budgetId);
+    const {mutate: deleteBudget, isPending: isBudgetDeletePending, error: budgetDeleteError, isSuccess: budgetDeleteSuccess} = useDeleteBudget({budgetId, monthDate: data?.coreBudgetData?.budgetPeriod || new Date()});
+
+    // Handle successful deletion (the deleteBUdget is async, so useEffect is used to await for the deletion response to go back)
+    useEffect(() => {
+        if (budgetDeleteSuccess) {
+            navigation.goBack();
+        }
+    }, [budgetDeleteSuccess, navigation]);
+
+    const [isDeleteModalVisible, setIsDeleteModalVisible] = useState(false);
     if (isPending || !data) {
         return <LoadingScreen />;
     }
@@ -36,10 +49,30 @@ export const BudgetDetailsScreen = ({route, navigation}: BudgetDetailsScreenprop
         return <ErrorScreen
             errorText="Error fetching budget details"
             errorSubText="Please try again later"
-            errorMessage={error.message}
+            errorMessage={error.message || 'Some unknown error occured, no message provided'}
+        />;
+    } else if (budgetDeleteError) {
+        return <ErrorScreen
+            errorText="Error deleting budget"
+            errorSubText="Please try again later"
+            errorMessage={budgetDeleteError.message || 'Some unknown error occured, no message provided'}
         />;
     }
 
+    if (isBudgetDeletePending) {
+        return (
+        <View style={[styles.containerDelete, {paddingTop: insets.top, paddingBottom: insets.bottom}]}>
+            <View>
+                <Image source={require('../../../../assets/images/Loading_Pig.png')} style={styles.imageDelete} />
+                <LoadingDots style ={styles.textDelete} loadingText="Deleting budget" />
+            </View>
+        </View>);
+    }
+
+    const handleDeleteBudget = () => {
+       deleteBudget();
+       setIsDeleteModalVisible(false);
+    };
 
 
     return (
@@ -52,7 +85,7 @@ export const BudgetDetailsScreen = ({route, navigation}: BudgetDetailsScreenprop
                     <BackButton />
                     <Text style = {styles.headerTitle}>{truncateText(data.coreBudgetData.budgetTitle, 18)} Details</Text>
                     <AnimatedPressable
-                        onPress = {() => {}}
+                        onPress = {() => setIsDeleteModalVisible(true)}
                     >
                         <FontAwesome6 name="trash" size={24} color={colors.red} />
                     </AnimatedPressable>
@@ -63,6 +96,34 @@ export const BudgetDetailsScreen = ({route, navigation}: BudgetDetailsScreenprop
                 <BudgetDetailsCard data = {data.coreBudgetData} />
                 <BudgetInsightsCard data = {data} />
             </ScrollView>
+            <Modal
+                visible={isDeleteModalVisible}
+                transparent={true}
+                animationType="fade"
+                onRequestClose={() => {setIsDeleteModalVisible(false);}}
+            >
+                <View style={styles.deletionModalContainer}>
+                    <View style={styles.deletionModalContent}>
+                        <Image source={require('../../../../assets/images/delete_transaction.png')} style={styles.deletionModalImage} />
+                        <Text style={styles.deletionModalTitle}>Delete Budget?</Text>
+                        <Text style={styles.deletionModalText}>This budget will be permanently deleted and cannot be recovered.</Text>
+                        <View style={styles.deletionModalButtons}>
+                            <AnimatedPressable
+                                onPress={handleDeleteBudget}
+                                style={styles.deletionModalButton}
+                            >
+                                <Text style={styles.deletionModalButtonText}>Delete</Text>
+                            </AnimatedPressable>
+                            <AnimatedPressable
+                                onPress={() => setIsDeleteModalVisible(false)}
+                                style={styles.cancelModalButton}>
+                                <Text style={styles.cancelModalButtonText}>Cancel</Text>
+                            </AnimatedPressable>
+
+                        </View>
+                    </View>
+                </View>
+            </Modal>
         </View>
     );
 };

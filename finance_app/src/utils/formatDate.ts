@@ -1,15 +1,18 @@
-//Formats the date to a string of the format "Today", "Yesterday", or "Month Day (abbreviated), Year"
+//Formats the date to a string of the format "Month Day (abbreviated)"
 // Example: Jul 17, Aug 15, etc.
-// If the date is a string, it will be parsed as a local date to avoid timezone issues by adding 'T00:00:00'
+// If the date is a string, it will be parsed as a local date to avoid timezone issues
 
 export const formatDate = (date: Date | string) => {
     let parsedDate: Date;
 
     if (typeof date === 'string') {
-            if (date.includes('T')) {
+        if (date.includes('T')) {
+            // If it's already a datetime string, parse it normally
             parsedDate = new Date(date);
         } else if (date.match(/^\d{4}-\d{2}-\d{2}$/)) {
-            parsedDate = new Date(date + 'T00:00:00');
+            // If it's just a date string (YYYY-MM-DD), create a date at midnight in local timezone
+            const [year, month, day] = date.split('-').map(Number);
+            parsedDate = new Date(year, month - 1, day);
         } else {
             parsedDate = new Date(date);
         }
@@ -17,19 +20,9 @@ export const formatDate = (date: Date | string) => {
         parsedDate = date;
     }
 
-    const today = new Date();
-    const yesterday = new Date(today);
-    yesterday.setDate(today.getDate() - 1);
-
-    if (parsedDate.toDateString() === today.toDateString()) {
-        return 'Today';
-    } else if (parsedDate.toDateString() === yesterday.toDateString()) {
-        return 'Yesterday';
-    } else {
-        return parsedDate.toLocaleDateString('en-US', { month: 'short', day: 'numeric' });
-    }
+    // Always return the date in "Month Day" format
+    return parsedDate.toLocaleDateString('en-US', { month: 'short', day: 'numeric' });
 };
-
 
 // Return the date as someting like December 2024
 export const formatDateMonthYear = (date: Date) => {

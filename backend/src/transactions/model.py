@@ -168,6 +168,7 @@ class TransactionResponse(BaseModel):
     created_at: datetime
     updated_at: datetime | None
     category: CategorySimplifiedResponse
+    budget_id_affected: str | None
     
     class Config:
         from_attributes = True

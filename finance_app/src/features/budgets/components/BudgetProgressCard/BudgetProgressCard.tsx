@@ -33,7 +33,7 @@ export const BudgetProgressCard = ({data}: BudgetProgressCardProps) => {
 
     const remainingBudget = data.budgetAmount - data.spentAmount;
     const colorStatus = getBudgetColorStatus(data.spentAmount, data.budgetAmount);
-    const percentageSpent = Math.round((data.spentAmount / data.budgetAmount) * 100);
+    const percentageSpent = Math.floor((data.spentAmount / data.budgetAmount) * 100);
 
     return (
         <View style = {styles.container}>

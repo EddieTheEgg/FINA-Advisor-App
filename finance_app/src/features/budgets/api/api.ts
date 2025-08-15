@@ -204,3 +204,24 @@ export const getBudgetTransactions = async ({budgetId, skip, limit} : GetBudgetT
 };
 
 
+export const deleteBudget = async (budgetId: string) : Promise<void> => {
+    try {
+        const response = await api.delete('/budgets/deleteBudget', {
+            params: {
+                budget_id: budgetId,
+            },
+        });
+        if (response.status === 200) {
+            return;
+        }
+    } catch (error : unknown) {
+        if (error instanceof AxiosError && error.response?.status === 401) {
+            throw new Error('Unauthorized: Please login to continue');
+        } else if (error instanceof AxiosError && error.response?.status === 400) {
+            throw new Error('Bad Request: Please check your request and try again');
+        } else {
+            throw new Error('Error deleting budget: Please try again later' + error);
+        }
+    }
+};
+

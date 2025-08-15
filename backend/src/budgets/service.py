@@ -7,9 +7,10 @@ from sqlalchemy.orm import Session
 from uuid import UUID
 
 from backend.src.categories.model import CategoryResponse
+from backend.src.entities.audit_logs import AuditLog
 from backend.src.entities.category import Category
 from backend.src.entities.budgets import Budget
-from backend.src.entities.enums import BudgetSpendingStatus, TransactionType
+from backend.src.entities.enums import AuditAction, BudgetSpendingStatus, TransactionType
 from backend.src.entities.transaction import Transaction
 from backend.src.exceptions import BudgetAlreadyExistsError, BudgetCategoryFetchError, BudgetCreationError, BudgetFetchError, BudgetSpentFetchError
 from backend.src.categories import service as category_service
@@ -322,3 +323,44 @@ def get_budget_transactions_service(
     except Exception as e:
         logging.error(f"Error getting budget transactions: {e}")
         raise BudgetFetchError(f"Error getting budget transactions: {e}")
+    
+    
+def delete_budget_service(
+    db: Session,
+    user_id: UUID,
+    budget_id: UUID,
+) -> None:
+    try:
+        budget = db.query(Budget).filter(Budget.budget_id == budget_id, Budget.user_id == user_id).first()
+        
+        if not budget:
+            logging.error(f"Error deleting budget: Budget not found")
+            raise BudgetFetchError(f"Error deleting budget: Budget not found")
+        
+        #Add to audit log
+        import json
+        old_data = {
+            "budget_id": str(budget.budget_id),
+            "user_id": str(budget.user_id),
+            "category_id": str(budget.category_id),
+            "budget_amount": budget.budget_amount,
+            "budget_month": budget.budget_month.isoformat() if budget.budget_month else None,
+            "created_at": budget.created_at.isoformat() if budget.created_at else None,
+            "updated_at": budget.updated_at.isoformat() if budget.updated_at else None,
+            "notes": 'This budget was deleted by the user',
+        }
+        
+        audit_log = AuditLog(
+            user_id = user_id,
+            action = AuditAction.DELETE,
+            record_id = budget_id,
+            old_data = old_data,
+        )
+        db.add(audit_log)
+        db.delete(budget)
+        
+        db.commit()
+        
+    except Exception as e:
+        logging.error(f"Error deleting budget: {e}")
+        raise BudgetFetchError(f"Error deleting budget: {e}")

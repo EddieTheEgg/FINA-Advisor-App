@@ -50,6 +50,7 @@ export type TransactionResponse = {
     createdAt: Date,
     updatedAt: Date | null,
     category: CategoryResponse,
+    budgetIdAffected: string | null,
 };
 
 //Backend Types
