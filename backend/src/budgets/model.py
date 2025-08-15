@@ -52,6 +52,7 @@ class BudgetTransactionSummary(BaseModel):
     transaction_title: str
     transaction_date: date #Which we will turn to Month(abrev) DateNum in the frontend
     transaction_amount: float
+    transaction_id: UUID
     
 class BudgetInsightResponse(BaseModel):
     status_type: BudgetSpendingStatus

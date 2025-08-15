@@ -147,6 +147,7 @@ export const getBudgetDetails = async (budgetId: string) : Promise<BudgetDetailD
                 transactionTitle: transaction.transaction_title,
                 transactionDate: transaction.transaction_date,
                 transactionAmount: transaction.transaction_amount,
+                transactionId: transaction.transaction_id,
             })),
         };
         return formattedData;

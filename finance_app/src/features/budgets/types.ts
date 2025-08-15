@@ -71,6 +71,7 @@ export type BudgetTransactionSummary = {
     transactionTitle: string,
     transactionDate: Date,
     transactionAmount: number,
+    transactionId: string,
 }
 
 export type BudgetDetailData = {
@@ -105,4 +106,5 @@ export type BackendBudgetTransactionSummary = {
     transaction_title: string,
     transaction_date: Date,
     transaction_amount: number,
+    transaction_id: string,
 }

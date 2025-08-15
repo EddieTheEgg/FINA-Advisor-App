@@ -245,6 +245,7 @@ def get_budget_details_service(
                 transaction_title = transaction.title,
                 transaction_date = transaction.transaction_date,
                 transaction_amount = transaction.amount,
+                transaction_id = transaction.transaction_id,
             )
             transaction_list.append(transaction_data)
         

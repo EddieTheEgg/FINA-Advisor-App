@@ -16,6 +16,7 @@ import { BudgetProgressCard } from '../../components/BudgetProgressCard/BudgetPr
 import { BudgetDetailsCard } from '../../components/BudgetDetailsCard/BudgetDetailsCard';
 import { BudgetInsightsCard } from '../../components/BudgetInsightsCard/BudgetInsightsCard';
 import { truncateText } from '../../../../utils/textFormat';
+import { BudgetRecentTransactionsCard } from '../../components/BudgetRecentTransactionsCard/BudgetRecentTransactionsCard';
 
 type BudgetDetailsScreenprops = {
     route: RouteProp<BudgetsNavigatorParamList, 'BudgetDetails'>;
@@ -58,6 +59,7 @@ export const BudgetDetailsScreen = ({route, navigation}: BudgetDetailsScreenprop
                 </View>
                 <BudgetSummaryCard data = {data.coreBudgetData} />
                 <BudgetProgressCard data = {data.coreBudgetData} />
+                <BudgetRecentTransactionsCard data = {data} navigation = {navigation} />
                 <BudgetDetailsCard data = {data.coreBudgetData} />
                 <BudgetInsightsCard data = {data} />
             </ScrollView>
