@@ -62,6 +62,7 @@ class BudgetInsightResponse(BaseModel):
     
 
 class CoreBudgetData(BaseModel):
+    budget_id: str
     budget_title: str
     budget_color: str
     budget_icon: str
@@ -77,6 +78,7 @@ class BudgetInsightData(BaseModel):
     daily_allowance_limit: float
     
 class BudgetDetailResponse(BaseModel):
+    category_data: BudgetCategoryResponse
     core_budget_data: CoreBudgetData
     budget_insight: BudgetInsightData
     recent_budget_transactions: list[BudgetTransactionSummary] #Limit is 5 transactions to display

@@ -127,6 +127,7 @@ export const getBudgetDetails = async (budgetId: string) : Promise<BudgetDetailD
         const data = response.data;
         const formattedData = {
             coreBudgetData: {
+                budgetId: data.core_budget_data.budget_id,
                 budgetTitle: data.core_budget_data.budget_title,
                 budgetColor: data.core_budget_data.budget_color,
                 budgetIcon: data.core_budget_data.budget_icon,
@@ -136,6 +137,13 @@ export const getBudgetDetails = async (budgetId: string) : Promise<BudgetDetailD
                 spentAmount: data.core_budget_data.spent_amount,
                 daysRemaining: data.core_budget_data.days_remaining,
                 projectedTotal: data.core_budget_data.projected_total,
+            },
+            categoryData: {
+                categoryId: data.category_data.category_id.toString(),
+                categoryIcon: data.category_data.category_icon,
+                categoryColor: data.category_data.category_color,
+                categoryName: data.category_data.category_name,
+                categoryDescription: data.category_data.category_description ? data.category_data.category_description : null,
             },
             budgetInsight: {
                 statusType: data.budget_insight.status_type,

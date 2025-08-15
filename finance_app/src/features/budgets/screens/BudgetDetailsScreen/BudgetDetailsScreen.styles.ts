@@ -7,6 +7,7 @@ export const styles = StyleSheet.create({
     container : {
         flex: 1,
         backgroundColor: colors.background,
+        position: 'relative',
     },
     scrollViewContent : {
         marginHorizontal: spacing.md,
@@ -95,5 +96,20 @@ export const styles = StyleSheet.create({
         fontSize: fontSize.xxxl,
         fontWeight: 'bold',
         color: colors.black,
+    },
+    editBudgetContainer : {
+        position: 'absolute',
+        bottom: 100,
+        backgroundColor: colors.darkerBackground,
+        left: spacing.md,
+        right: spacing.md,
+        alignItems: 'center',
+        padding: spacing.md,
+        borderRadius: 10,
+    },
+    editBudgetText : {
+        fontSize: fontSize.lg,
+        color: colors.white,
+        fontFamily: 'Poppins-SemiBold',
     },
 });

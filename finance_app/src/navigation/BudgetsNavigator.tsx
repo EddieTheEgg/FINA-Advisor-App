@@ -5,6 +5,7 @@ import { CreateBudgetScreen } from '../features/budgets/screens/CreateBudgetScre
 import { BudgetDetailsScreen } from '../features/budgets/screens/BudgetDetailsScreen/BudgetDetailsScreen';
 import { BudgetCategoryListScreen } from '../features/budgets/screens/BudgetCategoryListScreen/BudgetCategoryListScreen';
 import { BudgetTransactionsScreen } from '../features/budgets/screens/BudgetTransactionsScreen/BudgetTransactionsScreen';
+import { BudgetEditScreen } from '../features/budgets/screens/BudgetEditScreen/BudgetEditScreen';
 
 
 const Stack = createNativeStackNavigator<BudgetsNavigatorParamList>();
@@ -21,6 +22,7 @@ export const BudgetsNavigator = () => {
             <Stack.Screen name="BudgetDetails" component={BudgetDetailsScreen} />
             <Stack.Screen name="BudgetCategoryList" component={BudgetCategoryListScreen} />
             <Stack.Screen name="BudgetTransactions" component={BudgetTransactionsScreen} />
+            <Stack.Screen name="EditBudget" component={BudgetEditScreen} />
         </Stack.Navigator>
     );
 };

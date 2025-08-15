@@ -6,6 +6,7 @@ export type BudgetsNavigatorParamList = {
     BudgetDetails: { budgetId: string };
     BudgetCategoryList: undefined;
     BudgetTransactions: { budgetId: string };
+    EditBudget: { budgetId: string };
 };
 
 export type BudgetsNavigatorProps = NativeStackNavigationProp<BudgetsNavigatorParamList>;

@@ -253,6 +253,7 @@ def get_budget_details_service(
         
         return BudgetDetailResponse(
             core_budget_data = CoreBudgetData(
+                budget_id = str(budget.budget_id),
                 budget_title = category_data.category_name,
                 budget_color = category_data.color,
                 budget_icon = category_data.icon,
@@ -262,6 +263,13 @@ def get_budget_details_service(
                 spent_amount = total_spent,
                 days_remaining = days_remaining,
                 projected_total = projected_total,
+            ),
+            category_data = BudgetCategoryResponse(
+                category_id = category_data.category_id,
+                category_name = category_data.category_name,
+                category_description = category_data.category_description,
+                category_icon = category_data.icon,
+                category_color = category_data.color,
             ),
             budget_insight = BudgetInsightData(
                 status_type = status_type,

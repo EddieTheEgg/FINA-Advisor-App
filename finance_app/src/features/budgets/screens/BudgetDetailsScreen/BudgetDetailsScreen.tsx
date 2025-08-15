@@ -1,4 +1,4 @@
-import { View, Text, ScrollView, Modal, Image } from 'react-native';
+import { View, Text, ScrollView, Modal, Image, Platform } from 'react-native';
 import { useGetBudgetDetails } from '../../hooks/useGetBudgetDetails';
 import { BudgetsNavigatorParamList, BudgetsNavigatorProps } from '../../../../navigation/types/BudgetsNavigatorTypes';
 import { RouteProp } from '@react-navigation/native';
@@ -74,12 +74,16 @@ export const BudgetDetailsScreen = ({route, navigation}: BudgetDetailsScreenprop
        setIsDeleteModalVisible(false);
     };
 
+    const handleEditBudget = () => {
+        navigation.navigate('EditBudget', {budgetId});
+    }
+
 
     return (
         <View style={[styles.container, {paddingTop: insets.top}]}>
             <ScrollView
                 showsVerticalScrollIndicator={false}
-                contentContainerStyle = {[styles.scrollViewContent, {paddingBottom: insets.bottom + spacing.lg * 5}]}
+                contentContainerStyle = {[styles.scrollViewContent, {paddingBottom: Platform.OS === 'ios' ? insets.bottom + spacing.lg * 6 : insets.bottom + spacing.lg * 8}]}
             >
                 <View style = {styles.headerSection}>
                     <BackButton />
@@ -96,6 +100,12 @@ export const BudgetDetailsScreen = ({route, navigation}: BudgetDetailsScreenprop
                 <BudgetDetailsCard data = {data.coreBudgetData} />
                 <BudgetInsightsCard data = {data} />
             </ScrollView>
+            <AnimatedPressable
+                style = {styles.editBudgetContainer}
+                onPress = {handleEditBudget}
+            >
+                <Text style = {styles.editBudgetText}>Edit Budget</Text>
+            </AnimatedPressable>
             <Modal
                 visible={isDeleteModalVisible}
                 transparent={true}
@@ -119,7 +129,6 @@ export const BudgetDetailsScreen = ({route, navigation}: BudgetDetailsScreenprop
                                 style={styles.cancelModalButton}>
                                 <Text style={styles.cancelModalButtonText}>Cancel</Text>
                             </AnimatedPressable>
-
                         </View>
                     </View>
                 </View>

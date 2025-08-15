@@ -35,7 +35,7 @@ export type BudgetData = {
     categoryData: BudgetCategoryData
     budgetSpent: number,
     budgetAmount: number,
-    budgetMonth: Date,
+    budgetMonth: string, // ISO date string from backend
 }
 
 export type BudgetListData = {
@@ -49,10 +49,11 @@ export type BudgetListData = {
 
 
 export type CoreBudgetData = {
+    budgetId: string,
     budgetTitle: string,
     budgetColor: string,
     budgetIcon: string,
-    budgetPeriod: Date,
+    budgetPeriod: Date, // ISO date string from backend
     dailyAverage: number,
     budgetAmount: number,
     spentAmount: number,
@@ -69,12 +70,13 @@ export type BudgetTransactionSummary = {
     categoryColor: string,
     categoryIcon: string,
     transactionTitle: string,
-    transactionDate: Date,
+    transactionDate: string, // ISO date string from backend
     transactionAmount: number,
     transactionId: string,
 }
 
 export type BudgetDetailData = {
+    categoryData : BudgetCategoryData
     coreBudgetData : CoreBudgetData,
     budgetInsight: BudgetInsightData,
     recentBudgetTransactions: BudgetTransactionSummary[]
