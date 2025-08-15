@@ -26,7 +26,7 @@ const seperator = () => {
     return <View style={{height: spacing.md}} />;
   };
 
-  
+
 export const BudgetTransactionsScreen = ({route, navigation}: BudgetTransactionScreenProps) => {
     const insets = useSafeAreaInsets();
     const {budgetId} = route.params;

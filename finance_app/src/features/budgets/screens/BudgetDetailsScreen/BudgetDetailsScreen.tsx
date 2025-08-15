@@ -30,7 +30,7 @@ export const BudgetDetailsScreen = ({route, navigation}: BudgetDetailsScreenprop
 
     const {data, isPending, error} = useGetBudgetDetails(budgetId);
     if (isPending || !data) {
-        return <LoadingScreen />
+        return <LoadingScreen />;
     }
     if (error) {
         return <ErrorScreen
