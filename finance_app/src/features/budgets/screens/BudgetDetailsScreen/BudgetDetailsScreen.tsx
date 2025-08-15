@@ -59,7 +59,7 @@ export const BudgetDetailsScreen = ({route, navigation}: BudgetDetailsScreenprop
                 </View>
                 <BudgetSummaryCard data = {data.coreBudgetData} />
                 <BudgetProgressCard data = {data.coreBudgetData} />
-                <BudgetRecentTransactionsCard data = {data} navigation = {navigation} />
+                <BudgetRecentTransactionsCard data = {data} navigation = {navigation} budgetId = {budgetId} />
                 <BudgetDetailsCard data = {data.coreBudgetData} />
                 <BudgetInsightsCard data = {data} />
             </ScrollView>

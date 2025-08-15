@@ -12,12 +12,19 @@ import { fontSize } from '../../../../styles/fontSizes';
 type BudgetRecentTransactionsCardProps = {
     data: BudgetDetailData;
     navigation: BudgetsNavigatorProps;
+    budgetId: string;
 }
 
-export const BudgetRecentTransactionsCard = ({data, navigation}: BudgetRecentTransactionsCardProps) => {
+export const BudgetRecentTransactionsCard = ({data, navigation, budgetId}: BudgetRecentTransactionsCardProps) => {
     const handleNavToTransactionDetails = (transactionId: string) => {
         navigation.getParent()?.getParent()?.navigate('TransactionDetail', {
             transactionId: transactionId,
+        });
+    };
+
+    const handleNavToBudgetTransactions = () => {
+        navigation.navigate('BudgetTransactions', {
+            budgetId: budgetId,
         });
     };
 
@@ -43,7 +50,7 @@ export const BudgetRecentTransactionsCard = ({data, navigation}: BudgetRecentTra
                 ))}
             </View>
             <AnimatedPressable
-                onPress = {() => {}}
+                onPress = {handleNavToBudgetTransactions}
                 style = {styles.viewAllTransactionsButton}
             >
                 <Text style = {styles.viewAllTransactionsButtonText}>View All {truncateText(data.coreBudgetData.budgetTitle, 10)} Transactions <FontAwesome6 name = "arrow-right" size = {fontSize.sm + 2} color = {colors.darkerBackground} /></Text>
