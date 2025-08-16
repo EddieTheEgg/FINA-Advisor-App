@@ -1,6 +1,5 @@
 import { View, Text, ScrollView, Dimensions } from 'react-native';
 import { useSafeAreaInsets } from 'react-native-safe-area-context';
-import { SignOutButton } from '../../../auth/components/SignOutButton/SignOutButton';
 import { styles } from './HomeScreen.styles';
 import Greeting from '../../components/Greeting/Greeting';
 import MonthSelector from '../../components/MonthSelector/MonthSelector';
@@ -14,6 +13,10 @@ import { IncomeExpense } from '../../components/IncomeExpense/IncomeExpense';
 import { RecentTransactions } from '../../components/RecentTransactions/RecentTransactions';
 import { ErrorScreen } from '../../../../components/ErrorScreen/ErrorScreen';
 import { DashboardNavigationProps } from '../../../../navigation/types/DashboardNavigatorTypes';
+import { colors } from '../../../../styles/colors';
+import { AnimatedPressable } from '../../../../components/AnimatedPressable/AnimatedPressable';
+import { fontSize } from '../../../../styles/fontSizes';
+import FontAwesome6 from 'react-native-vector-icons/FontAwesome6';
 
 const { height } = Dimensions.get('window');
 const responsivePadding = height * 0.2;
@@ -72,13 +75,16 @@ export const DashboardScreen = ({ navigation }: DashboardScreenProps) => {
                 showsVerticalScrollIndicator={false}
             >
                 <View style={styles.headerContainer}>
-                    <View>
+                    <View style = {styles.greetingContainer}>
                         <Greeting styles={styles.greetingText} />
                         <Text style={styles.nameText}>{dashboard.user.firstName}</Text>
                     </View>
-                    <View>
-                        <SignOutButton />
-                    </View>
+                    <AnimatedPressable
+                        onPress = {() => navigation.navigate('Settings')}
+                        style = {styles.settingsButton}
+                    >
+                        <FontAwesome6 name = "gear" size = {fontSize.xl} color = {colors.black} />
+                    </AnimatedPressable>
                 </View>
                 <View style={styles.monthSelectorContainer}>
                     <MonthSelector
@@ -93,20 +99,14 @@ export const DashboardScreen = ({ navigation }: DashboardScreenProps) => {
                 <View>
                     <View style={styles.monthlyBalanceContainer}>
                         <View>
-                            <View>
-                                <BalanceDisplay dashboard={dashboard} />
-                            </View>
-                            <View>
-                                <BalanceBadge dashboard={dashboard} />
-                            </View>
+                            <BalanceDisplay dashboard={dashboard} />
+                            <BalanceBadge dashboard={dashboard} />
                         </View>
                         <View>
                             <AccountCircle accounts={dashboard.accounts} />
                         </View>
                     </View>
-                    <View style={styles.monthlyIncomeExpenseContainer}>
-                        <IncomeExpense dashboard={dashboard} />
-                    </View>
+                    <IncomeExpense dashboard={dashboard} />
                 </View>
                 <View style = {styles.recentTransactionsContainer}>
                     <RecentTransactions recentTransactions={dashboard.recentTransactions} navigation={navigation} />

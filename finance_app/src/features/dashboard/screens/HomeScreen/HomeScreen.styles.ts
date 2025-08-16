@@ -11,13 +11,21 @@ export const styles = StyleSheet.create({
         flexDirection: 'row',
         alignItems: 'center',
         justifyContent: 'space-between',
-        marginHorizontal: spacing.lg,
+        marginHorizontal: spacing.md,
         marginTop: spacing.md,
+    },
+    settingsButton : {
+        backgroundColor: colors.white,
+        padding: spacing.md,
+        borderRadius: 20,
+        boxShadow: '0 2px 2px 0 rgba(0, 0, 0, 0.3)',
+    },
+    greetingContainer : {
+        alignContent: 'flex-start',
     },
     greetingText: {
         fontSize: fontSize.base,
         color: colors.gray[500],
-        marginLeft: 5, // Poppins font has a built in spacing, so need this minor adjustment
     },
     nameText: {
         fontSize: fontSize.xxl,
@@ -28,12 +36,11 @@ export const styles = StyleSheet.create({
     monthSelectorContainer: {
         marginTop: spacing.md,
     },
-
     monthlyBalanceContainer: {
         flexDirection: 'row',
         alignItems: 'center',
         justifyContent: 'center',
-        marginTop: spacing.md,
+        marginVertical: spacing.sm,
         marginHorizontal: spacing.sm,
         gap: spacing.md,
         backgroundColor: 'white',

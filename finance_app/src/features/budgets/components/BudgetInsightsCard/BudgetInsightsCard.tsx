@@ -9,7 +9,6 @@ type BudgetInsightsCardProps = {
 export const BudgetInsightsCard = ({data}: BudgetInsightsCardProps) => {
 
     const budgetStatus = data.budgetInsight.statusType;
-    console.log(budgetStatus);
 
     if (budgetStatus === BudgetSpendingStatus.ON_TRACK) {
         const leftToSpend = data.coreBudgetData.budgetAmount - data.coreBudgetData.spentAmount;
