@@ -39,4 +39,7 @@ export const styles = StyleSheet.create({
       borderRadius: 12,
       marginVertical: spacing.sm,
     },
+    noTransactionContainer : {
+        marginHorizontal: spacing.md,
+    },
 });

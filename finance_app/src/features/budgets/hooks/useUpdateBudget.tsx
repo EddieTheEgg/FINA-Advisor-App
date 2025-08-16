@@ -1,5 +1,5 @@
-import { useMutation, useQueryClient } from "@tanstack/react-query";
-import { updateBudget } from "../api/api";
+import { useMutation, useQueryClient } from '@tanstack/react-query';
+import { updateBudget } from '../api/api';
 
 type UpdateBudgetProps = {
     budgetId: string;

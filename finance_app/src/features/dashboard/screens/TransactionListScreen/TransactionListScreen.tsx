@@ -16,6 +16,7 @@ import { AnimatedPressable } from '../../../../components/AnimatedPressable/Anim
 import { FilterTransactionsModal } from '../../components/FilterTransactionsModal/FilterTransactionsModal';
 import { TransactionSummary } from '../../types';
 import { DashboardNavigationProps } from '../../../../navigation/types/DashboardNavigatorTypes';
+import { NoTransactions } from '../../../accounts/components/NoTransactions/NoTransactions';
 
 
 type TransactionListScreenProps = {
@@ -107,6 +108,7 @@ export const TransactionListScreen = ({navigation}: TransactionListScreenProps) 
             </View>
             {isPending || !data ? <LoadingDots style = {styles.loadingDots} /> :
                 (<>
+                {data?.transactions.length === 0 ? <View style = {styles.noTransactionContainer}><NoTransactions /></View> : (
                     <FlatList
                         data={data?.transactions || []}
                         renderItem={renderTransactionItem}
@@ -115,7 +117,7 @@ export const TransactionListScreen = ({navigation}: TransactionListScreenProps) 
                         style={styles.transactionList}
                         onEndReachedThreshold={0.5}
                         onEndReached={() => hasNextPage && fetchNextPage()}
-                    />
+                    /> )}
                     <FilterTransactionsModal
                         visible = {filterTransactionsModalVisible}
                         onRequestClose = {() => setFilterTransactionsModalVisible(false)}

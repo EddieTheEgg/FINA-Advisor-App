@@ -44,4 +44,7 @@ export const styles = StyleSheet.create({
         backgroundColor: colors.gray[200],
         marginVertical: spacing.xs,
     },
+    noTransactionContainer : {
+        marginHorizontal: spacing.md,
+    },
 });

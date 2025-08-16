@@ -6,6 +6,8 @@ import FontAwesome6 from 'react-native-vector-icons/FontAwesome6';
 import { colors } from '../../../../styles/colors';
 import { AnimatedPressable } from '../../../../components/AnimatedPressable/AnimatedPressable';
 import { DashboardNavigationProps } from '../../../../navigation/types/DashboardNavigatorTypes';
+import { NoTransactions } from '../../../accounts/components/NoTransactions/NoTransactions';
+
 
 type RecentTransactionsProps = {
     recentTransactions: DashboardData['recentTransactions'];
@@ -34,13 +36,18 @@ export const RecentTransactions = ({recentTransactions, navigation}: RecentTrans
                     <FontAwesome6 name = "arrow-right" size = {16} color = {colors.gray[600]} />
                 </AnimatedPressable>
             </View>
-            <FlatList
-                data = {recentTransactions}
-                renderItem = {({item}) => <TransactionPreview transactionItem={item} navigation={navigation}/>}
-                keyExtractor = {(item) => item.transactionId}
-                showsVerticalScrollIndicator = {false}
-                ItemSeparatorComponent={SeparatorComponent}
-                scrollEnabled = {false} />
+            {recentTransactions.length <= 0 ?
+                <View style = {styles.noTransactionContainer}>
+                    <NoTransactions />
+                </View> :
+                <FlatList
+                    data = {recentTransactions}
+                    renderItem = {({item}) => <TransactionPreview transactionItem={item} navigation={navigation}/>}
+                    keyExtractor = {(item) => item.transactionId}
+                    showsVerticalScrollIndicator = {false}
+                    ItemSeparatorComponent={SeparatorComponent}
+                    scrollEnabled = {false} />
+                }
         </View>
     );
 };

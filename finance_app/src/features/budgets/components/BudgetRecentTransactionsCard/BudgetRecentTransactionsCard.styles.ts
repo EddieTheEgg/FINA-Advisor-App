@@ -59,4 +59,18 @@ export const styles = StyleSheet.create({
         fontFamily: 'Poppins-SemiBold',
         includeFontPadding: false,
     },
+     noTransactionsContainer: {
+        alignItems: 'center',
+        backgroundColor: colors.white,
+        padding: spacing.md,
+        borderRadius: 20,
+    },
+    noTransactionsIcon: {
+        color: colors.gray[600],
+    },
+    noTransactionsText: {
+        fontSize: fontSize.lg,
+        fontFamily: 'Poppins-SemiBold',
+        color: colors.gray[600],
+    },
 });

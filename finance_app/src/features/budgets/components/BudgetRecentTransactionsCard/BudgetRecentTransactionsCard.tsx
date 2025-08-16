@@ -28,6 +28,18 @@ export const BudgetRecentTransactionsCard = ({data, navigation, budgetId}: Budge
         });
     };
 
+    if (data.recentBudgetTransactions.length <= 0) {
+        return (
+            <View style = {styles.container}>
+                <Text style = {styles.title}>{data.coreBudgetData.budgetIcon} Recent {data.coreBudgetData.budgetTitle} Transactions</Text>
+                    <View style = {styles.noTransactionsContainer}>
+                        <FontAwesome6 name = "file-circle-exclamation" size = {60} style= {styles.noTransactionsIcon} />
+                        <Text style = {styles.noTransactionsText}>No Transactions Found!</Text>
+                    </View>
+            </View>
+        );
+    }
+
     return (
         <View style = {styles.container}>
             <Text style = {styles.title}>{data.coreBudgetData.budgetIcon} Recent {data.coreBudgetData.budgetTitle} Transactions</Text>
