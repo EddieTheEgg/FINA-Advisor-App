@@ -29,9 +29,13 @@ const seperator = () => {
 
 export const BudgetTransactionsScreen = ({route, navigation}: BudgetTransactionScreenProps) => {
     const insets = useSafeAreaInsets();
-    const {budgetId} = route.params;
+    const {budgetId, monthDate} = route.params;
 
-    const {data : budgetData, isPending : isPendingBudgetData, error : errorBudgetData} = useGetBudgetDetails(budgetId);
+    // Convert string back to Date object and ensure it's the first day of the month at 00:00:00 local time
+    const monthDateObj = new Date(monthDate);
+    monthDateObj.setHours(0, 0, 0, 0);
+
+    const {data : budgetData, isPending : isPendingBudgetData, error : errorBudgetData} = useGetBudgetDetails(budgetId, monthDateObj);
     const {
         data : budgetTransactionsData,
         isPending : isPendingBudgetTransactionsData,
@@ -39,7 +43,7 @@ export const BudgetTransactionsScreen = ({route, navigation}: BudgetTransactionS
         fetchNextPage,
         hasNextPage,
         isFetchingNextPage,
-    } = useGetBudgetTransactions({budgetId});
+    } = useGetBudgetTransactions({budgetId, monthDate: monthDateObj});
 
     if (isPendingBudgetData || !budgetData || isPendingBudgetTransactionsData || !budgetTransactionsData) {
         return <LoadingScreen />;
@@ -52,7 +56,7 @@ export const BudgetTransactionsScreen = ({route, navigation}: BudgetTransactionS
         />;
     }
 
-    const month = formatDateMonthYear(budgetData.coreBudgetData.budgetPeriod).split(' ')[0];
+    const monthYear = formatDateMonthYear(budgetData.coreBudgetData.budgetPeriod);
 
     const budgetTransactionsFormattedData = budgetTransactionsData.pages.flatMap((page) => page.transactions);
 
@@ -85,7 +89,7 @@ export const BudgetTransactionsScreen = ({route, navigation}: BudgetTransactionS
                 <FontAwesome6 name = "empty-space" size = {24} color = {colors.background} />
             </View>
             <View style = {styles.transactionListHeader}>
-                <Text style = {styles.transactionListTitle}>{month} Transactions</Text>
+                <Text style = {styles.transactionListTitle}>{monthYear} Transactions</Text>
                 <Text style = {styles.transactionListSubtitle}>{budgetTransactionsFormattedData.length} total</Text>
             </View>
             <FlatList

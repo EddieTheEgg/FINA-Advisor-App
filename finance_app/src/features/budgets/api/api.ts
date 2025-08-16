@@ -117,11 +117,12 @@ export const getBudgets = async ({monthDate, skip, limit} : GetBudgetProps) : Pr
 };
 
 
-export const getBudgetDetails = async (budgetId: string) : Promise<BudgetDetailData> => {
+export const getBudgetDetails = async (budgetId: string, monthDate: Date) : Promise<BudgetDetailData> => {
     try {
         const response = await api.get('/budgets/getBudgetDetails', {
             params: {
                 budget_id: budgetId,
+                month_date: monthDate.toISOString().split('T')[0],
             },
         });
         const data = response.data;
@@ -172,15 +173,17 @@ export const getBudgetDetails = async (budgetId: string) : Promise<BudgetDetailD
 
 type GetBudgetTransactionsProps = {
     budgetId: string;
+    monthDate: Date;
     skip: number;
     limit: number;
 }
 
-export const getBudgetTransactions = async ({budgetId, skip, limit} : GetBudgetTransactionsProps) : Promise<BudgetTransactionsData> => {
+export const getBudgetTransactions = async ({budgetId, monthDate, skip, limit} : GetBudgetTransactionsProps) : Promise<BudgetTransactionsData> => {
     try {
         const response = await api.get('/budgets/getBudgetTransactions', {
             params: {
                 budget_id: budgetId,
+                month_date: monthDate.toISOString().split('T')[0],
                 skip,
                 limit,
             },

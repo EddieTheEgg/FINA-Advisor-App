@@ -195,6 +195,7 @@ def get_budget_details_service(
     db: Session,
     user_id: UUID,
     budget_id: UUID,
+    month_date: date,
 ) -> BudgetDetailResponse: 
     try:
         budget = db.query(Budget).filter(Budget.budget_id == budget_id).first()
@@ -236,6 +237,7 @@ def get_budget_details_service(
         ).filter(
             Transaction.category_id == budget.category_id,
             Transaction.user_id == user_id,
+            Transaction.transaction_date.between(budget.budget_month, budget.budget_month + relativedelta(months=1) - timedelta(days=1)),
         ).order_by(Transaction.transaction_date.desc()).limit(5).all()
 
         transaction_list = []
@@ -301,6 +303,7 @@ def get_budget_transactions_service(
         ).filter(
             Transaction.category_id == budget.category_id,
             Transaction.user_id == user_id,
+            Transaction.transaction_date.between(budget.budget_month, budget.budget_month + relativedelta(months=1) - timedelta(days=1)),
         ).order_by(Transaction.transaction_date.desc()).offset(skip).limit(limit).all()
         
         transaction_list = []

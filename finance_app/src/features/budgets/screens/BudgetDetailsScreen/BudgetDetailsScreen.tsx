@@ -29,9 +29,13 @@ type BudgetDetailsScreenprops = {
 
 export const BudgetDetailsScreen = ({route, navigation}: BudgetDetailsScreenprops) => {
     const insets = useSafeAreaInsets();
-    const {budgetId} = route.params;
+    const {budgetId, monthDate} = route.params;
 
-    const {data, isPending, error} = useGetBudgetDetails(budgetId);
+    // Convert string back to Date object (This step is to avoid serliazation issues when persisting states)
+    const monthDateObj = new Date(monthDate);
+    monthDateObj.setHours(0, 0, 0, 0);
+
+    const {data, isPending, error} = useGetBudgetDetails(budgetId, monthDateObj);
     const {mutate: deleteBudget, isPending: isBudgetDeletePending, error: budgetDeleteError, isSuccess: budgetDeleteSuccess} = useDeleteBudget({budgetId, monthDate: data?.coreBudgetData?.budgetPeriod || new Date()});
 
     // Handle successful deletion (the deleteBUdget is async, so useEffect is used to await for the deletion response to go back)
@@ -96,7 +100,7 @@ export const BudgetDetailsScreen = ({route, navigation}: BudgetDetailsScreenprop
                 </View>
                 <BudgetSummaryCard data = {data.coreBudgetData} />
                 <BudgetProgressCard data = {data.coreBudgetData} />
-                <BudgetRecentTransactionsCard data = {data} navigation = {navigation} budgetId = {budgetId} />
+                <BudgetRecentTransactionsCard data = {data} navigation = {navigation}/>
                 <BudgetDetailsCard data = {data.coreBudgetData} />
                 <BudgetInsightsCard data = {data} />
             </ScrollView>

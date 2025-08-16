@@ -12,10 +12,9 @@ import { fontSize } from '../../../../styles/fontSizes';
 type BudgetRecentTransactionsCardProps = {
     data: BudgetDetailData;
     navigation: BudgetsNavigatorProps;
-    budgetId: string;
 }
 
-export const BudgetRecentTransactionsCard = ({data, navigation, budgetId}: BudgetRecentTransactionsCardProps) => {
+export const BudgetRecentTransactionsCard = ({data, navigation}: BudgetRecentTransactionsCardProps) => {
     const handleNavToTransactionDetails = (transactionId: string) => {
         navigation.getParent()?.getParent()?.navigate('TransactionDetail', {
             transactionId: transactionId,
@@ -24,7 +23,8 @@ export const BudgetRecentTransactionsCard = ({data, navigation, budgetId}: Budge
 
     const handleNavToBudgetTransactions = () => {
         navigation.navigate('BudgetTransactions', {
-            budgetId: budgetId,
+            budgetId: data.coreBudgetData.budgetId,
+            monthDate: data.coreBudgetData.budgetPeriod.toISOString(),
         });
     };
 
