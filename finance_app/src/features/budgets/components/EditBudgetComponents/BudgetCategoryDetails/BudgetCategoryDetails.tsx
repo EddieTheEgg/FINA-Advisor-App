@@ -18,7 +18,7 @@ export const BudgetCategoryDetails = ({data}: BudgetCategoryDetailsProps) => {
 
     const [isMoreDetailsExpanded, setIsMoreDetailsExpanded] = useState(false);
 
-    
+
     return (
         <View style = {styles.container}>
             <View style = {styles.budgetDetailsHeaderSection}>

@@ -15,6 +15,8 @@ import { colors } from '../../../../styles/colors';
 import FontAwesome6 from 'react-native-vector-icons/FontAwesome6';
 import { CurrentBudgetInfo } from '../../components/EditBudgetComponents/CurrentBudgetInfo/CurrentBudgetInfo';
 import { BudgetCategoryDetails } from '../../components/EditBudgetComponents/BudgetCategoryDetails/BudgetCategoryDetails';
+import { UpdateBudgetAmount } from '../../components/EditBudgetComponents/UpdateBudgetAmount/UpdateBudgetAmount';
+import { AnimatedPressable } from '../../../../components/AnimatedPressable/AnimatedPressable';
 
 type BudgetEditScreenProps = {
     route: RouteProp<BudgetsNavigatorParamList, 'EditBudget'>;
@@ -29,11 +31,6 @@ export const BudgetEditScreen = ({route, navigation}: BudgetEditScreenProps) => 
 
     const {
         initializeDraftFromBudget,
-        budgetIdDraft,
-        budgetMonthDraft,
-        budgetAmountDraft,
-        categoryIdDraft,
-        selectedCategoryInfoDraft,
     } = useEditBudgetStore();
 
 
@@ -51,7 +48,7 @@ export const BudgetEditScreen = ({route, navigation}: BudgetEditScreenProps) => 
         return <ErrorScreen
             errorText = "Error fetching budget details"
             errorSubText = "There is no budget data to display!"
-            errorMessage = "Cannot edit budget furthur, please find another budget to edit or try again later"
+            errorMessage = {error.message || 'Some unknown error occured, no message provided'}
         />;
     }
 
@@ -65,6 +62,10 @@ export const BudgetEditScreen = ({route, navigation}: BudgetEditScreenProps) => 
             </View>
             <CurrentBudgetInfo  data = {data.coreBudgetData}/>
             <BudgetCategoryDetails data = {data.coreBudgetData} />
+            <UpdateBudgetAmount data = {data.coreBudgetData} />
+            <AnimatedPressable>
+                <Text>Save Budget</Text>
+            </AnimatedPressable>
         </ScrollView>
     );
 };

@@ -76,7 +76,7 @@ export const BudgetDetailsScreen = ({route, navigation}: BudgetDetailsScreenprop
 
     const handleEditBudget = () => {
         navigation.navigate('EditBudget', {budgetId});
-    }
+    };
 
 
     return (

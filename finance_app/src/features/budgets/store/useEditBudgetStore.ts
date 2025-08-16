@@ -30,6 +30,9 @@ type EditBudgetDraftState = {
 
     initializeDraftFromBudget: (budget: BudgetDetailData) => void;
 
+    budgetAmountError: string;
+    setBudgetAmountError: (budgetAmountError: string) => void;
+    validateBudgetAmount: () => boolean;
 }
 
 const initialEditBudgetState = {
@@ -46,9 +49,10 @@ const initialEditBudgetDraftState = {
     budgetAmountDraft: 0,
     categoryIdDraft: '',
     selectedCategoryInfoDraft: null,
+    budgetAmountError: '',
 };
 
-export const useEditBudgetStore = create<EditBudgetState & EditBudgetDraftState>((set) => ({
+export const useEditBudgetStore = create<EditBudgetState & EditBudgetDraftState>((set, get) => ({
     ...initialEditBudgetState,
     ...initialEditBudgetDraftState,
     setBudgetId: (budgetId: string) => set({budgetId}),
@@ -61,6 +65,7 @@ export const useEditBudgetStore = create<EditBudgetState & EditBudgetDraftState>
     setBudgetAmountDraft: (budgetAmountDraft: number) => set({budgetAmountDraft}),
     setCategoryIdDraft: (categoryIdDraft: string) => set({categoryIdDraft}),
     setSelectedCategoryInfoDraft: (selectedCategoryInfoDraft: BudgetCategoryData | null) => set({selectedCategoryInfoDraft}),
+    setBudgetAmountError: (budgetAmountError: string) => set({budgetAmountError}),
     initializeDraftFromBudget: (budget: BudgetDetailData) => {
         set({
             budgetIdDraft: budget.coreBudgetData.budgetId,
@@ -71,9 +76,21 @@ export const useEditBudgetStore = create<EditBudgetState & EditBudgetDraftState>
 
             budgetId: budget.coreBudgetData.budgetId,
             budgetMonth: new Date(budget.coreBudgetData.budgetPeriod),
-            budgetAmount: budget.coreBudgetData.budgetAmount, 
+            budgetAmount: budget.coreBudgetData.budgetAmount,
             categoryId: budget.categoryData.categoryId,
             selectedCategoryInfo: budget.categoryData,
         });
+    },
+
+     validateBudgetAmount: () => {
+        const {budgetAmountDraft} = get();
+
+        if (budgetAmountDraft <= 0.00) {
+            set({budgetAmountError: 'Budget must be greater than 0'});
+            return false;
+        }
+
+        set({budgetAmountError: ''});
+        return true;
     },
 }));
