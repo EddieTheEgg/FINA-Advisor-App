@@ -1,4 +1,4 @@
-from pydantic import BaseModel
+from pydantic import BaseModel, Field
 from datetime import date
 from uuid import UUID
 from backend.src.categories.model import CategoryResponse
@@ -7,7 +7,7 @@ from backend.src.transactions.model import TransactionResponse
 
 class BudgetCreateRequest(BaseModel):
     category_id: str
-    budget_amount: float
+    budget_amount: float = Field(gt=0, le=1000000, description="Budget amount must be between 0 and 1,000,000")
     budget_month: date #Always the first day of the month to keep consistency since only month digit matters    
     
      
@@ -91,6 +91,11 @@ class BudgetTransactionsResponse(BaseModel):
     has_next: bool
     current_page: int
     page_size: int
+    
+    
+class BudgetUpdateRequest(BaseModel):
+    budget_id: str
+    budget_amount: float = Field(gt=0, le=1000000, description="Budget amount must be between 0 and 1,000,000")
     
     
     

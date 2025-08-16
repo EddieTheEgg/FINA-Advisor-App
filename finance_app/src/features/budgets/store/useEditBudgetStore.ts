@@ -5,6 +5,7 @@ type EditBudgetState = {
     budgetId: string;
     budgetMonth: Date;
     budgetAmount: number;
+    spentAmount: number;
     categoryId: string;
     selectedCategoryInfo: BudgetCategoryData | null;
 
@@ -32,13 +33,16 @@ type EditBudgetDraftState = {
 
     budgetAmountError: string;
     setBudgetAmountError: (budgetAmountError: string) => void;
+
     validateBudgetAmount: () => boolean;
+    checkNewBudgetStatus: () => boolean;
 }
 
 const initialEditBudgetState = {
     budgetId: '',
     budgetMonth: new Date(new Date().getFullYear(), new Date().getMonth(), 1),
     budgetAmount: 0,
+    spentAmount: 0,
     categoryId: '',
     selectedCategoryInfo: null,
 };
@@ -77,6 +81,7 @@ export const useEditBudgetStore = create<EditBudgetState & EditBudgetDraftState>
             budgetId: budget.coreBudgetData.budgetId,
             budgetMonth: new Date(budget.coreBudgetData.budgetPeriod),
             budgetAmount: budget.coreBudgetData.budgetAmount,
+            spentAmount: budget.coreBudgetData.spentAmount,
             categoryId: budget.categoryData.categoryId,
             selectedCategoryInfo: budget.categoryData,
         });
@@ -91,6 +96,18 @@ export const useEditBudgetStore = create<EditBudgetState & EditBudgetDraftState>
         }
 
         set({budgetAmountError: ''});
+        return true;
+    },
+
+    checkNewBudgetStatus: () => {
+        const {budgetAmountDraft, spentAmount} = get();
+
+        const newPercentageSpent = Math.floor((spentAmount / budgetAmountDraft) * 100);
+
+        if (newPercentageSpent > 100) {
+            return false;
+        }
+
         return true;
     },
 }));

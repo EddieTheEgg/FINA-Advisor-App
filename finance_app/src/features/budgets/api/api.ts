@@ -233,3 +233,30 @@ export const deleteBudget = async (budgetId: string) : Promise<void> => {
     }
 };
 
+
+type UpdateBudgetPayload = {
+    budget_id: string;
+    budget_amount: number;
+}
+
+export const updateBudget = async (budgetData: UpdateBudgetPayload) : Promise<void> => {
+    try {
+        console.log(budgetData);
+        const response = await api.put('/budgets/updateBudget', budgetData);
+        if (response.status === 200) {
+            return;
+        }
+    } catch (error : unknown) {
+        if (error instanceof AxiosError && error.response?.status === 401) {
+            throw new Error('Unauthorized: Please login to continue');
+        }
+        else if (error instanceof AxiosError && error.response?.status === 400) {
+            throw new Error('Bad Request: Please check your request and try again');
+        }
+        else {
+            throw new Error('Error updating budget: Please try again later' + error);
+        }
+    }
+};
+
+

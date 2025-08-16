@@ -2,7 +2,7 @@ from datetime import timedelta, date
 from dateutil.relativedelta import relativedelta
 from sqlalchemy import func
 import logging
-from backend.src.budgets.model import BudgetCategoryResponse, BudgetCategoryListResponse, BudgetCreateRequest, BudgetDetailResponse, BudgetInsightData, BudgetListResponse, BudgetResponse, BudgetTransactionSummary, CoreBudgetData, BudgetTransactionsResponse
+from backend.src.budgets.model import BudgetCategoryResponse, BudgetCategoryListResponse, BudgetCreateRequest, BudgetDetailResponse, BudgetInsightData, BudgetListResponse, BudgetResponse, BudgetTransactionSummary, CoreBudgetData, BudgetTransactionsResponse, BudgetUpdateRequest   
 from sqlalchemy.orm import Session
 from uuid import UUID
 
@@ -372,3 +372,58 @@ def delete_budget_service(
     except Exception as e:
         logging.error(f"Error deleting budget: {e}")
         raise BudgetFetchError(f"Error deleting budget: {e}")
+    
+    
+# For now simply update budget amount, there's no other complex update category or date like that (But setup to be scalable)
+def update_budget_service(
+    db: Session,
+    user_id: UUID,
+    budget_update_data: BudgetUpdateRequest,
+) -> None:
+    try:
+        budget = db.query(Budget).filter(Budget.budget_id == UUID(budget_update_data.budget_id), Budget.user_id == user_id).first()
+        
+        if not budget:
+            logging.error(f"Error updating budget: Budget not found")
+            raise BudgetFetchError(f"Error updating budget: Budget not found")
+        
+        #Create audit log of the budget change
+        
+        old_data = {
+            "budget_id": str(budget.budget_id),
+            "user_id": str(budget.user_id),
+            "category_id": str(budget.category_id),
+            "budget_amount": budget.budget_amount,
+            "budget_month": budget.budget_month.isoformat() if budget.budget_month else None,
+        }
+        
+        new_data = {
+            "budget_id": str(budget.budget_id),
+            "user_id": str(budget.user_id),
+            "category_id": str(budget.category_id),
+            "budget_amount": budget_update_data.budget_amount,
+            "budget_month": budget.budget_month.isoformat() if budget.budget_month else None,
+        }
+        
+        audit_log = AuditLog(
+            user_id = user_id,
+            action = AuditAction.UPDATE,
+            record_id = budget.budget_id,
+            old_data = old_data,
+            new_data = new_data,
+        )
+        db.add(audit_log)
+        
+        #Update the budget amount
+        budget.budget_amount = budget_update_data.budget_amount
+        
+        db.commit()
+    except Exception as e:
+        logging.error(f"Error updating budget: {e}")
+        raise BudgetFetchError(f"Error updating budget: {e}")
+    
+    
+    
+    
+    
+                
