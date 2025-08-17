@@ -5,6 +5,7 @@ import { styles } from './SettingScreen.styles';
 import { colors } from '../../../../styles/colors';
 import FontAwesome6 from 'react-native-vector-icons/FontAwesome6';
 import { UserCardPreview } from '../../components/UserCardPreview/UserCardPreview';
+import { AppSettingsCard } from '../../components/AppSettingsCard/AppSettingsCard';
 
 export const SettingsScreen = () => {
 
@@ -17,6 +18,7 @@ export const SettingsScreen = () => {
                 <FontAwesome6 name = "empty-space" size = {39} color = {colors.background} />
             </View>
             <UserCardPreview />
+            <AppSettingsCard />
         </View>
     );
 };
