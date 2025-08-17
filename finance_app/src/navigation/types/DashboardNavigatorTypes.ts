@@ -4,6 +4,7 @@ export type DashboardStackParamList = {
     DashboardMenu: undefined;
     TransactionList: undefined;
     Settings: undefined;
+    ManageCategories: undefined;
 };
 
 export type DashboardNavigationProps = NativeStackNavigationProp<DashboardStackParamList>;

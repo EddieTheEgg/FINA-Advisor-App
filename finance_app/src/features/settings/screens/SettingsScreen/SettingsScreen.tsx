@@ -1,4 +1,4 @@
-import { View, Text, Image } from 'react-native';
+import { View, Text, Image, ScrollView, Dimensions } from 'react-native';
 import BackButton from '../../../auth/components/GoBackButton/GoBackButton';
 import { useSafeAreaInsets } from 'react-native-safe-area-context';
 import { styles } from './SettingScreen.styles';
@@ -9,8 +9,14 @@ import { AppSettingsCard } from '../../components/AppSettingsCard/AppSettingsCar
 import { AccountSettingsCard } from '../../components/AccountSettingsCard/AccountSettingsCard';
 import { LoadingDots } from '../../../../components/LoadingDots/LoadingDots';
 import { useAuth } from '../../../auth/hooks/useAuth';
+import { DashboardNavigationProps } from '../../../../navigation/types/DashboardNavigatorTypes';
 
-export const SettingsScreen = () => {
+type SettingsScreenProps = {
+    navigation: DashboardNavigationProps;
+};
+
+export const SettingsScreen = ({navigation}: SettingsScreenProps) => {
+    const height = Dimensions.get('window').height;
 
     const insets = useSafeAreaInsets();
     const {isLoading} = useAuth();
@@ -27,15 +33,19 @@ export const SettingsScreen = () => {
     }
 
     return (
-        <View style = {[styles.container, {paddingTop: insets.top}]}>
+        <ScrollView
+        style = {[styles.container, {paddingTop: insets.top}]}
+        showsVerticalScrollIndicator = {false}
+        contentContainerStyle = {{paddingBottom: insets.bottom + height * 0.2}}
+        >
             <View style = {styles.headerSection}>
                 <BackButton />
                 <Text style = {styles.title}>Settings</Text>
                 <FontAwesome6 name = "empty-space" size = {39} color = {colors.background} />
             </View>
             <UserCardPreview />
-            <AppSettingsCard />
+            <AppSettingsCard navigation = {navigation} />
             <AccountSettingsCard />
-        </View>
+        </ScrollView>
     );
 };

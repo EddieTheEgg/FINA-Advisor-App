@@ -4,14 +4,20 @@ import { colors } from '../../../../styles/colors';
 import FontAwesome6 from 'react-native-vector-icons/FontAwesome6';
 import { fontSize } from '../../../../styles/fontSizes';
 import { AnimatedPressable } from '../../../../components/AnimatedPressable/AnimatedPressable';
+import { DashboardNavigationProps } from '../../../../navigation/types/DashboardNavigatorTypes';
 
-export const AppSettingsCard = () => {
+type AppSettingsCardProps = {
+    navigation: DashboardNavigationProps;
+};
+
+export const AppSettingsCard = ({navigation}: AppSettingsCardProps) => {
     return (
         <View style = {styles.container}>
             <Text style = {styles.title}>APP SETTINGS</Text>
                 <View style = {styles.tabsContainer}>
                     <AnimatedPressable
                         style = {styles.tab}
+                        onPress = {() => navigation.navigate('ManageCategories')}
                     >
                         <Text style = {[styles.icon, {backgroundColor: colors.yellow}]}>📂</Text>
                         <View style = {styles.tabContent}>

@@ -1,4 +1,4 @@
-import { StyleSheet } from 'react-native';
+import { Platform, StyleSheet } from 'react-native';
 import { colors } from '../../../../styles/colors';
 import { spacing } from '../../../../styles/spacing';
 import { fontSize } from '../../../../styles/fontSizes';
@@ -9,6 +9,7 @@ export const styles = StyleSheet.create({
         backgroundColor: colors.background,
     },
     headerSection : {
+        marginTop: Platform.OS === 'android' ? spacing.sm : 0,
         flexDirection: 'row',
         alignItems: 'center',
         justifyContent: 'space-between',
