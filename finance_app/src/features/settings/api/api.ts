@@ -12,9 +12,9 @@ type getSettingsCategoriesProps = {
 
 export const getSettingsCategories = async ({transactionType, skip, limit}: getSettingsCategoriesProps) : Promise<CategoryManageResponse> => {
     try {
-        const response = await api.get('/categories/getSettingsCategories', {
+        const response = await api.get('/categories/get-settings-categories', {
             params: {
-                transactionType,
+                transaction_type: transactionType,
                 skip,
                 limit,
             },

@@ -2,13 +2,13 @@ import logging
 from typing import List
 from uuid import UUID
 import logging
-from backend.src.categories.model import CategoryResponse, CategoryCreate, UpdateCategoryRequest, CategoryListResponse
+from backend.src.categories.model import CategoryManageResponse, CategoryManageSummary, CategoryResponse, CategoryCreate, UpdateCategoryRequest, CategoryListResponse
 from sqlalchemy.orm import Session
 
 from backend.src.entities.category import Category
 from backend.src.entities.transaction import Transaction
-from backend.src.exceptions import CategoryNotFoundError, InvalidCategoryForDeletionError, InvalidTransactionTypeError, InvalidUserForCategoryError
-from backend.src.transactions.model import TransactionType
+from backend.src.exceptions import CategoryNotFoundError, GetSettingsCategoriesError, InvalidCategoryForDeletionError, InvalidTransactionTypeError, InvalidUserForCategoryError
+from backend.src.entities.enums import TransactionType
 
 # This is when a user makes a new category besides the default ones, which is custom
 def create_category(db: Session, create_category_request: CategoryCreate, user_id: UUID) -> CategoryResponse:
@@ -225,3 +225,64 @@ def get_transfer_category(db: Session, user_id: UUID) -> UUID:
         Category.is_custom == False
     ).first()
     return transfer_category.category_id    
+
+
+
+def get_used_in_transactions(db: Session, category_id: UUID, user_id: UUID) -> int:
+    try:
+        transactions = db.query(Transaction).filter(
+            Transaction.category_id == category_id,
+            Transaction.user_id == user_id
+        ).count()
+        return transactions
+    except Exception as e:
+        logging.error(f"Failed to get used in transactions for category {category_id}: {str(e)}")
+        raise
+
+def get_settings_categories(
+    db: Session,
+    user_id: UUID,
+    transaction_type: TransactionType,
+    skip: int = 0,
+    limit: int = 10,
+):
+    try:
+        #Seperate queries, but added composite index for user_id and transaction_type so it's faster
+        # Get total count (fast with proper indexes)
+        total_count = db.query(Category).filter(
+            Category.user_id == user_id,
+            Category.transaction_type == transaction_type,    
+        ).count()
+        
+        # Get paginated results
+        db_categories = db.query(Category).filter(
+            Category.user_id == user_id,
+            Category.transaction_type == transaction_type,    
+        ).offset(skip).limit(limit).all()
+        
+        categories = []
+        for db_category in db_categories:
+            category_summary = CategoryManageSummary(
+                category_id = db_category.category_id,
+                category_name = db_category.category_name,
+                category_description = db_category.category_description,
+                category_type = db_category.transaction_type,
+                category_icon = db_category.icon,
+                category_color = db_category.color,
+                used_in_transactions = get_used_in_transactions(db, db_category.category_id, user_id)
+            )
+            categories.append(category_summary)
+            
+        return CategoryManageResponse(
+            categories = categories,
+            total_categories = total_count,
+            has_next = skip + limit < total_count,
+            current_page = skip // limit + 1,
+            page_size = limit
+        )
+    except Exception as e:
+        logging.error(f"Failed to get settings categories for user {user_id}: {str(e)}")
+        raise GetSettingsCategoriesError(str(e))
+        
+    
+    

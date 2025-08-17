@@ -5,7 +5,7 @@ from uuid import UUID
 
 from backend.src.categories.model import CategoryResponse
 from backend.src.entities.enums import PaymentType
-from backend.src.transactions.model import TransactionType
+from backend.src.entities.enums import TransactionType
 from backend.src.users.model import UserSimpleResponse
 from backend.src.accounts.model import AccountBalance
 

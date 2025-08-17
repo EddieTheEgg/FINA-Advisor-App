@@ -1,12 +1,13 @@
-from typing import List
+from typing import List, Literal
 from uuid import UUID
-from fastapi import APIRouter, Query
+from fastapi import APIRouter, Query, HTTPException
 from starlette import status
 
 from backend.src.auth.service import CurrentUser
-from backend.src.categories.model import CategoryResponse, CategoryCreate, UpdateCategoryRequest, CategoryListResponse
+from backend.src.categories.model import CategoryManageResponse, CategoryResponse, CategoryCreate, UpdateCategoryRequest, CategoryListResponse
 from backend.src.database.core import DbSession
 from backend.src.categories import service
+from backend.src.entities.enums import TransactionType
 
 router = APIRouter(
     prefix='/categories',
@@ -59,3 +60,13 @@ def add_default_categories(
     current_user: CurrentUser
 ):
     return service.create_default_categories(db, current_user.get_uuid())
+
+@router.get("/get-settings-categories", response_model = CategoryManageResponse)
+def get_settings_categories(
+    db: DbSession,
+    current_user: CurrentUser,
+    transaction_type: TransactionType = Query(..., description="Transaction type: INCOME, EXPENSE, or TRANSFER"),
+    skip: int = Query(0, ge = 0),
+    limit: int = Query(10, ge = 1, le = 100)
+):
+    return service.get_settings_categories(db, current_user.get_uuid(), transaction_type, skip, limit)

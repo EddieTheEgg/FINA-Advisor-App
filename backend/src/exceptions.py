@@ -64,6 +64,13 @@ class InvalidCategoryForDeletionError(CategoryError):
     def __init__(self, category_id: UUID):
         super().__init__(status_code=401, detail=f"Could not delete the category id {category_id} because it is a system default category")
 
+class GetSettingsCategoriesError(CategoryError):
+    def __init__(self, message: str = "Error getting settings categories"):
+        super().__init__(status_code=500, detail=message)
+
+
+
+
 class TransactionError(HTTPException):
     """Base exception for transaction-related errors"""
     pass

@@ -9,7 +9,7 @@ import logging
 from backend.src.dashboard.model import AccountBalance, AccountsResponse, DashboardResponse, FinancialSummary, RecentTransaction
 from backend.src.entities.transaction import Transaction
 from backend.src.exceptions import DashboardInvalidMonthYearError, MonthlyExpenseError, MonthlyIncomeError, MonthlyTransferError, RecentTransactionsError, TotalBalanceError
-from backend.src.transactions.model import TransactionType
+from backend.src.entities.enums import TransactionType
 from backend.src.users.service import get_quick_user_by_id
 from backend.src.accounts import service as account_service
 from backend.src.categories import service as category_service
