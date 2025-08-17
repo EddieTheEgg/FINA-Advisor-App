@@ -18,4 +18,22 @@ export const styles = StyleSheet.create({
         fontSize: fontSize.xl,
         fontFamily: 'Poppins-SemiBold',
     },
+    loadingContainer: {
+        flex: 1,
+        justifyContent: 'center',
+        alignItems: 'center',
+        backgroundColor: colors.background,
+    },
+    image: {
+        width: 200,
+        height: 200,
+        marginBottom: -spacing.lg,
+        marginLeft: spacing.md,
+    },
+    text: {
+        fontSize: fontSize.xxxl,
+        fontWeight: 'bold',
+        color: colors.black,
+        marginLeft: spacing.lg,
+    },
 });
