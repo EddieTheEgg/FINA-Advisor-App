@@ -9,7 +9,7 @@ type useGetSettingsCategoriesProps = {
 const LIMIT = 10;
 
 export const useGetSettingsCategories = ({transactionType} : useGetSettingsCategoriesProps) => {
-    const {data, hasNextPage, fetchNextPage, isFetchingNextPage, error} = useInfiniteQuery({
+    const {data, isPending, hasNextPage, fetchNextPage, isFetchingNextPage, error} = useInfiniteQuery({
         queryKey: ['get-settings-categories', transactionType],
         initialPageParam: 0,
         queryFn: ({pageParam = 0}) =>
@@ -22,5 +22,5 @@ export const useGetSettingsCategories = ({transactionType} : useGetSettingsCateg
         },
     });
 
-    return {data, hasNextPage, fetchNextPage, isFetchingNextPage, error};
-}
+    return {data, isPending, hasNextPage, fetchNextPage, isFetchingNextPage, error};
+};

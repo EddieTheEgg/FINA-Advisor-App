@@ -32,4 +32,4 @@ export const getSettingsCategories = async ({transactionType, skip, limit}: getS
         }
         throw new Error('Failed to fetch categories. Please try again later.');
     }
-}
+};
