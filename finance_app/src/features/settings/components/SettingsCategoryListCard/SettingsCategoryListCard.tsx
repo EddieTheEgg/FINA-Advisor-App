@@ -19,7 +19,7 @@ export const SettingsCategoryListCard = () => {
                 </View>
                 <View style = {styles.loadingIndicatorContainer}>
                     <Image source = {require('../../../../assets/images/Loading_Pig.png')} style = {styles.loadingImage} />
-                    <LoadingDots  style = {styles.loadingText}loadingText = "Fetching categories..." />
+                    <LoadingDots  style = {styles.loadingText}loadingText = "Fetching categories" />
                 </View>
             </View>
         );
