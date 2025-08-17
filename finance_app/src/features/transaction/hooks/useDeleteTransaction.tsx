@@ -38,6 +38,7 @@ export const useDeleteTransaction = ({transactionId, transactionDetails}: UseDel
                     // Invalidate budget transactions queries for the transaction's month
                     queryClient.invalidateQueries({queryKey: ['getBudgetTransactions']}),
                     queryClient.invalidateQueries({queryKey: ['budget-details', transactionDetails.budgetIdAffected]}),
+                    queryClient.invalidateQueries({queryKey: ['get-settings-categories', transactionDetails.transactionType]}),
                 ]).then(() => {
                     // Force refetch the current dashboard data and budgets for that transaction month after invalidation
                     queryClient.refetchQueries({queryKey: ['dashboard', new Date().getMonth() + 1, new Date().getFullYear()]});

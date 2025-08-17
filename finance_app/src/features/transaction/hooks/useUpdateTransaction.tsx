@@ -28,6 +28,7 @@ export const useUpdateTransaction = () => {
                 queryClient.invalidateQueries({queryKey: ['getBudgets', new Date(new Date(data.transactionDate).getFullYear(), new Date(data.transactionDate).getMonth(), 1)]}),
                 queryClient.invalidateQueries({queryKey: ['getBudgetTransactions']}),
                 queryClient.invalidateQueries({queryKey: ['budget-details']}),
+                queryClient.invalidateQueries({queryKey: ['get-settings-categories', data.transactionType]}),
             ]);
 
         },

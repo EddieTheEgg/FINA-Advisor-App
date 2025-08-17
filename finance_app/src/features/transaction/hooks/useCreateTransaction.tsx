@@ -4,7 +4,7 @@ import { BackendTransactionCreateRequest, TransactionResponse } from '../types';
 import { useCreateTransactionStore } from '../store/useTransactionStore';
 
 export const useCreateTransaction = () => {
-    const { resetToInitialState, setTransactionSuccess } = useCreateTransactionStore();
+    const { resetToInitialState, setTransactionSuccess, transactionType } = useCreateTransactionStore();
 
     const queryClient = useQueryClient();
     const {mutate, isPending, error, isSuccess} = useMutation({
@@ -23,6 +23,7 @@ export const useCreateTransaction = () => {
                 queryClient.invalidateQueries({queryKey: ['getBudgets', new Date(year, month, 1)]}),
                 queryClient.invalidateQueries({queryKey: ['getBudgetTransactions']}),
                 queryClient.invalidateQueries({queryKey: ['budget-details']}),
+                queryClient.invalidateQueries({queryKey: ['get-settings-categories', transactionType]}),
             ]);
 
             // Set success state and reset other fields
