@@ -25,6 +25,7 @@ export const useTransactionList = (request: BackendTransactionListRequest) => {
                 possibleCategories: lastPage?.possibleCategories,
             };
         },
+        staleTime: 1000 * 60 * 5, // 5 minutes
     });
 
     return {data, isPending, error, fetchNextPage, hasNextPage};

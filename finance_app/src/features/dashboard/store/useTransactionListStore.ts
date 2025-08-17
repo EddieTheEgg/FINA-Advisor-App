@@ -46,6 +46,7 @@ type TransactionListFilterState = {
     clearAllDraftFilters: () => void;
     applyDraftFilters: () => void; // Apply draft filters to actual state (when user clicks "Apply")
     resetDraftFilters: () => void; // Reset draft to match current state (when user clicks "Cancel")
+    clearAllActualFilters: () => void; // Clear all actual filters (when changing transaction type)
 }
 
 
@@ -108,6 +109,15 @@ export const useCreateTransactionListStore = create<CreateTransactionListState &
             sortOrderDraft: 'DESC' as 'ASC' | 'DESC',
             accountsFilterDraft: [] as string[],
             categoriesFilterDraft: [] as string[],
+        });
+    },
+
+    clearAllActualFilters: () => {
+        set({
+            sortBy: 'TRANSACTION_DATE' as 'TRANSACTION_DATE' | 'AMOUNT' | 'CREATED_AT',
+            sortOrder: 'DESC' as 'ASC' | 'DESC',
+            accountsFilter: [] as string[],
+            categoriesFilter: [] as string[],
         });
     },
 

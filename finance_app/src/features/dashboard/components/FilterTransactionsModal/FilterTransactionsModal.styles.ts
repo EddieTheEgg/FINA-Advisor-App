@@ -68,4 +68,15 @@ export const styles = StyleSheet.create({
         fontFamily: 'Poppins-SemiBold',
         fontSize: fontSize.lg,
     },
+    filterInfoText : {
+        fontFamily: 'Poppins-Medium',
+        fontSize: fontSize.sm,
+        color: colors.gray[600],
+        marginHorizontal: spacing.md,
+        backgroundColor: colors.lightBlue,
+        padding: spacing.sm,
+        borderRadius: 10,
+        borderWidth: 1,
+        borderColor: colors.darkBlue,
+    },
 });

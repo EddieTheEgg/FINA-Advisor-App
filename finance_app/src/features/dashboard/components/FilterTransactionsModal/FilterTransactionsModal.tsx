@@ -9,6 +9,7 @@ import { AccountFilterSelector } from '../AccountFilterSelector/AccountFilterSel
 import { CategoryFilterSelector } from '../CategoryFilterSelector/CategoryFilterSelector';
 import { TransactionListResponse } from '../../types';
 import { useCreateTransactionListStore } from '../../store/useTransactionListStore';
+import { fontSize } from '../../../../styles/fontSizes';
 
 type FilterTransactionsModalProps = {
     visible: boolean;
@@ -52,6 +53,10 @@ export const FilterTransactionsModal = ({visible, onRequestClose, onApplyFilters
                             <FontAwesome6 name="xmark" size={24} color="black" />
                         </AnimatedPressable>
                     </View>
+                    <Text style = {styles.filterInfoText}>
+                        <FontAwesome6 name="circle-info" size={fontSize.sm} color="black" />
+                        <Text style = {styles.filterInfoText}> Changing transaction type will automatically reset all filters!</Text>
+                    </Text>
                     <ScrollView
                         style = {styles.modalBody}
                         showsVerticalScrollIndicator = {false}
