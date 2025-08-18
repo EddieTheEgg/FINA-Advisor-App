@@ -1,4 +1,4 @@
-import { View, Text, ScrollView, Dimensions } from 'react-native';
+import { View, Text } from 'react-native';
 import { useSafeAreaInsets } from 'react-native-safe-area-context';
 import { styles } from './ManageCategoriesScreen.styles';
 import BackButton from '../../../auth/components/GoBackButton/GoBackButton';
@@ -8,13 +8,10 @@ import { ChooseCategoryCard } from '../../components/ChooseCategoryCard/ChooseCa
 import { SettingsCategoryListCard } from '../../components/SettingsCategoryListCard/SettingsCategoryListCard';
 
 export const ManageCategoriesScreen = () => {
-    const height = Dimensions.get('window').height;
     const insets = useSafeAreaInsets();
     return (
-        <ScrollView 
-        style = {[styles.container, {paddingTop: insets.top}]}
-        showsVerticalScrollIndicator = {false}
-        contentContainerStyle = {{paddingBottom: insets.bottom + height * 0.2}}
+        <View
+            style = {[styles.container, {paddingTop: insets.top}]}
         >
             <View style = {styles.headerSection}>
                 <BackButton />
@@ -23,6 +20,6 @@ export const ManageCategoriesScreen = () => {
             </View>
             <ChooseCategoryCard />
             <SettingsCategoryListCard />
-        </ScrollView>
+        </View>
     );
 };

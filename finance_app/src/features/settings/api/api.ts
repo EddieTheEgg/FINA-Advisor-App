@@ -1,6 +1,6 @@
 import { AxiosError } from 'axios';
 import api from '../../../api/axios';
-import { CategoryManageResponse } from '../types';
+import { BackendCategoryManageSummary, CategoryManageResponse } from '../types';
 
 
 type getSettingsCategoriesProps = {
@@ -19,7 +19,24 @@ export const getSettingsCategories = async ({transactionType, skip, limit}: getS
                 limit,
             },
         });
-        return response.data; //Need to format the response to frontend CategoryManageResponse from the backend
+
+        const formattedResponse = {
+            categories: response.data.categories.map((category: BackendCategoryManageSummary) => ({
+                categoryId: category.category_id,
+                categoryName: category.category_name,
+                categoryColor: category.category_color,
+                categoryDescription: category.category_description,
+                categoryType: category.category_type,
+                categoryIcon: category.category_icon,
+                usedInTransactions: category.used_in_transactions,
+            })),
+            totalCategories: response.data.total_categories,
+            hasNext: response.data.has_next,
+            currentPage: response.data.current_page,
+            pageSize: response.data.page_size,
+        };
+
+        return formattedResponse;
     } catch (error : unknown) {
         if (error instanceof AxiosError && error.response?.status === 400) {
             throw new Error(error.response?.data.message);

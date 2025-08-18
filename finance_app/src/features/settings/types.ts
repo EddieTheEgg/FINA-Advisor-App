@@ -15,3 +15,15 @@ export type CategoryManageResponse = {
     currentPage: number;
     pageSize: number;
 };
+
+//Backend types
+
+export type BackendCategoryManageSummary = {
+    category_id: string;
+    category_name: string;
+    category_color: string;
+    category_description: string;
+    category_type: 'INCOME' | 'EXPENSE' | 'TRANSFER'
+    category_icon: string;
+    used_in_transactions: number;
+}

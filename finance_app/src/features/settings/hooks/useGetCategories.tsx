@@ -20,6 +20,7 @@ export const useGetSettingsCategories = ({transactionType} : useGetSettingsCateg
                 ? lastPage.currentPage * lastPage.pageSize
                 : undefined;
         },
+        staleTime: 1000 * 60 * 5, // 5 minutes
     });
 
     return {data, isPending, hasNextPage, fetchNextPage, isFetchingNextPage, error};

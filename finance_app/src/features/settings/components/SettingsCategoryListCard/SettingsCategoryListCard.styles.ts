@@ -24,7 +24,7 @@ export const styles = StyleSheet.create({
         backgroundColor: colors.white,
         paddingHorizontal: spacing.sm,
         paddingVertical: spacing.xs,
-        color: colors.gray[700],
+        color: colors.gray[500],
         fontFamily: 'Poppins-Medium',
         fontSize: fontSize.sm,
         borderRadius: 30,
@@ -57,5 +57,16 @@ export const styles = StyleSheet.create({
         fontFamily: 'Poppins-Medium',
         fontSize: fontSize.base,
         color: colors.gray[500],
+    },
+    seperator: {
+        height: 1,
+        backgroundColor: colors.gray[100],
+    },
+    loadingMoreText: {
+        fontFamily: 'Poppins-SemiBold',
+        fontSize: fontSize.base,
+    },
+    flatListContent: {
+        paddingBottom: spacing.xl,
     },
 });
