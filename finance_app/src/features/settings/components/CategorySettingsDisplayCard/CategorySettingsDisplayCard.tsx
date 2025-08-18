@@ -11,19 +11,19 @@ type CategorySettingsDisplayCardProps = {
 export const CategorySettingsDisplayCard = ({categoryData}: CategorySettingsDisplayCardProps) => {
     return (
         <View style = {styles.container}>
-                <Text style = {[styles.categoryIcon, {backgroundColor: categoryData.categoryColor}]}>{categoryData.categoryIcon}</Text>
-                <View style = {styles.categoryTextContainer}>
-                    <Text style = {styles.categoryName}>{truncateText(categoryData.categoryName, 20)}</Text>
-                    {categoryData.categoryDescription && (
-                        <Text style = {styles.categoryDescription}>{truncateText(categoryData.categoryDescription, 40)}</Text>
-                    )}
-                    <Text style = {styles.usedInTransactions}>Used in {categoryData.usedInTransactions} transactions</Text>
-                </View>
-                <AnimatedPressable
-                    onPress = {() => {}}
-                >
-                    <Text  style = {styles.editButton}>Edit</Text>
-                </AnimatedPressable>
+            <Text style = {[styles.categoryIcon, {backgroundColor: categoryData.categoryColor}]}>{categoryData.categoryIcon}</Text>
+            <View style = {styles.categoryTextContainer}>
+                <Text style = {styles.categoryName}>{truncateText(categoryData.categoryName, 20)}</Text>
+                {categoryData.categoryDescription && (
+                    <Text style = {styles.categoryDescription}>{truncateText(categoryData.categoryDescription, 40)}</Text>
+                )}
+                <Text style = {styles.usedInTransactions}>Used in {categoryData.usedInTransactions} transactions</Text>
+            </View>
+            <AnimatedPressable
+                onPress = {() => {}}
+            >
+                <Text style = {styles.editButton}>Edit</Text>
+            </AnimatedPressable>
         </View>
     );
 };

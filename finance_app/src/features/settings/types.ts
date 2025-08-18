@@ -27,3 +27,4 @@ export type BackendCategoryManageSummary = {
     category_icon: string;
     used_in_transactions: number;
 }
+
