@@ -6,6 +6,7 @@ import { truncateText } from '../../../../utils/textFormat';
 import { DashboardNavigationProps } from '../../../../navigation/types/DashboardNavigatorTypes';
 import { useEditCategoryStore } from '../../store/editCategoryStore';
 
+
 type CategorySettingsDisplayCardProps = {
     categoryData: CategoryManageSummary;
     navigation: DashboardNavigationProps;

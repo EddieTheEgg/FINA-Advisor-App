@@ -1,7 +1,7 @@
 import { StyleSheet } from 'react-native';
-import { colors } from '../../../../styles/colors';
-import { spacing } from '../../../../styles/spacing';
-import { fontSize } from '../../../../styles/fontSizes';
+import { colors } from '../../../../../styles/colors';
+import { spacing } from '../../../../../styles/spacing';
+import { fontSize } from '../../../../../styles/fontSizes';
 
 export const styles = StyleSheet.create({
     container: {
@@ -9,6 +9,7 @@ export const styles = StyleSheet.create({
         padding: spacing.md,
         borderRadius: 20,
         marginHorizontal: spacing.md,
+        boxShadow: '0px 3px 3px 0px rgba(0, 0, 0, 0.25)',
     },
     title: {
         fontFamily: 'Poppins-SemiBold',

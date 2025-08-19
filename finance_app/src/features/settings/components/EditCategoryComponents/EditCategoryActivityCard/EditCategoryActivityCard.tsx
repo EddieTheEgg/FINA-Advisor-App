@@ -1,13 +1,13 @@
 import { View, Text } from 'react-native';
-import { styles } from './CategoryActivityCard.styles';
-import { CategoryManageSummary } from '../../types';
-import { colors } from '../../../../styles/colors';
+import { styles } from './EditCategoryActivityCard.styles';
+import { CategoryManageSummary } from '../../../types';
+import { colors } from '../../../../../styles/colors';
 
-type CategoryActivityCardProps = {
+type EditCategoryActivityCardProps = {
     categoryData: CategoryManageSummary;
 }
 
-export const CategoryActivityCard = ({categoryData}: CategoryActivityCardProps) => {
+export const EditCategoryActivityCard = ({categoryData}: EditCategoryActivityCardProps) => {
 
 
     //If the category is not used in any transactions or budgets, show a message

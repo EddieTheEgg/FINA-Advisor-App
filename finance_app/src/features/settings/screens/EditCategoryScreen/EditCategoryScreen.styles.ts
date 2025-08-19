@@ -7,7 +7,10 @@ export const styles = StyleSheet.create({
     container : {
         backgroundColor: colors.background,
         flex: 1,
-        gap: spacing.sm,
+        gap: spacing.md,
+    },
+    contentContainer: {
+        gap: spacing.md,
     },
     headerSection: {
         flexDirection: 'row',

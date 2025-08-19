@@ -1,16 +1,16 @@
 import { View, Text, Modal, Image } from 'react-native';
-import { styles } from './CategoryTypeCard.styles';
-import { colors } from '../../../../styles/colors';
-import { AnimatedPressable } from '../../../../components/AnimatedPressable/AnimatedPressable';
+import { styles } from './EditCategoryTypeCard.styles';
+import { colors } from '../../../../../styles/colors';
+import { AnimatedPressable } from '../../../../../components/AnimatedPressable/AnimatedPressable';
 import FontAwesome6 from 'react-native-vector-icons/FontAwesome6';
-import { fontSize } from '../../../../styles/fontSizes';
+import { fontSize } from '../../../../../styles/fontSizes';
 import { useState } from 'react';
 
-type CategoryTypeCardProps = {
+type EditCategoryTypeCardProps = {
     categoryType: 'INCOME' | 'EXPENSE' | 'TRANSFER';
 }
 
-export const CategoryTypeCard = ({categoryType} : CategoryTypeCardProps) => {
+export const EditCategoryTypeCard = ({categoryType} : EditCategoryTypeCardProps) => {
     const [isMoreDetailsExpanded, setIsMoreDetailsExpanded] = useState(false);
     if (categoryType === 'INCOME') {
         return (
@@ -39,7 +39,7 @@ export const CategoryTypeCard = ({categoryType} : CategoryTypeCardProps) => {
             >
                 <View style = {styles.modalContainer}>
                     <View style = {styles.modalContent}>
-                        <Image source={require('../../../../assets/images/question_icon.png')} style={styles.modalImage} />
+                        <Image source={require('../../../../../assets/images/question_icon.png')} style={styles.modalImage} />
                         <Text style = {styles.modalTitle}>Why is this locked?</Text>
                         <Text style = {styles.modalText}>Category type is locked to prevent existing transactions and budgets from breaking.</Text>
                         <AnimatedPressable
@@ -81,7 +81,7 @@ export const CategoryTypeCard = ({categoryType} : CategoryTypeCardProps) => {
                 >
                     <View style = {styles.modalContainer}>
                         <View style = {styles.modalContent}>
-                            <Image source={require('../../../../assets/images/question_icon.png')} style={styles.modalImage} />
+                            <Image source={require('../../../../../assets/images/question_icon.png')} style={styles.modalImage} />
                             <Text style = {styles.modalTitle}>Why is this locked?</Text>
                             <Text style = {styles.modalText}>Category type is locked to prevent existing transactions and budgets from breaking.</Text>
                             <AnimatedPressable
@@ -123,7 +123,7 @@ export const CategoryTypeCard = ({categoryType} : CategoryTypeCardProps) => {
                 >
                     <View style = {styles.modalContainer}>
                         <View style = {styles.modalContent}>
-                            <Image source={require('../../../../assets/images/question_icon.png')} style={styles.modalImage} />
+                            <Image source={require('../../../../../assets/images/question_icon.png')} style={styles.modalImage} />
                             <Text style = {styles.modalTitle}>Why is this locked?</Text>
                             <Text style = {styles.modalText}>Category type is locked to prevent existing transactions and budgets from breaking.</Text>
                             <AnimatedPressable
