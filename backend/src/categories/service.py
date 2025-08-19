@@ -1,3 +1,4 @@
+from datetime import date, datetime
 import logging
 from typing import List
 from uuid import UUID
@@ -5,9 +6,10 @@ import logging
 from backend.src.categories.model import CategoryManageResponse, CategoryManageSummary, CategoryResponse, CategoryCreate, UpdateCategoryRequest, CategoryListResponse
 from sqlalchemy.orm import Session
 
+from backend.src.entities.budgets import Budget
 from backend.src.entities.category import Category
 from backend.src.entities.transaction import Transaction
-from backend.src.exceptions import CategoryNotFoundError, GetSettingsCategoriesError, InvalidCategoryForDeletionError, InvalidTransactionTypeError, InvalidUserForCategoryError
+from backend.src.exceptions import CategoryNotFoundError, GetBudgetsInCategoryError, GetSettingsCategoriesError, GetTransactionsInCategoryError, InvalidCategoryForDeletionError, InvalidTransactionTypeError, InvalidUserForCategoryError
 from backend.src.entities.enums import TransactionType
 
 # This is when a user makes a new category besides the default ones, which is custom
@@ -237,7 +239,27 @@ def get_used_in_transactions(db: Session, category_id: UUID, user_id: UUID) -> i
         return transactions
     except Exception as e:
         logging.error(f"Failed to get used in transactions for category {category_id}: {str(e)}")
-        raise
+        raise GetTransactionsInCategoryError(str(e))
+    
+def get_used_in_budgets(db: Session, category_id: UUID, user_id: UUID) -> int:
+    try:
+        today = datetime.now().date()
+        thisMonthDate = today.replace(day=1)
+        budgets = db.query(Budget).filter(
+            Budget.category_id == category_id,
+            Budget.user_id == user_id,
+            Budget.budget_month == thisMonthDate
+        ).count()
+        
+        if not budgets:
+            return 0
+        
+        return budgets
+    except Exception as e:
+        logging.error(f"Failed to get used in budgets for category {category_id}: {str(e)}")
+        raise GetBudgetsInCategoryError(str(e))
+    
+    
 
 def get_settings_categories(
     db: Session,
@@ -259,6 +281,7 @@ def get_settings_categories(
             Category.user_id == user_id,
             Category.transaction_type == transaction_type,    
         ).offset(skip).limit(limit).all()
+    
         
         categories = []
         for db_category in db_categories:
@@ -269,7 +292,8 @@ def get_settings_categories(
                 category_type = db_category.transaction_type,
                 category_icon = db_category.icon,
                 category_color = db_category.color,
-                used_in_transactions = get_used_in_transactions(db, db_category.category_id, user_id)
+                used_in_transactions = get_used_in_transactions(db, db_category.category_id, user_id),
+                used_in_budgets = get_used_in_budgets(db, db_category.category_id, user_id)
             )
             categories.append(category_summary)
             

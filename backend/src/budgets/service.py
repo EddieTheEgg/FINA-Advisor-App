@@ -195,7 +195,6 @@ def get_budget_details_service(
     db: Session,
     user_id: UUID,
     budget_id: UUID,
-    month_date: date,
 ) -> BudgetDetailResponse: 
     try:
         budget = db.query(Budget).filter(Budget.budget_id == budget_id).first()
@@ -215,7 +214,7 @@ def get_budget_details_service(
         days_passed = (today - budget.budget_month).days + 1
         days_remaining = (budget.budget_month + relativedelta(months=1) - today).days
         
-        #Get the total amount spent on the category for the month
+        #Get the total amount spent on the category for the budget's month
         total_spent = get_budget_spent(db, budget.category_id, user_id, budget.budget_month)
         daily_average = round(total_spent / days_passed, 2) if days_passed > 0 else 0
         

@@ -29,13 +29,9 @@ type BudgetDetailsScreenprops = {
 
 export const BudgetDetailsScreen = ({route, navigation}: BudgetDetailsScreenprops) => {
     const insets = useSafeAreaInsets();
-    const {budgetId, monthDate} = route.params;
+    const {budgetId} = route.params;
 
-    // Convert string back to Date object (This step is to avoid serliazation issues when persisting states)
-    const monthDateObj = new Date(monthDate);
-    monthDateObj.setHours(0, 0, 0, 0);
-
-    const {data, isPending, error} = useGetBudgetDetails(budgetId, monthDateObj);
+    const {data, isPending, error} = useGetBudgetDetails(budgetId);
     const {mutate: deleteBudget, isPending: isBudgetDeletePending, error: budgetDeleteError, isSuccess: budgetDeleteSuccess} = useDeleteBudget({budgetId, monthDate: data?.coreBudgetData?.budgetPeriod || new Date()});
 
     // Handle successful deletion (the deleteBUdget is async, so useEffect is used to await for the deletion response to go back)

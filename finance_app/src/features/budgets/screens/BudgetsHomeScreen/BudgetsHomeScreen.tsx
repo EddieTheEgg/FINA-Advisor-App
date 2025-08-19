@@ -59,7 +59,7 @@ export const BudgetsHomeScreen = ({navigation}: BudgetsHomeScreenProps) => {
                     contentContainerStyle = {styles.flatListContent}
                     renderItem = {({item}) => (
                         <AnimatedPressable
-                            onPress = {() => navigation.navigate('BudgetDetails', {budgetId: item.budgetId, monthDate: selectedMonth.toISOString()})}
+                            onPress = {() => navigation.navigate('BudgetDetails', {budgetId: item.budgetId})}
                         >
                             <BudgetDisplayCard budgetData = {item} />
                         </AnimatedPressable>

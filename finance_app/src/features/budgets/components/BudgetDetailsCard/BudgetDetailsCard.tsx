@@ -11,6 +11,14 @@ type BudgetDetailsCardProps = {
 
 
 export const BudgetDetailsCard = ({data}: BudgetDetailsCardProps) => {
+
+     const handleNegativeDaysRemaining = (daysRemaining: number) => {
+        if (daysRemaining < 0) {
+            return 0;
+        }
+        return daysRemaining;
+     };
+
     return (
         <View style = {styles.container}>
            <Text style = {styles.title}>📋 Budget Details</Text>
@@ -36,7 +44,7 @@ export const BudgetDetailsCard = ({data}: BudgetDetailsCardProps) => {
            <View style = {styles.separator} />
            <View style = {styles.sectionRowContainer}>
                 <Text style = {styles.sectionTitle}>Days Remaining</Text>
-                <Text style = {styles.sectionValue}>{data.daysRemaining}</Text>
+                <Text style = {styles.sectionValue}>{handleNegativeDaysRemaining(data.daysRemaining)}</Text>
            </View>
            <View style = {styles.separator} />
            <View style = {styles.sectionRowContainer}>

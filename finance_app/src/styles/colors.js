@@ -11,6 +11,7 @@ export const colors = {
     yellowBackground: '#FDE68D',
 
     lightBlue: '#E1EDFC',
+    lightBlueV2: '#9bc8ffff',
     darkBlue: '#1F3F80',
     blue: '#0050F4',
 

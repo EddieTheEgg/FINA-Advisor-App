@@ -3,12 +3,22 @@ import { CategoryManageSummary } from '../../types';
 import { styles } from './CategorySettingsDisplayCard.styles';
 import { AnimatedPressable } from '../../../../components/AnimatedPressable/AnimatedPressable';
 import { truncateText } from '../../../../utils/textFormat';
+import { DashboardNavigationProps } from '../../../../navigation/types/DashboardNavigatorTypes';
+import { useEditCategoryStore } from '../../store/editCategoryStore';
 
 type CategorySettingsDisplayCardProps = {
     categoryData: CategoryManageSummary;
+    navigation: DashboardNavigationProps;
 }
 
-export const CategorySettingsDisplayCard = ({categoryData}: CategorySettingsDisplayCardProps) => {
+export const CategorySettingsDisplayCard = ({categoryData, navigation}: CategorySettingsDisplayCardProps) => {
+    const {initializeDrafts} = useEditCategoryStore();
+
+    const handleNavigateToEditCategory = () => {
+        initializeDrafts(categoryData);
+        navigation.navigate('EditCategory', {categoryData});
+    };
+
     return (
         <View style = {styles.container}>
             <Text style = {[styles.categoryIcon, {backgroundColor: categoryData.categoryColor}]}>{categoryData.categoryIcon}</Text>
@@ -20,7 +30,7 @@ export const CategorySettingsDisplayCard = ({categoryData}: CategorySettingsDisp
                 <Text style = {styles.usedInTransactions}>Used in {categoryData.usedInTransactions} transactions</Text>
             </View>
             <AnimatedPressable
-                onPress = {() => {}}
+                onPress = {handleNavigateToEditCategory}
             >
                 <Text style = {styles.editButton}>Edit</Text>
             </AnimatedPressable>

@@ -47,9 +47,8 @@ async def get_budget_details(
     db: DbSession,
     current_user: CurrentUser,
     budget_id: str,
-    month_date: str,
 ) -> BudgetDetailResponse:
-    return get_budget_details_service(db, current_user.get_uuid(), UUID(budget_id), date.fromisoformat(month_date))
+    return get_budget_details_service(db, current_user.get_uuid(), UUID(budget_id))
 
 @router.get("/getBudgetTransactions")
 async def get_budget_transactions(

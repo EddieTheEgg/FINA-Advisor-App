@@ -1,11 +1,12 @@
 export type CategoryManageSummary = {
     categoryId: string;
     categoryName: string;
-    categoryDescription: string;
+    categoryDescription: string | null;
     categoryType: 'INCOME' | 'EXPENSE' | 'TRANSFER';
     categoryIcon: string;
     categoryColor: string;
     usedInTransactions: number;
+    usedInBudgets: number;
 };
 
 export type CategoryManageResponse = {
@@ -26,5 +27,6 @@ export type BackendCategoryManageSummary = {
     category_type: 'INCOME' | 'EXPENSE' | 'TRANSFER'
     category_icon: string;
     used_in_transactions: number;
+    used_in_budgets: number;
 }
 

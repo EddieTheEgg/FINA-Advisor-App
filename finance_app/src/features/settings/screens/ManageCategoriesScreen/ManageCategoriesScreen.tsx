@@ -6,8 +6,13 @@ import { colors } from '../../../../styles/colors';
 import FontAwesome6 from 'react-native-vector-icons/FontAwesome6';
 import { ChooseCategoryCard } from '../../components/ChooseCategoryCard/ChooseCategoryCard';
 import { SettingsCategoryListCard } from '../../components/SettingsCategoryListCard/SettingsCategoryListCard';
+import { DashboardNavigationProps } from '../../../../navigation/types/DashboardNavigatorTypes';
 
-export const ManageCategoriesScreen = () => {
+
+type ManageCategoriesScreenProps = {
+    navigation: DashboardNavigationProps;
+}
+export const ManageCategoriesScreen = ({navigation}: ManageCategoriesScreenProps) => {
     const insets = useSafeAreaInsets();
     return (
         <View
@@ -19,7 +24,7 @@ export const ManageCategoriesScreen = () => {
                 <FontAwesome6 name = "empty-space" size = {39} color = {colors.background} />
             </View>
             <ChooseCategoryCard />
-            <SettingsCategoryListCard />
+            <SettingsCategoryListCard navigation = {navigation} />
         </View>
     );
 };

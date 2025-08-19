@@ -8,6 +8,12 @@ type BudgetInsightsCardProps = {
 
 export const BudgetInsightsCard = ({data}: BudgetInsightsCardProps) => {
 
+
+    // Basically if budget is in the past, we don't have any insights that's helpful to show
+    if (data.coreBudgetData.daysRemaining < 0) {
+        return null;
+    }
+
     const budgetStatus = data.budgetInsight.statusType;
 
     if (budgetStatus === BudgetSpendingStatus.ON_TRACK) {

@@ -4,12 +4,17 @@ import { useGetSettingsCategories } from '../../hooks/useGetCategories';
 import { styles } from './SettingsCategoryListCard.styles';
 import { LoadingDots } from '../../../../components/LoadingDots/LoadingDots';
 import { CategorySettingsDisplayCard } from '../CategorySettingsDisplayCard/CategorySettingsDisplayCard';
+import { DashboardNavigationProps } from '../../../../navigation/types/DashboardNavigatorTypes';
 
 const seperator = () => {
     return <View style={styles.seperator} />;
 };
 
-export const SettingsCategoryListCard = () => {
+type SettingsCategoryListCardProps = {
+    navigation: DashboardNavigationProps;
+}
+
+export const SettingsCategoryListCard = ({navigation}: SettingsCategoryListCardProps) => {
     const height = useWindowDimensions().height;
     const {categoryType} = useCategoryStore();
 
@@ -57,7 +62,7 @@ export const SettingsCategoryListCard = () => {
             <FlatList
                 data = {categoryList}
                 renderItem = {({item}) => (
-                    <CategorySettingsDisplayCard categoryData = {item}/>
+                    <CategorySettingsDisplayCard categoryData = {item} navigation = {navigation}/>
                 )}
                 keyExtractor = {(item) => item.categoryId}
                 onEndReached = {() => {

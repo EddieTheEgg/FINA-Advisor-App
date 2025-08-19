@@ -64,11 +64,12 @@ class UpdateCategoryRequest(BaseModel):
 class CategoryManageSummary(BaseModel):
     category_id: UUID
     category_name: str
-    category_description: str | None = None
+    category_description: str | None
     category_type: TransactionType
     category_icon: str
     category_color: str
     used_in_transactions: int
+    used_in_budgets: int
     
 class CategoryManageResponse(BaseModel):
     categories: list[CategoryManageSummary]

@@ -67,7 +67,14 @@ class InvalidCategoryForDeletionError(CategoryError):
 class GetSettingsCategoriesError(CategoryError):
     def __init__(self, message: str = "Error getting settings categories"):
         super().__init__(status_code=500, detail=message)
+        
+class GetTransactionsInCategoryError(CategoryError):
+    def __init__(self, category_id: UUID):
+        super().__init__(status_code=500, detail=f"Error getting transactions in category {category_id}")
 
+class GetBudgetsInCategoryError(CategoryError):
+    def __init__(self, category_id: UUID):
+        super().__init__(status_code=500, detail=f"Error getting budgets in category {category_id}")
 
 
 

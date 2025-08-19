@@ -35,7 +35,7 @@ export const BudgetTransactionsScreen = ({route, navigation}: BudgetTransactionS
     const monthDateObj = new Date(monthDate);
     monthDateObj.setHours(0, 0, 0, 0);
 
-    const {data : budgetData, isPending : isPendingBudgetData, error : errorBudgetData} = useGetBudgetDetails(budgetId, monthDateObj);
+    const {data : budgetData, isPending : isPendingBudgetData, error : errorBudgetData} = useGetBudgetDetails(budgetId);
     const {
         data : budgetTransactionsData,
         isPending : isPendingBudgetTransactionsData,

@@ -117,15 +117,15 @@ export const getBudgets = async ({monthDate, skip, limit} : GetBudgetProps) : Pr
 };
 
 
-export const getBudgetDetails = async (budgetId: string, monthDate: Date) : Promise<BudgetDetailData> => {
+export const getBudgetDetails = async (budgetId: string) : Promise<BudgetDetailData> => {
     try {
         const response = await api.get('/budgets/getBudgetDetails', {
             params: {
                 budget_id: budgetId,
-                month_date: monthDate.toISOString().split('T')[0],
             },
         });
         const data = response.data;
+
         const formattedData = {
             coreBudgetData: {
                 budgetId: data.core_budget_data.budget_id,
