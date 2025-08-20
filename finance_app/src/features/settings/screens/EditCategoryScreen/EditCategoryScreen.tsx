@@ -10,6 +10,7 @@ import { fontSize } from '../../../../styles/fontSizes';
 import { EditCategoryActivityCard } from '../../components/EditCategoryComponents/EditCategoryActivityCard/EditCategoryActivityCard';
 import { EditCategoryTypeCard } from '../../components/EditCategoryComponents/EditCategoryTypeCard/EditCategoryTypeCard';
 import { EditCategoryNameCard } from '../../components/EditCategoryComponents/EditCategoryNameCard/EditCategoryNameCard';
+import { EditCategoryIcon } from '../../components/EditCategoryIcon/EditCategoryIcon';
 
 
 type EditCategoryScreenProps = {
@@ -36,6 +37,7 @@ export const EditCategoryScreen = ({navigation, route}: EditCategoryScreenProps)
             <EditCategoryActivityCard categoryData = {categoryData} />
             <EditCategoryTypeCard categoryType = {categoryData.categoryType}/>
             <EditCategoryNameCard categoryType = {categoryData.categoryType}/>
+            <EditCategoryIcon />
         </ScrollView>
     );
 };
