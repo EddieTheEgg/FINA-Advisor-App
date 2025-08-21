@@ -6,6 +6,7 @@ export type DashboardStackParamList = {
     TransactionList: undefined;
     Settings: undefined;
     ManageCategories: undefined;
+    CreateCategory: undefined;
     EditCategory: {categoryData: CategoryManageSummary};
 };
 

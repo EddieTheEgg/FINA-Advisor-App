@@ -23,7 +23,7 @@ export const ManageCategoriesScreen = ({navigation}: ManageCategoriesScreenProps
             <View style = {styles.headerSection}>
                 <BackButton />
                 <Text style = {styles.title}>Manage Categories</Text>
-                <AnimatedPressable>
+                <AnimatedPressable onPress = {() => navigation.navigate('CreateCategory')}>
                     <FontAwesome6 style = {styles.addCategoryIcon} name = "plus" size = {fontSize.lg} color = {colors.white} />
                 </AnimatedPressable>
             </View>

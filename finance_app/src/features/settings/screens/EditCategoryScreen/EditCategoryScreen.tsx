@@ -118,7 +118,6 @@ export const EditCategoryScreen = ({navigation, route}: EditCategoryScreenProps)
                     </View>
                 </Modal>
             </ScrollView>
-  
     );
 };
 

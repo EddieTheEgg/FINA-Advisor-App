@@ -21,7 +21,7 @@ export const styles = StyleSheet.create({
         paddingHorizontal: spacing.xxl,
         borderRadius: 10,
     },
-     inactiveTransactionTypeText : {
+    inactiveTransactionTypeText : {
         color: colors.gray[500],
         fontFamily: 'Poppins-SemiBold',
     },

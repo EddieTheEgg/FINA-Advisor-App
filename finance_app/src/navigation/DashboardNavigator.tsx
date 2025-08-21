@@ -5,6 +5,7 @@ import { TransactionListScreen } from '../features/dashboard/screens/Transaction
 import { SettingsScreen } from '../features/settings/screens/SettingsScreen/SettingsScreen.tsx';
 import { ManageCategoriesScreen } from '../features/settings/screens/ManageCategoriesScreen/ManageCategoriesScreen.tsx';
 import { EditCategoryScreen } from '../features/settings/screens/EditCategoryScreen/EditCategoryScreen.tsx';
+import { CreateCategoryScreen } from '../features/settings/screens/CreateCategoryScreen/CreateCategoryScreen.tsx';
 
 const Stack = createNativeStackNavigator<DashboardStackParamList>();
 
@@ -21,6 +22,7 @@ export const DashboardNavigator = () => {
             <Stack.Screen name="Settings" component = {SettingsScreen} />
             <Stack.Screen name="ManageCategories" component = {ManageCategoriesScreen} />
             <Stack.Screen name="EditCategory" component = {EditCategoryScreen} />
+            <Stack.Screen name="CreateCategory" component = {CreateCategoryScreen} />
         </Stack.Navigator>
     );
 };
