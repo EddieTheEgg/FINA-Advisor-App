@@ -336,6 +336,8 @@ def get_settings_categories(
             )
             categories.append(category_summary)
             
+        categories.sort(key = lambda x: x.used_in_transactions, reverse = True)
+            
         return CategoryManageResponse(
             categories = categories,
             total_categories = total_count,

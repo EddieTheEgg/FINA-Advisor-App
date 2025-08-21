@@ -50,7 +50,9 @@ export const SettingsCategoryListCard = ({navigation}: SettingsCategoryListCardP
         );
     }
 
-    const categoryList = categoryData.pages.flatMap((page) => page.categories);
+    // Sort categories by used in transactions (Most used at top)
+    const categoryList = categoryData.pages.flatMap((page) => page.categories)
+        .sort((a, b) => b.usedInTransactions - a.usedInTransactions);
     const totalCategories = categoryData.pages[0].totalCategories;
 
     return (

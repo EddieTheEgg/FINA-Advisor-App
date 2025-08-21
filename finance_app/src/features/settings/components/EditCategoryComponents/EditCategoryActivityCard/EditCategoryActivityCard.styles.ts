@@ -45,4 +45,9 @@ export const styles = StyleSheet.create({
         fontFamily: 'Poppins-SemiBold',
         fontSize: fontSize.base,
     },
+    warningText: {
+        fontFamily: 'Poppins-Medium',
+        fontSize: fontSize.sm,
+        color: colors.darkBlue,
+    },
 });

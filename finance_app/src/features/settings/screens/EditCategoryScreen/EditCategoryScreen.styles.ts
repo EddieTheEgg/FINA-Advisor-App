@@ -21,6 +21,7 @@ export const styles = StyleSheet.create({
     },
     title : {
         fontSize: fontSize.xl,
+        marginRight: spacing.sm,
         fontFamily: 'Poppins-SemiBold',
     },
     saveCategoryButton : {

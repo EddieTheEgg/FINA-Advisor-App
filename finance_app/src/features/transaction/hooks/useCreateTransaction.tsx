@@ -25,6 +25,9 @@ export const useCreateTransaction = () => {
                 queryClient.invalidateQueries({queryKey: ['budget-details']}),
                 queryClient.invalidateQueries({queryKey: ['get-settings-categories', transactionType]}),
                 queryClient.invalidateQueries({queryKey: ['transactionList']}),
+                queryClient.invalidateQueries({queryKey: ['get-all-user-categories', transactionType]}),
+                queryClient.invalidateQueries({queryKey: ['get-settings-categories', transactionType]}),
+                queryClient.invalidateQueries({queryKey: ['user-categories', transactionType]}),
             ]);
 
             // Set success state and reset other fields

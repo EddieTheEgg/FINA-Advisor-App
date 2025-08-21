@@ -68,8 +68,8 @@ export const EditCategoryScreen = ({navigation, route}: EditCategoryScreenProps)
     };
 
     const navBackToCategoryListScreen = () => {
-        navigation.navigate('ManageCategories');
         setShowSuccessUpdate(false);
+        navigation.navigate('ManageCategories');
     };
 
     return (

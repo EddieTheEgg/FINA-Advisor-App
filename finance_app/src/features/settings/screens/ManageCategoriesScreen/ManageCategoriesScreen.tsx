@@ -7,6 +7,8 @@ import FontAwesome6 from 'react-native-vector-icons/FontAwesome6';
 import { ChooseCategoryCard } from '../../components/ChooseCategoryCard/ChooseCategoryCard';
 import { SettingsCategoryListCard } from '../../components/SettingsCategoryListCard/SettingsCategoryListCard';
 import { DashboardNavigationProps } from '../../../../navigation/types/DashboardNavigatorTypes';
+import { AnimatedPressable } from '../../../../components/AnimatedPressable/AnimatedPressable';
+import { fontSize } from '../../../../styles/fontSizes';
 
 
 type ManageCategoriesScreenProps = {
@@ -21,7 +23,9 @@ export const ManageCategoriesScreen = ({navigation}: ManageCategoriesScreenProps
             <View style = {styles.headerSection}>
                 <BackButton />
                 <Text style = {styles.title}>Manage Categories</Text>
-                <FontAwesome6 name = "empty-space" size = {39} color = {colors.background} />
+                <AnimatedPressable>
+                    <FontAwesome6 style = {styles.addCategoryIcon} name = "plus" size = {fontSize.lg} color = {colors.white} />
+                </AnimatedPressable>
             </View>
             <ChooseCategoryCard />
             <SettingsCategoryListCard navigation = {navigation} />

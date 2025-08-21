@@ -24,7 +24,8 @@ export const EditCategoryActivityCard = ({categoryData}: EditCategoryActivityCar
     return (
         <View style = {styles.container}>
             <Text style = {styles.title}>{categoryData.categoryIcon}  This category is actively used</Text>
-            <Text style = {styles.description}>{categoryData.categoryName} is used actively in your financial tracking.</Text>
+            <Text style = {styles.description}>{categoryData.categoryName} is used in your financial tracking.</Text>
+            <Text style = {styles.warningText}>You cannot DELETE this category when actively used.</Text>
             <View style = {styles.divider}/>
             <View style = {styles.activityInfoSection}>
                 <View style = {[styles.activitySection, {backgroundColor: colors.green}]}>

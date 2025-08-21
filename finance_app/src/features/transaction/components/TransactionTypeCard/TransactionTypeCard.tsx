@@ -19,10 +19,6 @@ export const TransactionTypeCard = () => {
                     selectedTransactionType = "INCOME"
                     label = "Income"
                 />
-                <TransactionTypeButton
-                    selectedTransactionType = "TRANSFER"
-                    label = "Transfer"
-                />
            </View>
         </View>
     );

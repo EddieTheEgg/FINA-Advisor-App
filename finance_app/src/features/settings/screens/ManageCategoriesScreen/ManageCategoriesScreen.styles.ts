@@ -16,6 +16,14 @@ export const styles = StyleSheet.create({
     },
     title : {
         fontSize: fontSize.xl,
+        marginLeft: spacing.md,
         fontFamily: 'Poppins-SemiBold',
+    },
+    addCategoryIcon : {
+        backgroundColor: colors.darkerBackground,
+        padding: spacing.sm,
+        paddingHorizontal: spacing.sm + 2,
+        borderRadius: 30,
+        boxShadow: '0px 4px 4px 0px rgba(0, 0, 0, 0.1)',
     },
 });
