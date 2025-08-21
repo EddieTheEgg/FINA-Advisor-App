@@ -35,8 +35,8 @@ const ColorSection = React.memo(({
 }: {
     category: string;
     colors: readonly string[];
-    selectedColor: string; 
-    onColorSelect: (color: string) => void; 
+    selectedColor: string;
+    onColorSelect: (color: string) => void;
 }) => (
     <View style={styles.colorSection}>
         <Text style={styles.categoryTitle}>{category}</Text>
@@ -109,7 +109,7 @@ export const EditCategoryColor = () => {
                         </View>
                     ) : (
                         <ScrollView
-                            style={styles.colorContainer} 
+                            style={styles.colorContainer}
                             showsVerticalScrollIndicator={false}
                             removeClippedSubviews={true}
                         >

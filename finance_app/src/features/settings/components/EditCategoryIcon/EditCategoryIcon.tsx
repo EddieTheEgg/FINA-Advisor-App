@@ -80,15 +80,10 @@ export const EditCategoryIcon = () => {
         }, {} as Record<string, readonly string[]>);
     }, [searchQuery]);
 
-
-
-
-    //Functions that we don't want to rerender:
-
-    const openEmojiPickerModal = useCallback(() => {
+    const openEmojiPickerModal = () => {
         setShowEmojiPicker(true);
         setTimeout(() => setIsModalReady(true), 100); //100ms is the sweet spot for the modal to load the emojis
-    }, []);
+    };
 
     const handleEmojiSelect = useCallback((emoji: string) => {
         setCategoryIconDraft(emoji);
@@ -97,14 +92,11 @@ export const EditCategoryIcon = () => {
         setIsModalReady(false);
     }, [setCategoryIconDraft]); //This function is stable, so it's technically not needed but good practice
 
-    const handleCloseModal = useCallback(() => {
+    const handleCloseModal = () => {
         setShowEmojiPicker(false);
         setSearchQuery('');
         setIsModalReady(false);
-    }, []);
-
-
-
+    };
 
     return (
         <View style={styles.container}>
