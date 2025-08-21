@@ -6,11 +6,12 @@ import logging
 from backend.src.categories.model import CategoryManageResponse, CategoryManageSummary, CategoryResponse, CategoryCreate, UpdateCategoryRequest, CategoryListResponse
 from sqlalchemy.orm import Session
 
+from backend.src.entities.audit_logs import AuditLog
 from backend.src.entities.budgets import Budget
 from backend.src.entities.category import Category
 from backend.src.entities.transaction import Transaction
-from backend.src.exceptions import CategoryNotFoundError, GetBudgetsInCategoryError, GetSettingsCategoriesError, GetTransactionsInCategoryError, InvalidCategoryForDeletionError, InvalidTransactionTypeError, InvalidUserForCategoryError
-from backend.src.entities.enums import TransactionType
+from backend.src.exceptions import CategoryNotFoundError, GetBudgetsInCategoryError, GetCategoryByIdError, GetSettingsCategoriesError, GetTransactionsInCategoryError, InvalidCategoryForDeletionError, InvalidTransactionTypeError, InvalidUserForCategoryError, UpdateCategoryError
+from backend.src.entities.enums import AuditAction, TransactionType
 
 # This is when a user makes a new category besides the default ones, which is custom
 def create_category(db: Session, create_category_request: CategoryCreate, user_id: UUID) -> CategoryResponse:
@@ -79,38 +80,76 @@ def get_user_categories(
 # This gets a specific category that is associated with the current active user
 # Helper method for update and delete category methods
 def get_category_by_id(db: Session, category_id: UUID, user_id: UUID) -> CategoryResponse:
-    category = db.query(Category).filter(Category.category_id == category_id).first()
-    if not category:
-        logging.warning(f"Category with id {category_id} not found")
-        raise CategoryNotFoundError(category_id)
-    
-    if category.user_id != user_id:
-        logging.warning(f"Access denied: User {user_id} attempted to access category {category_id} which belongs to user {category.user_id}")
-        raise InvalidUserForCategoryError(category_id)
-    
-    return category
+    try:
+        category = db.query(Category).filter(Category.category_id == category_id).first()
+        if not category:
+            logging.warning(f"Category with id {category_id} not found")
+            raise CategoryNotFoundError(category_id)
+        
+        if category.user_id != user_id:
+            logging.warning(f"Access denied: User {user_id} attempted to access category {category_id} which belongs to user {category.user_id}")
+            raise InvalidUserForCategoryError(category_id)
+            
+        return category
+    except Exception as e:
+        logging.error(f"Failed to get category by id {category_id}: {str(e)}")
+        raise GetCategoryByIdError(str(e))
 
 # This updates a specific category that is associated with the current active user
-def update_category(db: Session, category_id: UUID, update_category_request: UpdateCategoryRequest, user_id: UUID) -> CategoryResponse:
-    category = get_category_by_id(db, category_id, user_id)
-    logging.info(f"Before update: {category.category_id=}, {category.user_id=}")
-    if update_category_request.category_name:
+def update_category(db: Session, update_category_request: UpdateCategoryRequest, user_id: UUID) -> None:
+    try:
+        category = get_category_by_id(db, UUID(update_category_request.category_id), user_id)
+        
+        old_data = {
+            "category_name": category.category_name,
+            "category_description": category.category_description,
+            "transaction_type": category.transaction_type.value if category.transaction_type else None,
+            "icon": category.icon,
+            "color": category.color,
+            "is_custom": category.is_custom,
+            "user_id": str(category.user_id),
+            "category_id": str(category.category_id),
+            "created_at": category.created_at.isoformat() if category.created_at else None,
+            "updated_at": category.updated_at.isoformat() if category.updated_at else None,
+        }
+        new_data = {
+            "category_name": update_category_request.category_name,
+            "category_description": update_category_request.category_description,
+            "transaction_type": update_category_request.category_type.value if update_category_request.category_type else None,
+            "icon": update_category_request.category_icon,
+            "color": update_category_request.category_color,
+            "is_custom": category.is_custom,
+            "user_id": str(category.user_id),
+            "category_id": str(category.category_id),
+            "created_at": category.created_at.isoformat() if category.created_at else None,
+            "updated_at": datetime.now().isoformat(),
+        }
+        
+        #Make audit log
+        audit_log = AuditLog(
+            user_id = user_id,
+            action = AuditAction.UPDATE,
+            old_data = old_data,
+            new_data = new_data,
+            record_id = category.category_id,
+        )
+        db.add(audit_log)
+        db.commit()
+        
         category.category_name = update_category_request.category_name
-        category.is_custom = True
-    if update_category_request.icon:
-        category.icon = update_category_request.icon
-        category.is_custom = True
-    if update_category_request.color:
-        category.color = update_category_request.color
-        category.is_custom = True
-    if update_category_request.transaction_type:
-        category.transaction_type = update_category_request.transaction_type
-        category.is_custom = True
+        category.category_description = update_category_request.category_description
+        category.transaction_type = update_category_request.category_type
+        category.icon = update_category_request.category_icon
+        category.color = update_category_request.category_color
+        
+        db.commit()
 
-    db.commit()
-    db.refresh(category)
-    logging.info(f"After update: {category.category_id=}, {category.user_id=}")
-    return category
+        logging.info(f"Updated category {category.category_id} for user {user_id}")
+    except Exception as e:
+        logging.error(f"Failed to update category {update_category_request.category_id}: {str(e)}")
+        raise UpdateCategoryError(str(e))
+
+
 
 # This deletes a specific category that is associated with the current active user
 def delete_category(db: Session, category_id: UUID, user_id: UUID) -> None:

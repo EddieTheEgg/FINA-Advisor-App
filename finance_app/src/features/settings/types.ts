@@ -30,3 +30,12 @@ export type BackendCategoryManageSummary = {
     used_in_budgets: number;
 }
 
+export type UpdateCategoryRequest = {
+    category_id: string;
+    category_name: string;
+    category_description: string | null;
+    category_type: 'INCOME' | 'EXPENSE' | 'TRANSFER';
+    category_icon: string;
+    category_color: string;
+}
+

@@ -54,10 +54,12 @@ class CategoryListResponse(BaseModel):
         arbitrary_types_allowed = True
 
 class UpdateCategoryRequest(BaseModel):
-    category_name: str | None = None
-    icon: str | None = None
-    color: str | None = None
-    transaction_type: TransactionType | None = None   
+    category_id: str
+    category_name: str
+    category_description: str | None
+    category_type: TransactionType
+    category_icon: str
+    category_color: str
     
     
     

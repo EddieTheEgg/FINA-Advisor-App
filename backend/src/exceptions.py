@@ -76,6 +76,13 @@ class GetBudgetsInCategoryError(CategoryError):
     def __init__(self, category_id: UUID):
         super().__init__(status_code=500, detail=f"Error getting budgets in category {category_id}")
 
+class GetCategoryByIdError(CategoryError):
+    def __init__(self, message: str = "Error getting category by id"):
+        super().__init__(status_code=500, detail=message)
+        
+class UpdateCategoryError(CategoryError):
+    def __init__(self, message: str = "Error updating category"):
+        super().__init__(status_code=500, detail=message)
 
 
 class TransactionError(HTTPException):

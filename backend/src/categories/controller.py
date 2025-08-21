@@ -36,14 +36,13 @@ def get_user_categories(
     return service.get_user_categories(db, current_user.user_id, skip, limit, include_system, transaction_type)
 
 #Updates a specific category that is associated with the current active user
-@router.put("/update-category", response_model = CategoryResponse, status_code =status.HTTP_200_OK)
+@router.put("/update-category", status_code =status.HTTP_204_NO_CONTENT)
 def update_category(
         db: DbSession,
-        category_id: UUID,
-        update_category_request: UpdateCategoryRequest,
-        current_user: CurrentUser
+        current_user: CurrentUser,
+        update_category_request: UpdateCategoryRequest
     ):
-        return service.update_category(db, category_id, update_category_request, current_user.get_uuid())
+        service.update_category(db, update_category_request, current_user.get_uuid())
 
 #Deletes a specific category that is associated with the current active user
 @router.delete("/delete-category", status_code = status.HTTP_204_NO_CONTENT)

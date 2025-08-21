@@ -33,7 +33,7 @@ type EditCategoryStoreState = {
     categoryNameError: string | null;
 
     //validations
-    validateCategoryName: () => void;
+    validateCategoryName: () => boolean;
 };
 
 const initialState = {
@@ -82,33 +82,33 @@ export const useEditCategoryStore = create<EditCategoryStoreState>((set, get) =>
         // Clear error if input is empty (don't show error for empty field)
         if (categoryNameDraft.trim() === '') {
             set({categoryNameError: 'Category name is required'});
-            return;
+            return false;
         }
 
         // Only show length error if user has typed something but it's too short
         if (categoryNameDraft.trim().length < 3) {
             set({categoryNameError: 'Category name must be at least 3 characters long'});
-            return;
+            return false;
         }
 
         // Check for maximum length (already limited in front but double check here)
         if (categoryNameDraft.trim().length > 30) {
             set({categoryNameError: 'Category name cannot exceed 30 characters'});
-            return;
+            return false;
         }
 
         // Check for invalid characters (only allow letters, numbers, spaces, and common punctuation)
         const validNameRegex = /^[a-zA-Z0-9\s\-_&()]+$/;
         if (!validNameRegex.test(categoryNameDraft.trim())) {
             set({categoryNameError: 'Category name can only contain letters, numbers, spaces, and common punctuation (-_&())'});
-            return;
+            return false;
         }
 
         // Check for reserved words or inappropriate content
         const reservedWords = ['all', 'none', 'other', 'misc', 'miscellaneous', 'uncategorized'];
         if (reservedWords.includes(categoryNameDraft.trim().toLowerCase())) {
             set({categoryNameError: 'This name is reserved and cannot be used'});
-            return;
+            return false;
         }
 
         // Check for duplicate names within the same transaction type
@@ -119,10 +119,11 @@ export const useEditCategoryStore = create<EditCategoryStoreState>((set, get) =>
 
         if (existingCategory && categoryNameDraft !== originalCategoryName) {
             set({categoryNameError: 'This category name already exists for this category type'});
-            return;
+            return false;
         }
 
         set({categoryNameError: null});
+        return true;
     },
 }));
 
