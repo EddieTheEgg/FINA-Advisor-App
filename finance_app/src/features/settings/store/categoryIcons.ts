@@ -192,5 +192,5 @@ export const CATEGORY_ICONS = {
     'Symbols & Miscellaneous': [
         '⭐', '✨', '💫', '🔥', '⚡', '💎', '🎯', '🎪',
         '🌟', '💝', '🎉', '🎊', '��', '☀️',
-    ]
+    ],
   };

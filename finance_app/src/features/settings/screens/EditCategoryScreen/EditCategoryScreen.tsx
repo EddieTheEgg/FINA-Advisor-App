@@ -11,6 +11,7 @@ import { EditCategoryActivityCard } from '../../components/EditCategoryComponent
 import { EditCategoryTypeCard } from '../../components/EditCategoryComponents/EditCategoryTypeCard/EditCategoryTypeCard';
 import { EditCategoryNameCard } from '../../components/EditCategoryComponents/EditCategoryNameCard/EditCategoryNameCard';
 import { EditCategoryIcon } from '../../components/EditCategoryIcon/EditCategoryIcon';
+import { EditCategoryColor } from '../../components/EditCategoryColor/EditCategoryColor';
 
 
 type EditCategoryScreenProps = {
@@ -38,6 +39,7 @@ export const EditCategoryScreen = ({navigation, route}: EditCategoryScreenProps)
             <EditCategoryTypeCard categoryType = {categoryData.categoryType}/>
             <EditCategoryNameCard categoryType = {categoryData.categoryType}/>
             <EditCategoryIcon />
+            <EditCategoryColor />
         </ScrollView>
     );
 };
