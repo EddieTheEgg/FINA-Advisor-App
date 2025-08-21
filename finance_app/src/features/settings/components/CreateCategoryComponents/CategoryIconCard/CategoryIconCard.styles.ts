@@ -1,10 +1,10 @@
 import { StyleSheet } from 'react-native';
-import { colors } from '../../../../styles/colors';
-import { spacing } from '../../../../styles/spacing';
-import { fontSize } from '../../../../styles/fontSizes';
+import { colors } from '../../../../../styles/colors';
+import { spacing } from '../../../../../styles/spacing';
+import { fontSize } from '../../../../../styles/fontSizes';
 
 export const styles = StyleSheet.create({
-    container: {
+    container : {
         backgroundColor: colors.white,
         padding: spacing.md,
         marginHorizontal: spacing.md,
@@ -12,11 +12,11 @@ export const styles = StyleSheet.create({
         gap: spacing.sm,
         boxShadow: '0px 4px 4px 0px rgba(0, 0, 0, 0.2)',
     },
-    title: {
+    title : {
         fontSize: fontSize.lg,
         fontFamily: 'Poppins-SemiBold',
     },
-    colorSelectContainer: {
+    iconSelectContainer : {
         flexDirection: 'row',
         alignItems: 'center',
         padding: spacing.md,
@@ -25,20 +25,29 @@ export const styles = StyleSheet.create({
         borderColor: colors.gray[300],
         gap: spacing.sm,
     },
-    colorPreview: {
-        width: 50,
-        height: 50,
+    iconSelectText : {
+        fontSize: fontSize.xl,
+        padding: spacing.sm + 5,
         borderRadius: 15,
+        color: colors.black,
     },
-    colorDescriptionContainer: {
+    noIconSelected : {
+        fontSize: fontSize.xl,
+        padding: spacing.sm + 5,
+        paddingHorizontal: spacing.md + 5,
+        borderRadius: 15,
+        color: colors.white,
+        fontFamily: 'Poppins-Medium',
+    },
+    iconDescriptionContainer : {
         flex: 2,
     },
-    colorDescriptionTitle: {
+    iconDescriptionTitle: {
         fontSize: fontSize.lg,
         fontFamily: 'Poppins-SemiBold',
         includeFontPadding: false,
     },
-    colorDescriptionText: {
+    iconDescriptionText : {
         color: colors.gray[500],
         fontFamily: 'Poppins-Medium',
     },
@@ -64,36 +73,55 @@ export const styles = StyleSheet.create({
     closeButton: {
         padding: spacing.sm,
     },
-    colorContainer: {
+    searchInput: {
+        margin: spacing.md,
+        padding: spacing.md,
+        borderWidth: 1,
+        borderColor: colors.gray[300],
+        borderRadius: 10,
+        fontSize: fontSize.base,
+        fontFamily: 'Poppins-Medium',
+    },
+    emojiContainer: {
         flex: 1,
         paddingHorizontal: spacing.md,
-        paddingTop: spacing.md,
     },
-    colorSection: {
+    categorySection: {
         marginBottom: spacing.lg,
     },
     categoryTitle: {
         fontSize: fontSize.lg,
         fontFamily: 'Poppins-SemiBold',
-        marginBottom: spacing.sm,
         color: colors.black,
+        includeFontPadding: false,
     },
-    colorGrid: {
+    divider : {
+        height: 1,
+        backgroundColor: colors.gray[200],
+        marginVertical: spacing.sm,
+    },
+    emojiGrid: {
         flexDirection: 'row',
         flexWrap: 'wrap',
         gap: spacing.sm,
+        justifyContent: 'center',
     },
-    colorButton: {
-        width: 50,
-        height: 50,
+    emojiButton: {
         justifyContent: 'center',
         alignItems: 'center',
-        borderRadius: 15,
-        boxShadow: '0px 4px 4px 0px rgba(0, 0, 0, 0.2)',
+        borderRadius: 20,
+        backgroundColor: colors.gray[100],
+        borderWidth: 1,
+        borderColor: colors.gray[200],
     },
-    selectedColor: {
-        borderColor: colors.black,
-        borderWidth: 3,
+    selectedEmoji: {
+        backgroundColor: colors.background,
+        borderColor: colors.darkerBackground,
+        borderWidth: 2,
+    },
+    emojiText: {
+        fontSize: fontSize.xl,
+        padding: spacing.md,
     },
     // Loading styles
     loadingContainer: {
@@ -105,5 +133,11 @@ export const styles = StyleSheet.create({
         fontSize: fontSize.lg,
         fontFamily: 'Poppins-Medium',
         color: colors.gray[500],
+    },
+    errorText: {
+        color: colors.red,
+        fontSize: fontSize.base,
+        textAlign: 'center',
+        fontFamily: 'Poppins-Medium',
     },
 });

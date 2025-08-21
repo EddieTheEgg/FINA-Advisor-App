@@ -1,6 +1,6 @@
 import { View } from 'react-native';
 import { styles } from './ChooseCategoryCard.styles';
-import { CategoryTypeButton } from '../CategoryTypeButton/CategoryTypeButton';
+import { CategoryTypeButton } from '../CreateCategoryComponents/CategoryTypeButton/CategoryTypeButton';
 
 
 export const ChooseCategoryCard = () => {

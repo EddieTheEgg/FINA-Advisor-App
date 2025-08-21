@@ -2,9 +2,9 @@ import { View, Text, TextInput } from 'react-native';
 import { useEffect, useState } from 'react';
 import { styles } from './CategoryNameCard.styles';
 
-import { ErrorScreen } from '../../../../components/ErrorScreen/ErrorScreen';
-import { useCreateCategoryStore } from '../../store/useCreateCategoryStore';
-import { useGetAllUserCategories } from '../../hooks/useGetAllUserCategories';
+import { ErrorScreen } from '../../../../../components/ErrorScreen/ErrorScreen';
+import { useCreateCategoryStore } from '../../../store/useCreateCategoryStore';
+import { useGetAllUserCategories } from '../../../hooks/useGetAllUserCategories';
 
 
 export const CategoryNameCard = () => {

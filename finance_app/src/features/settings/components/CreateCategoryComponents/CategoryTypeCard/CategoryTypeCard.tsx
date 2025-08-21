@@ -1,7 +1,7 @@
 import { View, Text } from 'react-native';
-import { AnimatedPressable } from '../../../../components/AnimatedPressable/AnimatedPressable';
+import { AnimatedPressable } from '../../../../../components/AnimatedPressable/AnimatedPressable';
 import { styles } from './CategoryTypeCard.styles';
-import { useCreateCategoryStore } from '../../store/useCreateCategoryStore';
+import { useCreateCategoryStore } from '../../../store/useCreateCategoryStore';
 
 export const CategoryTypeCard = () => {
 

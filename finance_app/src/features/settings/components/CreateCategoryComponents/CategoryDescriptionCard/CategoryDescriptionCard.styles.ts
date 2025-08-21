@@ -1,7 +1,7 @@
 import { StyleSheet } from 'react-native';
-import { colors } from '../../../../styles/colors';
-import { spacing } from '../../../../styles/spacing';
-import { fontSize } from '../../../../styles/fontSizes';
+import { colors } from '../../../../../styles/colors';
+import { spacing } from '../../../../../styles/spacing';
+import { fontSize } from '../../../../../styles/fontSizes';
 
 export const styles = StyleSheet.create({
     container: {
@@ -12,25 +12,22 @@ export const styles = StyleSheet.create({
         boxShadow: '0px 3px 3px 0px rgba(0, 0, 0, 0.25)',
         marginHorizontal: spacing.md,
     },
-    categoryNameHeader: {
+    titleContainer: {
         flexDirection: 'row',
         justifyContent: 'space-between',
         alignItems: 'center',
     },
-    categoryNameText: {
+    title: {
         fontSize: fontSize.lg,
         fontFamily: 'Poppins-SemiBold',
         color: colors.black,
     },
-    charCounter: {
+    descriptionInputLength: {
         fontSize: fontSize.sm,
         fontFamily: 'Poppins-Regular',
         color: colors.black,
     },
-    charCounterWarning: {
-        color: colors.red,
-    },
-    categoryNameInput: {
+    descriptionInput: {
         backgroundColor: colors.gray[50],
         borderRadius: 10,
         padding: spacing.sm,

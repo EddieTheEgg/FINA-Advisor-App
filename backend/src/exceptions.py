@@ -83,6 +83,15 @@ class GetCategoryByIdError(CategoryError):
 class UpdateCategoryError(CategoryError):
     def __init__(self, message: str = "Error updating category"):
         super().__init__(status_code=500, detail=message)
+        
+class DeleteCategoryError(CategoryError):
+    def __init__(self, message: str = "Error deleting category"):
+        super().__init__(status_code=500, detail=message)
+        
+class DeleteCategoryForbiddenError(CategoryError):
+    def __init__(self, message: str = "Error deleting category"):
+        super().__init__(status_code=403, detail=message)
+
 
 
 class TransactionError(HTTPException):

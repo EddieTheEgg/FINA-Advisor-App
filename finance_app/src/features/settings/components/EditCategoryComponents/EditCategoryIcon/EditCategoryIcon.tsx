@@ -1,13 +1,13 @@
 import React, {useState, useMemo, useCallback} from 'react';
 import {View, Text, Modal, ScrollView, TextInput} from 'react-native';
-import { styles } from './CategoryIconCard.styles';
-import { colors } from '../../../../styles/colors';
+import { styles } from './EditCategoryIcon.styles';
+import { useEditCategoryStore } from '../../../store/editCategoryStore';
+import { colors } from '../../../../../styles/colors';
 import FontAwesome6 from 'react-native-vector-icons/FontAwesome6';
-import { fontSize } from '../../../../styles/fontSizes';
-import { AnimatedPressable } from '../../../../components/AnimatedPressable/AnimatedPressable';
-import { CATEGORY_ICONS } from '../../store/categoryIcons';
-import { LoadingDots } from '../../../../components/LoadingDots/LoadingDots';
-import { useCreateCategoryStore } from '../../store/useCreateCategoryStore';
+import { fontSize } from '../../../../../styles/fontSizes';
+import { AnimatedPressable } from '../../../../../components/AnimatedPressable/AnimatedPressable';
+import { CATEGORY_ICONS } from '../../../store/categoryIcons';
+import { LoadingDots } from '../../../../../components/LoadingDots/LoadingDots';
 
 // Only re-render if the emoji changes via being selected or unselected
 const EmojiButton = React.memo(({
@@ -56,8 +56,8 @@ const CategorySection = React.memo(({
     </View>
 ));
 
-export const CategoryIconCard = () => {
-    const {categoryIcon, categoryColor, setCategoryIcon, categoryIconError} = useCreateCategoryStore();
+export const EditCategoryIcon = () => {
+    const {categoryIconDraft, categoryColorDraft, setCategoryIconDraft} = useEditCategoryStore();
     const [showEmojiPicker, setShowEmojiPicker] = useState(false);
     const [searchQuery, setSearchQuery] = useState('');
     const [isModalReady, setIsModalReady] = useState(false);
@@ -86,14 +86,14 @@ export const CategoryIconCard = () => {
     };
 
     const handleEmojiSelect = useCallback((emoji: string) => {
-        setCategoryIcon(emoji);
+        setCategoryIconDraft(emoji);
         setShowEmojiPicker(false);
         setSearchQuery('');
         setIsModalReady(false);
         if (emoji !== '') {
-            useCreateCategoryStore.setState({ categoryIconError: null });
+            useEditCategoryStore.setState({ categoryIconError: null });
         }
-    }, [setCategoryIcon]); //This function is stable, so it's technically not needed but good practice
+    }, [setCategoryIconDraft]); //This function is stable, so it's technically not needed but good practice
 
     const handleCloseModal = () => {
         setShowEmojiPicker(false);
@@ -108,23 +108,15 @@ export const CategoryIconCard = () => {
                 style={styles.iconSelectContainer}
                 onPress={openEmojiPickerModal}
             >
-                {categoryIcon === '' ? (
-                    <Text style={[styles.noIconSelected, {backgroundColor: categoryColor}]}>
-                        ?
-                    </Text>
-                ) : (
-                    <Text style={[styles.iconSelectText, {backgroundColor: categoryColor}]}>
-                        {categoryIcon}
-                    </Text>
-                )}
+                <Text style={[styles.iconSelectText, {backgroundColor: categoryColorDraft}]}>
+                    {categoryIconDraft}
+                </Text>
                 <View style={styles.iconDescriptionContainer}>
                     <Text style={styles.iconDescriptionTitle}>Choose Icon</Text>
                     <Text style={styles.iconDescriptionText}>Tap to select emoji</Text>
                 </View>
                 <FontAwesome6 name="chevron-right" size={fontSize.base} color={colors.black} />
             </AnimatedPressable>
-
-            {categoryIconError && <Text style={styles.errorText}>{categoryIconError}</Text>}
 
             <Modal
                 visible={showEmojiPicker}
@@ -163,7 +155,7 @@ export const CategoryIconCard = () => {
                                     key={category}
                                     category={category}
                                     emojis={emojis}
-                                    selectedEmoji={categoryIcon}
+                                    selectedEmoji={categoryIconDraft}
                                     onEmojiSelect={handleEmojiSelect}
                                 />
                             ))}

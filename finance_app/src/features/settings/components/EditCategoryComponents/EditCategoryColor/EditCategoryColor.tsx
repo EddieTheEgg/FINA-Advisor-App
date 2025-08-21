@@ -1,12 +1,12 @@
 import React, {useState, useCallback} from 'react';
 import {View, Text, Modal, ScrollView} from 'react-native';
 import { styles } from './EditCategoryColor.styles';
-import { useEditCategoryStore } from '../../store/editCategoryStore';
-import { colors } from '../../../../styles/colors';
+import { useEditCategoryStore } from '../../../store/editCategoryStore';
+import { colors } from '../../../../../styles/colors';
 import FontAwesome6 from 'react-native-vector-icons/FontAwesome6';
-import { fontSize } from '../../../../styles/fontSizes';
-import { AnimatedPressable } from '../../../../components/AnimatedPressable/AnimatedPressable';
-import { COLOR_CATEGORIES } from '../../store/colorOptions';
+import { fontSize } from '../../../../../styles/fontSizes';
+import { AnimatedPressable } from '../../../../../components/AnimatedPressable/AnimatedPressable';
+import { COLOR_CATEGORIES } from '../../../store/colorOptions';
 
 const ColorButton = React.memo(({
     color,

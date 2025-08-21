@@ -1,8 +1,8 @@
 import React from 'react';
-import { AnimatedPressable } from '../../../../components/AnimatedPressable/AnimatedPressable';
+import { AnimatedPressable } from '../../../../../components/AnimatedPressable/AnimatedPressable';
 import { Text } from 'react-native';
 import { styles } from './CategoryTypeButton.styles';
-import { useCategoryStore } from '../../store/useCategoryStore';
+import { useCategoryStore } from '../../../store/useCategoryStore';
 
 type CategoryTypeButtonProps = {
     selectedCategoryType: 'INCOME' | 'EXPENSE' | 'TRANSFER';

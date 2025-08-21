@@ -1,8 +1,8 @@
 import { View, Text, TextInput } from 'react-native';
-import { useCreateCategoryStore } from '../../store/useCreateCategoryStore';
+import { useCreateCategoryStore } from '../../../store/useCreateCategoryStore';
 import { useEffect, useState } from 'react';
 import { styles } from './CategoryDescriptionCard.styles';
-import { colors } from '../../../../styles/colors';
+import { colors } from '../../../../../styles/colors';
 
 export const CategoryDescriptionCard = () => {
     const {categoryDescription, setCategoryDescription} = useCreateCategoryStore();
