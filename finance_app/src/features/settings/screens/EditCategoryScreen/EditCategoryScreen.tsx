@@ -30,16 +30,23 @@ export const EditCategoryScreen = ({navigation, route}: EditCategoryScreenProps)
     const {categoryData} = route.params;
     const insets = useSafeAreaInsets();
     const height = Dimensions.get('window').height;
-    const {validateCategoryName} = useEditCategoryStore();
+    const {validateCategoryName, categoryNameError, categoryIconError} = useEditCategoryStore();
 
     const {mutate: updateCategory, isPending, error, isSuccess} = useUpdateCategory();
     const [showSuccessUpdate, setShowSuccessUpdate] = useState(false);
+    const [invalidSubmissionText, setInvalidSubmissionText] = useState('');
 
     useEffect(() => {
         if (isSuccess) {
             setShowSuccessUpdate(true);
         }
     }, [isSuccess]);
+
+    useEffect(() => {
+        if (categoryNameError === null && categoryIconError === null) {
+            setInvalidSubmissionText('');
+        }
+    }, [categoryNameError, categoryIconError]);
 
     if (isPending) {
         return (
@@ -62,6 +69,7 @@ export const EditCategoryScreen = ({navigation, route}: EditCategoryScreenProps)
 
     const handleSaveCategory = () => {
         if (!validateCategoryName()) {
+            setInvalidSubmissionText('There are some invalid fields above');
             return;
         }
         updateCategory();
@@ -96,6 +104,7 @@ export const EditCategoryScreen = ({navigation, route}: EditCategoryScreenProps)
                 >
                     <Text style = {styles.saveCategoryButtonText}>Save Category</Text>
                 </AnimatedPressable>
+                {invalidSubmissionText && <Text style={styles.errorText}>{invalidSubmissionText}</Text>}
                 <Modal
                     visible={showSuccessUpdate}
                     animationType="fade"

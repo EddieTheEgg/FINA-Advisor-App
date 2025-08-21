@@ -57,7 +57,7 @@ const CategorySection = React.memo(({
 ));
 
 export const CategoryIconCard = () => {
-    const {categoryIcon, categoryColor, setCategoryIcon} = useCreateCategoryStore();
+    const {categoryIcon, categoryColor, setCategoryIcon, categoryIconError} = useCreateCategoryStore();
     const [showEmojiPicker, setShowEmojiPicker] = useState(false);
     const [searchQuery, setSearchQuery] = useState('');
     const [isModalReady, setIsModalReady] = useState(false);
@@ -90,6 +90,9 @@ export const CategoryIconCard = () => {
         setShowEmojiPicker(false);
         setSearchQuery('');
         setIsModalReady(false);
+        if (emoji !== '') {
+            useCreateCategoryStore.setState({ categoryIconError: null });
+        }
     }, [setCategoryIcon]); //This function is stable, so it's technically not needed but good practice
 
     const handleCloseModal = () => {
@@ -120,6 +123,8 @@ export const CategoryIconCard = () => {
                 </View>
                 <FontAwesome6 name="chevron-right" size={fontSize.base} color={colors.black} />
             </AnimatedPressable>
+
+            {categoryIconError && <Text style={styles.errorText}>{categoryIconError}</Text>}
 
             <Modal
                 visible={showEmojiPicker}

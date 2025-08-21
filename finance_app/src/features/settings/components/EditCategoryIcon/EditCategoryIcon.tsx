@@ -90,6 +90,9 @@ export const EditCategoryIcon = () => {
         setShowEmojiPicker(false);
         setSearchQuery('');
         setIsModalReady(false);
+        if (emoji !== '') {
+            useEditCategoryStore.setState({ categoryIconError: null });
+        }
     }, [setCategoryIconDraft]); //This function is stable, so it's technically not needed but good practice
 
     const handleCloseModal = () => {

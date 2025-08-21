@@ -134,4 +134,10 @@ export const styles = StyleSheet.create({
         fontFamily: 'Poppins-Medium',
         color: colors.gray[500],
     },
+    errorText: {
+        color: colors.red,
+        fontSize: fontSize.base,
+        textAlign: 'center',
+        fontFamily: 'Poppins-Medium',
+    },
 });

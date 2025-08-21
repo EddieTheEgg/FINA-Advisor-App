@@ -31,9 +31,11 @@ type EditCategoryStoreState = {
 
     //Errors
     categoryNameError: string | null;
+    categoryIconError: string | null;
 
     //validations
     validateCategoryName: () => boolean;
+    validateCategoryIcon: () => boolean;
 };
 
 const initialState = {
@@ -49,6 +51,7 @@ const initialState = {
     allCategories: [],
     isLoadingCategories: false,
     categoriesError: null,
+    categoryIconError: null,
 };
 
 export const useEditCategoryStore = create<EditCategoryStoreState>((set, get) => ({
@@ -123,6 +126,15 @@ export const useEditCategoryStore = create<EditCategoryStoreState>((set, get) =>
         }
 
         set({categoryNameError: null});
+        return true;
+    },
+
+    validateCategoryIcon: () => {
+        const { categoryIconDraft } = get();
+        if (categoryIconDraft === '') {
+            set({categoryIconError: 'Category icon is required'});
+            return false;
+        }
         return true;
     },
 }));

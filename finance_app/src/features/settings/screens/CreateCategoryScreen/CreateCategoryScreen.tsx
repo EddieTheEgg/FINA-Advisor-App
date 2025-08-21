@@ -27,14 +27,22 @@ export const CreateCategoryScreen = ({navigation}: CreateCategoryScreenProps) =>
     const insets = useSafeAreaInsets();
     const height = Dimensions.get('window').height;
     const [showSuccessCreate, setShowSuccessCreate] = useState(false);
-    const {validateCategoryName} = useCreateCategoryStore();
+    const {resetToInitialState, categoryIconError, categoryNameError, categoryColorError, validateCategoryName, validateCategoryIcon, validateCategoryColor} = useCreateCategoryStore();
     const {mutate: createCategory, isPending, error, isSuccess} = useCreateCategory();
+    const [invalidSubmissionText, setInvalidSubmissionText] = useState('');
 
     useEffect(() => {
         if (isSuccess) {
+            resetToInitialState();
             setShowSuccessCreate(true);
         }
-    }, [isSuccess]);
+    }, [isSuccess, resetToInitialState]);
+
+    useEffect(() => {
+        if (categoryNameError === null && categoryIconError === null && categoryColorError === null) {
+            setInvalidSubmissionText('');
+        }
+    }, [categoryNameError, categoryIconError, categoryColorError]); //This is a dependency that we don't need, but it's here to avoid linting errors
 
     if (isPending) {
         return (
@@ -61,7 +69,8 @@ export const CreateCategoryScreen = ({navigation}: CreateCategoryScreenProps) =>
     };
 
     const handleCreateCategory = () => {
-        if (!validateCategoryName()) {
+        if (!validateCategoryName() || !validateCategoryIcon() || !validateCategoryColor()) {
+            setInvalidSubmissionText('There are some invalid fields above');
             return;
         }
         createCategory();
@@ -89,6 +98,7 @@ export const CreateCategoryScreen = ({navigation}: CreateCategoryScreenProps) =>
             >
                 <Text style = {styles.createCategoryButtonText}>Create Category</Text>
             </AnimatedPressable>
+            {invalidSubmissionText && <Text style={styles.errorText}>{invalidSubmissionText}</Text>}
             <Modal
                 visible={showSuccessCreate}
                 animationType="fade"

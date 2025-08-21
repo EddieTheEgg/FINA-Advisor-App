@@ -20,7 +20,15 @@ type CreateCategoryState = {
 
     initializeAllCategories: (categories: CategoryResponse[]) => void,
     validateCategoryName: () => boolean,
+    validateCategoryIcon: () => boolean,
+    validateCategoryColor: () => boolean,
+
+
     categoryNameError: string | null,
+    categoryIconError: string | null,
+    categoryColorError: string | null,
+
+    resetToInitialState: () => void,
 };
 
 const initialState = {
@@ -31,6 +39,8 @@ const initialState = {
     categoryColor: '#616161',
     allCategories: [],
     categoryNameError: null,
+    categoryIconError: null,
+    categoryColorError: null,
 };
 
 export const useCreateCategoryStore = create<CreateCategoryState>((set, get) => ({
@@ -92,5 +102,26 @@ export const useCreateCategoryStore = create<CreateCategoryState>((set, get) => 
         set({categoryNameError: null});
         return true;
     },
+
+    validateCategoryIcon: () => {
+        const { categoryIcon } = get();
+        if (categoryIcon === '') {
+            set({categoryIconError: 'Category icon is required'});
+            return false;
+        }
+        return true;
+    },
+
+    //We don't really need to validate because we give users a default, but keep here in case we need in future
+    validateCategoryColor: () => {
+        const { categoryColor } = get();
+        if (categoryColor === '') {
+            set({categoryColorError: 'Category color is required'});
+            return false;
+        }
+        return true;
+    },
+
+    resetToInitialState: () => set(initialState),
 }));
 
