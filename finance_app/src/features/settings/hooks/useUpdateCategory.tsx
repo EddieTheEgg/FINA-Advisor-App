@@ -27,8 +27,9 @@ export const useUpdateCategory = () => {
     const {mutate, isPending, error, isSuccess} = useMutation({
         mutationFn: () => updateCategory(updateCategoryInfo),
         onSuccess: async () => {
-            await queryClient.invalidateQueries({queryKey: ['user-categories', categoryTypeDraft]});
+            await queryClient.invalidateQueries({queryKey: ['get-settings-categories', categoryTypeDraft]});
             await queryClient.invalidateQueries({queryKey: ['get-all-user-categories', categoryTypeDraft]});
+            await queryClient.invalidateQueries({queryKey: ['user-categories', categoryTypeDraft]});
         },
         onError: (err: any) => {
             console.error('Error updating transaction:', err);
