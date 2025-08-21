@@ -39,3 +39,11 @@ export type UpdateCategoryRequest = {
     category_color: string;
 }
 
+export type CreateCategoryRequest = {
+    category_name: string;
+    category_description: string | null;
+    category_type: 'INCOME' | 'EXPENSE' | 'TRANSFER';
+    category_icon: string;
+    category_color: string;
+}
+

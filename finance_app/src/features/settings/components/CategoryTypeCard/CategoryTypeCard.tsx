@@ -11,7 +11,7 @@ export const CategoryTypeCard = () => {
         const isActive = categoryType === type;
         return {
             buttonStyle: [styles.categoryTypeButton, isActive && styles.activeCategoryTypeButton],
-            textStyle: [styles.categoryTypeText, isActive && styles.activeCategoryTypeText]
+            textStyle: [styles.categoryTypeText, isActive && styles.activeCategoryTypeText],
         };
     };
 

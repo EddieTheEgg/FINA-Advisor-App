@@ -2,14 +2,6 @@ from datetime import datetime
 from uuid import UUID
 from pydantic import BaseModel, Field
 from backend.src.entities.enums import TransactionType
-
-class CategoryCreate(BaseModel):
-    category_name: str
-    icon: str
-    color: str
-    transaction_type: TransactionType
-    is_custom: bool = True
-
 class CategoryUpdate(BaseModel):
     category_name: str | None = None
     icon: str | None = None
@@ -53,6 +45,15 @@ class CategoryListResponse(BaseModel):
         from_attributes = True
         arbitrary_types_allowed = True
 
+
+
+class CreateCategoryRequest(BaseModel):
+    category_name: str
+    category_description: str | None
+    category_type: TransactionType
+    category_icon: str
+    category_color: str
+    
 class UpdateCategoryRequest(BaseModel):
     category_id: str
     category_name: str
@@ -60,6 +61,8 @@ class UpdateCategoryRequest(BaseModel):
     category_type: TransactionType
     category_icon: str
     category_color: str
+    
+
     
     
     
@@ -79,3 +82,4 @@ class CategoryManageResponse(BaseModel):
     has_next: bool
     current_page: int
     page_size: int
+    

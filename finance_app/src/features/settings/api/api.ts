@@ -1,6 +1,6 @@
 import { AxiosError } from 'axios';
 import api from '../../../api/axios';
-import { BackendCategoryManageSummary, CategoryManageResponse, UpdateCategoryRequest } from '../types';
+import { BackendCategoryManageSummary, CategoryManageResponse, CreateCategoryRequest, UpdateCategoryRequest } from '../types';
 
 
 type getSettingsCategoriesProps = {
@@ -66,5 +66,22 @@ export const updateCategory = async (updateCategoryInfo: UpdateCategoryRequest) 
             throw new Error('Category not found');
         }
         throw new Error('Failed to update category. Please try again later.');
+    }
+};
+
+export const createCategory = async (createCategoryInfo: CreateCategoryRequest) => {
+    try {
+        await api.post('/categories/create-category', createCategoryInfo);
+    } catch (error : unknown) {
+        if (error instanceof AxiosError && error.response?.status === 400) {
+            throw new Error(error.response?.data.message);
+        }
+        else if (error instanceof AxiosError && error.response?.status === 401) {
+            throw new Error('Unauthorized access to categories');
+        }
+        else if (error instanceof AxiosError && error.response?.status === 403) {
+            throw new Error('Forbidden access to categories');
+        }
+        throw new Error('Failed to create category. Please try again later.');
     }
 };

@@ -3,7 +3,7 @@ import logging
 from typing import List
 from uuid import UUID
 import logging
-from backend.src.categories.model import CategoryManageResponse, CategoryManageSummary, CategoryResponse, CategoryCreate, UpdateCategoryRequest, CategoryListResponse
+from backend.src.categories.model import CategoryManageResponse, CategoryManageSummary, CategoryResponse, CreateCategoryRequest, UpdateCategoryRequest, CategoryListResponse
 from sqlalchemy.orm import Session
 
 from backend.src.entities.audit_logs import AuditLog
@@ -14,20 +14,20 @@ from backend.src.exceptions import CategoryNotFoundError, GetBudgetsInCategoryEr
 from backend.src.entities.enums import AuditAction, TransactionType
 
 # This is when a user makes a new category besides the default ones, which is custom
-def create_category(db: Session, create_category_request: CategoryCreate, user_id: UUID) -> CategoryResponse:
+def create_category(db: Session, create_category_request: CreateCategoryRequest, user_id: UUID) -> None:
     try:
         new_category = Category(
             category_name=create_category_request.category_name,
-            icon=create_category_request.icon,
-            color=create_category_request.color,
-            transaction_type = create_category_request.transaction_type,
+            category_description=create_category_request.category_description,
+            icon=create_category_request.category_icon,
+            color=create_category_request.category_color,
+            transaction_type = create_category_request.category_type,
             is_custom = True,
             user_id = user_id
         )
         db.add(new_category)
         db.commit()
-        db.refresh(new_category)
-        return new_category
+        logging.info(f"Category created with the name {create_category_request.category_name}")
     except Exception as e:
         logging.error(f"Failed to create new category: {create_category_request.category_name}. Error {str(e)}")
         raise

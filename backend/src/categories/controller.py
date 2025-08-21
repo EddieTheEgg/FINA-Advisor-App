@@ -4,7 +4,7 @@ from fastapi import APIRouter, Query, HTTPException
 from starlette import status
 
 from backend.src.auth.service import CurrentUser
-from backend.src.categories.model import CategoryManageResponse, CategoryResponse, CategoryCreate, UpdateCategoryRequest, CategoryListResponse
+from backend.src.categories.model import CategoryManageResponse, CategoryResponse, CreateCategoryRequest, UpdateCategoryRequest, CategoryListResponse
 from backend.src.database.core import DbSession
 from backend.src.categories import service
 from backend.src.entities.enums import TransactionType
@@ -15,10 +15,10 @@ router = APIRouter(
 )
 
 #Creates a new custom category for the following user
-@router.post("/create-category", response_model=CategoryResponse, status_code=status.HTTP_201_CREATED)
+@router.post("/create-category", status_code=status.HTTP_201_CREATED)
 def create_category(
         db: DbSession,
-        create_category_request: CategoryCreate,
+        create_category_request: CreateCategoryRequest,
         current_user: CurrentUser
 ):
     return service.create_category(db, create_category_request, current_user.get_uuid())

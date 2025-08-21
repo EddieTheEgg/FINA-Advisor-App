@@ -1,6 +1,7 @@
 import { useMutation, useQueryClient } from '@tanstack/react-query';
 import { useEditCategoryStore } from '../store/editCategoryStore';
 import { updateCategory } from '../api/api';
+import { UpdateCategoryRequest } from '../types';
 
 export const useUpdateCategory = () => {
 
@@ -13,7 +14,7 @@ export const useUpdateCategory = () => {
         categoryColorDraft,
     } = useEditCategoryStore();
 
-    const updateCategoryInfo = {
+    const updateCategoryInfo : UpdateCategoryRequest = {
         category_id: categoryIdDraft,
         category_name: categoryNameDraft,
         category_description: categoryDescriptionDraft,
@@ -32,7 +33,7 @@ export const useUpdateCategory = () => {
             await queryClient.invalidateQueries({queryKey: ['user-categories', categoryTypeDraft]});
         },
         onError: (err: any) => {
-            console.error('Error updating transaction:', err);
+            console.error('Error updating category:', err);
         },
     });
 
