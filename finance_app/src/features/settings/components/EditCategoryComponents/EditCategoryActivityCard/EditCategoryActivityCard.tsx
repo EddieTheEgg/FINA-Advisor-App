@@ -14,8 +14,9 @@ export const EditCategoryActivityCard = ({categoryData}: EditCategoryActivityCar
     if (categoryData.usedInTransactions <= 0 && categoryData.usedInBudgets <= 0) {
         return (
             <View style = {styles.container}>
-                <Text>This category is not used in any transactions or budgets</Text>
-                <Text>{categoryData.categoryName}</Text>
+                <Text style = {styles.title}>{categoryData.categoryIcon}  This category is not actively used</Text>
+                <Text style = {styles.description}>{categoryData.categoryName} is not used in any transactions or budgets.</Text>
+                <Text style = {styles.warningText}>This category is DELETABLE.</Text>
             </View>
         );
     }
