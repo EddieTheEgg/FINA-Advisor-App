@@ -4,8 +4,8 @@ import { useEffect, useState } from 'react';
 import { styles } from './LastNameInput.styles';
 
 export const LastNameInput = () => {
-    const { setLastName } = useSignupStore();
-    const [lastNameInput, setLastNameInput] = useState('');
+    const { lastName, setLastName } = useSignupStore();
+    const [lastNameInput, setLastNameInput] = useState(lastName);
     const maxLength = 20;
 
 

@@ -12,6 +12,8 @@ type PersonalInfo = {
     setPassword: (password: string) => void;
 
     initializePersonalInfo: () => void;
+
+    validateEmailType: (email: string) => boolean;
 };
 
 const initialPersonalInfo = {
@@ -30,4 +32,9 @@ export const useSignupStore = create<PersonalInfo>((set) => ({
     setPassword: (password: string) => set({ password }),
 
     initializePersonalInfo: () => set(initialPersonalInfo),
+
+    validateEmailType: (email: string) => {
+        const expression = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+        return expression.test(String(email).toLowerCase());
+    },
 }));
