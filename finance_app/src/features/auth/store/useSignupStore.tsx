@@ -1,4 +1,4 @@
-import { create } from "zustand";
+import { create } from 'zustand';
 
 type PersonalInfo = {
     firstName: string;
@@ -10,6 +10,8 @@ type PersonalInfo = {
     setLastName: (lastName: string) => void;
     setEmail: (email: string) => void;
     setPassword: (password: string) => void;
+
+    initializePersonalInfo: () => void;
 };
 
 const initialPersonalInfo = {
@@ -26,4 +28,6 @@ export const useSignupStore = create<PersonalInfo>((set) => ({
     setLastName: (lastName: string) => set({ lastName }),
     setEmail: (email: string) => set({ email }),
     setPassword: (password: string) => set({ password }),
+
+    initializePersonalInfo: () => set(initialPersonalInfo),
 }));

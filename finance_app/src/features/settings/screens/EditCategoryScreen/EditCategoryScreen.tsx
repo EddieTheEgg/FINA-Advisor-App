@@ -37,7 +37,7 @@ export const EditCategoryScreen = ({navigation, route}: EditCategoryScreenProps)
     const {mutate: deleteCategory,
         isPending: isDeletingCategory,
         error: deleteCategoryError,
-        isSuccess: isDeleteCategorySuccess
+        isSuccess: isDeleteCategorySuccess,
     } = useDeleteCategory({categoryId: categoryData.categoryId, categoryType: categoryData.categoryType});
     const [showSuccessUpdate, setShowSuccessUpdate] = useState(false);
     const [showCannotDeleteCategoryModal, setShowCannotDeleteCategoryModal] = useState(false);

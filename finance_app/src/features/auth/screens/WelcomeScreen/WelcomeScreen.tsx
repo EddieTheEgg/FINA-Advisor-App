@@ -5,15 +5,19 @@ import SignInButton from '../../components/SignInButton/SignInButton';
 import CreateAccountButton from '../../components/CreateAccountButton/CreateAccountButton';
 import { AuthNavigationProps } from '../../../../navigation/types/AuthNavigatorTypes';
 import { useSafeAreaInsets } from 'react-native-safe-area-context';
+import { useSignupStore } from '../../store/useSignupStore';
 
 const WelcomeScreen = ({ navigation }: { navigation: AuthNavigationProps }) => {
   const insets = useSafeAreaInsets();
+
+  const {initializePersonalInfo} = useSignupStore();
 
   const navLoginScreen = () => {
     navigation.navigate('Login');
   };
 
   const navCreateAccScreen = () => {
+    initializePersonalInfo();
     navigation.navigate('CreateAccount');
   };
 
