@@ -14,8 +14,7 @@ const WelcomeScreen = ({ navigation }: { navigation: AuthNavigationProps }) => {
   };
 
   const navCreateAccScreen = () => {
-    console.log('Sign up pressed!');
-    // We'll add navigation later
+    navigation.navigate('CreateAccount');
   };
 
   return (
@@ -32,8 +31,8 @@ const WelcomeScreen = ({ navigation }: { navigation: AuthNavigationProps }) => {
           </Text>
 
           <View style={WelcomeScreenStyles.buttonContainer}>
-          <SignInButton onPress={navLoginScreen} disabled={false}/>
-          <CreateAccountButton onPress={navCreateAccScreen} />
+            <SignInButton onPress={navLoginScreen} disabled={false}/>
+            <CreateAccountButton onPress={navCreateAccScreen} />
           </View>
         </View>
     </View>

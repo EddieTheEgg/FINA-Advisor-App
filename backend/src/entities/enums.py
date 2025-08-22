@@ -84,6 +84,22 @@ class BudgetSpendingStatus(Enum):
     ON_TRACK = "ON_TRACK" #Spending <=100% of budget
     WARNING = "WARNING" #Spending 101-110% of the budget
     OVER_BUDGET = "OVER_BUDGET" #Spending > 110% of the budget
+
     
-    
-    
+class ACCOUNT_TYPE_COLORS(Enum): 
+    CHECKING = "#10B981",    # Green (banking)
+    SAVINGS = "#059669",     # Darker green (saving money)
+    CREDIT_CARD = "#DC2626", # Red (debt/credit)
+    INVESTMENT = "#8B5CF6",  # Purple (growth/future)
+    LOAN = "#F59E0B",        # Orange (debt/payments)
+    CASH = "#F59E0B",        # Yellow/Orange (physical money)
+    OTHER = "#6B7280"        # Gray (neutral)
+
+class ACCOUNT_TYPE_ICONS(Enum):
+    CHECKING = "🏦",
+    SAVINGS = "💰", 
+    CREDIT_CARD = "💳",
+    INVESTMENT = "📈",
+    LOAN = "🏠",
+    CASH = "💵",
+    OTHER = "📋"

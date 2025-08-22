@@ -34,7 +34,7 @@ const AuthNavigator = () => {
       <Stack.Screen
         name="CreateAccount"
         component={CreateAccountScreen}
-    />
+      />
     </Stack.Navigator>
   );
 };
