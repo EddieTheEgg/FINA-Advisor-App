@@ -42,5 +42,6 @@ export const styles = StyleSheet.create({
         padding: spacing.md,
         borderRadius: 20,
         boxShadow: '0px 4px 4px 0px rgba(0, 0, 0, 0.25)',
+        gap: spacing.md,
     },
 });

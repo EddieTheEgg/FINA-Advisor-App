@@ -3,6 +3,7 @@ import { Text, View } from 'react-native';
 import { useSafeAreaInsets } from 'react-native-safe-area-context';
 import { styles } from './CreateAccount.styles';
 import { FirstNameInput } from '../../components/CreateAccountComponents/FirstNameInput/FirstNameInput';
+import { LastNameInput } from '../../components/CreateAccountComponents/LastNameInput/LastNameInput';
 
 const CreateAccountScreen = () => {
     const insets  = useSafeAreaInsets();
@@ -20,6 +21,7 @@ const CreateAccountScreen = () => {
                 </View>
                 <View style = {styles.formContainer}>
                     <FirstNameInput />
+                    <LastNameInput />
                 </View>
             </View>
         </View>
