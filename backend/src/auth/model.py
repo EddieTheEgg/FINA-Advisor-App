@@ -11,17 +11,20 @@ class RegisterUserRequest(BaseModel):
     
 class NewRegisteredUserResponse(BaseModel):
     user_id: UUID
-    email: EmailStr
+    email: str
     username: str
     first_name: str
     last_name: str
     access_token: str
     refresh_token: str
-    token_type: str = "bearer"
-    
-    class Config:
-        from_attributes = True
-        arbitrary_types_allowed = True 
+    token_type: str
+
+class EmailAvailabilityRequest(BaseModel):
+    email: EmailStr
+
+class EmailAvailabilityResponse(BaseModel):
+    available: bool
+    message: str
     
 #The token itself that we return and use between server and client
 class Token(BaseModel):

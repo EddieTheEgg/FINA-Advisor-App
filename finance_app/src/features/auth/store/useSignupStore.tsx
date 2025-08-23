@@ -1,4 +1,6 @@
 import { create } from 'zustand';
+import { checkEmailAvailability } from '../api/api';
+import { EmailAvailabilityResponse } from '../types';
 
 type PersonalInfo = {
     firstName: string;
@@ -17,12 +19,16 @@ type PersonalInfo = {
 
     validateFirstName: () => boolean;
     validateLastName: () => boolean;
+    validateEmail: () => boolean;
     validateEmailType: (email: string) => boolean;
     validatePassword: () => boolean;
     validateConfirmPassword: () => boolean;
+    validateCreateAccount: () => Promise<boolean>;
+    checkEmailAvailability: (email: string) => Promise<boolean>;
 
     firstNameError: string | null;
     lastNameError: string | null;
+    emailError: string | null;
     passwordError: string | null;
     confirmPasswordError: string | null;
 };
@@ -36,6 +42,7 @@ const initialPersonalInfo = {
 
     firstNameError: null,
     lastNameError: null,
+    emailError: null,
     passwordError: null,
     confirmPasswordError: null,
 };
@@ -76,6 +83,24 @@ export const useSignupStore = create<PersonalInfo>((set, get) => ({
     },
 
 
+    validateEmail: () => {
+        const email = get().email;
+
+        if(email.length <= 0) {
+            set({emailError: 'Email is required'});
+            return false;
+        }
+
+        const expression = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+        if (expression.test(String(email).toLowerCase())) {
+            set({emailError: null});
+            return true;
+        } else {
+            set({emailError: 'Please enter a valid email'});
+            return false;
+        }
+    },
+
     validateEmailType: (email: string) => {
         const expression = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
         return expression.test(String(email).toLowerCase());
@@ -109,6 +134,37 @@ export const useSignupStore = create<PersonalInfo>((set, get) => ({
         } else {
             set({confirmPasswordError: null});
             return true;
+        }
+    },
+
+    validateCreateAccount: async () => {
+        const firstName = get().validateFirstName();
+        const lastName = get().validateLastName();
+        const email = get().validateEmail();
+        const password = get().validatePassword();
+        const confirmPassword = get().validateConfirmPassword();
+
+        if (!firstName || !lastName || !email || !password || !confirmPassword) {
+            return false;
+        }
+
+        // Check email avaliablity as final before creating/proceeding to next step
+        const emailAvailable = await get().checkEmailAvailability(get().email);
+
+        return emailAvailable;
+    },
+
+    checkEmailAvailability: async (email: string): Promise<boolean> => {
+        try {
+            const response: EmailAvailabilityResponse = await checkEmailAvailability(email);
+            if (!response.available) {
+                set({emailError: response.message});
+                return false;
+            }
+            return true;
+        } catch (error) {
+            set({emailError: 'Failed to check email availability'});
+            return false;
         }
     },
 }));

@@ -4,24 +4,19 @@ import { useEffect, useState } from 'react';
 import { useSignupStore } from '../../../store/useSignupStore';
 
 export const EmailInput = () => {
-    const { email, setEmail, validateEmailType } = useSignupStore();
+    const { email, setEmail, validateEmail, emailError } = useSignupStore();
     const [emailInput, setEmailInput] = useState(email);
-    const [ emailError, setEmailError] = useState('');
 
     useEffect(() => {
-        const trimmedEmail = emailInput.trim();
+        setEmail(emailInput);
+    }, [emailInput, setEmail]);
 
-        if (trimmedEmail.length === 0) {
+    useEffect(() => {
+        if (emailInput.length === 0) {
             return;
         }
-
-        if(validateEmailType(trimmedEmail)) {
-            setEmailError('');
-            setEmail(trimmedEmail);
-        } else {
-            setEmailError('Please enter a valid email');
-        }
-    }, [emailInput, setEmail, validateEmailType]);
+        validateEmail();
+    }, [emailInput, validateEmail]);
 
     return (
         <View>

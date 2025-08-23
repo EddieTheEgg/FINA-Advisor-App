@@ -3,3 +3,8 @@ export type Token = {
     refreshToken: string;
     tokenType: string;
 }
+
+export type EmailAvailabilityResponse = {
+    available: boolean;
+    message: string;
+}

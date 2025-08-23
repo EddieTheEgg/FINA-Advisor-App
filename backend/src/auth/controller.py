@@ -2,14 +2,22 @@
 from typing import Annotated
 from fastapi import APIRouter, Depends
 from fastapi.security import OAuth2PasswordRequestForm
-from backend.src.auth.model import NewRegisteredUserResponse, Token, RegisterUserRequest, LoginRequest, RefreshTokenRequest
-from backend.src.auth.service import register_user, login_user, refresh_access_token
+from backend.src.auth.model import NewRegisteredUserResponse, Token, RegisterUserRequest, LoginRequest, RefreshTokenRequest, EmailAvailabilityRequest, EmailAvailabilityResponse
+from backend.src.auth.service import register_user, login_user, refresh_access_token, check_email_availability
 from backend.src.database.core import DbSession
 
 router = APIRouter(
     prefix='/auth',
     tags=['auth']
 )
+
+# Check if email is available for registration
+@router.post("/check-email", response_model=EmailAvailabilityResponse)
+def check_email(
+    email_request: EmailAvailabilityRequest,
+    db: DbSession,
+) -> EmailAvailabilityResponse:
+    return check_email_availability(email_request, db)
 
 #Register a new user
 @router.post("/register", response_model=NewRegisteredUserResponse)

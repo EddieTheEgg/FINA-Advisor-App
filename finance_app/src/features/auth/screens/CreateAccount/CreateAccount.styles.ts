@@ -44,4 +44,22 @@ export const styles = StyleSheet.create({
         boxShadow: '0px 4px 4px 0px rgba(0, 0, 0, 0.25)',
         gap: spacing.md,
     },
+    continueButton: {
+        backgroundColor: colors.darkerBackground,
+        marginHorizontal: spacing.md,
+        padding: spacing.md,
+        borderRadius: 15,
+        alignItems: 'center',
+        marginVertical: spacing.md,
+    },
+    continueButtonText: {
+        color: colors.white,
+        fontFamily: 'Poppins-SemiBold',
+        fontSize: fontSize.lg,
+    },
+    validatingText: {
+        fontFamily: 'Poppins-SemiBold',
+        alignSelf: 'center',
+        marginVertical: spacing.md,
+    },
 });

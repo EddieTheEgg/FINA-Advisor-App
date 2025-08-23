@@ -7,7 +7,7 @@ from passlib.context import CryptContext
 import os
 from sqlalchemy.orm import Session
 from backend.src.entities.user import User
-from backend.src.auth.model import NewRegisteredUserResponse, Token, TokenData, RegisterUserRequest, LoginRequest, RefreshTokenRequest
+from backend.src.auth.model import NewRegisteredUserResponse, Token, TokenData, RegisterUserRequest, LoginRequest, RefreshTokenRequest, EmailAvailabilityRequest, EmailAvailabilityResponse
 from fastapi.security import OAuth2PasswordBearer
 from backend.src.exceptions import AuthenticationError, DuplicateEmailError, DuplicateUsernameError
 from backend.src.auth.jwt import (
@@ -120,6 +120,25 @@ def register_user(db: Session, register_user_request: RegisterUserRequest) -> Ne
     except Exception as e:
         logging.error(f"failed to register user: {register_user_request.email}. Error: {str(e)}")
         raise
+
+# Check if email is available for registration
+def check_email_availability(email_request: EmailAvailabilityRequest, db: Session) -> EmailAvailabilityResponse:
+    logging.info(f"Checking email availability for: {email_request.email}")
+    
+    existing_user = db.query(User).filter(User.email == email_request.email).first()
+    
+    if existing_user:
+        logging.info(f"Email {email_request.email} is already taken")
+        return EmailAvailabilityResponse(
+            available=False,
+            message=f"This email is already registered. Try logging in or use a different email."
+        )
+    else:
+        logging.info(f"Email {email_request.email} is available")
+        return EmailAvailabilityResponse(
+            available=True,
+            message=f"Email {email_request.email} is available"
+        )
 
 # Login and return both access and refresh tokens
 def login_user(login_request: LoginRequest, db: Session) -> Token:
