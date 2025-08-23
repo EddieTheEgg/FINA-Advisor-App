@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from 'react';
-import { Text, View } from 'react-native';
+import { Dimensions, Platform, ScrollView, Text, View } from 'react-native';
 import { useSafeAreaInsets } from 'react-native-safe-area-context';
 import { styles } from './CreateAccount.styles';
 import { FirstNameInput } from '../../components/CreateAccountComponents/FirstNameInput/FirstNameInput';
@@ -9,9 +9,16 @@ import { PasswordInputs } from '../../components/CreateAccountComponents/Passwor
 import { AnimatedPressable } from '../../../../components/AnimatedPressable/AnimatedPressable';
 import { useSignupStore } from '../../store/useSignupStore';
 import { LoadingDots } from '../../../../components/LoadingDots/LoadingDots';
+import { AuthNavigationProps } from '../../../../navigation/types/AuthNavigatorTypes';
 
-const CreateAccountScreen = () => {
+type CreateAccountScreenProps = {
+    navigation: AuthNavigationProps
+}
+
+const CreateAccountScreen = ({ navigation }: CreateAccountScreenProps) => {
     const insets  = useSafeAreaInsets();
+    const { height } = Dimensions.get('window');
+    const responsivePadding = height * 0.2;
     const { validateCreateAccount } = useSignupStore();
     const [isLoading, setIsLoading] = useState(false);
     const [isButtonDisabled, setIsButtonDisabled] = useState(false);
@@ -43,15 +50,18 @@ const CreateAccountScreen = () => {
             const timer = setTimeout(() => {
                 setCountdown(countdown - 1);
             }, 1000);
-            return () => clearTimeout(timer);
+            return () => clearTimeout(timer); //If user navigates away, timer will be cleared
         } else if (countdown === 0 && isButtonDisabled) {
             setIsButtonDisabled(false);
         }
     }, [countdown, isButtonDisabled]);
 
     return (
-        <View style = {[ styles.container,{paddingTop: insets.top, paddingBottom: insets.bottom }]}>
-            <View>
+        <View style = {[ styles.container,{paddingTop: Platform.OS === 'ios' ? insets.top : insets.top + 10, paddingBottom: insets.bottom }]}>
+            <ScrollView
+                contentContainerStyle = {{paddingBottom: insets.bottom + responsivePadding}}
+                showsVerticalScrollIndicator = {false}
+            >
                 <View style = {styles.headerContainer}>
                     <Text style = {styles.headerText}>Create Account</Text>
                     <Text style = {styles.subHeaderText}>Step 1 of 4</Text>
@@ -83,7 +93,13 @@ const CreateAccountScreen = () => {
                         }
                     </Text>
                 </AnimatedPressable>
-            </View>
+                <AnimatedPressable
+                    style = {styles.goToSignInButton}
+                    onPress = {() => navigation.navigate('Login')}
+                >
+                    <Text style = {styles.goToSignInButtonText}>Already have an account? Sign in</Text>
+                </AnimatedPressable>
+            </ScrollView>
         </View>
     );
 };

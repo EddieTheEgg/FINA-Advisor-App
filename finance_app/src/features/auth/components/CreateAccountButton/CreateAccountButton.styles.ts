@@ -6,13 +6,13 @@ import { spacing } from '../../../../styles/spacing.js';
 export const styles = StyleSheet.create({
     container: {
         borderWidth: 2,
-        borderColor: colors.secondary,
+        borderColor: colors.darkerBackground,
         paddingVertical: spacing.md,
-        borderRadius: 30,
+        borderRadius: 15,
         width: '100%',
     },
     buttonText: {
-        color: colors.secondary,
+        color: colors.darkerBackground,
         fontSize: fontSize.lg,
         fontFamily: 'Poppins-SemiBold',
         textAlign: 'center',

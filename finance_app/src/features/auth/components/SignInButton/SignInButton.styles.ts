@@ -10,11 +10,11 @@ export const styles = StyleSheet.create({
     alignSelf: 'stretch',
   },
   container: {
-    backgroundColor: colors.secondary,
+    backgroundColor: colors.darkerBackground,
     paddingVertical: spacing.md,
-    borderRadius: 30,
+    borderRadius: 15,
     width: '100%',
-    boxShadow: '0 5px 5px 0 rgba(0, 0, 0, 0.3)',
+    boxShadow: '0 4px 4px 1px rgba(0, 0, 0, 0.2)',
   },
   buttonText: {
     color: colors.white,

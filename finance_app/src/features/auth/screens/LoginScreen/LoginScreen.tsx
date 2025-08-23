@@ -5,8 +5,14 @@ import SignInButton from '../../components/SignInButton/SignInButton';
 import FontAwesome6 from 'react-native-vector-icons/FontAwesome6';
 import { useLogin } from '../../hooks/useLogin';
 import { useSafeAreaInsets } from 'react-native-safe-area-context';
+import { AnimatedPressable } from '../../../../components/AnimatedPressable/AnimatedPressable';
+import { AuthNavigationProps } from '../../../../navigation/types/AuthNavigatorTypes';
 
-const LoginScreen = () => {
+type LoginScreenProps = {
+    navigation: AuthNavigationProps
+}
+
+const LoginScreen = ({ navigation }: LoginScreenProps) => {
     const insets = useSafeAreaInsets();
     const [email, setEmail] = useState('');
     const [password, setPassword] = useState('');
@@ -25,6 +31,12 @@ const LoginScreen = () => {
 
     return (
         <View style={[styles.mainContainer, {paddingTop: insets.top, paddingBottom: insets.bottom}]}>
+            <AnimatedPressable
+                style = {styles.backButton}
+                onPress = {() => navigation.navigate('Welcome')}
+            >
+                 <FontAwesome6 name="arrow-left" size={24} color="black" solid />
+            </AnimatedPressable>
             <View>
                 <Text style={styles.title}>Sign in</Text>
             </View>

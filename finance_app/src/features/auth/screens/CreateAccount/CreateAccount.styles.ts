@@ -51,19 +51,35 @@ export const styles = StyleSheet.create({
         borderRadius: 15,
         alignItems: 'center',
         marginVertical: spacing.md,
+        marginTop: spacing.lg,
     },
     disabledButton: {
+        marginTop: spacing.md,
         backgroundColor: colors.gray[400],
         opacity: 0.6,
     },
     continueButtonText: {
         color: colors.white,
         fontFamily: 'Poppins-SemiBold',
-        fontSize: fontSize.lg,
+        fontSize: fontSize.lg
     },
     validatingText: {
         fontFamily: 'Poppins-SemiBold',
         alignSelf: 'center',
         marginVertical: spacing.md,
+    },
+    goToSignInButton: {
+        padding: spacing.md,
+        borderWidth: 2,
+        borderRadius: 15,
+        borderColor: colors.darkerBackground,
+        marginHorizontal: spacing.md,
+        backgroundColor: colors.background,
+        alignItems: 'center',
+    },
+    goToSignInButtonText: {
+        fontSize: fontSize.lg,
+        fontFamily: 'Poppins-SemiBold',
+        color: colors.darkerBackground,
     },
 });
