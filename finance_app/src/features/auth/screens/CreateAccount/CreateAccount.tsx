@@ -5,6 +5,7 @@ import { styles } from './CreateAccount.styles';
 import { FirstNameInput } from '../../components/CreateAccountComponents/FirstNameInput/FirstNameInput';
 import { LastNameInput } from '../../components/CreateAccountComponents/LastNameInput/LastNameInput';
 import { EmailInput } from '../../components/CreateAccountComponents/EmailInput/EmailInput';
+import { PasswordInputs } from '../../components/CreateAccountComponents/PasswordInputs/PasswordInputs';
 
 const CreateAccountScreen = () => {
     const insets  = useSafeAreaInsets();
@@ -24,6 +25,7 @@ const CreateAccountScreen = () => {
                     <FirstNameInput />
                     <LastNameInput />
                     <EmailInput />
+                    <PasswordInputs />
                 </View>
             </View>
         </View>

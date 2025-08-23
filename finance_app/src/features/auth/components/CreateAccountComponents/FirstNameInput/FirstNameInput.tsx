@@ -4,7 +4,7 @@ import { useEffect, useState } from 'react';
 import { styles } from './FirstNameInput.styles';
 
 export const FirstNameInput = () => {
-    const { firstName, setFirstName } = useSignupStore();
+    const { firstName, setFirstName, firstNameError } = useSignupStore();
     const [firstNameInput, setFirstNameInput] = useState(firstName);
     const maxLength = 20;
 
@@ -30,6 +30,7 @@ export const FirstNameInput = () => {
                 style = {styles.input}
                 maxLength = {maxLength}
             />
+            {firstNameError && <Text style = {styles.errorText}>{firstNameError}</Text>}
         </View>
     );
 };

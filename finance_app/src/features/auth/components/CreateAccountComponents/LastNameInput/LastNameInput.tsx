@@ -4,7 +4,7 @@ import { useEffect, useState } from 'react';
 import { styles } from './LastNameInput.styles';
 
 export const LastNameInput = () => {
-    const { lastName, setLastName } = useSignupStore();
+    const { lastName, setLastName, lastNameError } = useSignupStore();
     const [lastNameInput, setLastNameInput] = useState(lastName);
     const maxLength = 20;
 
@@ -30,6 +30,7 @@ export const LastNameInput = () => {
                 style = {styles.input}
                 maxLength = {maxLength}
             />
+            {lastNameError && <Text style = {styles.errorText}>{lastNameError}</Text>}
         </View>
     );
 };

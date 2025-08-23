@@ -10,6 +10,11 @@ export const EmailInput = () => {
 
     useEffect(() => {
         const trimmedEmail = emailInput.trim();
+
+        if (trimmedEmail.length === 0) {
+            return;
+        }
+
         if(validateEmailType(trimmedEmail)) {
             setEmailError('');
             setEmail(trimmedEmail);
@@ -28,6 +33,7 @@ export const EmailInput = () => {
                 style = {styles.input}
                 keyboardType = "email-address"
                 autoCapitalize = "none"
+                maxLength = {245}
             />
             {emailError && <Text style = {styles.errorText}>{emailError}</Text>}
         </View>

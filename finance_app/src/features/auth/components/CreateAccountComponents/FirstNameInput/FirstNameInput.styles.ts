@@ -30,4 +30,9 @@ export const styles = StyleSheet.create({
     charCounterWarning: {
         color: colors.red,
     },
+    errorText: {
+        color: colors.red,
+        fontSize: fontSize.sm,
+        fontFamily: 'Poppins-Regular',
+    },
 });
