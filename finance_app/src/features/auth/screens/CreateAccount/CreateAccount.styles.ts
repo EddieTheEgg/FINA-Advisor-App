@@ -52,6 +52,10 @@ export const styles = StyleSheet.create({
         alignItems: 'center',
         marginVertical: spacing.md,
     },
+    disabledButton: {
+        backgroundColor: colors.gray[400],
+        opacity: 0.6,
+    },
     continueButtonText: {
         color: colors.white,
         fontFamily: 'Poppins-SemiBold',

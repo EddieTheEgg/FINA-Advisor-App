@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import { Text, View } from 'react-native';
 import { useSafeAreaInsets } from 'react-native-safe-area-context';
 import { styles } from './CreateAccount.styles';
@@ -14,9 +14,16 @@ const CreateAccountScreen = () => {
     const insets  = useSafeAreaInsets();
     const { validateCreateAccount } = useSignupStore();
     const [isLoading, setIsLoading] = useState(false);
+    const [isButtonDisabled, setIsButtonDisabled] = useState(false);
+    const [countdown, setCountdown] = useState(0);
 
     const handleContinueToStep2 = async () => {
+        if (isButtonDisabled) {
+            return;
+        }
         setIsLoading(true);
+        setIsButtonDisabled(true);
+        setCountdown(10);
         try {
             const isValid = await validateCreateAccount();
             if (!isValid) {
@@ -29,6 +36,18 @@ const CreateAccountScreen = () => {
             setIsLoading(false);
         }
     };
+
+    // Countdown effect for button cooldown
+    useEffect(() => {
+        if (countdown > 0) {
+            const timer = setTimeout(() => {
+                setCountdown(countdown - 1);
+            }, 1000);
+            return () => clearTimeout(timer);
+        } else if (countdown === 0 && isButtonDisabled) {
+            setIsButtonDisabled(false);
+        }
+    }, [countdown, isButtonDisabled]);
 
     return (
         <View style = {[ styles.container,{paddingTop: insets.top, paddingBottom: insets.bottom }]}>
@@ -50,10 +69,19 @@ const CreateAccountScreen = () => {
                 </View>
                 {isLoading && <LoadingDots style = {styles.validatingText} loadingText = "Validating" />}
                 <AnimatedPressable
-                    style = {styles.continueButton}
+                    style = {[
+                        styles.continueButton,
+                        (isLoading || isButtonDisabled) && styles.disabledButton,
+                    ]}
                     onPress = {handleContinueToStep2}
+                    disabled = {isLoading || isButtonDisabled}
                 >
-                    <Text style = {styles.continueButtonText}>Continue</Text>
+                    <Text style = {styles.continueButtonText}>
+                        {isButtonDisabled && countdown > 0
+                            ? `Wait ${countdown}s`
+                            : 'Continue'
+                        }
+                    </Text>
                 </AnimatedPressable>
             </View>
         </View>
