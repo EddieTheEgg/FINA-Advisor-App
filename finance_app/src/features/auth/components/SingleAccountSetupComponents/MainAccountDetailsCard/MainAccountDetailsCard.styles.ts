@@ -44,6 +44,24 @@ export const styles = StyleSheet.create({
         fontSize: fontSize.lg,
         fontFamily: 'Poppins-SemiBold',
     },
-
+    inputAmount: {
+        color: colors.darkerBackground,
+        fontFamily: 'Poppins-SemiBold',
+        includeFontPadding: false,
+        fontSize: fontSize.xxxxl,
+        paddingTop: spacing.xs + 1,
+        alignSelf: 'center',
+    },
+    accountBalanceText: {
+        fontSize: fontSize.base,
+        alignSelf: 'center',
+        fontFamily: 'Poppins-Medium',
+    },
+    errorText: {
+        color: colors.red,
+        fontSize: fontSize.base,
+        fontFamily: 'Poppins-Regular',
+        marginTop: spacing.xs,
+    },
 
 });

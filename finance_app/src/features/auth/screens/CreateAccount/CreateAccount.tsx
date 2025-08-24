@@ -64,9 +64,9 @@ const CreateAccountScreen = ({ navigation }: CreateAccountScreenProps) => {
             >
                 <View style = {styles.headerContainer}>
                     <Text style = {styles.headerText}>Create Account</Text>
-                    <Text style = {styles.subHeaderText}>Step 1 of 4</Text>
+                    <Text style = {styles.subHeaderText}>Step 1 of 3</Text>
                     <View style = {styles.dotProgressContainer}>
-                    {Array.from({ length: 4 }).map((_, index) => (
+                    {Array.from({ length: 3 }).map((_, index) => (
                         <View key = {index} style = {[styles.dotProgress, index === 0 && styles.activeDot]}/>
                             ))}
                         </View>

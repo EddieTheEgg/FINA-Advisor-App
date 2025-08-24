@@ -174,29 +174,48 @@ type AccountInfo = {
     accountType: AccountType;
     accountName: string;
     accountBank: string | null;
+    accountBalance: number;
 
     setAccountName: (accountName: string) => void;
     setAccountType: (accountType: AccountType) => void;
     setAccountBank: (accountBank: string | null) => void;
+    setAccountBalance: (accountBalance: number) => void;
 
     resetAccountDetailsExceptType: () => void;
+
+    validateAccountName: () => boolean;
+    accountNameError: string | null;
 }
 
 const initialAccountInfo = {
     accountType: AccountType.CHECKING,
     accountName: '',
     accountBank: null,
+    accountBalance: 0,
+    accountNameError: null,
 };
 
-export const useAccountInfoStore = create<AccountInfo>((set) => ({
+export const useAccountInfoStore = create<AccountInfo>((set, get) => ({
     ...initialAccountInfo,
     setAccountType: (accountType: AccountType) => set({ accountType }),
     setAccountName: (accountName: string) => set({ accountName }),
     setAccountBank: (accountBank: string | null) => set({accountBank}),
+    setAccountBalance: (accountBalance: number) => set({accountBalance}),
+
+    validateAccountName: () => {
+        const accountName = get().accountName;
+        if (accountName.length <= 0) {
+            set({accountNameError: 'Account name is required'});
+            return false;
+        }
+        set({accountNameError: null});
+        return true;
+    },
 
     resetAccountDetailsExceptType: () => set({
         accountName: initialAccountInfo.accountName,
         accountBank: initialAccountInfo.accountBank,
+        accountBalance: initialAccountInfo.accountBalance,
     }),
 }));
 

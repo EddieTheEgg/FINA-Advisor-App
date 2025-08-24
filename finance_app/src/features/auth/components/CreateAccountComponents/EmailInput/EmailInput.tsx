@@ -23,6 +23,7 @@ export const EmailInput = () => {
             <Text style = {styles.headerText}>Email</Text>
             <TextInput
                 placeholder = "Enter your email"
+                placeholderTextColor = "#999"
                 value = {emailInput}
                 onChangeText = {setEmailInput}
                 style = {styles.input}

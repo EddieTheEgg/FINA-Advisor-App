@@ -8,30 +8,30 @@ export const styles = StyleSheet.create({
         flex: 1,
         backgroundColor: colors.background,
     },
+    dotProgressContainer: {
+        flexDirection: 'row',
+        marginTop: spacing.lg,
+        marginBottom: spacing.md,
+        gap: spacing.sm,
+    },
     headerContainer: {
         alignSelf: 'center',
         alignItems: 'center',
     },
     headerTextContainer: {
         flexDirection: 'row',
-        alignItems: 'center',
         justifyContent: 'space-between',
-        gap: spacing.xl,
+        gap: spacing.xl * 1.8,
+        alignItems: 'center',
     },
     headerText: {
-        fontSize: fontSize.xl,
+        fontSize: fontSize.xxl,
         fontFamily: 'Poppins-SemiBold',
     },
     subHeaderText: {
         fontSize: fontSize.lg,
         fontFamily: 'Poppins-Medium',
         color: colors.gray[500],
-    },
-    dotProgressContainer: {
-        flexDirection: 'row',
-        marginTop: spacing.lg,
-        marginBottom: spacing.md,
-        gap: spacing.sm,
     },
     dotProgress: {
         height: 10,
@@ -44,19 +44,5 @@ export const styles = StyleSheet.create({
     },
     completedDot: {
         backgroundColor: colors.green,
-    },
-    continueButton: {
-        backgroundColor: colors.darkerBackground,
-        marginHorizontal: spacing.md,
-        padding: spacing.md,
-        borderRadius: 15,
-        alignItems: 'center',
-        marginVertical: spacing.md,
-        marginTop: spacing.lg,
-    },
-    continueButtonText: {
-        color: colors.white,
-        fontFamily: 'Poppins-SemiBold',
-        fontSize: fontSize.lg,
     },
 });

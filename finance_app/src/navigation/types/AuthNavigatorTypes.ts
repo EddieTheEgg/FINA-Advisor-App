@@ -4,9 +4,8 @@ export type AuthStackParamList = {
   Welcome: undefined;
   Login: undefined;
   CreateAccount: undefined;
-  AddYourAccounts: undefined;
   SingleAccount: undefined;
-  ChooseCategories: undefined;
+  SetupComplete: undefined;
   WelcomeSuccess: undefined;
 };
 

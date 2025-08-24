@@ -25,6 +25,7 @@ export const LastNameInput = () => {
             </View>
             <TextInput
                 placeholder = "Enter your last name"
+                placeholderTextColor = "#999"
                 value = {lastNameInput}
                 onChangeText = {setLastNameInput}
                 style = {styles.input}
