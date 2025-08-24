@@ -11,6 +11,7 @@ export const styles = StyleSheet.create({
         borderRadius: 20,
         marginTop: spacing.md,
         gap: spacing.md,
+        boxShadow: '0px 4px 4px 0px rgba(0, 0, 0, 0.2)',
     },
     accountTypeItem: {
         alignItems: 'center',

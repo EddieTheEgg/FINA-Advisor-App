@@ -5,8 +5,8 @@ import { ACCOUNT_TYPE_ICONS, AccountType } from '../../../types';
 import { useAccountInfoStore } from '../../../store/useSignupStore';
 
 export const MainAccountTypeCard = () => {
-    const { accountType, setAccountType } = useAccountInfoStore();
-    
+    const { accountType, setAccountType, resetAccountDetailsExceptType } = useAccountInfoStore();
+
     const accountTypes = [
         { type: AccountType.CHECKING, name: 'Checking' },
         { type: AccountType.SAVINGS, name: 'Savings' },
@@ -32,15 +32,18 @@ export const MainAccountTypeCard = () => {
                         key={account.type}
                         style={[
                             styles.accountTypeItem,
-                            accountType === account.type && styles.selectedAccountType
+                            accountType === account.type && styles.selectedAccountType,
                         ]}
-                        onPress={() => setAccountType(account.type)}
+                        onPress={() => {
+                            setAccountType(account.type);
+                            resetAccountDetailsExceptType();
+                        }}
                     >
                         <Text style={styles.accountTypeIcon}>
                             {ACCOUNT_TYPE_ICONS[account.type]}
                         </Text>
                         <Text style={styles.accountTypeName}>{account.name}</Text>
-                                            </AnimatedPressable>
+                    </AnimatedPressable>
                 ))}
             </ScrollView>
         </View>

@@ -8,6 +8,7 @@ import { colors } from '../../../../styles/colors';
 import { MainAccountInfoCard } from '../../components/SingleAccountSetupComponents/MainAccountInfoCard/MainAccountInfoCard';
 import { MainAccountTypeCard } from '../../components/SingleAccountSetupComponents/MainAccountTypeCard/MainAccountTypeCard';
 import { useAccountInfoStore } from '../../store/useSignupStore';
+import { MainAccountDetailsCard } from '../../components/SingleAccountSetupComponents/MainAccountDetailsCard/MainAccountDetailsCard';
 
 type SingleAccountSetupScreenProps = {
     navigation: AuthNavigationProps;
@@ -38,6 +39,7 @@ export const SingleAccountSetupScreen = ({ navigation }: SingleAccountSetupScree
                 </View>
                 <MainAccountInfoCard/>
                 <MainAccountTypeCard/>
+                <MainAccountDetailsCard/>
             </ScrollView>
         </View>
     );

@@ -172,17 +172,32 @@ export const useSignupStore = create<PersonalInfo>((set, get) => ({
 
 type AccountInfo = {
     accountType: AccountType;
+    accountName: string;
+    accountBank: string | null;
 
+    setAccountName: (accountName: string) => void;
     setAccountType: (accountType: AccountType) => void;
+    setAccountBank: (accountBank: string | null) => void;
+
+    resetAccountDetailsExceptType: () => void;
 }
 
 const initialAccountInfo = {
     accountType: AccountType.CHECKING,
-}
+    accountName: '',
+    accountBank: null,
+};
 
 export const useAccountInfoStore = create<AccountInfo>((set) => ({
     ...initialAccountInfo,
     setAccountType: (accountType: AccountType) => set({ accountType }),
+    setAccountName: (accountName: string) => set({ accountName }),
+    setAccountBank: (accountBank: string | null) => set({accountBank}),
+
+    resetAccountDetailsExceptType: () => set({
+        accountName: initialAccountInfo.accountName,
+        accountBank: initialAccountInfo.accountBank,
+    }),
 }));
 
 

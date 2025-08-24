@@ -11,13 +11,13 @@ export type EmailAvailabilityResponse = {
 
 // Account types for registration flow
 export enum AccountType {
-    CHECKING = "checking",
-    SAVINGS = "savings",
-    CREDIT_CARD = "credit_card",
-    INVESTMENT = "investment",
-    LOAN = "loan",
-    CASH = "cash",
-    OTHER = "other"
+    CHECKING = 'checking',
+    SAVINGS = 'savings',
+    CREDIT_CARD = 'credit_card',
+    INVESTMENT = 'investment',
+    LOAN = 'loan',
+    CASH = 'cash',
+    OTHER = 'other'
 }
 
 export const ACCOUNT_TYPE_COLORS = {
@@ -27,7 +27,7 @@ export const ACCOUNT_TYPE_COLORS = {
     [AccountType.INVESTMENT]: '#8B5CF6',  // Purple (growth/future)
     [AccountType.LOAN]: '#F59E0B',        // Orange (debt/payments)
     [AccountType.CASH]: '#F59E0B',        // Yellow/Orange (physical money)
-    [AccountType.OTHER]: '#6B7280'        // Gray (neutral)
+    [AccountType.OTHER]: '#6B7280',        // Gray (neutral)
 } as const;
 
 export const ACCOUNT_TYPE_ICONS = {
@@ -37,7 +37,7 @@ export const ACCOUNT_TYPE_ICONS = {
     [AccountType.INVESTMENT]: '📈',
     [AccountType.LOAN]: '🏠',
     [AccountType.CASH]: '💵',
-    [AccountType.OTHER]: '📋'
+    [AccountType.OTHER]: '📋',
 } as const;
 
 // Account setup data for registration
