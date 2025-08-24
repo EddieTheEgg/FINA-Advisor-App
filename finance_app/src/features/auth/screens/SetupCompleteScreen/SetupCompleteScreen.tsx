@@ -4,6 +4,7 @@ import { styles } from './SetupCompleteScreen.styles';
 import BackButton from '../../components/GoBackButton/GoBackButton';
 import FontAwesome6 from 'react-native-vector-icons/FontAwesome6';
 import { colors } from '../../../../styles/colors';
+import { SetupDetailsCard } from '../../components/SetupComponents/SetupDetailsCard/SetupDetailsCard';
 
 export const SetupCompleteScreen = () => {
     const insets = useSafeAreaInsets();
@@ -28,6 +29,7 @@ export const SetupCompleteScreen = () => {
                     ))}
                 </View>
             </View>
+            <SetupDetailsCard/>
             </ScrollView>
         </View>
     );
