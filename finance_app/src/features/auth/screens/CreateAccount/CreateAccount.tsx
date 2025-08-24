@@ -36,7 +36,7 @@ const CreateAccountScreen = ({ navigation }: CreateAccountScreenProps) => {
             if (!isValid) {
                 return;
             }
-            console.log('Continue to step 2');
+            navigation.navigate('SingleAccount');
         } catch (error) {
             console.log(error);
         } finally {

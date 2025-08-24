@@ -1,6 +1,6 @@
 import { create } from 'zustand';
 import { checkEmailAvailability } from '../api/api';
-import { EmailAvailabilityResponse } from '../types';
+import { AccountType, EmailAvailabilityResponse } from '../types';
 
 type PersonalInfo = {
     firstName: string;
@@ -168,3 +168,21 @@ export const useSignupStore = create<PersonalInfo>((set, get) => ({
         }
     },
 }));
+
+
+type AccountInfo = {
+    accountType: AccountType;
+
+    setAccountType: (accountType: AccountType) => void;
+}
+
+const initialAccountInfo = {
+    accountType: AccountType.CHECKING,
+}
+
+export const useAccountInfoStore = create<AccountInfo>((set) => ({
+    ...initialAccountInfo,
+    setAccountType: (accountType: AccountType) => set({ accountType }),
+}));
+
+

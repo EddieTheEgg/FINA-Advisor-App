@@ -61,7 +61,7 @@ export const styles = StyleSheet.create({
     continueButtonText: {
         color: colors.white,
         fontFamily: 'Poppins-SemiBold',
-        fontSize: fontSize.lg
+        fontSize: fontSize.lg,
     },
     validatingText: {
         fontFamily: 'Poppins-SemiBold',
