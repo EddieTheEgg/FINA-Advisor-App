@@ -6,10 +6,12 @@ import { refreshToken } from '../api/api';
 type AuthContextType = {
   isLoading: boolean;
   isSignedIn: boolean;
-  signInTokens: (accessToken: string, refreshToken: string) => void;
+  isFirstTimeUser: boolean;
+  signInTokens: (accessToken: string, refreshToken: string, isFirstTime?: boolean) => void;
   signOut: () => Promise<void>;
   accessToken: string | null;
   setAccessToken: React.Dispatch<React.SetStateAction<string | null>>;
+  clearFirstTimeUser: () => void;
 };
 
 export const AuthContext = createContext<AuthContextType | null>(null);
@@ -17,6 +19,7 @@ export const AuthContext = createContext<AuthContextType | null>(null);
 export function AuthProvider({children}: {children: React.ReactNode}) {
   const [isLoading, setIsLoading] = useState(true);
   const [isSignedIn, setIsSignedIn] = useState(false);
+  const [isFirstTimeUser, setIsFirstTimeUser] = useState(false);
   const [accessToken, setAccessToken] = useState<string | null>(null);
 
   const checkAuthStatus = async () => {
@@ -42,17 +45,27 @@ export function AuthProvider({children}: {children: React.ReactNode}) {
     checkAuthStatus();
   }, []);
 
-  const signInTokens = (newAccessToken: string, newRefreshToken: string) => {
+  // When user signs in, set the access token and refresh token.
+  // By default user is not first time user, so only set isFirstTimeUser to true if user signs in after SIGNING UP.
+  const signInTokens = (newAccessToken: string, newRefreshToken: string, isFirstTime: boolean = false) => {
     setAccessToken(newAccessToken);
     TokenStorage.setRefreshToken(newRefreshToken);
     accessTokenService.setAccessToken(newAccessToken);
     setIsSignedIn(true);
+    setIsFirstTimeUser(isFirstTime);
   };
 
+  // When user goes to dashboard after signing up, clear them as first time user.
+  const clearFirstTimeUser = () => {
+    setIsFirstTimeUser(false);
+  };
+
+  //Reset the auth state when user signs out.
   const signOut = async () => {
     try {
       setIsLoading(true);
       setIsSignedIn(false);
+      setIsFirstTimeUser(false);
       await TokenStorage.clearRefreshToken();
       accessTokenService.setAccessToken(null);
       setAccessToken(null);
@@ -65,7 +78,7 @@ export function AuthProvider({children}: {children: React.ReactNode}) {
 
   return (
     <AuthContext.Provider
-      value={{isLoading, isSignedIn, signInTokens, signOut, accessToken, setAccessToken}}>
+      value={{isLoading, isSignedIn, isFirstTimeUser, signInTokens, signOut, accessToken, setAccessToken, clearFirstTimeUser}}>
       {children}
     </AuthContext.Provider>
   );

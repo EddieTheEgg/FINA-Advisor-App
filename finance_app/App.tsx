@@ -16,11 +16,13 @@ import { EditSelectCategoryScreen } from './src/features/transaction/screens/Edi
 import CreateCategoryScreen from './src/features/categories/screens/CreateCategoryScreen/CreateCategoryScreen.tsx';
 import { EditTransferScreen } from './src/features/transaction/screens/EditTransferScreen/EditTransferScreen.tsx';
 import { EditSelectTransferAccountScreen } from './src/features/transaction/screens/EditSelectTransferAccountScreen/EditSelectTransferAccountScreen.tsx';
+import { FinalCompleteScreen } from './src/features/auth/screens/FinalCompleteScreen/FinalCompleteScreen.tsx';
+
 
 const Stack = createNativeStackNavigator<RootStackParamList>();
 
 const AppContent = () => {
-  const {isSignedIn, isLoading} = useAuth();
+  const {isSignedIn, isLoading, isFirstTimeUser} = useAuth();
 
 // show a loading state while checking the auth status
   if (isLoading || isSignedIn === null) {
@@ -32,6 +34,9 @@ const AppContent = () => {
         <Stack.Navigator screenOptions={{headerShown: false}}>
           {isSignedIn ? (
             <>
+              {isFirstTimeUser && (
+                <Stack.Screen name="FinalComplete" component={FinalCompleteScreen} />
+              )}
               <Stack.Screen name= "Home" component={HomeNavigator} />
               <Stack.Screen name = "TransactionDetail" component={TransactionDetailScreen} />
               <Stack.Screen name =  "EditTransaction" component={EditTransactionScreen} />

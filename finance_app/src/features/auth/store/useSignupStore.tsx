@@ -176,7 +176,6 @@ type AccountInfo = {
     accountBank: string | null;
     accountBalance: number;
     creditLimit: number | null;
-    bankName: string | null;
     accountNumber: string | null;
     routingNumber: string | null;
 
@@ -185,7 +184,6 @@ type AccountInfo = {
     setAccountBank: (accountBank: string | null) => void;
     setAccountBalance: (accountBalance: number) => void;
     setCreditLimit: (creditLimit: number | null) => void;
-    setBankName: (bankName: string | null) => void;
     setAccountNumber: (accountNumber: string | null) => void;
     setRoutingNumber: (routingNumber: string | null) => void;
 
@@ -201,7 +199,6 @@ const initialAccountInfo = {
     accountBank: null,
     accountBalance: 0,
     creditLimit: null,
-    bankName: null,
     accountNumber: null,
     routingNumber: null,
     accountNameError: null,
@@ -214,7 +211,6 @@ export const useAccountInfoStore = create<AccountInfo>((set, get) => ({
     setAccountBank: (accountBank: string | null) => set({accountBank}),
     setAccountBalance: (accountBalance: number) => set({accountBalance}),
     setCreditLimit: (creditLimit: number | null) => set({creditLimit}),
-    setBankName: (bankName: string | null) => set({bankName}),
     setAccountNumber: (accountNumber: string | null) => set({accountNumber}),
     setRoutingNumber: (routingNumber: string | null) => set({routingNumber}),
 
@@ -232,6 +228,7 @@ export const useAccountInfoStore = create<AccountInfo>((set, get) => ({
         accountName: initialAccountInfo.accountName,
         accountBank: initialAccountInfo.accountBank,
         accountBalance: initialAccountInfo.accountBalance,
+        creditLimit: null,
     }),
 }));
 

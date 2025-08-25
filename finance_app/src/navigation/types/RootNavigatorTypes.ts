@@ -1,6 +1,7 @@
 import { NativeStackNavigationProp } from '@react-navigation/native-stack';
 
 export type RootStackParamList = {
+    FinalComplete: undefined;
     Home: undefined;
     Auth: undefined;
     TransactionDetail: {

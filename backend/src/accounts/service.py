@@ -26,6 +26,7 @@ def create_account(db: Session, account_create_request: AccountCreateRequest, us
             include_in_totals=account_create_request.include_in_totals,
             is_active=account_create_request.is_active,
             bank_name=account_create_request.bank_name,
+            credit_limit=account_create_request.credit_limit,
             account_number=account_create_request.account_number,
             routing_number=account_create_request.routing_number,
             user_id=user_id

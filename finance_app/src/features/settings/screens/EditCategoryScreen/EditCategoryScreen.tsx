@@ -44,7 +44,9 @@ export const EditCategoryScreen = ({navigation, route}: EditCategoryScreenProps)
     const [showDeleteCategoryModal, setShowDeleteCategoryModal] = useState(false);
     const [invalidSubmissionText, setInvalidSubmissionText] = useState('');
 
-    const isDeletableCategory = categoryData.usedInTransactions <= 0 && categoryData.usedInBudgets <= 0;
+    const isDeletableCategory = categoryData.usedInTransactions <= 0 && categoryData.usedInBudgets <= 0
+    && categoryData.categoryName !== 'Uncategorized Expense' && categoryData.categoryName !== 'Transfer' &&
+    categoryData.categoryName !== 'Uncategorized Income';
 
     useEffect(() => {
         if (isSuccess) {

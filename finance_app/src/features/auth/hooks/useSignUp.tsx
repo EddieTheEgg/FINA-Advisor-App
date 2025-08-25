@@ -19,8 +19,8 @@ export const useSignUp = () => {
     accountName,
     accountType,
     accountBalance,
+    accountBank,
     creditLimit,
-    bankName,
     accountNumber,
     routingNumber,
   } = useAccountInfoStore();
@@ -39,7 +39,7 @@ export const useSignUp = () => {
       account_type: accountType,
       balance: accountBalance,
       credit_limit: creditLimit,
-      bank_name: bankName,
+      bank_name: accountBank,
       account_number: accountNumber,
       routing_number: routingNumber,
     },
@@ -50,7 +50,8 @@ const {mutate, isPending, error, isSuccess} = useMutation({
     mutationFn: () => signupUser(signUpData),
     onSuccess: (tokens) => {
       //Sign in user with the token returned from the backend after successful signup
-      signInTokens(tokens.accessToken, tokens.refreshToken);
+      //Set isFirstTime to true since this is a new signup
+      signInTokens(tokens.accessToken, tokens.refreshToken, true);
     },
     onError: (errorBackend: any) => {
       console.error('Signup error:', errorBackend);

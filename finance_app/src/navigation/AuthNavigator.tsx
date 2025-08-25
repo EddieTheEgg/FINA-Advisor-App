@@ -29,7 +29,7 @@ const AuthNavigator = () => {
       />
       <Stack.Screen name="CreateAccount" component={CreateAccountScreen} />
       <Stack.Screen name="SingleAccount" component={SingleAccountSetupScreen} />
-      <Stack.Screen name="SetupComplete" component={SetupCompleteScreen} / >
+      <Stack.Screen name="SetupComplete" component={SetupCompleteScreen}/>
     </Stack.Navigator>
   );
 };

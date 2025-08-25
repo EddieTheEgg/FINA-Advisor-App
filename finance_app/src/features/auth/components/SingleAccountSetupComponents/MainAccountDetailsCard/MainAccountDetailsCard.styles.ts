@@ -40,10 +40,22 @@ export const styles = StyleSheet.create({
     charCounterWarning: {
         color: colors.red,
     },
-     headerText: {
+    headerText: {
         fontSize: fontSize.lg,
         fontFamily: 'Poppins-SemiBold',
         includeFontPadding: false,
+    },
+    rowContainer: {
+        flexDirection: 'row',
+        alignItems: 'center',
+        alignSelf: 'center',
+    },
+    negativeText: {
+        color: colors.darkerBackground,
+        fontFamily: 'Poppins-SemiBold',
+        includeFontPadding: false,
+        fontSize: fontSize.xxxxl,
+        paddingTop: spacing.xs + 1,
     },
     inputAmount: {
         color: colors.darkerBackground,
