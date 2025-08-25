@@ -40,12 +40,32 @@ export const ACCOUNT_TYPE_ICONS = {
     [AccountType.OTHER]: '📋',
 } as const;
 
-// Account setup data for registration
-export type AccountSetupData = {
-    accountType: AccountType;
-    accountName: string;
-    balance: number;
-    color?: string;
-    icon?: string;
+
+
+//Request to the backend when creating an account
+export type UserInformation = {
+    first_name: string;
+    last_name: string;
+    email: string;
+    password: string;
+    username: string | null;
 }
+
+export type AccountInformation = {
+    account_name: string;
+    account_type: AccountType;
+    balance: number;
+    credit_limit: number | null;
+    bank_name: string | null;
+    account_number: string | null;
+    routing_number: string | null;
+}
+
+
+//Create account request
+export type CreateAccountRequest = {
+    user_information: UserInformation;
+    account_information: AccountInformation;
+};
+
 

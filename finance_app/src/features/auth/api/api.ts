@@ -1,6 +1,6 @@
 import { AxiosError } from 'axios';
 import { api } from '../../../api/axios';
-import { Token, EmailAvailabilityResponse } from '../types';
+import { Token, EmailAvailabilityResponse, CreateAccountRequest } from '../types';
 
 //Converts the response from the API to Token type
 const normalizeToken = (data : any): Token => ({
@@ -8,6 +8,21 @@ const normalizeToken = (data : any): Token => ({
     refreshToken: data.refresh_token,
     tokenType: data.token_type,
 });
+
+export const signupUser = async (signupData: CreateAccountRequest): Promise<Token> => {
+    try {
+    const response = await api.post('/auth/signup', signupData);
+        return normalizeToken(response.data);
+    } catch (error) {
+        if (error instanceof AxiosError && error.response?.status === 400) {
+            throw new Error(error.response.data.message);
+        } else if (error instanceof AxiosError && error.response?.status === 500) {
+            throw new Error('Failed to signup user');
+        } else {
+            throw new Error(`An unexpected error occurred: ${error}`);
+        }
+    }
+};
 
 export const loginUser = async ({ email, password }: { email: string; password: string }) => {
     const response = await api.post('/auth/login', {email, password});

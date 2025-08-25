@@ -3,13 +3,18 @@ from typing import Annotated
 from uuid import UUID, uuid4
 from dotenv import load_dotenv
 from fastapi import Depends
+from fastapi.security import OAuth2PasswordBearer
 from passlib.context import CryptContext
 import os
 from sqlalchemy.orm import Session
 from backend.src.entities.user import User
-from backend.src.auth.model import NewRegisteredUserResponse, Token, TokenData, RegisterUserRequest, LoginRequest, RefreshTokenRequest, EmailAvailabilityRequest, EmailAvailabilityResponse
-from fastapi.security import OAuth2PasswordBearer
-from backend.src.exceptions import AuthenticationError, DuplicateEmailError, DuplicateUsernameError
+from backend.src.entities.enums import ACCOUNT_TYPE_COLORS, ACCOUNT_TYPE_ICONS
+from backend.src.auth.model import NewRegisteredUserResponse, Token, TokenData, RegisterUserRequest, LoginRequest, RefreshTokenRequest, EmailAvailabilityRequest, EmailAvailabilityResponse, SignupRequest
+from backend.src.accounts.model import AccountCreateRequest
+from backend.src.accounts.service import create_account
+from backend.src.categories.service import create_default_categories
+from backend.src.snapshots.service import create_user_baseline_snapshot
+from backend.src.exceptions import AuthenticationError, DuplicateEmailError, DuplicateUsernameError, AccountSignUpError
 from backend.src.auth.jwt import (
     create_access_token,
     create_refresh_token,
@@ -83,10 +88,12 @@ def register_user(db: Session, register_user_request: RegisterUserRequest) -> Ne
         logging.warning(f"Registration attempt with existing email: {register_user_request.email}")
         raise DuplicateEmailError(register_user_request.email)
     
-    existing_username = db.query(User).filter(User.username == register_user_request.username).first()
-    if existing_username:
-        logging.warning(f"Registration attempt with existing username: {register_user_request.username}")
-        raise DuplicateUsernameError(register_user_request.username)
+    # Only check for duplicate username if username is provided
+    if register_user_request.username:
+        existing_username = db.query(User).filter(User.username == register_user_request.username).first()
+        if existing_username:
+            logging.warning(f"Registration attempt with existing username: {register_user_request.username}")
+            raise DuplicateUsernameError(register_user_request.username)
     
     try:
         hashed_password = get_password_hash(register_user_request.password)
@@ -139,6 +146,53 @@ def check_email_availability(email_request: EmailAvailabilityRequest, db: Sessio
             available=True,
             message=f"Email {email_request.email} is available"
         )
+
+# Combined signup function - register user and create their main account and default categories
+def signup_user_with_account(db: Session, signup_request: SignupRequest) -> NewRegisteredUserResponse:
+    try:
+        # Register user first
+        user = register_user(db, signup_request.user_information)
+        
+        # Setup account request
+        account_request_information = signup_request.account_information
+        account_request_formatted = AccountCreateRequest(
+            name = account_request_information.account_name,
+            account_type = account_request_information.account_type,
+            balance = account_request_information.balance,
+            color = ACCOUNT_TYPE_COLORS[account_request_information.account_type.name].value[0],
+            icon = ACCOUNT_TYPE_ICONS[account_request_information.account_type.name].value[0],
+            is_default = True,
+            include_in_totals = True,
+            is_active = True,
+            credit_limit = None,
+            bank_name = None,
+            account_number = None,
+            routing_number = None,
+        )
+        
+        # Create account with the registered user
+        account = create_account(db, account_request_formatted, user.user_id)
+        if not account:
+            logging.error(f"Failed to create account for user {user.user_id}")
+            raise AccountSignUpError('Failed to sign up user since their account was not created')
+        
+        # Create the default categories for the user
+        categories = create_default_categories(db, user.user_id)
+        if not categories:
+            logging.error(f"Failed to create default categories for user {user.user_id}")
+            raise AccountSignUpError('Failed to sign up user since their default categories were not created')
+        
+        # Create baseline snapshot for the user
+        snapshot = create_user_baseline_snapshot(db, user.user_id)
+        if not snapshot:
+            logging.error(f"Failed to create baseline snapshot for user {user.user_id}")
+            raise AccountSignUpError('Failed to sign up user since their baseline snapshot was not created')
+        
+        return user
+        
+    except Exception as e:
+        logging.error(f"Failed to signup user with account: {str(e)}")
+        raise AccountSignUpError(f'Failed to sign up user: {str(e)}')
 
 # Login and return both access and refresh tokens
 def login_user(login_request: LoginRequest, db: Session) -> Token:

@@ -41,5 +41,14 @@ export const styles = StyleSheet.create({
     },
     noTransactionContainer : {
         marginHorizontal: spacing.md,
+        alignItems: 'center',
+    },
+    noTransactionsIcon: {
+        color: colors.gray[600],
+    },
+    noTransactionsText: {
+        fontSize: fontSize.lg,
+        fontFamily: 'Poppins-SemiBold',
+        color: colors.gray[600],
     },
 });

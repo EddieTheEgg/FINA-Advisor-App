@@ -51,7 +51,9 @@ def create_account(db: Session, account_create_request: AccountCreateRequest, us
             credit_limit=account.credit_limit,
             bank_name=account.bank_name,
             account_number=account.account_number,
-            routing_number=account.routing_number
+            routing_number=account.routing_number,
+            created_at=account.created_at.strftime("%B %d, %Y"),
+            updated_at=account.updated_at.strftime("%B %d, %Y") if account.updated_at else None
         )
     except Exception as e:
         logging.warning(f"Failed to create account for user {user_id}. Error: {str(e)}")
@@ -194,12 +196,16 @@ def get_user_accounts_grouped(db: Session, user_id: UUID) -> GroupedAccountsResp
         
         #Calculate percent change in net worth
         current_month_date = date.today().replace(day=1)
-        month_starting_net = snapshots_service.get_user_month_net_worth_snapshot(db, user_id, current_month_date)
-        
-        if month_starting_net == 0:
+        try:
+            month_starting_net = snapshots_service.get_user_month_net_worth_snapshot(db, user_id, current_month_date)
+            if month_starting_net == 0:
+                percent_change = 0.0
+            else:
+                percent_change = (total_net_worth - month_starting_net) / month_starting_net * 100
+        except Exception as e:
+            # If no snapshot exists (e.g., for new users), set percent change to 0
+            logging.info(f"No snapshot found for user {user_id}, setting percent change to 0")
             percent_change = 0.0
-        else:
-            percent_change = (total_net_worth - month_starting_net) / month_starting_net * 100
         
         return GroupedAccountsResponse(
             total_net = total_net_worth,

@@ -21,7 +21,7 @@ export const styles = StyleSheet.create({
     headerTextContainer: {
         flexDirection: 'row',
         justifyContent: 'space-between',
-        gap: spacing.xl * 1.8,
+        gap: spacing.xl * 2.5,
         alignItems: 'center',
     },
     headerText: {
@@ -44,5 +44,39 @@ export const styles = StyleSheet.create({
     },
     completedDot: {
         backgroundColor: colors.green,
+    },
+    finishButton: {
+        backgroundColor: colors.darkerBackground,
+        marginHorizontal: spacing.md,
+        padding: spacing.md,
+        borderRadius: 15,
+        alignItems: 'center',
+        marginVertical: spacing.sm,
+    },
+    finishButtonText: {
+        color: colors.white,
+        fontFamily: 'Poppins-SemiBold',
+        fontSize: fontSize.lg,
+    },
+    disabledButton: {
+        opacity: 0.6,
+    },
+    loadingContainer: {
+        flex: 1,
+        justifyContent: 'center',
+        alignItems: 'center',
+        backgroundColor: colors.background,
+    },
+    image: {
+        width: 200,
+        height: 200,
+        marginBottom: -spacing.lg,
+        marginLeft: spacing.xxl * 1.3,
+    },
+    text: {
+        fontSize: fontSize.xxl,
+        fontWeight: 'bold',
+        color: colors.black,
+        marginLeft: spacing.lg,
     },
 });

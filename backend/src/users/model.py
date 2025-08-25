@@ -15,7 +15,7 @@ class UserResponse(BaseModel):
         
 class UserSimpleResponse(BaseModel):
     email: EmailStr
-    username: str
+    username: str | None = None
     first_name: str
     last_name: str
     

@@ -43,6 +43,7 @@ export const styles = StyleSheet.create({
      headerText: {
         fontSize: fontSize.lg,
         fontFamily: 'Poppins-SemiBold',
+        includeFontPadding: false,
     },
     inputAmount: {
         color: colors.darkerBackground,
@@ -56,6 +57,7 @@ export const styles = StyleSheet.create({
         fontSize: fontSize.base,
         alignSelf: 'center',
         fontFamily: 'Poppins-Medium',
+        includeFontPadding: false,
     },
     errorText: {
         color: colors.red,

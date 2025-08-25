@@ -175,11 +175,19 @@ type AccountInfo = {
     accountName: string;
     accountBank: string | null;
     accountBalance: number;
+    creditLimit: number | null;
+    bankName: string | null;
+    accountNumber: string | null;
+    routingNumber: string | null;
 
     setAccountName: (accountName: string) => void;
     setAccountType: (accountType: AccountType) => void;
     setAccountBank: (accountBank: string | null) => void;
     setAccountBalance: (accountBalance: number) => void;
+    setCreditLimit: (creditLimit: number | null) => void;
+    setBankName: (bankName: string | null) => void;
+    setAccountNumber: (accountNumber: string | null) => void;
+    setRoutingNumber: (routingNumber: string | null) => void;
 
     resetAccountDetailsExceptType: () => void;
 
@@ -192,6 +200,10 @@ const initialAccountInfo = {
     accountName: '',
     accountBank: null,
     accountBalance: 0,
+    creditLimit: null,
+    bankName: null,
+    accountNumber: null,
+    routingNumber: null,
     accountNameError: null,
 };
 
@@ -201,6 +213,10 @@ export const useAccountInfoStore = create<AccountInfo>((set, get) => ({
     setAccountName: (accountName: string) => set({ accountName }),
     setAccountBank: (accountBank: string | null) => set({accountBank}),
     setAccountBalance: (accountBalance: number) => set({accountBalance}),
+    setCreditLimit: (creditLimit: number | null) => set({creditLimit}),
+    setBankName: (bankName: string | null) => set({bankName}),
+    setAccountNumber: (accountNumber: string | null) => set({accountNumber}),
+    setRoutingNumber: (routingNumber: string | null) => set({routingNumber}),
 
     validateAccountName: () => {
         const accountName = get().accountName;

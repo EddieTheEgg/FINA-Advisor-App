@@ -30,6 +30,10 @@ class DuplicateUsernameError(UserError):
 class PasswordMismatchError(UserError):
     def __init__(self):
         super().__init__(status_code = 400, detail = "New passwords do not match")
+        
+class AccountSignUpError(UserError):
+    def __init__(self, message: str):
+        super().__init__(status_code=400, detail=message)
 
 
 
