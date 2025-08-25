@@ -65,4 +65,20 @@ export const styles = StyleSheet.create({
     flatListContent: {
         paddingBottom: spacing.xxl * 5,
     },
+    noTransactionsContainer: {
+        alignItems: 'center',
+        backgroundColor: colors.white,
+        padding: spacing.md,
+        borderRadius: 20,
+        boxShadow: '0 2px 2px 0 rgba(0, 0, 0, 0.3)',
+        marginHorizontal: spacing.md,
+    },
+    noTransactionsIcon: {
+        color: colors.gray[600],
+    },
+    noTransactionsText: {
+        fontSize: fontSize.lg,
+        fontFamily: 'Poppins-SemiBold',
+        color: colors.gray[600],
+    },
 });

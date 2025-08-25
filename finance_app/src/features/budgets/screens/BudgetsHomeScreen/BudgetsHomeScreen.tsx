@@ -10,6 +10,7 @@ import { LoadingDots } from '../../../../components/LoadingDots/LoadingDots';
 import { ErrorScreen } from '../../../../components/ErrorScreen/ErrorScreen';
 import { spacing } from '../../../../styles/spacing';
 import { BudgetDisplayCard } from '../../components/BudgetDisplayCard/BudgetDisplayCard';
+import FontAwesome6 from 'react-native-vector-icons/FontAwesome6';
 
 type BudgetsHomeScreenProps = {
     navigation: BudgetsNavigatorProps;
@@ -45,6 +46,8 @@ export const BudgetsHomeScreen = ({navigation}: BudgetsHomeScreenProps) => {
         );
     }
 
+    const budgetData = data.pages.flatMap((page) => page.budgets);
+
     return (
         <View style={[styles.container, {paddingTop: insets.top}]}>
             <Text style = {styles.budgetTitle}>📋 Budgets</Text>
@@ -54,8 +57,13 @@ export const BudgetsHomeScreen = ({navigation}: BudgetsHomeScreenProps) => {
             />
             <View style = {styles.budgetsContainer}>
                 <Text style = {styles.subBudgetTitle}>Active Budgets</Text>
+                {budgetData.length === 0 &&
+                <View style = {styles.noTransactionsContainer}>
+                    <FontAwesome6 name = "file-circle-exclamation" size = {60} style= {styles.noTransactionsIcon} />
+                    <Text style = {styles.noTransactionsText}>No Budgets Found!</Text>
+                </View>}
                 <FlatList
-                    data = {data.pages.flatMap((page) => page.budgets)}
+                    data = {budgetData}
                     contentContainerStyle = {styles.flatListContent}
                     renderItem = {({item}) => (
                         <AnimatedPressable
