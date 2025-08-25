@@ -68,6 +68,7 @@ export const styles = StyleSheet.create({
     accountBalanceText: {
         fontSize: fontSize.base,
         alignSelf: 'center',
+        textAlign: 'center',
         fontFamily: 'Poppins-Medium',
         includeFontPadding: false,
     },

@@ -4,6 +4,8 @@ import { styles } from './MainAccountDetailsCard.styles';
 import { useAccountInfoStore } from '../../../store/useSignupStore';
 import { AccountType } from '../../../types';
 import { colors } from '../../../../../styles/colors';
+import { AnimatedPressable } from '../../../../../components/AnimatedPressable/AnimatedPressable';
+import FontAwesome6 from 'react-native-vector-icons/FontAwesome6';
 
 export const MainAccountDetailsCard = () => {
     const {
@@ -20,16 +22,23 @@ export const MainAccountDetailsCard = () => {
         accountNameError,
     } = useAccountInfoStore();
 
-    const [inputValue, setInputValue] = useState<string>(accountBalance > 0 ? accountBalance.toFixed(2) : '');
-    const [spendingLimitInput, setSpendingLimitInput] = useState<string>(creditLimit == null ? '' : creditLimit.toFixed(2));
+    const [inputValue, setInputValue] = useState<string>(
+        accountBalance !== 0 ? accountBalance.toFixed(2) : ''
+    );
+    const [spendingLimitInput, setSpendingLimitInput] = useState<string>(
+        creditLimit == null || creditLimit === 0 ? '' : Math.abs(creditLimit).toFixed(2)
+    );
+    const [showCreditBalanceInfo, setShowCreditBalanceInfo] = useState<boolean>(false);
 
     // Sync local input value with store amount when it changes
     useEffect(() => {
-        setInputValue(accountBalance > 0 ? accountBalance.toFixed(2) : '');
+        setInputValue(accountBalance !== 0 ? accountBalance.toFixed(2) : '');
     }, [accountBalance]);
 
     useEffect(() => {
-        setSpendingLimitInput(creditLimit == null ? '' : creditLimit.toFixed(2));
+        setSpendingLimitInput(
+            creditLimit == null || creditLimit === 0 ? '' : Math.abs(creditLimit).toFixed(2)
+        );
     }, [creditLimit]);
 
     useEffect(() => {
@@ -40,8 +49,8 @@ export const MainAccountDetailsCard = () => {
     },[accountName, validateAccountName]);
 
     const handleTextChange = (text: string) => {
-        // Only allow numbers and decimal point
-        const numericRegex = /^[0-9]*\.?[0-9]*$/;
+        // Allow negative numbers, positive numbers, and decimal points
+        const numericRegex = /^-?[0-9]*\.?[0-9]*$/;
         if (!numericRegex.test(text)) {
             return;
         }
@@ -89,7 +98,8 @@ export const MainAccountDetailsCard = () => {
         } else {
             const numericValue = parseFloat(spendingLimitInput);
             if (!isNaN(numericValue)) {
-                setCreditLimit(numericValue);
+                // Credit limit should always be stored as positive
+                setCreditLimit(Math.abs(numericValue));
             }
         }
     };
@@ -99,7 +109,7 @@ export const MainAccountDetailsCard = () => {
     if (accountType === AccountType.CREDIT_CARD) {
         return (
             <View style = {styles.container}>
-            <Text style = {styles.title}>Account Details - {accountType.charAt(0).toUpperCase() + accountType.slice(1)}</Text>
+            <Text style = {styles.title}>Account Details - Credit Card</Text>
             <View>
                 <View style = {styles.headerContainer}>
                     <Text style = {styles.headerText}>Account Name</Text>
@@ -135,46 +145,43 @@ export const MainAccountDetailsCard = () => {
             </View>
             <View>
                 <View style = {styles.headerContainer}>
-                    <Text style = {styles.headerText}>Spent Balance</Text>
+                    <Text style = {styles.headerText}>Credit Balance</Text>
+                    <AnimatedPressable
+                        onPress = {() => setShowCreditBalanceInfo(!showCreditBalanceInfo)}
+                    >
+                        <FontAwesome6 name = "circle-question" size = {16} color = {colors.black} />
+                    </AnimatedPressable>
                 </View>
-                <View style = {styles.rowContainer}>
-                    <Text style = {styles.negativeText}>-</Text>
-                    <TextInput
-                        style = {styles.inputAmount}
-                        value={inputValue}
-                        onChangeText={handleTextChange}
-                        onBlur={handleBlur}
-                        placeholder = "0.00"
-                        placeholderTextColor={colors.darkerBackground}
-                        keyboardType = "decimal-pad"
-                        returnKeyType = "done"
-                        selectTextOnFocus={true}
-                    />
-                </View>
-                <Text style = {styles.accountBalanceText}>Enter Spent Balance</Text>
+                <TextInput
+                    style = {styles.inputAmount}
+                    value={inputValue}
+                    onChangeText={handleTextChange}
+                    onBlur={handleBlur}
+                    placeholder = "0.00"
+                    placeholderTextColor={colors.darkerBackground}
+                    keyboardType = "numeric"
+                    returnKeyType = "done"
+                    selectTextOnFocus={true}
+                />
+                <Text style = {styles.accountBalanceText}>Enter Current Balance</Text>
+                {showCreditBalanceInfo && <Text style = {styles.accountBalanceText}>(+ if you have credit to spend, - if you owe money)</Text>}
             </View>
             <View>
                 <View style = {styles.headerContainer}>
                     <Text style = {styles.headerText}>Credit Limit (Optional)</Text>
                 </View>
-                <View style = {styles.rowContainer}>
-                    <Text style = {styles.negativeText}>-</Text>
-                    <TextInput
-                        style = {styles.inputAmount}
-                        value={spendingLimitInput}
-                        onChangeText={handleSpendingLimitChange}
-                        onBlur={handleSpendingLimitBlur}
-                        placeholder = "0.00"
-                        placeholderTextColor={colors.darkerBackground}
-                        keyboardType = "decimal-pad"
-                        returnKeyType = "done"
-                        selectTextOnFocus={true}
-                    />
-                </View>
-                {/* Note to self, should we make credit limit monthly 
-                or for all time? Also we need to pass negative to make it negative,
-                should we force negative for credit? */}
-                <Text style = {styles.accountBalanceText}>Enter Credit Limit (for the month or forever?)</Text>
+                <TextInput
+                    style = {styles.inputAmount}
+                    value={spendingLimitInput}
+                    onChangeText={handleSpendingLimitChange}
+                    onBlur={handleSpendingLimitBlur}
+                    placeholder = "0.00"
+                    placeholderTextColor={colors.darkerBackground}
+                    keyboardType = "decimal-pad"
+                    returnKeyType = "done"
+                    selectTextOnFocus={true}
+                />
+                <Text style = {styles.accountBalanceText}>Enter Max Spending Limit</Text>
             </View>
         </View>
         );
