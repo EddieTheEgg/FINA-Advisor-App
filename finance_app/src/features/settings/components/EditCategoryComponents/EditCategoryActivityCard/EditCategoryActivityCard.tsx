@@ -2,6 +2,7 @@ import { View, Text } from 'react-native';
 import { styles } from './EditCategoryActivityCard.styles';
 import { CategoryManageSummary } from '../../../types';
 import { colors } from '../../../../../styles/colors';
+import { useEditCategoryStore } from '../../../store/editCategoryStore';
 
 type EditCategoryActivityCardProps = {
     categoryData: CategoryManageSummary;
@@ -9,6 +10,9 @@ type EditCategoryActivityCardProps = {
 
 export const EditCategoryActivityCard = ({categoryData}: EditCategoryActivityCardProps) => {
 
+    const {originalCategoryName} = useEditCategoryStore();
+
+    const cannotDeleteCategory = originalCategoryName === 'Uncategorized Expense' || originalCategoryName === 'Uncategorized Income' || originalCategoryName === 'Transfer';
 
     //If the category is not used in any transactions or budgets, show a message
     if (categoryData.usedInTransactions <= 0 && categoryData.usedInBudgets <= 0) {
@@ -16,7 +20,7 @@ export const EditCategoryActivityCard = ({categoryData}: EditCategoryActivityCar
             <View style = {styles.container}>
                 <Text style = {styles.title}>{categoryData.categoryIcon}  This category is not actively used</Text>
                 <Text style = {styles.description}>{categoryData.categoryName} is not used in any transactions or budgets.</Text>
-                <Text style = {styles.warningText}>This category is DELETABLE.</Text>
+                {cannotDeleteCategory ? <Text style = {styles.warningText}>This category is NOT DELETABLE because it is a system default category.</Text> : <Text style = {styles.warningText}>This category is DELETABLE.</Text>}
             </View>
         );
     }
