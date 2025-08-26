@@ -2,13 +2,16 @@ import { View, Text } from 'react-native';
 import { AccountTransactionResponse } from '../../types';
 import { styles } from './AccountTransactionCard.styles';
 import { formatDate } from '../../../../utils/formatDate';
+import { AnimatedPressable } from '../../../../components/AnimatedPressable/AnimatedPressable';
+import { AccountNavigatorProps } from '../../../../navigation/types/AccountNavigatorTypes';
 
 type AccountTransactionCardProps = {
     transactionData : AccountTransactionResponse
+    navigation: AccountNavigatorProps
 }
 
 
-export const AccountTransactionCard = ({transactionData} : AccountTransactionCardProps) => {
+export const AccountTransactionCard = ({transactionData, navigation} : AccountTransactionCardProps) => {
 
     const formatBalance = () => {
         const amount = Math.abs(transactionData.amount);
@@ -45,15 +48,19 @@ export const AccountTransactionCard = ({transactionData} : AccountTransactionCar
     };
 
     return (
-        <View style = {styles.transactionCardContainer}>
-            <Text style = {[styles.transactionCardIcon, {backgroundColor: transactionData.categorySimplified.color}]}>{transactionData.categorySimplified.icon}</Text>
-            <View style = {styles.transactionDetailContainer}>
-                <Text style = {styles.transactionTitle}>{truncateText(transactionData.title, 15)}</Text>
-                <Text style = {styles.transactionSubInfoText}>
-                    {formatDate(transactionData.transactionDate)} • {transactionData.categorySimplified.categoryName}
-                </Text>
+        <AnimatedPressable
+            onPress = {() => navigation.getParent()?.getParent()?.navigate('TransactionDetail', {transactionId: transactionData.transactionId})}
+        >
+            <View style = {styles.transactionCardContainer}>
+                <Text style = {[styles.transactionCardIcon, {backgroundColor: transactionData.categorySimplified.color}]}>{transactionData.categorySimplified.icon}</Text>
+                <View style = {styles.transactionDetailContainer}>
+                    <Text style = {styles.transactionTitle}>{truncateText(transactionData.title, 15)}</Text>
+                    <Text style = {styles.transactionSubInfoText}>
+                        {formatDate(transactionData.transactionDate)} • {transactionData.categorySimplified.categoryName}
+                    </Text>
+                </View>
+                <Text style = {getAmountStyle()}>${formatBalance()}{'>'}</Text>
             </View>
-            <Text style = {getAmountStyle()}>${formatBalance()}{'>'}</Text>
-        </View>
+        </AnimatedPressable>
     );
 };

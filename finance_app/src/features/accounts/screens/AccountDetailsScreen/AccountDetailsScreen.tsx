@@ -83,7 +83,7 @@ export const AccountDetailsScreen = ({ route, navigation }: AccountDetailsScreen
                 <FlatList
                     style = {styles.transactionHistoryContainer}
                     data = {accountTransactions.pages.flatMap(page => page.transactions)}
-                    renderItem = {({item}) => <AccountTransactionCard transactionData = {item}/>}
+                    renderItem = {({item}) => <AccountTransactionCard transactionData = {item} navigation = {navigation}/>}
                     keyExtractor = {(item : AccountTransactionResponse, index: number) => `transaction-${item.transactionId}-${index}`}
                     onEndReached = {() => {
                         if (hasNextPage && !isFetchingNextPage) {
