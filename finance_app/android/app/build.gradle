@@ -79,7 +79,7 @@ android {
 
     namespace "com.finance_app"
     defaultConfig {
-        applicationId "com.finance_app"
+        applicationId "com.personalfinance.tracker"
         minSdkVersion rootProject.ext.minSdkVersion
         targetSdkVersion rootProject.ext.targetSdkVersion
         versionCode 1
