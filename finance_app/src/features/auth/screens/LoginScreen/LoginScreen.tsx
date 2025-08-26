@@ -7,6 +7,7 @@ import { useLogin } from '../../hooks/useLogin';
 import { useSafeAreaInsets } from 'react-native-safe-area-context';
 import { AnimatedPressable } from '../../../../components/AnimatedPressable/AnimatedPressable';
 import { AuthNavigationProps } from '../../../../navigation/types/AuthNavigatorTypes';
+import { colors } from '../../../../styles/colors';
 
 type LoginScreenProps = {
     navigation: AuthNavigationProps
@@ -44,6 +45,7 @@ const LoginScreen = ({ navigation }: LoginScreenProps) => {
                 <TextInput
                     placeholder="Your Email"
                     style={styles.input}
+                    placeholderTextColor={colors.gray[600]}
                     value={email}
                     autoCapitalize="none"
                     autoCorrect={false}

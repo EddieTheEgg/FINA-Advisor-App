@@ -10,7 +10,7 @@ export const styles = StyleSheet.create({
     },
     scrollContainer: {
         marginHorizontal: spacing.md,
-        marginTop: spacing.xxl * 2.5,
+        marginTop: spacing.lg,
     },
     partyEmoji: {
         fontSize: fontSize.xxxxl * 2,

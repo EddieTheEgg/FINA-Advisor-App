@@ -14,7 +14,7 @@ import { LoadingDots } from '../../../../components/LoadingDots/LoadingDots';
 export const SetupCompleteScreen = () => {
     const insets = useSafeAreaInsets();
     const responsivePadding = Dimensions.get('window').height * 0.2;
-    const { mutate: signUpUser, isPending, error, isSuccess } = useSignUp();
+    const { mutate: signUpUser, isPending, error } = useSignUp();
 
     const handleCreateAccount = async () => {
         // Don't need to validate since by the time user gets to this screen, they have already validated their data
@@ -38,10 +38,6 @@ export const SetupCompleteScreen = () => {
             errorSubText = "An error occurred while signing up"
             errorMessage = {error.message}
         />;
-    }
-
-    if (isSuccess) {
-        console.log('Signup successful, navigating to welcome to your finance app screen');
     }
 
     return (

@@ -13,6 +13,7 @@ export const useSignUp = () => {
     lastName,
     email,
     password,
+    resetAllPersonalInfoFields,
   } = useSignupStore();
 
   const {
@@ -23,6 +24,7 @@ export const useSignUp = () => {
     creditLimit,
     accountNumber,
     routingNumber,
+    resetAllAccountRegisterFields,
   } = useAccountInfoStore();
 
   //Convert the data from the Zustand stores to the CreateAccountRequest type
@@ -46,17 +48,21 @@ export const useSignUp = () => {
   };
 
 //Signup user and sign in the user automatically after successful signup (since the data is already setup in backend)
-const {mutate, isPending, error, isSuccess} = useMutation({
+const {mutate, isPending, error} = useMutation({
     mutationFn: () => signupUser(signUpData),
     onSuccess: (tokens) => {
       //Sign in user with the token returned from the backend after successful signup
       //Set isFirstTime to true since this is a new signup
       signInTokens(tokens.accessToken, tokens.refreshToken, true);
+
+      //Reset all fields for next signup procedures
+      resetAllPersonalInfoFields();
+      resetAllAccountRegisterFields();
     },
     onError: (errorBackend: any) => {
       console.error('Signup error:', errorBackend);
     },
   });
 
-  return { isPending, error, isSuccess, mutate };
+  return { isPending, error, mutate };
 };

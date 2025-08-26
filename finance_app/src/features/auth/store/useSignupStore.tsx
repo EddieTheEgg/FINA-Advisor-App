@@ -26,6 +26,8 @@ type PersonalInfo = {
     validateCreateAccount: () => Promise<boolean>;
     checkEmailAvailability: (email: string) => Promise<boolean>;
 
+    resetAllPersonalInfoFields: () => void;
+
     firstNameError: string | null;
     lastNameError: string | null;
     emailError: string | null;
@@ -57,6 +59,7 @@ export const useSignupStore = create<PersonalInfo>((set, get) => ({
     setConfirmPassword: (confirmPassword: string) => set({ confirmPassword }),
 
     initializePersonalInfo: () => set(initialPersonalInfo),
+    resetAllPersonalInfoFields: () => set(initialPersonalInfo),
 
     validateFirstName: () => {
         const firstName = get().firstName;
@@ -188,6 +191,7 @@ type AccountInfo = {
     setRoutingNumber: (routingNumber: string | null) => void;
 
     resetAccountDetailsExceptType: () => void;
+    resetAllAccountRegisterFields: () => void;
 
     validateAccountName: () => boolean;
     accountNameError: string | null;
@@ -230,6 +234,8 @@ export const useAccountInfoStore = create<AccountInfo>((set, get) => ({
         accountBalance: initialAccountInfo.accountBalance,
         creditLimit: null,
     }),
+
+    resetAllAccountRegisterFields: () => set(initialAccountInfo),
 }));
 
 
