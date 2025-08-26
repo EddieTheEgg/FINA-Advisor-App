@@ -82,7 +82,7 @@ export const styles = StyleSheet.create({
         textAlign: 'center',
         marginVertical: spacing.sm,
         fontSize: fontSize.sm,
-        fontFamily: 'Poppins-Medium',
+        fontFamily: 'Poppins-Regular',
     },
     modalCloseButton : {
         padding: spacing.md,

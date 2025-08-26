@@ -1,9 +1,13 @@
-import { View, Text, TextInput } from 'react-native';
+import { View, Text, TextInput, Modal, Image } from 'react-native';
 import { useEditCategoryStore } from '../../../store/editCategoryStore';
 import { useEffect, useState } from 'react';
 import { styles } from './EditCategoryNameCard.styles';
 import { useGetAllUserCategories } from '../../../hooks/useGetAllUserCategories';
 import { ErrorScreen } from '../../../../../components/ErrorScreen/ErrorScreen';
+import { AnimatedPressable } from '../../../../../components/AnimatedPressable/AnimatedPressable';
+import FontAwesome6 from 'react-native-vector-icons/FontAwesome6';
+import { fontSize } from '../../../../../styles/fontSizes';
+import { colors } from '../../../../../styles/colors';
 
 type EditCategoryNameCardProps = {
     categoryType: 'INCOME' | 'EXPENSE' | 'TRANSFER';
@@ -13,8 +17,11 @@ export const EditCategoryNameCard = ({categoryType}: EditCategoryNameCardProps) 
 
      // Fetches user categories by transaction type, used for validating category name uniqueness!
      const {data: allCategories, isPending, error: fetchAllCategoriesError} = useGetAllUserCategories(categoryType);
-     const {initializeAllCategories, categoryNameDraft, setCategoryNameDraft, validateCategoryName, categoryNameError} = useEditCategoryStore();
+     const {initializeAllCategories, categoryNameDraft, setCategoryNameDraft, validateCategoryName, categoryNameError, originalCategoryName} = useEditCategoryStore();
      const [categoryNameInput, setCategoryNameInput] = useState(categoryNameDraft);
+     const [isMoreDetailsExpanded, setIsMoreDetailsExpanded] = useState(false);
+
+     const cannotEditCategoryName = originalCategoryName === 'Uncategorized Expense' || originalCategoryName === 'Uncategorized Income' || originalCategoryName === 'Transfer';
 
      const maxLength = 30;
      const remainingChars = maxLength - categoryNameInput.length;
@@ -43,6 +50,49 @@ export const EditCategoryNameCard = ({categoryType}: EditCategoryNameCardProps) 
         />;
      }
 
+     if (cannotEditCategoryName) {
+        return (
+            <View style = {styles.container}>
+                <View style={styles.categoryNameHeader}>
+                        <Text style={styles.categoryNameText}>Category Name</Text>
+                        <AnimatedPressable
+                            onPress = {() => setIsMoreDetailsExpanded(true)}
+                            >
+                            <FontAwesome6 name = "circle-question" size = {fontSize.base + 2} color = {colors.black} />
+                        </AnimatedPressable>
+                    </View>
+                    <TextInput
+                        value = {categoryNameInput}
+                        onChangeText = {setCategoryNameInput}
+                        placeholder = "Enter category name"
+                        style = {styles.categoryNameInput}
+                        maxLength = {maxLength}
+                        editable = {false}
+                    />
+                    <Text style = {styles.lockIcon}>🔒</Text>
+                    <Modal
+                        visible = {isMoreDetailsExpanded}
+                        transparent = {true}
+                        animationType = "fade"
+                        onRequestClose = {() => setIsMoreDetailsExpanded(false)}
+                        >
+                        <View style = {styles.modalContainer}>
+                            <View style = {styles.modalContent}>
+                                <Image source={require('../../../../../assets/images/question_icon.png')} style={styles.modalImage} />
+                                <Text style = {styles.modalTitle}>Why is this locked?</Text>
+                                <Text style = {styles.modalText}>This category name is a default category that is used for reassigning transactions.</Text>
+                                <AnimatedPressable
+                                    onPress = {() => setIsMoreDetailsExpanded(false)}
+                                >
+                                    <Text style = {styles.modalCloseButton}>Close</Text>
+                                </AnimatedPressable>
+                            </View>
+                        </View>
+                    </Modal>
+        </View>
+        );
+     }
+
     return (
         <View style = {styles.container}>
            <View style={styles.categoryNameHeader}>
@@ -60,6 +110,7 @@ export const EditCategoryNameCard = ({categoryType}: EditCategoryNameCardProps) 
                 placeholder = "Enter category name"
                 style = {styles.categoryNameInput}
                 maxLength = {maxLength}
+                editable = {!cannotEditCategoryName}
             />
              {isPending && categoryNameDraft.trim().length >= 3 && (
                 <Text style={styles.categoryNameError}>Checking for duplicates...</Text>
