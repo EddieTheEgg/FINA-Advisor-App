@@ -2,6 +2,7 @@ import {createContext, useEffect, useState} from 'react';
 import { TokenStorage } from '../../../utils/tokenStorage';
 import { accessTokenService } from '../../../api/accesstokenservice';
 import { refreshToken } from '../api/api';
+import { useQueryClient } from '@tanstack/react-query';
 
 type AuthContextType = {
   isLoading: boolean;
@@ -21,6 +22,7 @@ export function AuthProvider({children}: {children: React.ReactNode}) {
   const [isSignedIn, setIsSignedIn] = useState(false);
   const [isFirstTimeUser, setIsFirstTimeUser] = useState(false);
   const [accessToken, setAccessToken] = useState<string | null>(null);
+  const queryClient = useQueryClient();
 
   const checkAuthStatus = async () => {
     try {
@@ -69,6 +71,9 @@ export function AuthProvider({children}: {children: React.ReactNode}) {
       await TokenStorage.clearRefreshToken();
       accessTokenService.setAccessToken(null);
       setAccessToken(null);
+
+      // Clear all React Query cache to prevent data from previous user
+      queryClient.clear();
     } catch (error) {
       console.error('Error signing out:', error);
     } finally {

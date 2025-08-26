@@ -45,7 +45,7 @@ const LoginScreen = ({ navigation }: LoginScreenProps) => {
                 <TextInput
                     placeholder="Your Email"
                     style={styles.input}
-                    placeholderTextColor={colors.gray[600]}
+                    placeholderTextColor={colors.gray[400]}
                     value={email}
                     autoCapitalize="none"
                     autoCorrect={false}
