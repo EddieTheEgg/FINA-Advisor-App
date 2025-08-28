@@ -5,6 +5,7 @@ import BackButton from '../../../auth/components/GoBackButton/GoBackButton';
 import { colors } from '../../../../styles/colors';
 import FontAwesome6 from 'react-native-vector-icons/FontAwesome6';
 import { AccountTypeCard } from '../../components/AccountTypeCard/AccountTypeCard';
+import { AddAccountDetailsCard } from '../../components/AddAccountDetailsCard/AddAccountDetailsCard';
 
 
 export const AddAccountScreen = () => {
@@ -17,11 +18,11 @@ export const AddAccountScreen = () => {
             >
                 <View style = {styles.headerContainer}>
                     <BackButton />
-                    <Text style = {styles.headerText}>Add Account</Text>
+                    <Text style = {styles.headerText}>Create Account</Text>
                     <FontAwesome6 name = "empty-space" size = {30} color = {colors.background} />
                 </View>
                 <AccountTypeCard />
-
+                <AddAccountDetailsCard />
             </ScrollView>
         </View>
     );

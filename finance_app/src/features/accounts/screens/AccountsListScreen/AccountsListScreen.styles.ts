@@ -37,7 +37,7 @@ export const styles = StyleSheet.create({
     },
     addAccountButtonText: {
         fontSize: fontSize.lg,
-        fontFamily: 'Poppins-Medium',
+        fontFamily: 'Poppins-SemiBold',
         color: colors.white,
     },
 });

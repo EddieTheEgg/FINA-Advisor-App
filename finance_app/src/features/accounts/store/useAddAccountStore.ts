@@ -1,5 +1,5 @@
-import { create } from "zustand";
-import { AccountType } from "../types";
+import { create } from 'zustand';
+import { AccountType } from '../types';
 
 type AddAccountState = {
     accountType: AccountType;
@@ -18,6 +18,10 @@ type AddAccountState = {
     setAccountNumber: (accountNumber: string | null) => void;
     setRoutingNumber: (routingNumber: string | null) => void;
 
+    //Validations
+    validateAccountName: () => boolean;
+    accountNameError: string | null;
+
     //When switching between account types, we need to reset the input fields
     resetAccountDetailsExceptType: () => void;
 
@@ -31,11 +35,12 @@ const initialAddAccountState = {
     creditLimit: null,
     accountNumber: null,
     routingNumber: null,
+    accountNameError: null,
 };
 
 
 
-export const useAddAccountStore = create<AddAccountState>((set) => ({
+export const useAddAccountStore = create<AddAccountState>((set, get) => ({
     ...initialAddAccountState,
 
     setAccountName: (accountName: string) => set({ accountName }),
@@ -45,6 +50,16 @@ export const useAddAccountStore = create<AddAccountState>((set) => ({
     setCreditLimit: (creditLimit: number | null) => set({ creditLimit }),
     setAccountNumber: (accountNumber: string | null) => set({ accountNumber }),
     setRoutingNumber: (routingNumber: string | null) => set({ routingNumber }),
+
+    validateAccountName: () => {
+        const accountName = get().accountName;
+        if (accountName.length <= 0) {
+            set({accountNameError: 'Account name is required'});
+            return false;
+        }
+        set({accountNameError: null});
+        return true;
+    },
 
     resetAccountDetailsExceptType: () => set((state) => ({
         ...initialAddAccountState,

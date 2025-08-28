@@ -64,11 +64,11 @@ export const AccountsListScreen = ({ navigation }: AccountsListScreenProps) => {
                     ))}
                 </View>
             </ScrollView>
-            <AnimatedPressable 
+            <AnimatedPressable
             style = {styles.addAccountButton}
             onPress = {() => navigation.navigate('AddAccount')}
             >
-                <Text style = {styles.addAccountButtonText}>Add Account</Text>
+                <Text style = {styles.addAccountButtonText}>Create Account</Text>
             </AnimatedPressable>
         </View>
     );
