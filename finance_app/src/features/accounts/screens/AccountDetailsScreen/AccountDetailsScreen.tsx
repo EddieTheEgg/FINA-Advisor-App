@@ -14,6 +14,7 @@ import { TransferButton } from '../../components/TransferButton/TransferButton';
 import { AddTransactionButton } from '../../components/AddTransactionButton/AddTransactionButton';
 import { RouteProp } from '@react-navigation/native';
 import { AccountNavigatorParamList, AccountNavigatorProps } from '../../../../navigation/types/AccountNavigatorTypes';
+import LoadingScreen from '../../../../components/LoadingScreen/LoadingScreen';
 
 const SeparatorComponent = () => <View style={styles.separator} />;
 const { height } = Dimensions.get('window');
@@ -55,7 +56,7 @@ export const AccountDetailsScreen = ({ route, navigation }: AccountDetailsScreen
         || isAccountTransactionsPending
         || !accountTransactions
         || !accountDetails) {
-        return <LoadingDots />;
+        return <LoadingScreen />;
     }
 
     return (

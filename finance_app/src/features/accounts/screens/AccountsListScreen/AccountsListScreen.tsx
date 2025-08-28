@@ -7,6 +7,7 @@ import { ErrorScreen } from '../../../../components/ErrorScreen/ErrorScreen';
 import { NetWorthCard } from '../../components/NetWorthCard/NetWorthCard';
 import { GroupedAccountList } from '../../components/GroupedAccountList/GroupedAccountList';
 import { AccountNavigatorProps } from '../../../../navigation/types/AccountNavigatorTypes';
+import { AnimatedPressable } from '../../../../components/AnimatedPressable/AnimatedPressable';
 
 type AccountsListScreenProps = {
     navigation: AccountNavigatorProps;
@@ -34,33 +35,41 @@ export const AccountsListScreen = ({ navigation }: AccountsListScreenProps) => {
     }
 
     return (
-        <ScrollView
-            style={[styles.accountBackground, { paddingTop: insets.top }]}
-            contentContainerStyle={{
-                paddingBottom: insets.bottom + responsivePadding,
-            }}
-            showsVerticalScrollIndicator={false}
-        >
-            <View style = {styles.headerContainer}>
-                <Text style = {styles.headerAccountTitle}>My Accounts</Text>
-            </View>
-            <View style = {styles.netWorthCardContainer}>
-                <NetWorthCard
-                totalNet = {groupedAccounts.totalNet}
-                percentChange = {groupedAccounts.percentChange} />
-            </View>
-            <View style = {styles.accountListContainer}>
-                {Object.entries(groupedAccounts.accountGroupsData).map(([accountGroupName, accounts]) => (
-                    accounts.length > 0 &&
-                        (<GroupedAccountList
-                            key={accountGroupName}
-                            accountGroupName = {accountGroupName}
-                            accounts = {accounts}
-                            navigation = {navigation}
-                            transferAccountCard = {false}
-                        />)
-                ))}
-            </View>
-        </ScrollView>
+        <View style = {styles.container}>
+            <ScrollView
+                style={ { paddingTop: insets.top }}
+                contentContainerStyle={{
+                    paddingBottom: insets.bottom + responsivePadding,
+                }}
+                showsVerticalScrollIndicator={false}
+            >
+                <View style = {styles.headerContainer}>
+                    <Text style = {styles.headerAccountTitle}>My Accounts</Text>
+                </View>
+                <View style = {styles.netWorthCardContainer}>
+                    <NetWorthCard
+                    totalNet = {groupedAccounts.totalNet}
+                    percentChange = {groupedAccounts.percentChange} />
+                </View>
+                <View style = {styles.accountListContainer}>
+                    {Object.entries(groupedAccounts.accountGroupsData).map(([accountGroupName, accounts]) => (
+                        accounts.length > 0 &&
+                            (<GroupedAccountList
+                                key={accountGroupName}
+                                accountGroupName = {accountGroupName}
+                                accounts = {accounts}
+                                navigation = {navigation}
+                                transferAccountCard = {false}
+                            />)
+                    ))}
+                </View>
+            </ScrollView>
+            <AnimatedPressable 
+            style = {styles.addAccountButton}
+            onPress = {() => navigation.navigate('AddAccount')}
+            >
+                <Text style = {styles.addAccountButtonText}>Add Account</Text>
+            </AnimatedPressable>
+        </View>
     );
 };

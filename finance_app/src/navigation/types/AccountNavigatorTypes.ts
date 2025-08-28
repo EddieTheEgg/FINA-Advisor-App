@@ -7,6 +7,7 @@ export type AccountNavigatorParamList = {
     TransferAccountSelection: {
         selectionType: 'from' | 'to';
     };
+    AddAccount: undefined;
 };
 
 export type AccountNavigatorProps = NativeStackNavigationProp<AccountNavigatorParamList>;
