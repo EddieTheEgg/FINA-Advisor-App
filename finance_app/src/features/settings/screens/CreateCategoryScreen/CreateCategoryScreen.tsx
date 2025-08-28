@@ -73,6 +73,7 @@ export const CreateCategoryScreen = ({navigation}: CreateCategoryScreenProps) =>
             setInvalidSubmissionText('There are some invalid fields above');
             return;
         }
+        setInvalidSubmissionText('');
         createCategory();
     };
 

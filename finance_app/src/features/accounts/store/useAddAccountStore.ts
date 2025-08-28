@@ -69,7 +69,7 @@ export const useAddAccountStore = create<AddAccountState>((set, get) => ({
             return false;
         }
 
-        // Check for maximum length 
+        // Check for maximum length
         if (accountName.trim().length > 20) {
             set({accountNameError: 'Account name cannot exceed 20 characters'});
             return false;

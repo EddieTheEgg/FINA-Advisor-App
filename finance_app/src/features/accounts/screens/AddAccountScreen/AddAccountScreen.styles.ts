@@ -22,4 +22,25 @@ export const styles = StyleSheet.create({
         flexGrow: 1,
         paddingBottom: spacing.xxl * 2,
     },
+    createAccountButton: {
+        backgroundColor: colors.darkerBackground,
+        padding: spacing.md,
+        borderRadius: 20,
+        marginHorizontal: spacing.md,
+        alignItems: 'center',
+        marginTop: spacing.md,
+    },
+    createAccountButtonText: {
+        color: colors.white,
+        fontFamily: 'Poppins-SemiBold',
+        fontSize: fontSize.lg,
+    },
+    invalidAccountCreationText: {
+        fontSize: fontSize.base,
+        fontFamily: 'Poppins-Regular',
+        color: colors.red,
+        marginHorizontal: spacing.md,
+        marginTop: spacing.md,
+        alignSelf: 'center',
+    },
 });

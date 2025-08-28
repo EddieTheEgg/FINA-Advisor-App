@@ -6,10 +6,24 @@ import { colors } from '../../../../styles/colors';
 import FontAwesome6 from 'react-native-vector-icons/FontAwesome6';
 import { AccountTypeCard } from '../../components/AccountTypeCard/AccountTypeCard';
 import { AddAccountDetailsCard } from '../../components/AddAccountDetailsCard/AddAccountDetailsCard';
-
+import { AnimatedPressable } from '../../../../components/AnimatedPressable/AnimatedPressable';
+import { useAddAccountStore } from '../../store/useAddAccountStore';
+import { useState } from 'react';
 
 export const AddAccountScreen = () => {
     const insets = useSafeAreaInsets();
+    const {validateAccountName} = useAddAccountStore();
+    const [invalidAccountCreationText, setInvalidAccountCreationText] = useState<string>('');
+
+
+    const handleCreateAccount = () => {
+        if (!validateAccountName()) {
+            setInvalidAccountCreationText('There are some invalid fields above');
+        }
+        setInvalidAccountCreationText('');
+        // Create the account call here
+    };
+
     return (
         <View style = {[styles.container, { paddingTop: insets.top }]}>
             <ScrollView
@@ -23,6 +37,15 @@ export const AddAccountScreen = () => {
                 </View>
                 <AccountTypeCard />
                 <AddAccountDetailsCard />
+                {invalidAccountCreationText && (
+                    <Text style = {styles.invalidAccountCreationText}>{invalidAccountCreationText}</Text>
+                )}
+                <AnimatedPressable
+                    style = {styles.createAccountButton}
+                    onPress = {handleCreateAccount}
+                >
+                    <Text style = {styles.createAccountButtonText}>Create Account</Text>
+                </AnimatedPressable>
             </ScrollView>
         </View>
     );
