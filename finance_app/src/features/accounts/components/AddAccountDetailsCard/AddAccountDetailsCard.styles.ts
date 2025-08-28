@@ -77,5 +77,10 @@ export const styles = StyleSheet.create({
         fontFamily: 'Poppins-Regular',
         marginTop: spacing.xs,
     },
+    accountNameError: {
+        fontSize: fontSize.sm,
+        fontFamily: 'Poppins-Regular',
+        color: colors.red,
+    },
 
 });

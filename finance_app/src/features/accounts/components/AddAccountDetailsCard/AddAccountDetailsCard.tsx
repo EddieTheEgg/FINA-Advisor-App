@@ -6,6 +6,8 @@ import { AccountType } from '../../types';
 import { colors } from '../../../../styles/colors';
 import { AnimatedPressable } from '../../../../components/AnimatedPressable/AnimatedPressable';
 import FontAwesome6 from 'react-native-vector-icons/FontAwesome6';
+import { ErrorScreen } from '../../../../components/ErrorScreen/ErrorScreen';
+import { useGroupAccounts } from '../../hooks/useGroupAccounts';
 
 export const AddAccountDetailsCard = () => {
     const {
@@ -20,7 +22,10 @@ export const AddAccountDetailsCard = () => {
         setCreditLimit,
         accountNameError,
         validateAccountName,
+        initializeAllAccounts,
     } = useAddAccountStore();
+
+    const {data: allAccounts, isPending, error: fetchAllExistingAccountsError} = useGroupAccounts();
 
     const [inputValue, setInputValue] = useState<string>(
         accountBalance !== 0 ? accountBalance.toFixed(2) : ''
@@ -35,18 +40,27 @@ export const AddAccountDetailsCard = () => {
         setInputValue(accountBalance !== 0 ? accountBalance.toFixed(2) : '');
     }, [accountBalance]);
 
+    // Sync local input value with store amount when it changes (only for credit card)
     useEffect(() => {
         setSpendingLimitInput(
             creditLimit == null || creditLimit === 0 ? '' : Math.abs(creditLimit).toFixed(2)
         );
     }, [creditLimit]);
 
+    // Live validate account name as it changes
     useEffect(() => {
         if (accountName.length === 0) {
             return;
         }
         validateAccountName();
-    },[accountName.length, validateAccountName]);
+    },[accountName, validateAccountName]);
+
+    // Initialize all accounts when they are fetched so we can validate account name uniqueness
+    useEffect(() => {
+        if (allAccounts) {
+            initializeAllAccounts(Object.values(allAccounts.accountGroupsData).flat());
+        }
+    }, [allAccounts, initializeAllAccounts]);
 
 
     const handleTextChange = (text: string) => {
@@ -105,6 +119,16 @@ export const AddAccountDetailsCard = () => {
         }
     };
 
+    if (fetchAllExistingAccountsError) {
+        return <ErrorScreen
+            errorText = "Error fetching accounts"
+            errorSubText = "Something went wrong, existing accounts are needed to validate account name uniqueness"
+            errorMessage = {fetchAllExistingAccountsError.message}
+        />;
+    }
+
+
+
     const remainingChars = 20 - (accountName.length || 0);
 
     if (accountType === AccountType.CREDIT_CARD) {
@@ -126,7 +150,12 @@ export const AddAccountDetailsCard = () => {
                         onChangeText={setAccountName}
                         maxLength={20}
                     />
-                    {accountNameError && <Text style={styles.errorText}>{accountNameError}</Text>}
+                    {isPending && accountName.trim().length >= 3 && (
+                        <Text style={styles.accountNameError}>Checking for duplicates...</Text>
+                    )}
+                    {accountNameError && !isPending && (
+                        <Text style={styles.accountNameError}>{accountNameError}</Text>
+                    )}
                 </View>
                 <View>
                     <View style={styles.headerContainer}>
@@ -206,6 +235,12 @@ export const AddAccountDetailsCard = () => {
                     onChangeText={setAccountName}
                     maxLength={20}
                 />
+                {isPending && accountName.trim().length >= 3 && (
+                    <Text style={styles.accountNameError}>Checking for duplicates...</Text>
+                )}
+                {accountNameError && !isPending && (
+                    <Text style={styles.accountNameError}>{accountNameError}</Text>
+                )}
             </View>
             <View>
                 <View style={styles.headerContainer}>

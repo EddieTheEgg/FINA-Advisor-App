@@ -1,5 +1,5 @@
 import { create } from 'zustand';
-import { AccountType } from '../types';
+import { AccountType, AccountResponse } from '../types';
 
 type AddAccountState = {
     accountType: AccountType;
@@ -9,6 +9,7 @@ type AddAccountState = {
     creditLimit: number | null;
     accountNumber: string | null;
     routingNumber: string | null;
+    allAccounts: AccountResponse[]; // List of all user accounts for validation
 
     setAccountName: (accountName: string) => void;
     setAccountType: (accountType: AccountType) => void;
@@ -17,6 +18,7 @@ type AddAccountState = {
     setCreditLimit: (creditLimit: number | null) => void;
     setAccountNumber: (accountNumber: string | null) => void;
     setRoutingNumber: (routingNumber: string | null) => void;
+    initializeAllAccounts: (accounts: AccountResponse[]) => void;
 
     //Validations
     validateAccountName: () => boolean;
@@ -35,6 +37,7 @@ const initialAddAccountState = {
     creditLimit: null,
     accountNumber: null,
     routingNumber: null,
+    allAccounts: [],
     accountNameError: null,
 };
 
@@ -50,13 +53,39 @@ export const useAddAccountStore = create<AddAccountState>((set, get) => ({
     setCreditLimit: (creditLimit: number | null) => set({ creditLimit }),
     setAccountNumber: (accountNumber: string | null) => set({ accountNumber }),
     setRoutingNumber: (routingNumber: string | null) => set({ routingNumber }),
+    initializeAllAccounts: (accounts: AccountResponse[]) => set({ allAccounts: accounts }),
 
     validateAccountName: () => {
-        const accountName = get().accountName;
-        if (accountName.length <= 0) {
+        const { accountName, allAccounts } = get();
+
+        if (accountName.trim() === '') {
             set({accountNameError: 'Account name is required'});
             return false;
         }
+
+        // Check for minimum length
+        if (accountName.trim().length < 2) {
+            set({accountNameError: 'Account name must be at least 2 characters long'});
+            return false;
+        }
+
+        // Check for maximum length 
+        if (accountName.trim().length > 20) {
+            set({accountNameError: 'Account name cannot exceed 20 characters'});
+            return false;
+        }
+
+        // Check for duplicate names within the same account type (case-insensitive)
+        const existingAccount = allAccounts.find(account =>
+            account.name.toLowerCase() === accountName.trim().toLowerCase() &&
+            account.accountType === get().accountType
+        );
+
+        if (existingAccount) {
+            set({accountNameError: 'An account with this name already exists for this account type'});
+            return false;
+        }
+
         set({accountNameError: null});
         return true;
     },
