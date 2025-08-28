@@ -1,7 +1,7 @@
 from typing import List
 from uuid import UUID
 from fastapi import APIRouter, Query
-from backend.src.accounts.model import AccountCreateRequest, AccountResponse, AccountTransactionHistoryResponse, GroupedAccountsResponse
+from backend.src.accounts.model import AccountCreateRequest, AccountResponse, AccountTransactionHistoryResponse, BasicAccountCreateRequest, GroupedAccountsResponse
 from backend.src.auth.service import CurrentUser
 from backend.src.database.core import DbSession
 from backend.src.accounts import service as account_service
@@ -11,7 +11,7 @@ router = APIRouter(
     tags=['accounts']
 )
 
-#Creates a new account for the user
+#Creates a new account for the user (Full details)
 @router.post("/create-account", response_model = AccountResponse)
 def create_account(
     db: DbSession,
@@ -19,6 +19,15 @@ def create_account(
     current_user: CurrentUser
 ):
     return account_service.create_account(db, account_create_request, current_user.get_uuid())
+
+
+@router.post("/create-account-basic", response_model = AccountResponse)
+def create_account_basic(
+    db: DbSession,
+    account_create_request: BasicAccountCreateRequest,
+    current_user: CurrentUser
+):
+    return account_service.create_account_basic(db, account_create_request, current_user.get_uuid())
 
 #Gets all accounts for the user
 @router.get("/user-accounts", response_model = List[AccountResponse])

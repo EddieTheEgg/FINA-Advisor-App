@@ -3,10 +3,10 @@ import logging
 from typing import List, Dict
 from uuid import UUID
 from sqlalchemy.orm import Session, joinedload
-from backend.src.accounts.model import AccountBalance, AccountCreateRequest, AccountResponse, AccountTransactionHistoryResponse, GroupedAccountsResponse
+from backend.src.accounts.model import AccountBalance, AccountCreateRequest, AccountResponse, AccountTransactionHistoryResponse, BasicAccountCreateRequest, GroupedAccountsResponse
 from backend.src.categories.model import CategorySimplifiedResponse
 from backend.src.entities.account import Account
-from backend.src.entities.enums import TransactionType
+from backend.src.entities.enums import ACCOUNT_TYPE_COLORS, ACCOUNT_TYPE_ICONS, TransactionType
 from backend.src.entities.transaction import Transaction
 from backend.src.exceptions import AccountCreationError, AccountNotFoundError, NoAccountsFoundError, AccountTransactionHistoryNotFoundError, AccountTransactionHistoryProcessingError, GroupedAccountNotFoundError, NetWorthCalculationError
 from backend.src.accounts.constants import ACCOUNT_GROUPS
@@ -60,6 +60,26 @@ def create_account(db: Session, account_create_request: AccountCreateRequest, us
         logging.warning(f"Failed to create account for user {user_id}. Error: {str(e)}")
         raise AccountCreationError(user_id)
     
+def create_account_basic(db: Session, account_create_request: BasicAccountCreateRequest, user_id: UUID) -> AccountResponse:
+    try:
+        account_formatted = AccountCreateRequest(
+            name=account_create_request.account_name,
+            account_type=account_create_request.account_type,
+            balance=account_create_request.balance,
+            color=ACCOUNT_TYPE_COLORS[account_create_request.account_type.name].value[0],
+            icon=ACCOUNT_TYPE_ICONS[account_create_request.account_type.name].value[0],
+            is_default=False,
+            include_in_totals=True,
+            is_active=True,
+            credit_limit=account_create_request.credit_limit,
+            bank_name=account_create_request.bank_name,
+            account_number=None,
+            routing_number=None,
+        )
+        return create_account(db, account_formatted, user_id)
+    except Exception as e:
+        logging.warning(f"Failed to create account for user {user_id}. Error: {str(e)}")
+        raise AccountCreationError(user_id)
 
 
 def get_user_accounts(db: Session, user_id: UUID) -> List[AccountResponse]:

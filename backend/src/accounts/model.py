@@ -19,6 +19,15 @@ class AccountCreateRequest(BaseModel):
     account_number: str | None = None
     routing_number: str | None = None
     
+class BasicAccountCreateRequest(BaseModel):
+    account_name: str
+    account_type: AccountType
+    balance: float
+    credit_limit: float | None = None
+    bank_name: str | None = None
+    account_number: str | None = None
+    routing_number: str | None = None
+    
 class AccountResponse(BaseModel):
     account_id: UUID
     name: str

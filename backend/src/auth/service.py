@@ -164,10 +164,10 @@ def signup_user_with_account(db: Session, signup_request: SignupRequest) -> NewR
             is_default = True,
             include_in_totals = True,
             is_active = True,
-            credit_limit = None,
-            bank_name = None,
-            account_number = None,
-            routing_number = None,
+            credit_limit = account_request_information.credit_limit,
+            bank_name = account_request_information.bank_name,
+            account_number = None, #TEMP not used
+            routing_number = None, #TEMP not used
         )
         
         # Create account with the registered user

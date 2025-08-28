@@ -1,6 +1,6 @@
 import axios from 'axios';
 import api from '../../../api/axios';
-import { GroupedAccountsResponse, AccountResponse, BackendAccountResponse, AccountTransactionsResponse, BackendTransactionAccountResponse, TransferSubmission } from '../types';
+import { GroupedAccountsResponse, AccountResponse, BackendAccountResponse, AccountTransactionsResponse, BackendTransactionAccountResponse, TransferSubmission, BasicAccountCreateRequest } from '../types';
 
 type getUserAccountTransactionHistoryParams = {
     accountId : string,
@@ -122,3 +122,22 @@ export const submitTransfer = async (transferSubmissionData: TransferSubmission)
         throw new Error('Failed to submit transfer, please try again (Unknown error)');
     }
 };
+
+
+export const createAccount = async (accountCreationData: BasicAccountCreateRequest) => {
+    try {
+        const response = await api.post('/accounts/create-account-basic', accountCreationData);
+        return response.data;
+    } catch (error : unknown) {
+        if (axios.isAxiosError(error) && error.response?.status === 401) {
+            throw new Error('Please log in again to create an account');
+        }
+        if (axios.isAxiosError(error) && error.response?.status === 400) {
+            throw new Error('Failed to create account: ' + error.response?.data.detail);
+        }
+        if (axios.isAxiosError(error) && error.response?.status === 500) {
+            throw new Error('Failed to create account, please try again (Internal server error)');
+        }
+        throw new Error('Failed to create account, please try again (Unknown error)');
+    }
+}

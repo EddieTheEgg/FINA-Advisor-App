@@ -122,3 +122,13 @@ export type BackendTransactionAccountResponse = {
         is_custom: boolean;
     };
 }
+
+export type BasicAccountCreateRequest = {
+    account_name: string;
+    account_type: AccountType;
+    balance: number;
+    credit_limit: number | null;
+    bank_name: string | null;
+    account_number: string | null;
+    routing_number: string | null;
+}

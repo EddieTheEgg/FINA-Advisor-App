@@ -27,6 +27,9 @@ type AddAccountState = {
     //When switching between account types, we need to reset the input fields
     resetAccountDetailsExceptType: () => void;
 
+    //Resets all account states so its clean for next creation
+    resetAddAccountStore: () => void;
+
 }
 
 const initialAddAccountState = {
@@ -94,4 +97,6 @@ export const useAddAccountStore = create<AddAccountState>((set, get) => ({
         ...initialAddAccountState,
         accountType: state.accountType,
     })),
+
+    resetAddAccountStore: () => set(initialAddAccountState),
 }));
