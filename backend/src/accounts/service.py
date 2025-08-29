@@ -3,12 +3,14 @@ import logging
 from typing import List, Dict
 from uuid import UUID
 from sqlalchemy.orm import Session, joinedload
-from backend.src.accounts.model import AccountBalance, AccountCreateRequest, AccountResponse, AccountTransactionHistoryResponse, BasicAccountCreateRequest, GroupedAccountsResponse
+from sqlalchemy import func
+from backend.src.accounts.model import AccountBalance, AccountCreateRequest, AccountResponse, AccountTransactionHistoryResponse, AccountUpdateRequest, BasicAccountCreateRequest, GroupedAccountsResponse
 from backend.src.categories.model import CategorySimplifiedResponse
 from backend.src.entities.account import Account
+from backend.src.entities.category import Category
 from backend.src.entities.enums import ACCOUNT_TYPE_COLORS, ACCOUNT_TYPE_ICONS, TransactionType
 from backend.src.entities.transaction import Transaction
-from backend.src.exceptions import AccountCreationError, AccountNotFoundError, NoAccountsFoundError, AccountTransactionHistoryNotFoundError, AccountTransactionHistoryProcessingError, GroupedAccountNotFoundError, NetWorthCalculationError
+from backend.src.exceptions import AccountCreationError, AccountNotFoundError, AccountUpdateError, NoAccountsFoundError, AccountTransactionHistoryNotFoundError, AccountTransactionHistoryProcessingError, GroupedAccountNotFoundError, NetWorthCalculationError
 from backend.src.accounts.constants import ACCOUNT_GROUPS
 from backend.src.snapshots import service as snapshots_service
 from backend.src.transactions.model import AccountTransactionResponse, TransactionResponse
@@ -215,14 +217,27 @@ def get_user_accounts_grouped(db: Session, user_id: UUID) -> GroupedAccountsResp
             elif account.account_type in ACCOUNT_GROUPS["Other"]:
                 grouped_accounts["Other"].append(account)
         
-        #Calculate percent change in net worth
+        #Calculate percent change in net worth (excluding account adjustments)
         current_month_date = date.today().replace(day=1)
         try:
             month_starting_net = snapshots_service.get_user_month_net_worth_snapshot(db, user_id, current_month_date)
+            
+            # Calculate total account adjustments for this month to exclude from percentage calculation
+            current_month_end = date.today()
+            account_adjustments_total = db.query(func.sum(Transaction.amount)).filter(
+                Transaction.user_id == user_id,
+                Transaction.special_transaction == True,
+                Transaction.transaction_date >= current_month_date,
+                Transaction.transaction_date <= current_month_end
+            ).scalar() or 0.0
+            
+            # Adjust net worth by removing account adjustments for accurate percentage
+            adjusted_net_worth = total_net_worth - account_adjustments_total
+            
             if month_starting_net == 0:
                 percent_change = 0.0
             else:
-                percent_change = (total_net_worth - month_starting_net) / month_starting_net * 100
+                percent_change = (adjusted_net_worth - month_starting_net) / month_starting_net * 100
         except Exception as e:
             # If no snapshot exists (e.g., for new users), set percent change to 0
             logging.info(f"No snapshot found for user {user_id}, setting percent change to 0")
@@ -265,7 +280,7 @@ def get_account_transaction_history(db: Session, user_id: UUID, account_id: UUID
             (Transaction.account_id == account_id) | 
             (Transaction.to_account_id == account_id),
             Transaction.user_id == user_id
-        ).order_by(Transaction.transaction_date.desc()).offset(offset).limit(limit).all()
+        ).order_by(Transaction.transaction_date.desc(), Transaction.created_at.desc()).offset(offset).limit(limit).all()
         
         # Mini helper function to process the transaction amount for transfers
         # If the account is the destination, the amount is positive, 
@@ -306,6 +321,7 @@ def get_account_transaction_history(db: Session, user_id: UUID, account_id: UUID
                     created_at=transaction.created_at.isoformat(),
                     updated_at=transaction.updated_at.isoformat() if transaction.updated_at else None,
                     category_simplified=simplified_category_response,
+                    special_transaction=transaction.special_transaction,
                 ))
             except Exception as inner_e:
                 logging.warning(f"Error processing transaction {transaction.transaction_id}: {str(inner_e)}")
@@ -357,3 +373,80 @@ def delete_account(db: Session, user_id: UUID, account_id: UUID) -> dict:
         logging.error(f"Failed to delete account {account_id} for user {user_id}. Error: {str(e)}")
         db.rollback()
         raise AccountCreationError(f"Failed to delete account: {str(e)}")
+    
+    
+#Updates an account for the user
+def update_account(db: Session, user_id: UUID, account_update_request: AccountUpdateRequest) -> None:
+    try:
+        #Try to find the account first
+        account = db.query(Account).filter(Account.account_id == account_update_request.account_id, Account.user_id == user_id).first()
+        if not account:
+            raise AccountNotFoundError()
+        
+        #If the balance has changed, create a new transaction for the difference
+        if account.balance != account_update_request.balance:
+            # Get the appropriate uncategorized category for this user
+            if account.balance > account_update_request.balance:
+                # Balance decreased - use expense category
+                uncategorized_category = db.query(Category).filter(
+                    Category.category_name == "Uncategorized Expense",
+                    Category.user_id == user_id,
+                    Category.is_custom == False
+                ).first()
+                
+                if not uncategorized_category:
+                    raise ValueError("Uncategorized Expense category not found for user")
+                
+                #Create a new transaction for the difference
+                transaction = Transaction(
+                    amount = account.balance - account_update_request.balance,
+                    title = "Account Adjustment",
+                    transaction_date = date.today(),
+                    transaction_type = TransactionType.EXPENSE,
+                    category_id = uncategorized_category.category_id,
+                    account_id = account.account_id,
+                    to_account_id = None,
+                    user_id = user_id,
+                    special_transaction = True,
+                )
+                db.add(transaction)
+                
+            elif account.balance < account_update_request.balance:
+                # Balance increased - use income category
+                uncategorized_category = db.query(Category).filter(
+                    Category.category_name == "Uncategorized Income",
+                    Category.user_id == user_id,
+                    Category.is_custom == False
+                ).first()
+                
+                if not uncategorized_category:
+                    raise ValueError("Uncategorized Income category not found for user")
+                    
+                #Create a new transaction for the difference
+                transaction = Transaction(
+                    amount = account_update_request.balance - account.balance,
+                    title = "Account Adjustment",
+                    transaction_date = date.today(),
+                    transaction_type = TransactionType.INCOME,
+                    category_id = uncategorized_category.category_id,
+                    account_id = account.account_id,
+                    to_account_id = None,
+                    user_id = user_id,
+                    special_transaction = True,
+                )   
+                db.add(transaction)
+                
+        #Update the account with the new information (excluding account type)
+        account.name = account_update_request.account_name
+        account.balance = account_update_request.balance
+        account.credit_limit = account_update_request.credit_limit
+        account.bank_name = account_update_request.bank_name
+        account.account_number = account_update_request.account_number
+        account.routing_number = account_update_request.routing_number
+        
+        db.commit()
+        db.refresh(account)
+    except Exception as e:
+        db.rollback()
+        logging.error(f"Failed to update account {account_update_request.account_id}: {str(e)}")
+        raise AccountUpdateError(str(e))

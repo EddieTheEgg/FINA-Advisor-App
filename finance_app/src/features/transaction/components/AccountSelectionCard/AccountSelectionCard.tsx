@@ -3,7 +3,7 @@ import { AccountResponse } from '../../../accounts/types';
 import { TransactionNavigatorProps } from '../../../../navigation/types/TransactionNavigatorTypes';
 import { AnimatedPressable } from '../../../../components/AnimatedPressable/AnimatedPressable';
 import { styles } from './AccountSelectionCard.styles';
-import { capitalizeFirstLetter, truncateText } from '../../../../utils/textFormat';
+import { formatAccountType, truncateText } from '../../../../utils/textFormat';
 import { formatBalance } from '../../../../utils/balanceFormat';
 import { useCreateTransactionStore } from '../../store/useTransactionStore';
 
@@ -39,7 +39,7 @@ export const AccountSelectionCard = ({accountItem, navigation} : AccountSelectio
             </View>
             <View style = {styles.accountInfoContainer}>
                 <Text style = {styles.accountNameText}>{truncateText(accountItem.name, 13)}</Text>
-                <Text style = {styles.accountSubInfoText}>{capitalizeFirstLetter(accountItem.accountType)}</Text>
+                <Text style = {styles.accountSubInfoText}>{formatAccountType(accountItem.accountType)}</Text>
             </View>
             <View>
                 <Text style = {styles.accountBalanceText}>${formatBalance(accountItem.balance)}{'>'}</Text>

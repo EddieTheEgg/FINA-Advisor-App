@@ -23,6 +23,6 @@ export const useAccountDetails = (accountId: string) => {
             throw new Error(`Account with ID ${accountId} not found`);
         },
         enabled: !isGroupedAccountsPending && !groupedAccountsError && !!groupedAccounts,
-        staleTime: 5 * 60 * 1000, // 5 minutes
+        staleTime: 0, // Always refetch when invalidated
     });
 };

@@ -282,7 +282,8 @@ async def gather_financial_context(
             Transaction.user_id == user_id,
             Transaction.transaction_type == TransactionType.EXPENSE,
             Transaction.transaction_date >= current_month_start,
-            Transaction.transaction_date < current_month_end
+            Transaction.transaction_date < current_month_end,
+            Transaction.special_transaction == False
         ).group_by(Category.category_id).order_by(
             func.sum(Transaction.amount).desc()
         ).limit(5)
@@ -313,8 +314,9 @@ async def gather_financial_context(
         ).join(Category, Transaction.category_id == Category.category_id).filter(
             Transaction.user_id == user_id,
             Transaction.transaction_date >= current_month_start,
-            Transaction.transaction_date < current_month_end
-        ).order_by(Transaction.transaction_date.desc()).limit(10)
+            Transaction.transaction_date < current_month_end,
+            Transaction.special_transaction == False
+        ).order_by(Transaction.transaction_date.desc(), Transaction.created_at.desc()).limit(10)
         
         recent_transactions = []
         for notes, title, amount, category_name, location, merchant, is_subscription, subscription_frequency, subscription_start_date, subscription_end_date in recent_transactions_query.all():

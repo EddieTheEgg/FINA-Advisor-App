@@ -70,7 +70,8 @@ def get_financial_summary(
         ).label('monthly_income')).filter(
             Transaction.user_id == user_id,
             Transaction.transaction_date >= start_date,
-            Transaction.transaction_date < end_date
+            Transaction.transaction_date < end_date,
+            Transaction.special_transaction == False
         )  
         monthly_income = float(monthly_income_query.scalar() or 0.0)
     except Exception as e:
@@ -84,7 +85,8 @@ def get_financial_summary(
         ).label('monthly_expense')).filter(
             Transaction.user_id == user_id,
             Transaction.transaction_date >= start_date,
-            Transaction.transaction_date < end_date
+            Transaction.transaction_date < end_date,
+            Transaction.special_transaction == False
         )
         monthly_expense = float(monthly_expense_query.scalar() or 0.0)
     except Exception as e:
@@ -97,7 +99,8 @@ def get_financial_summary(
         ).label('monthly_transfer')).filter(
             Transaction.user_id == user_id,
             Transaction.transaction_date >= start_date,
-            Transaction.transaction_date < end_date
+            Transaction.transaction_date < end_date,
+            Transaction.special_transaction == False
         )
         monthly_transfer = float(monthly_transfer_query.scalar() or 0.0)
     except Exception as e:
@@ -143,7 +146,8 @@ def get_recent_transactions(
     try:
         transactions = db.query(Transaction).filter(
             Transaction.user_id == user_id,
-        ).order_by(Transaction.transaction_date.desc()).limit(5).all()
+            Transaction.special_transaction == False
+        ).order_by(Transaction.transaction_date.desc(), Transaction.created_at.desc()).limit(5).all()
         
        
         recent_transactions = []

@@ -1,7 +1,8 @@
 from typing import List
 from uuid import UUID
 from fastapi import APIRouter, Query
-from backend.src.accounts.model import AccountCreateRequest, AccountResponse, AccountTransactionHistoryResponse, BasicAccountCreateRequest, GroupedAccountsResponse
+from starlette import status
+from backend.src.accounts.model import AccountCreateRequest, AccountResponse, AccountTransactionHistoryResponse, AccountUpdateRequest, BasicAccountCreateRequest, GroupedAccountsResponse
 from backend.src.auth.service import CurrentUser
 from backend.src.database.core import DbSession
 from backend.src.accounts import service as account_service
@@ -64,3 +65,12 @@ def delete_account(
     account_id: str = Query(..., description="ID of the account to delete")
 ):
     return account_service.delete_account(db, current_user.get_uuid(), UUID(account_id))
+
+@router.put("/update-account", status_code = status.HTTP_200_OK)
+def update_account(
+    db: DbSession,
+    current_user: CurrentUser,
+    account_update_request: AccountUpdateRequest
+):
+    return account_service.update_account(db, current_user.get_uuid(),account_update_request)
+    

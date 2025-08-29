@@ -5,7 +5,7 @@ import { AccountNavigatorProps } from '../../../../navigation/types/AccountNavig
 import { useTransferStore } from '../../store/useTransferStore';
 import { AnimatedPressable } from '../../../../components/AnimatedPressable/AnimatedPressable';
 import { formatBalance } from '../../../../utils/balanceFormat.ts';
-import { truncateText } from '../../../../utils/textFormat.ts';
+import { formatAccountType, truncateText } from '../../../../utils/textFormat.ts';
 
 type AccountCardProps = {
     accountItem : AccountResponse
@@ -18,9 +18,7 @@ export const AccountCard = ({accountItem, navigation, transferAccountCard, selec
 
     const {fromAccount, toAccount, setFromAccount, setToAccount} = useTransferStore();
 
-    const capitalizeFirstLetter = (text: string) => {
-        return text.charAt(0).toUpperCase() + text.slice(1);
-    };
+
 
     const navAccountDetails = (accountId : string) => {
         console.log(`Navigate to specific account: ${accountId}`);
@@ -56,7 +54,7 @@ export const AccountCard = ({accountItem, navigation, transferAccountCard, selec
                 </View>
                 <View style = {styles.accountInfoContainer}>
                     <Text style = {styles.accountNameText}>{truncateText(accountItem.name, 15)}</Text>
-                    <Text style = {styles.accountSubInfoText}>{capitalizeFirstLetter(accountItem.accountType)}</Text>
+                    <Text style = {styles.accountSubInfoText}>{formatAccountType(accountItem.accountType)}</Text>
                 </View>
                 <View>
                     <Text style = {styles.accountBalanceText}>${formatBalance(accountItem.balance)}{'>'}</Text>
@@ -75,7 +73,7 @@ export const AccountCard = ({accountItem, navigation, transferAccountCard, selec
             </View>
             <View style = {styles.accountInfoContainer}>
                 <Text style = {styles.accountNameText}>{truncateText(accountItem.name, 15)}</Text>
-                <Text style = {styles.accountSubInfoText}>{capitalizeFirstLetter(accountItem.accountType)}</Text>
+                <Text style = {styles.accountSubInfoText}>{formatAccountType(accountItem.accountType)}</Text>
             </View>
             <View>
                 <Text style = {styles.accountBalanceText}>${formatBalance(accountItem.balance)}{'>'}</Text>

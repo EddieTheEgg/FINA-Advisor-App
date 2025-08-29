@@ -21,6 +21,7 @@ class Transaction(Base):
     subscription_frequency = Column(Enum(SubscriptionFrequency, name='subscriptionfrequency'), nullable=True)
     subscription_start_date = Column(Date, nullable=True)
     subscription_end_date = Column(Date, nullable=True)
+    special_transaction = Column(Boolean, default = False, nullable = False) #This is for like adjusting the balance of the account, special transctions that we want to track but won't display
     created_at = Column(DateTime(timezone=True), server_default=func.now())
     updated_at = Column(DateTime(timezone=True), onupdate=func.now())
     

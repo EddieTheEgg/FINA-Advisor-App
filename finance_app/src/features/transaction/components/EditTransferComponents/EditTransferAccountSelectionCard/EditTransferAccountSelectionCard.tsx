@@ -54,7 +54,7 @@ export const EditTransferAccountSelectionCard = ({accountItem, navigation, accou
                 </View>
                 <View style = {styles.accountInfoContainer}>
                     <Text style = {styles.accountNameText}>{truncateText(accountItem.name, 13)}</Text>
-                    <Text style = {styles.accountSubInfoText}>{capitalizeFirstLetter(accountItem.accountType)}</Text>   
+                    <Text style = {styles.accountSubInfoText}>{capitalizeFirstLetter(accountItem.accountType)}</Text>
                 </View>
                 <View>
                     <Text style = {styles.accountBalanceText}>${formatBalance(accountItem.balance)}{'>'}</Text>

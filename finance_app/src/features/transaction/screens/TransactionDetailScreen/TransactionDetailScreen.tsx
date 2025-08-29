@@ -87,6 +87,10 @@ export const TransactionDetailScreen = ({route, navigation}: TransactionDetailSc
         />;
     }
 
+    const isSpecialTransaction = transactionDetails.specialTransaction;
+
+
+
     if (transactionDetails.transactionType === 'TRANSFER') {
         return (
             <View style={styles.container}>
@@ -162,12 +166,20 @@ export const TransactionDetailScreen = ({route, navigation}: TransactionDetailSc
                 <View style={styles.header}>
                     <BackButton />
                     <Text style={styles.headerTitle}>Transaction Details</Text>
+                    {!isSpecialTransaction && (
                     <AnimatedPressable
                         onPress={() => {setIsDeletionModalVisible(true);}}
                     >
                         <FontAwesome6 name="trash" size={24} color={colors.red} />
                     </AnimatedPressable>
+                    )}
+                    {isSpecialTransaction && (
+                        <FontAwesome6 name="empty" size={24} color={colors.background} />
+                    )}
                 </View>
+                {isSpecialTransaction && (
+                    <Text style = {styles.specialTransactionText}>⚠️ This transaction is account-specific and won’t appear elsewhere. Account adjustments cannot be edited or deleted.</Text>
+                )}
                 <MainCardSummary transactionDetails={transactionDetails} />
                 <TransactionDetailsCard transactionDetails={transactionDetails} />
                 <TransactionNotesCard transactionNotes={transactionDetails.notes ?? ''} />
@@ -176,6 +188,7 @@ export const TransactionDetailScreen = ({route, navigation}: TransactionDetailSc
                 )}
                 <TransactionMetaInfo transactionDetails={transactionDetails} title="ℹ️ Transaction Info" />
             </ScrollView>
+            {!isSpecialTransaction && (
             <View style={[styles.editTransactionButtonContainer, { paddingBottom: insets.bottom + spacing.md }]}>
                 <AnimatedPressable
                     onPress={handleNavToEditTransaction}
@@ -184,6 +197,7 @@ export const TransactionDetailScreen = ({route, navigation}: TransactionDetailSc
                     <Text style={styles.editTransactionButtonText}>Edit Transaction</Text>
                 </AnimatedPressable>
             </View>
+            )}
             <Modal
                 visible={isDeletionModalVisible}
                 animationType="fade"
@@ -206,7 +220,6 @@ export const TransactionDetailScreen = ({route, navigation}: TransactionDetailSc
                                 style={styles.cancelModalButton}>
                                 <Text style={styles.cancelModalButtonText}>Cancel</Text>
                             </AnimatedPressable>
-
                         </View>
                     </View>
                 </View>

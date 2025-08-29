@@ -40,7 +40,7 @@ def create_regular_transaction(
         category_id=UUID(transaction_create_request.category_id),
         account_id=UUID(transaction_create_request.account_id),
         merchant=transaction_create_request.merchant,
-        user_id=user_id
+        user_id=user_id,
     )
     db.add(new_transaction)
     db.commit()
@@ -129,7 +129,8 @@ def create_regular_transaction(
             created_at=category.created_at,
             updated_at=category.updated_at
         ),
-        budget_id_affected=budget_id_affected
+        budget_id_affected=budget_id_affected,
+        special_transaction=new_transaction.special_transaction,
     )
 
 # Creates a new transaction entry in the database
@@ -233,7 +234,8 @@ def get_transaction_by_id(db: Session, transaction_id: UUID, user_id: UUID) -> T
             created_at = transaction.category.created_at,
             updated_at = transaction.category.updated_at
         ),
-        budget_id_affected = budget_id_affected
+        budget_id_affected = budget_id_affected,
+        special_transaction = transaction.special_transaction,
     )
 
 #Helper function to calculate the next payment date for a subscription
@@ -292,7 +294,8 @@ def get_transaction_list(db: Session, user_id: UUID, request_data: TransactionLi
     # Base filter which only grabs transactions for the given month and year
     base_filter = [
         Transaction.user_id == user_id,
-        Transaction.transaction_date.between(start_date, end_date)
+        Transaction.transaction_date.between(start_date, end_date),
+        Transaction.special_transaction == False
     ]
     
     # Only add transaction type filter if not requesting ALL

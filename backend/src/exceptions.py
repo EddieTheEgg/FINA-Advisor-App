@@ -215,6 +215,10 @@ class AccountTransactionHistoryNotFoundError(AccountError):
 class AccountTransactionHistoryProcessingError(AccountError):
     def __init__(self, transaction_id: UUID):
         super().__init__(status_code=400, detail=f"Failed to process transaction {transaction_id}")
+        
+class AccountUpdateError(AccountError):
+    def __init__(self, message: str = "Error updating account"):
+        super().__init__(status_code=400, detail=message)
 
 class DashboardError(HTTPException):
     """Base exception for dashboard-related errors"""
@@ -335,4 +339,3 @@ class BudgetAlreadyExistsError(BudgetError):
 class BudgetFetchError(BudgetError):
     def __init__(self, message: str = "Error getting budgets"):
         super().__init__(status_code=500, detail=message)
-        

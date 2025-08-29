@@ -53,6 +53,7 @@ export type AccountTransactionResponse = {
         color: string;
         isCustom: boolean;
     };
+    specialTransaction: boolean;
 }
 
 // Account transactions response
@@ -126,6 +127,17 @@ export type BackendTransactionAccountResponse = {
 export type BasicAccountCreateRequest = {
     account_name: string;
     account_type: AccountType;
+    balance: number;
+    credit_limit: number | null;
+    bank_name: string | null;
+    account_number: string | null;
+    routing_number: string | null;
+}
+
+
+export type AccountUpdateRequest = {
+    account_id: string;
+    account_name: string;
     balance: number;
     credit_limit: number | null;
     bank_name: string | null;

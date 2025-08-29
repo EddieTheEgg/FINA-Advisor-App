@@ -4,105 +4,93 @@ import { spacing } from '../../../../styles/spacing';
 import { fontSize } from '../../../../styles/fontSizes';
 
 export const styles = StyleSheet.create({
-    container : {
+    screenContainer: {
         flex: 1,
-        backgroundColor: colors.background,
         position: 'relative',
+        backgroundColor: colors.background,
     },
-    header : {
-        marginHorizontal: spacing.md,
+    headerSection: {
+        alignItems: 'center',
         justifyContent: 'space-between',
         flexDirection: 'row',
-        alignItems: 'center',
+        marginHorizontal: spacing.md,
     },
-    headerTitle : {
+    headerTitle: {
         fontSize: fontSize.xl,
         fontFamily: 'Poppins-SemiBold',
     },
-    transactionDetailButtonContainer : {
-        marginHorizontal: spacing.md,
-        flexDirection: 'row',
-        gap: spacing.sm,
-    },
-    editTransactionButtonContainer: {
-        position: 'absolute',
-        left: 0,
-        right: 0,
-        bottom: 0,
-        backgroundColor: colors.white,
-        paddingTop: spacing.md,
-        paddingBottom: spacing.md,
-    },
-    editTransactionButton: {
-        marginHorizontal: spacing.md,
-        padding: spacing.md,
+    saveAccountButton: {
         backgroundColor: colors.darkerBackground,
-        borderRadius: 10,
+        padding: spacing.md,
+        marginHorizontal: spacing.md,
+        marginVertical: spacing.md,
+        alignItems: 'center',
+        borderRadius: 20,
     },
-    editTransactionButtonText : {
+    saveAccountButtonText: {
+        fontSize: fontSize.lg,
         color: colors.white,
         fontFamily: 'Poppins-SemiBold',
-        fontSize: fontSize.lg,
-        textAlign: 'center',
-        flex: 1,
     },
-
-    deletionModalContainer : {
+    saveValidationText: {
+        fontSize: fontSize.base,
+        color: colors.red,
+        fontFamily: 'Poppins-Regular',
+        alignSelf: 'center',
+        marginHorizontal: spacing.md,
+        marginTop: spacing.sm,
+        includeFontPadding: false,
+    },
+    modalContainer : {
         alignSelf: 'center',
         justifyContent: 'center',
-        backgroundColor: 'rgba(0,0,0,0.4)',
+        backgroundColor: 'rgba(0, 0, 0, 0.6)',
         flex: 1,
         width: '100%',
     },
-    deletionModalContent : {
+    modalContent : {
         backgroundColor: colors.white,
         marginHorizontal: spacing.lg,
         padding: spacing.md,
         borderRadius: 20,
         alignContent: 'center',
+        alignItems: 'center',
     },
-    deletionModalImage : {
+    modalImage : {
         alignSelf: 'center',
         width: 80,
         height: 80,
         resizeMode: 'contain',
     },
-    deletionModalTitle : {
+    modalTitle : {
         alignSelf: 'center',
         fontSize: fontSize.xl,
         fontFamily: 'Poppins-SemiBold',
         marginTop: spacing.sm,
     },
-    deletionModalText: {
+    modalText: {
         textAlign: 'center',
         marginVertical: spacing.sm,
         fontSize: fontSize.sm,
         fontFamily: 'Poppins-Regular',
     },
-    deletionModalButtons : {
+    modalTextBold : {
+        fontFamily: 'Poppins-SemiBold',
+    },
+    modalButtons : {
         marginTop: spacing.md,
         flexDirection: 'row',
         justifyContent: 'space-around',
+        gap: spacing.sm,
     },
-    deletionModalButton : {
+    modalButton : {
         padding: spacing.md,
         paddingHorizontal: spacing.lg * 2.2,
-        backgroundColor: colors.darkerRed,
+        backgroundColor: colors.blue,
         borderRadius: 10,
     },
-    deletionModalButtonText : {
+    modalButtonText : {
         color: colors.white,
-        fontFamily: 'Poppins-SemiBold',
-    },
-    cancelModalButton: {
-        padding: spacing.md,
-        paddingHorizontal: spacing.lg * 2.2,
-        borderWidth: 1.5,
-        borderColor: colors.gray[300],
-        borderRadius: 10,
-    },
-    cancelModalButtonText : {
-        color: colors.black,
         fontFamily: 'Poppins-SemiBold',
     },
     continueButton : {
@@ -115,15 +103,21 @@ export const styles = StyleSheet.create({
         color: colors.white,
         fontFamily: 'Poppins-SemiBold',
     },
-    specialTransactionText: {
-        marginTop: spacing.sm,
-        backgroundColor: colors.yellow,
-        marginHorizontal: spacing.md,
-        borderRadius: 20,
-        borderWidth: 1,
-        color: colors.darkerBackground,
-        padding: spacing.md,
-        fontFamily: 'Poppins-Regular',
-        fontSize: fontSize.sm,
-    }
+    container: {
+        flex: 1,
+        justifyContent: 'center',
+        alignItems: 'center',
+        backgroundColor: colors.background,
+    },
+    image: {
+        width: 200,
+        height: 200,
+        marginBottom: -spacing.lg,
+    },
+    text: {
+        fontSize: fontSize.xxxl,
+        fontWeight: 'bold',
+        color: colors.black,
+        marginLeft: spacing.lg,
+    },
 });

@@ -69,7 +69,8 @@ def get_budget_spent(
         budget_spent = db.query(func.sum(Transaction.amount)).filter(
             Transaction.category_id == budget_category_id, 
             Transaction.user_id == user_id,
-            Transaction.transaction_date.between(budget_month, end_of_month)
+            Transaction.transaction_date.between(budget_month, end_of_month),
+            Transaction.special_transaction == False
         ).scalar()
         return budget_spent if budget_spent else 0
     except Exception as e:
@@ -237,7 +238,8 @@ def get_budget_details_service(
             Transaction.category_id == budget.category_id,
             Transaction.user_id == user_id,
             Transaction.transaction_date.between(budget.budget_month, budget.budget_month + relativedelta(months=1) - timedelta(days=1)),
-        ).order_by(Transaction.transaction_date.desc()).limit(5).all()
+            Transaction.special_transaction == False
+        ).order_by(Transaction.transaction_date.desc(), Transaction.created_at.desc()).limit(5).all()
 
         transaction_list = []
         for transaction in recent_budget_transactions:
@@ -303,7 +305,8 @@ def get_budget_transactions_service(
             Transaction.category_id == budget.category_id,
             Transaction.user_id == user_id,
             Transaction.transaction_date.between(budget.budget_month, budget.budget_month + relativedelta(months=1) - timedelta(days=1)),
-        ).order_by(Transaction.transaction_date.desc()).offset(skip).limit(limit).all()
+            Transaction.special_transaction == False
+        ).order_by(Transaction.transaction_date.desc(), Transaction.created_at.desc()).offset(skip).limit(limit).all()
         
         transaction_list = []
         for transaction in budget_transactions:
@@ -321,6 +324,7 @@ def get_budget_transactions_service(
         total_transaction_count = db.query(Transaction).filter(
             Transaction.category_id == budget.category_id,
             Transaction.user_id == user_id,
+            Transaction.special_transaction == False
         ).count()
         
         return BudgetTransactionsResponse(

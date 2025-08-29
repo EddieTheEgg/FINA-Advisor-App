@@ -93,6 +93,7 @@ export const createTransaction = async (transaction: BackendTransactionCreateReq
                 updatedAt: data.category.updated_at,
             },
             budgetIdAffected: data.budget_id_affected,
+            specialTransaction: data.special_transaction,
         };
 
         return formattedTransaction;
@@ -160,6 +161,7 @@ export const getTransaction = async (transactionId: string) : Promise<Transactio
                 updatedAt: data.category.updated_at ? new Date(data.category.updated_at) : null,
             },
             budgetIdAffected: data.budget_id_affected,
+            specialTransaction: data.special_transaction,
         };
 
         return formattedTransaction;

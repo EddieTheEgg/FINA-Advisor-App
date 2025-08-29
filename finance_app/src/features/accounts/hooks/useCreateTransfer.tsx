@@ -15,22 +15,26 @@ export const useCreateTransfer = () => {
         mutationFn: async (transferSubmissionData: TransferSubmission) => {
             return await submitTransfer(transferSubmissionData);
         },
-        onSuccess: (data, variables) => {
+        onSuccess: async (data, variables) => {
             // Store account IDs before resetting
             const fromAccountId = variables.fromAccount;
             const toAccountId = variables.toAccount;
 
-            // Invalidate queries first
-            Promise.all([
-                queryClient.invalidateQueries({queryKey: ['grouped-accounts']}),
-                queryClient.invalidateQueries({queryKey: ['account-details', fromAccountId]}),
-                queryClient.invalidateQueries({queryKey: ['account-details', toAccountId]}),
-                queryClient.invalidateQueries({queryKey: ['account-transactions', fromAccountId]}),
-                queryClient.invalidateQueries({queryKey: ['account-transactions', toAccountId]}),
-                queryClient.invalidateQueries({queryKey: ['dashboard', month, year]}),
-            ]).catch(error => {
-                console.error('Error invalidating queries:', error);
-            });
+            // First invalidate and refetch grouped accounts (the source of truth)
+            await queryClient.invalidateQueries({queryKey: ['grouped-accounts']});
+            await queryClient.refetchQueries({queryKey: ['grouped-accounts']});
+            
+            // Then invalidate and force refetch account details to override staleTime
+            queryClient.invalidateQueries({queryKey: ['account-details', fromAccountId]});
+            queryClient.invalidateQueries({queryKey: ['account-details', toAccountId]});
+            await queryClient.refetchQueries({queryKey: ['account-details', fromAccountId]});
+            await queryClient.refetchQueries({queryKey: ['account-details', toAccountId]});
+            
+            // Invalidate transaction history
+            queryClient.invalidateQueries({queryKey: ['account-transactions', fromAccountId]});
+            queryClient.invalidateQueries({queryKey: ['account-transactions', toAccountId]});
+            // Invalidate dashboard data
+            queryClient.invalidateQueries({queryKey: ['dashboard', month, year]});
 
             // Reset transfer state and navigate back
             resetTransfer();

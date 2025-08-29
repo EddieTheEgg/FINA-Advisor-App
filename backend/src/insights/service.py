@@ -82,6 +82,7 @@ def get_top_spending_category(db: Session, user_id: UUID, month: int, year: int)
             Transaction.transaction_type == TransactionType.EXPENSE,
             extract("month", Transaction.transaction_date) == month,
             extract("year", Transaction.transaction_date) == year,
+            Transaction.special_transaction == False,
         #Then group these transactions by category_id so that each category has like their "list" of transactions 
         ).group_by(Category.category_id
         # Order the table by the calculating the sum of the transaction amounts in each category group
@@ -143,6 +144,7 @@ def get_monthly_income(db: Session, user_id: UUID, month: int, year: int):
             Transaction.transaction_type == TransactionType.INCOME,
             extract("month", Transaction.transaction_date) == month,
             extract("year", Transaction.transaction_date) == year,
+            Transaction.special_transaction == False
         )
         return sum_income_query.scalar() or 0.0
     except Exception as e:
@@ -156,6 +158,7 @@ def get_monthly_expense(db: Session, user_id: UUID, month: int, year: int):
         Transaction.transaction_type == TransactionType.EXPENSE,
         extract("month", Transaction.transaction_date) == month,
         extract("year", Transaction.transaction_date) == year,
+        Transaction.special_transaction == False
         )
         return sum_expense_query.scalar() or 0.0
     except Exception as e:

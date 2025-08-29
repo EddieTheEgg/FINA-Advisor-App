@@ -124,6 +124,7 @@ class AccountTransactionResponse(BaseModel):
     created_at: datetime
     updated_at: datetime | None
     category_simplified: CategorySimplifiedResponse
+    special_transaction: bool
 
     class Config:
         from_attributes = True
@@ -169,6 +170,7 @@ class TransactionResponse(BaseModel):
     updated_at: datetime | None
     category: CategorySimplifiedResponse
     budget_id_affected: str | None
+    special_transaction: bool
     
     class Config:
         from_attributes = True

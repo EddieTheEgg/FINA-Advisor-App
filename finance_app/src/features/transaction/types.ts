@@ -51,6 +51,7 @@ export type TransactionResponse = {
     updatedAt: Date | null,
     category: CategoryResponse,
     budgetIdAffected: string | null,
+    specialTransaction: boolean,
 };
 
 //Backend Types

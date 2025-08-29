@@ -1,6 +1,6 @@
 import axios from 'axios';
 import api from '../../../api/axios';
-import { GroupedAccountsResponse, AccountResponse, BackendAccountResponse, AccountTransactionsResponse, BackendTransactionAccountResponse, TransferSubmission, BasicAccountCreateRequest } from '../types';
+import { GroupedAccountsResponse, AccountResponse, BackendAccountResponse, AccountTransactionsResponse, BackendTransactionAccountResponse, TransferSubmission, BasicAccountCreateRequest, AccountUpdateRequest } from '../types';
 
 type getUserAccountTransactionHistoryParams = {
     accountId : string,
@@ -162,3 +162,21 @@ export const deleteAccount = async (accountId: string) => {
         throw new Error('Failed to delete account, please try again (Unknown error)');
     }
 };
+
+export const updateAccount = async (accountUpdateDetails: AccountUpdateRequest) => {
+    try {
+        await api.put('/accounts/update-account', accountUpdateDetails);
+    } catch (error : unknown) {
+        if (axios.isAxiosError(error) && error.response?.status === 401) {
+            throw new Error('Please log in again to update an account');
+        }
+        if (axios.isAxiosError(error) && error.response?.status === 400) {
+            throw new Error('Failed to update account: ' + error.response?.data.detail);
+        }
+        if (axios.isAxiosError(error) && error.response?.status === 500) {
+            throw new Error('Failed to update account, please try again (Internal server error)');
+        }
+        throw new Error('Failed to update account, please try again (Unknown error)');
+    }
+};
+

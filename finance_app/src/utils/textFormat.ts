@@ -15,3 +15,10 @@
     export const capitalizeFirstLetter = (text: string) => {
         return text.charAt(0).toUpperCase() + text.slice(1);
     };
+
+    // Format account type to be properly capitalized with spaces (e.g., CREDIT_CARD -> Credit Card)
+    export const formatAccountType = (accountType: string) => {
+        return accountType.replace(/_/g, ' ')
+        .split(' ').map(word => word.charAt(0).toUpperCase() + word.slice(1).toLowerCase())
+        .join(' ');
+    };

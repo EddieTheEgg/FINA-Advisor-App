@@ -230,7 +230,8 @@ def get_used_in_transactions(db: Session, category_id: UUID, user_id: UUID) -> i
     try:
         transactions = db.query(Transaction).filter(
             Transaction.category_id == category_id,
-            Transaction.user_id == user_id
+            Transaction.user_id == user_id,
+            Transaction.special_transaction == False
         ).count()
         return transactions
     except Exception as e:

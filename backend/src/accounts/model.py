@@ -75,4 +75,14 @@ class AccountTransactionHistoryResponse(BaseModel):
     current_page: int
     next_page: int | None = None
     
+class AccountUpdateRequest(BaseModel):
+    account_id: str
+    account_name: str
+    balance: float
+    credit_limit: float | None = None
+    bank_name: str | None = None
+    account_number: str | None = None
+    routing_number: str | None = None
+    
+    
     
