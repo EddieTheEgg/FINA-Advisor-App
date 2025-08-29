@@ -33,11 +33,11 @@ export const useUpdateAccount = () => {
             // First invalidate and refetch grouped accounts (the source of truth)
             await queryClient.invalidateQueries({queryKey: ['grouped-accounts']});
             await queryClient.refetchQueries({queryKey: ['grouped-accounts']});
-            
+
             // Then invalidate and force refetch account details to override staleTime
             queryClient.invalidateQueries({queryKey: ['account-details', accountId]});
             await queryClient.refetchQueries({queryKey: ['account-details', accountId]});
-            
+
             // Invalidate transaction history
             queryClient.invalidateQueries({queryKey: ['account-transactions', accountId]});
 

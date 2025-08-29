@@ -23,13 +23,13 @@ export const useCreateTransfer = () => {
             // First invalidate and refetch grouped accounts (the source of truth)
             await queryClient.invalidateQueries({queryKey: ['grouped-accounts']});
             await queryClient.refetchQueries({queryKey: ['grouped-accounts']});
-            
+
             // Then invalidate and force refetch account details to override staleTime
             queryClient.invalidateQueries({queryKey: ['account-details', fromAccountId]});
             queryClient.invalidateQueries({queryKey: ['account-details', toAccountId]});
             await queryClient.refetchQueries({queryKey: ['account-details', fromAccountId]});
             await queryClient.refetchQueries({queryKey: ['account-details', toAccountId]});
-            
+
             // Invalidate transaction history
             queryClient.invalidateQueries({queryKey: ['account-transactions', fromAccountId]});
             queryClient.invalidateQueries({queryKey: ['account-transactions', toAccountId]});

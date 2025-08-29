@@ -125,5 +125,5 @@ export const styles = StyleSheet.create({
         padding: spacing.md,
         fontFamily: 'Poppins-Regular',
         fontSize: fontSize.sm,
-    }
+    },
 });
