@@ -22,6 +22,7 @@ import { AnimatedPressable } from '../../../../components/AnimatedPressable/Anim
 import { useEffect, useState } from 'react';
 import { useDeleteAccount } from '../../hooks/useDeleteAccount';
 import { useGroupAccounts } from '../../hooks/useGroupAccounts';
+import { useEditAccountStore } from '../../store/useEditAccountStore';
 
 const SeparatorComponent = () => <View style={styles.separator} />;
 const { height } = Dimensions.get('window');
@@ -36,6 +37,8 @@ export const AccountDetailsScreen = ({ route, navigation }: AccountDetailsScreen
     const { accountId } = route.params;
     const insets = useSafeAreaInsets();
 
+    // Use this store to initialize the edit account screen
+    const { initializeEditAccount } = useEditAccountStore();
     // Query for account details
     const {data : accountDetails,
         isPending : isAccountDetailsPending,
@@ -107,141 +110,155 @@ export const AccountDetailsScreen = ({ route, navigation }: AccountDetailsScreen
         );
     }
 
+    // Navigate to the edit account screen and initialize the store with the account details
+    const handleNavToEditAccount = () => {
+        initializeEditAccount(accountDetails);
+        navigation.navigate('EditAccount', {accountDetails});
+    };
+
     const transactionHistoryCount = accountTransactions.pages.flatMap(page => page.transactions).length;
     //Check if this is the last account (cannot delete if only 1 account exists)
     const isLastAccount = Object.values(groupedAccounts.accountGroupsData || {}).flat().length === 1;
 
     return (
-        <ScrollView
-        style = {[styles.accountDetailsContainer, {paddingTop: insets.top}]}
-        showsVerticalScrollIndicator = {false}
-        contentContainerStyle = {{paddingBottom: insets.bottom + responsivePadding}}
-        >
-            <View style = {styles.accountDetailsHeader}>
-                <BackButton />
-                <Text style = {styles.accountDetailsTitle}> {accountDetails.name}</Text>
-                {isLastAccount ? (
-                    <AnimatedPressable
-                    onPress = {() => setShowNotEnoughAccountsModal(true)}
-                    >
-                        <FontAwesome6 name = "trash" size = {fontSize.xxl} color = {colors.gray[500]} />
-                    </AnimatedPressable>
-                ) : (
-                    transactionHistoryCount > 0 ? (
-                        //If there are transactions, show the trash icon in gray cannot delete
+        <View style={styles.screenContainer}>
+            <ScrollView
+            style = {[styles.accountDetailsContainer, {paddingTop: insets.top}]}
+            showsVerticalScrollIndicator = {false}
+            contentContainerStyle = {{paddingBottom: insets.bottom + responsivePadding * 1.5}}
+            >
+                <View style = {styles.accountDetailsHeader}>
+                    <BackButton />
+                    <Text style = {styles.accountDetailsTitle}> {accountDetails.name}</Text>
+                    {isLastAccount ? (
                         <AnimatedPressable
-                        onPress = {() => setShowCannotDeleteAccountModal(true)}
+                        onPress = {() => setShowNotEnoughAccountsModal(true)}
                         >
                             <FontAwesome6 name = "trash" size = {fontSize.xxl} color = {colors.gray[500]} />
                         </AnimatedPressable>
                     ) : (
-                        <AnimatedPressable
-                        onPress = {() => setShowDeleteAccountModal(true)}
-                        >
-                            <FontAwesome6 name = "trash" size = {fontSize.xxl} color = {colors.red} />
-                        </AnimatedPressable>
-                    )
-                )}
-            </View>
-            <View style = {styles.accountDetailsCardContainer}>
-                <AccountDetailsCard accountDetails = {accountDetails}/>
-            </View>
-             <View style={styles.accountQuickActionCardContainer}>
-                <TransferButton fromAccountDetails = {accountDetails} navigation = {navigation} />
-                <AddTransactionButton navigation = {navigation} />
-            </View>
-            <View style = {styles.transactionListContainer}>
-                <Text style = {styles.transactionListTitle}>Transaction History</Text>
-                {accountTransactions.pages.flatMap(page => page.transactions).length <= 0 ? (
-                    <NoTransactions />
-            ) : (
-                <FlatList
-                    style = {styles.transactionHistoryContainer}
-                    data = {accountTransactions.pages.flatMap(page => page.transactions)}
-                    renderItem = {({item}) => <AccountTransactionCard transactionData = {item} navigation = {navigation}/>}
-                    keyExtractor = {(item : AccountTransactionResponse, index: number) => `transaction-${item.transactionId}-${index}`}
-                    onEndReached = {() => {
-                        if (hasNextPage && !isFetchingNextPage) {
-                            fetchNextPage();
-                        }
-                    }}
-                    onEndReachedThreshold = {0.5}
-                    ItemSeparatorComponent={SeparatorComponent}
-                    scrollEnabled = {false}
-                    ListFooterComponent = {isFetchingNextPage ? <LoadingDots /> : null}
-                />
-                )}
-            </View>
-            <Modal
-                visible={showDeleteAccountModal}
-                animationType="fade"
-                onRequestClose={() => {setShowDeleteAccountModal(false);}}
-                >
-                <View style={styles.deletionModalContainer}>
-                    <View style={styles.deletionModalContent}>
-                        <Image source={require('../../../../assets/images/delete_transaction.png')} style={styles.deletionModalImage} />
-                        <Text style={styles.deletionModalTitle}>Delete Account?</Text>
-                        <Text style={styles.deletionModalText}>This account will be permanently deleted and cannot be recovered.</Text>
-                        <View style={styles.deletionModalButtons}>
+                        transactionHistoryCount > 0 ? (
+                            //If there are transactions, show the trash icon in gray cannot delete
                             <AnimatedPressable
-                                onPress={handleDeleteAccount}
-                                style={styles.deletionModalButton}
+                            onPress = {() => setShowCannotDeleteAccountModal(true)}
                             >
-                                <Text style={styles.deletionModalButtonText}>Delete</Text>
+                                <FontAwesome6 name = "trash" size = {fontSize.xxl} color = {colors.gray[500]} />
                             </AnimatedPressable>
+                        ) : (
                             <AnimatedPressable
-                                onPress={() => {setShowDeleteAccountModal(false);}}
-                                style={styles.cancelDeletionModalButton}>
-                                <Text style={styles.cancelDeletionModalButtonText}>Cancel</Text>
+                            onPress = {() => setShowDeleteAccountModal(true)}
+                            >
+                                <FontAwesome6 name = "trash" size = {fontSize.xxl} color = {colors.red} />
                             </AnimatedPressable>
+                        )
+                    )}
+                </View>
+                <View style = {styles.accountDetailsCardContainer}>
+                    <AccountDetailsCard accountDetails = {accountDetails}/>
+                </View>
+                <View style={styles.accountQuickActionCardContainer}>
+                    <TransferButton fromAccountDetails = {accountDetails} navigation = {navigation} />
+                    <AddTransactionButton navigation = {navigation} />
+                </View>
+                <View style = {styles.transactionListContainer}>
+                    <Text style = {styles.transactionListTitle}>Transaction History</Text>
+                    {accountTransactions.pages.flatMap(page => page.transactions).length <= 0 ? (
+                        <NoTransactions />
+                ) : (
+                    <FlatList
+                        style = {styles.transactionHistoryContainer}
+                        data = {accountTransactions.pages.flatMap(page => page.transactions)}
+                        renderItem = {({item}) => <AccountTransactionCard transactionData = {item} navigation = {navigation}/>}
+                        keyExtractor = {(item : AccountTransactionResponse, index: number) => `transaction-${item.transactionId}-${index}`}
+                        onEndReached = {() => {
+                            if (hasNextPage && !isFetchingNextPage) {
+                                fetchNextPage();
+                            }
+                        }}
+                        onEndReachedThreshold = {0.5}
+                        ItemSeparatorComponent={SeparatorComponent}
+                        scrollEnabled = {false}
+                        ListFooterComponent = {isFetchingNextPage ? <LoadingDots /> : null}
+                    />
+                    )}
+                </View>
+                <Modal
+                    visible={showDeleteAccountModal}
+                    animationType="fade"
+                    onRequestClose={() => {setShowDeleteAccountModal(false);}}
+                    >
+                    <View style={styles.deletionModalContainer}>
+                        <View style={styles.deletionModalContent}>
+                            <Image source={require('../../../../assets/images/delete_transaction.png')} style={styles.deletionModalImage} />
+                            <Text style={styles.deletionModalTitle}>Delete Account?</Text>
+                            <Text style={styles.deletionModalText}>This account will be permanently deleted and cannot be recovered.</Text>
+                            <View style={styles.deletionModalButtons}>
+                                <AnimatedPressable
+                                    onPress={handleDeleteAccount}
+                                    style={styles.deletionModalButton}
+                                >
+                                    <Text style={styles.deletionModalButtonText}>Delete</Text>
+                                </AnimatedPressable>
+                                <AnimatedPressable
+                                    onPress={() => {setShowDeleteAccountModal(false);}}
+                                    style={styles.cancelDeletionModalButton}>
+                                    <Text style={styles.cancelDeletionModalButtonText}>Cancel</Text>
+                                </AnimatedPressable>
+                            </View>
                         </View>
                     </View>
-                </View>
-            </Modal>
-            <Modal
-                transparent = {true}
-                visible={showCannotDeleteAccountModal}
-                animationType="fade"
-                onRequestClose={() => setShowCannotDeleteAccountModal(false)}
-                >
-                <View style={styles.modalContainer}>
-                    <View style={styles.modalContent}>
-                        <Image source={require('../../../../assets/images/Important_notification.png')} style={styles.modalImage} />
-                        <Text style={styles.modalTitle}>Cannot Delete Account</Text>
-                        <Text style={styles.modalText}>This account has transactions associated with it. Please transfer or delete all transactions before deleting the account.</Text>
-                        <View style={styles.modalButtons}>
-                            <AnimatedPressable
-                                onPress={() => setShowCannotDeleteAccountModal(false)}
-                                style={styles.continueButton}
-                            >
-                                <Text style={styles.continueButtonText}>Continue</Text>
-                            </AnimatedPressable>
+                </Modal>
+                <Modal
+                    transparent = {true}
+                    visible={showCannotDeleteAccountModal}
+                    animationType="fade"
+                    onRequestClose={() => setShowCannotDeleteAccountModal(false)}
+                    >
+                    <View style={styles.modalContainer}>
+                        <View style={styles.modalContent}>
+                            <Image source={require('../../../../assets/images/Important_notification.png')} style={styles.modalImage} />
+                            <Text style={styles.modalTitle}>Cannot Delete Account</Text>
+                            <Text style={styles.modalText}>This account has transactions associated with it. Please transfer or delete all transactions before deleting the account.</Text>
+                            <View style={styles.modalButtons}>
+                                <AnimatedPressable
+                                    onPress={() => setShowCannotDeleteAccountModal(false)}
+                                    style={styles.continueButton}
+                                >
+                                    <Text style={styles.continueButtonText}>Continue</Text>
+                                </AnimatedPressable>
+                            </View>
                         </View>
                     </View>
-                </View>
-            </Modal>
-            <Modal
-                transparent = {true}
-                visible={showNotEnoughAccountsModal}
-                animationType="fade"
-                onRequestClose={() => setShowNotEnoughAccountsModal(false)}
-                >
-                <View style={styles.modalContainer}>
-                    <View style={styles.modalContent}>
-                        <Image source={require('../../../../assets/images/Important_notification.png')} style={styles.modalImage} />
-                        <Text style={styles.modalTitle}>Cannot Delete Account</Text>
-                        <Text style={styles.modalText}>This is your last account. Please add an account before deleting this one.</Text>
-                        <View style={styles.modalButtons}>
-                            <AnimatedPressable
-                                onPress={() => setShowNotEnoughAccountsModal(false)}
-                                style={styles.continueButton}
-                            >
-                                <Text style={styles.continueButtonText}>Continue</Text>
-                            </AnimatedPressable>
+                </Modal>
+                <Modal
+                    transparent = {true}
+                    visible={showNotEnoughAccountsModal}
+                    animationType="fade"
+                    onRequestClose={() => setShowNotEnoughAccountsModal(false)}
+                    >
+                    <View style={styles.modalContainer}>
+                        <View style={styles.modalContent}>
+                            <Image source={require('../../../../assets/images/Important_notification.png')} style={styles.modalImage} />
+                            <Text style={styles.modalTitle}>Cannot Delete Account</Text>
+                            <Text style={styles.modalText}>This is your last account. Please add an account before deleting this one.</Text>
+                            <View style={styles.modalButtons}>
+                                <AnimatedPressable
+                                    onPress={() => setShowNotEnoughAccountsModal(false)}
+                                    style={styles.continueButton}
+                                >
+                                    <Text style={styles.continueButtonText}>Continue</Text>
+                                </AnimatedPressable>
+                            </View>
                         </View>
                     </View>
-                </View>
-            </Modal>
-        </ScrollView>
+                </Modal>
+            </ScrollView>
+            <AnimatedPressable
+                onPress = {handleNavToEditAccount}
+                style = {styles.editAccountButton}
+                >
+                    <Text style = {styles.editAccountButtonText}>Edit Account</Text>
+            </AnimatedPressable>
+        </View>
     );
 };

@@ -4,9 +4,14 @@ import { spacing } from '../../../../styles/spacing';
 import { fontSize } from '../../../../styles/fontSizes';
 
 export const styles = StyleSheet.create({
+    screenContainer: {
+        flex: 1,
+        position: 'relative',
+    },
     accountDetailsContainer: {
         flex: 1,
         backgroundColor: colors.background,
+        position: 'relative',
     },
     accountDetailsHeader : {
         display: 'flex',
@@ -194,5 +199,21 @@ export const styles = StyleSheet.create({
     continueButtonText: {
         color: colors.white,
         fontFamily: 'Poppins-SemiBold',
+    },
+    editAccountButton : {
+        position: 'absolute',
+        bottom: spacing.xxl * 2.3,
+        right: spacing.md,
+        left: spacing.md,
+        backgroundColor: colors.darkerBackground,
+        borderRadius: 20,
+        padding: spacing.md,
+        zIndex: 1000,
+    },
+    editAccountButtonText: {
+        color: colors.white,
+        fontFamily: 'Poppins-SemiBold',
+        fontSize: fontSize.lg,
+        textAlign: 'center',
     },
 });
