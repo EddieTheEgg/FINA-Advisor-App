@@ -55,7 +55,7 @@ export const AccountDetailsScreen = ({ route, navigation }: AccountDetailsScreen
 
 
     // Query to get the amount of accounts, specifically to check if any accounts are left after deleting
-    const {data : groupedAccounts, isPending: isGroupAccountsPending, error: groupAccountsError} = useGroupAccounts();
+    const {data : groupedAccounts, isPending: isGroupAccountsPending} = useGroupAccounts();
 
     const [showDeleteAccountModal, setShowDeleteAccountModal] = useState(false);
     const [showCannotDeleteAccountModal, setShowCannotDeleteAccountModal] = useState(false);
