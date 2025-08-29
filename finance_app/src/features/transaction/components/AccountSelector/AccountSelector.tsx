@@ -15,7 +15,6 @@ export const AccountSelector = ({ navigation } : AccountSelectorProps ) => {
     const {sourceAccount, sourceAccountError} = useCreateTransactionStore();
 
     const navigateToAccountSelection = () => {
-        console.log('Navigated to Account Selection Screen');
         navigation.navigate('SelectAccount');
     };
 

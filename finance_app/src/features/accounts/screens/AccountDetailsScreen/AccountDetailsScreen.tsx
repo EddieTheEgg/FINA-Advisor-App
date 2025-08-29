@@ -1,4 +1,4 @@
-import { View, Text, FlatList, ScrollView, Dimensions} from 'react-native';
+import { View, Text, FlatList, ScrollView, Dimensions, Modal, Image} from 'react-native';
 import { useSafeAreaInsets } from 'react-native-safe-area-context';
 import { useAccountDetails } from '../../hooks/useAccountDetails';
 import { useAccountTransactionHistory } from '../../hooks/useAccountTransactionHistory';
@@ -15,6 +15,13 @@ import { AddTransactionButton } from '../../components/AddTransactionButton/AddT
 import { RouteProp } from '@react-navigation/native';
 import { AccountNavigatorParamList, AccountNavigatorProps } from '../../../../navigation/types/AccountNavigatorTypes';
 import LoadingScreen from '../../../../components/LoadingScreen/LoadingScreen';
+import { fontSize } from '../../../../styles/fontSizes';
+import { colors } from '../../../../styles/colors';
+import FontAwesome6 from 'react-native-vector-icons/FontAwesome6';
+import { AnimatedPressable } from '../../../../components/AnimatedPressable/AnimatedPressable';
+import { useEffect, useState } from 'react';
+import { useDeleteAccount } from '../../hooks/useDeleteAccount';
+import { useGroupAccounts } from '../../hooks/useGroupAccounts';
 
 const SeparatorComponent = () => <View style={styles.separator} />;
 const { height } = Dimensions.get('window');
@@ -43,7 +50,28 @@ export const AccountDetailsScreen = ({ route, navigation }: AccountDetailsScreen
         error : accountTransactionsError,
         } = useAccountTransactionHistory(accountId);
 
+    // Query for delete account
+    const {mutate : deleteAccount, isPending: isDeletingAccount, error: deleteAccountError, isSuccess: deleteAccountSuccess} = useDeleteAccount();
 
+
+    // Query to get the amount of accounts, specifically to check if any accounts are left after deleting
+    const {data : groupedAccounts, isPending: isGroupAccountsPending, error: groupAccountsError} = useGroupAccounts();
+
+    const [showDeleteAccountModal, setShowDeleteAccountModal] = useState(false);
+    const [showCannotDeleteAccountModal, setShowCannotDeleteAccountModal] = useState(false);
+    const [showNotEnoughAccountsModal, setShowNotEnoughAccountsModal] = useState(false);
+
+    const handleDeleteAccount = () => {
+        deleteAccount(accountId);
+        setShowDeleteAccountModal(false);
+    };
+
+    //Navigate to account list if succesful delete
+    useEffect(() => {
+        if (deleteAccountSuccess) {
+            navigation.goBack();
+        }
+    }, [deleteAccountSuccess, navigation]);
 
     if (accountDetailsError || accountTransactionsError) {
         return <ErrorScreen
@@ -52,12 +80,36 @@ export const AccountDetailsScreen = ({ route, navigation }: AccountDetailsScreen
         errorMessage = {accountDetailsError?.message || accountTransactionsError?.message || 'Unknown error'} />;
     }
 
+    if (deleteAccountError) {
+        return <ErrorScreen
+        errorText = "Error deleting account"
+        errorSubText = "Please try again later"
+        errorMessage = {deleteAccountError.message} />;
+    }
+
     if (isAccountDetailsPending
         || isAccountTransactionsPending
         || !accountTransactions
-        || !accountDetails) {
+        || !accountDetails
+        || isGroupAccountsPending
+        || !groupedAccounts) {
         return <LoadingScreen />;
     }
+
+    if (isDeletingAccount) {
+        return (
+            <View style={[styles.loadingContainer, {paddingTop: insets.top, paddingBottom: insets.bottom}]}>
+                <View>
+                    <Image source={require('../../../../assets/images/Loading_Pig.png')} style={styles.image} />
+                    <LoadingDots style ={styles.text} loadingText = {'Deleting account'} />
+                </View>
+            </View>
+        );
+    }
+
+    const transactionHistoryCount = accountTransactions.pages.flatMap(page => page.transactions).length;
+    //Check if this is the last account (cannot delete if only 1 account exists)
+    const isLastAccount = Object.values(groupedAccounts.accountGroupsData || {}).flat().length === 1;
 
     return (
         <ScrollView
@@ -68,6 +120,28 @@ export const AccountDetailsScreen = ({ route, navigation }: AccountDetailsScreen
             <View style = {styles.accountDetailsHeader}>
                 <BackButton />
                 <Text style = {styles.accountDetailsTitle}> {accountDetails.name}</Text>
+                {isLastAccount ? (
+                    <AnimatedPressable
+                    onPress = {() => setShowNotEnoughAccountsModal(true)}
+                    >
+                        <FontAwesome6 name = "trash" size = {fontSize.xxl} color = {colors.gray[500]} />
+                    </AnimatedPressable>
+                ) : (
+                    transactionHistoryCount > 0 ? (
+                        //If there are transactions, show the trash icon in gray cannot delete
+                        <AnimatedPressable
+                        onPress = {() => setShowCannotDeleteAccountModal(true)}
+                        >
+                            <FontAwesome6 name = "trash" size = {fontSize.xxl} color = {colors.gray[500]} />
+                        </AnimatedPressable>
+                    ) : (
+                        <AnimatedPressable
+                        onPress = {() => setShowDeleteAccountModal(true)}
+                        >
+                            <FontAwesome6 name = "trash" size = {fontSize.xxl} color = {colors.red} />
+                        </AnimatedPressable>
+                    )
+                )}
             </View>
             <View style = {styles.accountDetailsCardContainer}>
                 <AccountDetailsCard accountDetails = {accountDetails}/>
@@ -98,6 +172,76 @@ export const AccountDetailsScreen = ({ route, navigation }: AccountDetailsScreen
                 />
                 )}
             </View>
+            <Modal
+                visible={showDeleteAccountModal}
+                animationType="fade"
+                onRequestClose={() => {setShowDeleteAccountModal(false);}}
+                >
+                <View style={styles.deletionModalContainer}>
+                    <View style={styles.deletionModalContent}>
+                        <Image source={require('../../../../assets/images/delete_transaction.png')} style={styles.deletionModalImage} />
+                        <Text style={styles.deletionModalTitle}>Delete Account?</Text>
+                        <Text style={styles.deletionModalText}>This account will be permanently deleted and cannot be recovered.</Text>
+                        <View style={styles.deletionModalButtons}>
+                            <AnimatedPressable
+                                onPress={handleDeleteAccount}
+                                style={styles.deletionModalButton}
+                            >
+                                <Text style={styles.deletionModalButtonText}>Delete</Text>
+                            </AnimatedPressable>
+                            <AnimatedPressable
+                                onPress={() => {setShowDeleteAccountModal(false);}}
+                                style={styles.cancelDeletionModalButton}>
+                                <Text style={styles.cancelDeletionModalButtonText}>Cancel</Text>
+                            </AnimatedPressable>
+                        </View>
+                    </View>
+                </View>
+            </Modal>
+            <Modal
+                transparent = {true}
+                visible={showCannotDeleteAccountModal}
+                animationType="fade"
+                onRequestClose={() => setShowCannotDeleteAccountModal(false)}
+                >
+                <View style={styles.modalContainer}>
+                    <View style={styles.modalContent}>
+                        <Image source={require('../../../../assets/images/Important_notification.png')} style={styles.modalImage} />
+                        <Text style={styles.modalTitle}>Cannot Delete Account</Text>
+                        <Text style={styles.modalText}>This account has transactions associated with it. Please transfer or delete all transactions before deleting the account.</Text>
+                        <View style={styles.modalButtons}>
+                            <AnimatedPressable
+                                onPress={() => setShowCannotDeleteAccountModal(false)}
+                                style={styles.continueButton}
+                            >
+                                <Text style={styles.continueButtonText}>Continue</Text>
+                            </AnimatedPressable>
+                        </View>
+                    </View>
+                </View>
+            </Modal>
+            <Modal
+                transparent = {true}
+                visible={showNotEnoughAccountsModal}
+                animationType="fade"
+                onRequestClose={() => setShowNotEnoughAccountsModal(false)}
+                >
+                <View style={styles.modalContainer}>
+                    <View style={styles.modalContent}>
+                        <Image source={require('../../../../assets/images/Important_notification.png')} style={styles.modalImage} />
+                        <Text style={styles.modalTitle}>Cannot Delete Account</Text>
+                        <Text style={styles.modalText}>This is your last account. Please add an account before deleting this one.</Text>
+                        <View style={styles.modalButtons}>
+                            <AnimatedPressable
+                                onPress={() => setShowNotEnoughAccountsModal(false)}
+                                style={styles.continueButton}
+                            >
+                                <Text style={styles.continueButtonText}>Continue</Text>
+                            </AnimatedPressable>
+                        </View>
+                    </View>
+                </View>
+            </Modal>
         </ScrollView>
     );
 };

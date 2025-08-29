@@ -319,3 +319,41 @@ def get_account_transaction_history(db: Session, user_id: UUID, account_id: UUID
     except Exception as e:
         logging.warning(f"Failed to get account transaction history for user {user_id}. Error: {str(e)}")
         raise AccountTransactionHistoryNotFoundError(user_id)
+
+#Deletes an account for the user
+def delete_account(db: Session, user_id: UUID, account_id: UUID) -> dict:
+    try:
+        # First, check if the account exists and belongs to the user
+        account = db.query(Account).filter(
+            Account.account_id == account_id, 
+            Account.user_id == user_id
+        ).first()
+        
+        if not account:
+            logging.warning(f"Account {account_id} not found for user {user_id}")
+            raise AccountNotFoundError(account_id)
+        
+        # Check if account has any transactions
+        transaction_count = db.query(Transaction).filter(
+            Transaction.account_id == account_id
+        ).count()
+        
+        if transaction_count > 0:
+            logging.warning(f"Cannot delete account {account_id} - it has {transaction_count} associated transactions")
+            raise AccountCreationError(f"Cannot delete account - it has {transaction_count} associated transactions. Please delete or transfer all transactions first.")
+        
+        # Delete the account
+        db.delete(account)
+        db.commit()
+        
+        logging.info(f"Successfully deleted account {account_id} for user {user_id}")
+        return {"message": "Account deleted successfully"}
+        
+    except AccountNotFoundError:
+        raise
+    except AccountCreationError:
+        raise
+    except Exception as e:
+        logging.error(f"Failed to delete account {account_id} for user {user_id}. Error: {str(e)}")
+        db.rollback()
+        raise AccountCreationError(f"Failed to delete account: {str(e)}")

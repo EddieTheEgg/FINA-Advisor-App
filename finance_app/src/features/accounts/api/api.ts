@@ -140,4 +140,25 @@ export const createAccount = async (accountCreationData: BasicAccountCreateReque
         }
         throw new Error('Failed to create account, please try again (Unknown error)');
     }
-}
+};
+
+export const deleteAccount = async (accountId: string) => {
+    try{
+        await api.delete('/accounts/delete-account', {
+            params: {
+                account_id: accountId,
+            },
+        });
+    } catch (error : unknown) {
+        if (axios.isAxiosError(error) && error.response?.status === 401) {
+            throw new Error('Please log in again to delete an account');
+        }
+        if (axios.isAxiosError(error) && error.response?.status === 404) {
+            throw new Error('Account not found');
+        }
+        if (axios.isAxiosError(error) && error.response?.status === 500) {
+            throw new Error('Failed to delete account, please try again (Internal server error)');
+        }
+        throw new Error('Failed to delete account, please try again (Unknown error)');
+    }
+};

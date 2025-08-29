@@ -210,31 +210,31 @@ export const EditCategoryScreen = ({navigation, route}: EditCategoryScreenProps)
                     </View>
                 </Modal>
                 <Modal
-                visible={showDeleteCategoryModal}
-                animationType="fade"
-                onRequestClose={() => {setShowDeleteCategoryModal(false);}}
-            >
-                <View style={styles.deletionModalContainer}>
-                    <View style={styles.deletionModalContent}>
-                        <Image source={require('../../../../assets/images/delete_transaction.png')} style={styles.deletionModalImage} />
-                        <Text style={styles.deletionModalTitle}>Delete Category?</Text>
-                        <Text style={styles.deletionModalText}>This category will be permanently deleted and cannot be recovered.</Text>
-                        <View style={styles.deletionModalButtons}>
-                            <AnimatedPressable
-                                onPress={handleDeleteCategory}
-                                style={styles.deletionModalButton}
-                            >
-                                <Text style={styles.deletionModalButtonText}>Delete</Text>
-                            </AnimatedPressable>
-                            <AnimatedPressable
-                                onPress={() => {setShowDeleteCategoryModal(false);}}
-                                style={styles.cancelDeletionModalButton}>
-                                <Text style={styles.cancelDeletionModalButtonText}>Cancel</Text>
-                            </AnimatedPressable>
+                    visible={showDeleteCategoryModal}
+                    animationType="fade"
+                    onRequestClose={() => {setShowDeleteCategoryModal(false);}}
+                >
+                    <View style={styles.deletionModalContainer}>
+                        <View style={styles.deletionModalContent}>
+                            <Image source={require('../../../../assets/images/delete_transaction.png')} style={styles.deletionModalImage} />
+                            <Text style={styles.deletionModalTitle}>Delete Category?</Text>
+                            <Text style={styles.deletionModalText}>This category will be permanently deleted and cannot be recovered.</Text>
+                            <View style={styles.deletionModalButtons}>
+                                <AnimatedPressable
+                                    onPress={handleDeleteCategory}
+                                    style={styles.deletionModalButton}
+                                >
+                                    <Text style={styles.deletionModalButtonText}>Delete</Text>
+                                </AnimatedPressable>
+                                <AnimatedPressable
+                                    onPress={() => {setShowDeleteCategoryModal(false);}}
+                                    style={styles.cancelDeletionModalButton}>
+                                    <Text style={styles.cancelDeletionModalButtonText}>Cancel</Text>
+                                </AnimatedPressable>
 
+                            </View>
                         </View>
                     </View>
-                </View>
                 </Modal>
             </ScrollView>
     );

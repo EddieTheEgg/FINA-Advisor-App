@@ -55,3 +55,12 @@ def get_account_transaction_history(
     limit: int = Query(10, gt=0, le=30, description="Number of transactions to fetch")
 ):
     return account_service.get_account_transaction_history(db, current_user.get_uuid(), UUID(account_id), offset, limit)
+
+#Deletes an account for the user
+@router.delete("/delete-account")
+def delete_account(
+    db: DbSession,
+    current_user: CurrentUser,
+    account_id: str = Query(..., description="ID of the account to delete")
+):
+    return account_service.delete_account(db, current_user.get_uuid(), UUID(account_id))

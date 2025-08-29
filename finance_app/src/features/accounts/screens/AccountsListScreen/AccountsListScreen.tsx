@@ -39,7 +39,7 @@ export const AccountsListScreen = ({ navigation }: AccountsListScreenProps) => {
             <ScrollView
                 style={ { paddingTop: insets.top }}
                 contentContainerStyle={{
-                    paddingBottom: insets.bottom + responsivePadding,
+                    paddingBottom: insets.bottom + responsivePadding * 2,
                 }}
                 showsVerticalScrollIndicator={false}
             >
