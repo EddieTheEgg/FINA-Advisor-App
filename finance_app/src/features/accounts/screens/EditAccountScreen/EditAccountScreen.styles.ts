@@ -112,6 +112,7 @@ export const styles = StyleSheet.create({
     image: {
         width: 200,
         height: 200,
+        marginLeft: spacing.lg * 2,
         marginBottom: -spacing.lg,
     },
     text: {
