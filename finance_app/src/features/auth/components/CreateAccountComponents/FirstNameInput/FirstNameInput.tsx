@@ -4,14 +4,14 @@ import { useEffect, useState } from 'react';
 import { styles } from './FirstNameInput.styles';
 
 export const FirstNameInput = () => {
-    const { firstName, setFirstName, firstNameError } = useSignupStore();
+    const { firstName, setFirstName, firstNameError, validateFirstName } = useSignupStore();
     const [firstNameInput, setFirstNameInput] = useState(firstName);
     const maxLength = 20;
 
 
     useEffect(() => {
         setFirstName(firstNameInput);
-    }, [firstNameInput, setFirstName]);
+    }, [firstNameInput, setFirstName, validateFirstName]);
 
     const remainingChars = maxLength - (firstNameInput?.length || 0);
 

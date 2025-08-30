@@ -138,7 +138,7 @@ def check_email_availability(email_request: EmailAvailabilityRequest, db: Sessio
         logging.info(f"Email {email_request.email} is already taken")
         return EmailAvailabilityResponse(
             available=False,
-            message=f"This email is already registered. Try logging in or use a different email."
+            message=f"This email is already registered. Please use different email."
         )
     else:
         logging.info(f"Email {email_request.email} is available")

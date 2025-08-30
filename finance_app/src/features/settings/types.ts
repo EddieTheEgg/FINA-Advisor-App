@@ -17,6 +17,13 @@ export type CategoryManageResponse = {
     pageSize: number;
 };
 
+
+export type UserProfile = {
+    firstName: string;
+    lastName: string;
+    email: string;
+}
+
 //Backend types
 
 export type BackendCategoryManageSummary = {
