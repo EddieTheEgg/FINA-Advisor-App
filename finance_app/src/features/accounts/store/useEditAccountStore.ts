@@ -22,6 +22,7 @@ type EditAccountState = {
     setRoutingNumberDraft: (routingNumber: string) => void;
 
     initializeAllAccounts: (accounts: AccountResponse[]) => void;
+    initializeEditAccount: (accountDetails: AccountResponse) => void;
 
     validateAccountName: () => boolean;
     accountNameError: string | null;

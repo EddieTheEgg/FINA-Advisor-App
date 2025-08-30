@@ -31,7 +31,7 @@ export const EditAccountScreen = ({route, navigation}: EditAccountScreenProps) =
 
     const { accountDetails } = route.params;
 
-    const {validateAccountName, validateCreditLimit} = useEditAccountStore();
+    const {validateAccountName, validateCreditLimit, resetToInitialState} = useEditAccountStore();
 
     const [saveValidationText, setSaveValidationText] = useState('');
     const [showSuccessUpdateMessage, setShowSuccessUpdateMessage] = useState(false);
@@ -109,6 +109,7 @@ export const EditAccountScreen = ({route, navigation}: EditAccountScreenProps) =
                             <AnimatedPressable
                                 onPress={() => {
                                     setShowSuccessUpdateMessage(false);
+                                    resetToInitialState();
                                     navigation.navigate('AccountsList');
                                 }}
                                 style={styles.continueButton}

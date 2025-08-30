@@ -39,6 +39,7 @@ export const AccountDetailsScreen = ({ route, navigation }: AccountDetailsScreen
 
     // Use this store to initialize the edit account screen
     const { initializeEditAccount } = useEditAccountStore();
+
     // Query for account details
     const {data : accountDetails,
         isPending : isAccountDetailsPending,
@@ -55,7 +56,6 @@ export const AccountDetailsScreen = ({ route, navigation }: AccountDetailsScreen
 
     // Query for delete account
     const {mutate : deleteAccount, isPending: isDeletingAccount, error: deleteAccountError, isSuccess: deleteAccountSuccess} = useDeleteAccount();
-
 
     // Query to get the amount of accounts, specifically to check if any accounts are left after deleting
     const {data : groupedAccounts, isPending: isGroupAccountsPending} = useGroupAccounts();
