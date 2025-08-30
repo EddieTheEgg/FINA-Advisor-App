@@ -9,6 +9,14 @@ export type EmailAvailabilityResponse = {
     message: string;
 }
 
+export type PasswordValidationRequest = {
+    password: string;
+}
+
+export type PasswordValidationResponse = {
+    is_valid: boolean;
+}
+
 // Account types for registration flow
 export enum AccountType {
     CHECKING = 'checking',

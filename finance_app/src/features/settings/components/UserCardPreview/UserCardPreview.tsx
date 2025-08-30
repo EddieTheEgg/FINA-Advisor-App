@@ -36,9 +36,9 @@ export const UserCardPreview = ({navigation}: UserCardPreviewProps) => {
     }
 
     const handleNavToEditProfile = () => {
-        initializeEditProfile(data.user)
+        initializeEditProfile(data.user);
         navigation.navigate('EditProfile');
-    }
+    };
 
     return (
         <View style = {styles.cardContainer}>

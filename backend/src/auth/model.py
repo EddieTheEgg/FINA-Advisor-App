@@ -71,13 +71,10 @@ class RefreshTokenRequest(BaseModel):
 class LoginRequest(BaseModel):
     email: EmailStr
     password: str
-    
 
+class PasswordValidationRequest(BaseModel):
+    password: str
 
-    
-    
-    
-    
-    
-    
+class PasswordValidationResponse(BaseModel):
+    is_valid: bool    
     

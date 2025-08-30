@@ -1,6 +1,6 @@
 import { AxiosError } from 'axios';
 import api from '../../../api/axios';
-import { BackendCategoryManageSummary, CategoryManageResponse, CreateCategoryRequest, UpdateCategoryRequest } from '../types';
+import { BackendCategoryManageSummary, CategoryManageResponse, CreateCategoryRequest, UpdateCategoryRequest, UpdateProfileRequest } from '../types';
 
 
 type getSettingsCategoriesProps = {
@@ -107,5 +107,22 @@ export const deleteCategory = async (categoryId: string) => {
             throw new Error('Category not found');
         }
         throw new Error('Failed to delete category. Please try again later.');
+    }
+};
+
+export const updateProfile = async (updateProfileRequest: UpdateProfileRequest) => {
+    try {
+        await api.put('/users/update-profile', updateProfileRequest);
+    } catch (error : unknown) {
+        if (error instanceof AxiosError && error.response?.status === 400) {
+            throw new Error(error.response?.data.message);
+        }
+        else if (error instanceof AxiosError && error.response?.status === 401) {
+            throw new Error('Unauthorized access to profile');
+        }
+        else if (error instanceof AxiosError && error.response?.status === 403) {
+            throw new Error('Forbidden access to profile');
+        }
+        throw new Error('Failed to update profile. Please try again later.');
     }
 };

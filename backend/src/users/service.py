@@ -2,9 +2,9 @@ import logging
 from uuid import UUID
 from sqlalchemy.orm import Session
 from backend.src.auth.service import verify_password, get_password_hash
-from backend.src.users.model import UserResponse, PasswordChange, UserSimpleResponse
+from backend.src.users.model import UpdateProfileRequest, UserResponse, PasswordChange, UserSimpleResponse
 from backend.src.entities.user import User
-from backend.src.exceptions import UserNotFoundError, InvalidPasswordError, PasswordMismatchError
+from backend.src.exceptions import UpdateProfileError, UserNotFoundError, InvalidPasswordError, PasswordMismatchError
 
 def get_user_by_id(db: Session, user_id: UUID) -> UserResponse:
     user = db.query(User).filter(user_id == User.user_id).first()
@@ -41,4 +41,16 @@ def change_password(db: Session, user_id: UUID, password_change: PasswordChange)
     except Exception as e:
         logging.error(f"Error during password change for user ID: {user_id}. Error: {str(e)}")
         raise
+    
+def update_profile(db: Session, user_id: UUID, update_profile_request: UpdateProfileRequest):
+    try:
+        user = get_user_by_id(db, user_id)
+        user.first_name = update_profile_request.first_name
+        user.last_name = update_profile_request.last_name
+        user.email = update_profile_request.email
+        db.commit()
+        logging.info(f"Successfully updated profile for user ID: {user_id}")
+    except Exception as e:
+        logging.error(f"Error during profile update for user ID: {user_id}. Error: {str(e)}")
+        raise UpdateProfileError(str(e))
         

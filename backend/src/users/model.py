@@ -21,7 +21,7 @@ class UserSimpleResponse(BaseModel):
     
     class Config:
         from_attributes = True
-        arbirtrary_types_allowed = True
+        arbitrary_types_allowed = True
     
         
 #When user wants to change password, we need current and the new password to be accurately confirmed to change
@@ -29,6 +29,11 @@ class PasswordChange(BaseModel):
     current_password: str
     new_password: str
     new_password_confirm: str
+    
+class UpdateProfileRequest(BaseModel):
+    first_name: str
+    last_name: str
+    email: EmailStr
     
     
     

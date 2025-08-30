@@ -2,8 +2,8 @@
 from typing import Annotated
 from fastapi import APIRouter, Depends
 from fastapi.security import OAuth2PasswordRequestForm
-from backend.src.auth.model import NewRegisteredUserResponse, Token, RegisterUserRequest, LoginRequest, RefreshTokenRequest, EmailAvailabilityRequest, EmailAvailabilityResponse, SignupRequest
-from backend.src.auth.service import register_user, login_user, refresh_access_token, check_email_availability, signup_user_with_account
+from backend.src.auth.model import NewRegisteredUserResponse, Token, RegisterUserRequest, LoginRequest, RefreshTokenRequest, EmailAvailabilityRequest, EmailAvailabilityResponse, SignupRequest, PasswordValidationRequest, PasswordValidationResponse
+from backend.src.auth.service import register_user, login_user, refresh_access_token, check_email_availability, signup_user_with_account, validate_user_password, CurrentUser
 from backend.src.database.core import DbSession
 
 router = APIRouter(
@@ -59,4 +59,13 @@ def refresh(
     db: DbSession
 ) -> Token:
     return refresh_access_token(refresh_request, db)
+
+# Validate password for authenticated user
+@router.post("/validate-password", response_model=PasswordValidationResponse)
+def validate_password(
+    password_request: PasswordValidationRequest,
+    db: DbSession,
+    current_user: CurrentUser
+) -> PasswordValidationResponse:
+    return validate_user_password(password_request, current_user.user_id, db)
 

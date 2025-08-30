@@ -9,7 +9,7 @@ import os
 from sqlalchemy.orm import Session
 from backend.src.entities.user import User
 from backend.src.entities.enums import ACCOUNT_TYPE_COLORS, ACCOUNT_TYPE_ICONS
-from backend.src.auth.model import NewRegisteredUserResponse, Token, TokenData, RegisterUserRequest, LoginRequest, RefreshTokenRequest, EmailAvailabilityRequest, EmailAvailabilityResponse, SignupRequest
+from backend.src.auth.model import NewRegisteredUserResponse, Token, TokenData, RegisterUserRequest, LoginRequest, RefreshTokenRequest, EmailAvailabilityRequest, EmailAvailabilityResponse, SignupRequest, PasswordValidationRequest, PasswordValidationResponse
 from backend.src.accounts.model import AccountCreateRequest
 from backend.src.accounts.service import create_account
 from backend.src.categories.service import create_default_categories
@@ -218,6 +218,20 @@ def get_current_user(token: Annotated[str, Depends(oauth2_bearer)]) -> TokenData
     return verify_access_token(token)
 
 CurrentUser = Annotated[TokenData, Depends(get_current_user)]
+
+# Validate password for authenticated user
+def validate_user_password(password_request: PasswordValidationRequest, user_id: str, db: Session) -> PasswordValidationResponse:
+    logging.info(f"Validating password for user {user_id}")
+    
+    user = db.query(User).filter(User.user_id == user_id).first()
+    if not user:
+        logging.warning(f"User not found: {user_id}")
+        return PasswordValidationResponse(is_valid=False)
+    
+    is_valid = verify_password(password_request.password, user.hashed_password)
+    logging.info(f"Password validation result for user {user_id}: {is_valid}")
+    
+    return PasswordValidationResponse(is_valid=is_valid)
 
 
 
