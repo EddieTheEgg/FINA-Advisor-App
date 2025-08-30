@@ -17,6 +17,12 @@ export type PasswordValidationResponse = {
     is_valid: boolean;
 }
 
+export type UpdatePasswordRequest = {
+    current_password: string;
+    new_password: string;
+    new_password_confirm: string;
+}
+
 // Account types for registration flow
 export enum AccountType {
     CHECKING = 'checking',

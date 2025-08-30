@@ -1,6 +1,6 @@
 import { AxiosError } from 'axios';
 import { api } from '../../../api/axios';
-import { Token, EmailAvailabilityResponse, CreateAccountRequest, PasswordValidationResponse } from '../types';
+import { Token, EmailAvailabilityResponse, CreateAccountRequest, PasswordValidationResponse, UpdatePasswordRequest } from '../types';
 
 //Converts the response from the API to Token type
 const normalizeToken = (data : any): Token => ({
@@ -76,6 +76,24 @@ export const validatePassword = async (password: string): Promise<PasswordValida
             throw new Error('Access denied');
         } else if (error instanceof AxiosError && error.response?.status === 500) {
             throw new Error('Failed to validate password');
+        } else {
+            throw new Error(`An unexpected error occurred: ${error}`);
+        }
+    }
+};
+
+export const updatePassword = async (updatePasswordRequest: UpdatePasswordRequest) => {
+    try {
+        await api.put('/users/update-password', updatePasswordRequest);
+    } catch (error) {
+        if (error instanceof AxiosError && error.response?.status === 400) {
+            throw new Error(error.response.data.message);
+        } else if (error instanceof AxiosError && error.response?.status === 401) {
+            throw new Error('Authentication required');
+        } else if (error instanceof AxiosError && error.response?.status === 403) {
+            throw new Error('Access denied');
+        } else if (error instanceof AxiosError && error.response?.status === 500) {
+            throw new Error('Failed to update password');
         } else {
             throw new Error(`An unexpected error occurred: ${error}`);
         }

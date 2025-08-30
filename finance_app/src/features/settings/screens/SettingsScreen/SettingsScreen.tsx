@@ -45,7 +45,7 @@ export const SettingsScreen = ({navigation}: SettingsScreenProps) => {
             </View>
             <UserCardPreview navigation = {navigation} />
             <AppSettingsCard navigation = {navigation} />
-            <AccountSettingsCard />
+            <AccountSettingsCard navigation = {navigation} />
         </ScrollView>
     );
 };

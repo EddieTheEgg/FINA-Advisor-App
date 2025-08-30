@@ -35,6 +35,12 @@ class UpdateProfileRequest(BaseModel):
     last_name: str
     email: EmailStr
     
+class UpdatePasswordRequest(BaseModel):
+    current_password: str
+    new_password: str
+    new_password_confirm: str
+    
+    
     
     
     

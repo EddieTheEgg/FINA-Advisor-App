@@ -5,9 +5,14 @@ import { colors } from '../../../../styles/colors';
 import FontAwesome6 from 'react-native-vector-icons/FontAwesome6';
 import { fontSize } from '../../../../styles/fontSizes';
 import { useAuth } from '../../../auth/hooks/useAuth';
+import { DashboardNavigationProps } from '../../../../navigation/types/DashboardNavigatorTypes';
+
+type AccountSettingsCardProps = {
+    navigation: DashboardNavigationProps;
+};
 
 
-export const AccountSettingsCard = () => {
+export const AccountSettingsCard = ({navigation}: AccountSettingsCardProps) => {
     const {signOut, isLoading} = useAuth();
 
     return (
@@ -16,6 +21,7 @@ export const AccountSettingsCard = () => {
             <View style = {styles.tabsContainer}>
                 <AnimatedPressable
                     style = {styles.tab}
+                    onPress = {() => navigation.navigate('Security')}
                 >
                     <Text style = {[styles.icon, {backgroundColor: colors.lightBlue}]}>🔐</Text>
                     <View style = {styles.tabContent}>

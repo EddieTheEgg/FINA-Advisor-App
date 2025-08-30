@@ -2,7 +2,7 @@ from fastapi import APIRouter
 from starlette import status
 from backend.src.auth.service import CurrentUser
 from backend.src.database.core import DbSession
-from backend.src.users.model import UpdateProfileRequest, UserResponse, PasswordChange
+from backend.src.users.model import UpdatePasswordRequest, UpdateProfileRequest, UserResponse, PasswordChange
 from backend.src.users import service
 
 router = APIRouter(
@@ -30,3 +30,12 @@ def update_profile(
     update_profile_request: UpdateProfileRequest
 ):
     service.update_profile(db, current_user.get_uuid(), update_profile_request)
+    
+
+@router.put("/update-password", status_code = status.HTTP_204_NO_CONTENT)
+def update_password(
+    db: DbSession,
+    current_user: CurrentUser,
+    update_password_request: UpdatePasswordRequest
+):
+    service.update_password(db, current_user.get_uuid(), update_password_request)

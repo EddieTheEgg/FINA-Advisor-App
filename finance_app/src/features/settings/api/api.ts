@@ -1,6 +1,6 @@
 import { AxiosError } from 'axios';
 import api from '../../../api/axios';
-import { BackendCategoryManageSummary, CategoryManageResponse, CreateCategoryRequest, UpdateCategoryRequest, UpdateProfileRequest } from '../types';
+import { BackendCategoryManageSummary, CategoryManageResponse, CreateCategoryRequest, UpdateCategoryRequest, UpdatePasswordRequest, UpdateProfileRequest } from '../types';
 
 
 type getSettingsCategoriesProps = {
@@ -51,7 +51,6 @@ export const getSettingsCategories = async ({transactionType, skip, limit}: getS
         throw new Error('Failed to fetch categories. Please try again later.');
     }
 };
-
 export const updateCategory = async (updateCategoryInfo: UpdateCategoryRequest) => {
     try {
         await api.put('/categories/update-category', updateCategoryInfo);
@@ -126,3 +125,18 @@ export const updateProfile = async (updateProfileRequest: UpdateProfileRequest) 
         throw new Error('Failed to update profile. Please try again later.');
     }
 };
+
+export const updatePassword = async (updatePasswordRequest: UpdatePasswordRequest) => {
+    try {
+        await api.put('/users/update-password', updatePasswordRequest);
+    } catch (error : unknown) {
+        if (error instanceof AxiosError && error.response?.status === 400) {
+            throw new Error(error.response?.data.message);
+        }
+        else if (error instanceof AxiosError && error.response?.status === 401) {
+            throw new Error('Unauthorized access to password');
+        }
+        throw new Error('Failed to update password. Please try again later.');
+    }
+};
+

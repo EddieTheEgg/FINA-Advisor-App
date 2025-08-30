@@ -60,3 +60,8 @@ export type UpdateProfileRequest = {
     email: string;
 }
 
+export type UpdatePasswordRequest = {
+    current_password: string;
+    new_password: string;
+    new_password_confirm: string;
+}
