@@ -39,3 +39,10 @@ def update_password(
     update_password_request: UpdatePasswordRequest
 ):
     service.update_password(db, current_user.get_uuid(), update_password_request)
+
+@router.delete("/delete-account", status_code = status.HTTP_204_NO_CONTENT)
+def delete_account(
+    db: DbSession,
+    current_user: CurrentUser
+):
+    service.delete_account(db, current_user.get_uuid())

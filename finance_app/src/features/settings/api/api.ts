@@ -140,3 +140,17 @@ export const updatePassword = async (updatePasswordRequest: UpdatePasswordReques
     }
 };
 
+export const deleteAccount = async () => {
+    try {
+        await api.delete('/users/delete-account');
+    } catch (error : unknown) {
+        if (error instanceof AxiosError && error.response?.status === 400) {
+            throw new Error(error.response?.data.message);
+        }
+        else if (error instanceof AxiosError && error.response?.status === 401) {
+            throw new Error('Unauthorized access to account');
+        }
+        throw new Error('Failed to delete account. Please try again later.');
+    }
+};
+

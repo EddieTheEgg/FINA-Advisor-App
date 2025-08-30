@@ -27,7 +27,7 @@ type CreateTransactionState = {
     setTransactionSuccess: (success: boolean) => void;
 
     setTransactionType : (transactionType : 'INCOME' | 'EXPENSE' | 'TRANSFER') => void;
-    setSourceAccount : (sourceAccount : AccountResponse) => void;
+    setSourceAccount : (sourceAccount : AccountResponse | null) => void;
     setAmount : (amount : number) => void;
     setAmountError: (error: string) => void;
     setSelectedCategory : (selectedCategory : CategoryResponse | null) => void;

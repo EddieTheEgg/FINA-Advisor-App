@@ -12,11 +12,13 @@ type TransactionTypeButtonProps = {
 
 export const TransactionTypeButton = React.memo(({selectedTransactionType, label}: TransactionTypeButtonProps) => {
 
-    const {transactionType, setTransactionType, setAmount} = useCreateTransactionStore();
+    const {transactionType, setTransactionType, resetToInitialState} = useCreateTransactionStore();
 
     const handleChangeTransactionType = () => {
+        if (selectedTransactionType !== transactionType) {
+            resetToInitialState();
+        }
         setTransactionType(selectedTransactionType);
-        setAmount(0.00);
     };
 
     return (

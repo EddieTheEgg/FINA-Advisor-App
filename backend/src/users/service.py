@@ -4,7 +4,7 @@ from sqlalchemy.orm import Session
 from backend.src.auth.service import verify_password, get_password_hash
 from backend.src.users.model import UpdatePasswordRequest, UpdateProfileRequest, UserResponse, PasswordChange, UserSimpleResponse
 from backend.src.entities.user import User
-from backend.src.exceptions import UpdatePasswordError, UpdateProfileError, UserNotFoundError, InvalidPasswordError, PasswordMismatchError
+from backend.src.exceptions import DeleteAccountError, UpdatePasswordError, UpdateProfileError, UserNotFoundError, InvalidPasswordError, PasswordMismatchError
 
 def get_user_by_id(db: Session, user_id: UUID) -> UserResponse:
     user = db.query(User).filter(user_id == User.user_id).first()
@@ -63,4 +63,14 @@ def update_password(db: Session, user_id: UUID, update_password_request: UpdateP
     except Exception as e:
         logging.error(f"Error during password update for user ID: {user_id}. Error: {str(e)}")
         raise UpdatePasswordError(str(e))
+    
+def delete_account(db: Session, user_id: UUID):
+    try:
+        user = get_user_by_id(db, user_id)
+        db.delete(user)
+        db.commit()
+        logging.info(f"Successfully deleted account for user ID: {user_id}")
+    except Exception as e:
+        logging.error(f"Error during account deletion for user ID: {user_id}. Error: {str(e)}")
+        raise DeleteAccountError(str(e))
         
