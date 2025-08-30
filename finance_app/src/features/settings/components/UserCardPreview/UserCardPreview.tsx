@@ -4,8 +4,13 @@ import { useDashboardQuery } from '../../../dashboard/hooks/useDashboard';
 import { LoadingDots } from '../../../../components/LoadingDots/LoadingDots';
 import { AnimatedPressable } from '../../../../components/AnimatedPressable/AnimatedPressable';
 import { ErrorScreen } from '../../../../components/ErrorScreen/ErrorScreen';
+import { DashboardNavigationProps } from '../../../../navigation/types/DashboardNavigatorTypes';
 
-export const UserCardPreview = () => {
+type UserCardPreviewProps = {
+    navigation: DashboardNavigationProps;
+}
+
+export const UserCardPreview = ({navigation}: UserCardPreviewProps) => {
 
     const todayDate = new Date();
     const {data, isPending, error} = useDashboardQuery(todayDate.getMonth(), todayDate.getFullYear());
@@ -34,6 +39,7 @@ export const UserCardPreview = () => {
             <Text style = {styles.emailText}>{data.user.email}</Text>
             <AnimatedPressable
                 style = {styles.editProfileContainer}
+                onPress = {() => navigation.navigate('EditProfile')}
             >
                 <Text style = {styles.editProfileText}>Edit Profile</Text>
             </AnimatedPressable>

@@ -43,7 +43,7 @@ export const SettingsScreen = ({navigation}: SettingsScreenProps) => {
                 <Text style = {styles.title}>Settings</Text>
                 <FontAwesome6 name = "empty-space" size = {39} color = {colors.background} />
             </View>
-            <UserCardPreview />
+            <UserCardPreview navigation = {navigation} />
             <AppSettingsCard navigation = {navigation} />
             <AccountSettingsCard />
         </ScrollView>

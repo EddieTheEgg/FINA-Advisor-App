@@ -8,6 +8,7 @@ export type DashboardStackParamList = {
     ManageCategories: undefined;
     CreateCategory: undefined;
     EditCategory: {categoryData: CategoryManageSummary};
+    EditProfile: undefined;
 };
 
 export type DashboardNavigationProps = NativeStackNavigationProp<DashboardStackParamList>;
