@@ -1,5 +1,4 @@
 from fastapi import FastAPI
-from backend.src import auth
 from backend.src.database.core import engine, Base
 from backend.src.entities.user import User
 from backend.src.entities.category import Category
