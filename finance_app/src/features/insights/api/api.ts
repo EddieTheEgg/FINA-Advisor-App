@@ -1,6 +1,6 @@
 import axios from 'axios';
 import api from '../../../api/axios';
-import { KeyInsightsResponse, AISmartSavingTipResponse } from '../types';
+import { KeyInsightsResponse, AISmartSavingTipResponse, AIBudgetAnalysisResponse } from '../types';
 
 export const getInsightsData = async (): Promise<KeyInsightsResponse> => {
     try {
@@ -87,5 +87,33 @@ export const getAIInsightsData = async (clientReference?: string): Promise<AISma
             throw new Error('Server error while fetching AI insight data');
         }
         throw new Error('Failed to fetch AI insight data');
+    }
+};
+
+export const getAIBudgetAnalysisData = async (): Promise<AIBudgetAnalysisResponse> => {
+    try {
+        const response = await api.get('/ai/budget-analysis/auto');
+        const aiData = response.data;
+        return {
+            analysisId: aiData.analysis_id,
+            title: aiData.title,
+            analysis: aiData.analysis,
+            timeframe: aiData.timeframe,
+            budgetCategory: aiData.budget_category || null,
+            priority: aiData.priority,
+            confidence: aiData.confidence,
+            recommendations: aiData.recommendations || [],
+        };
+    } catch (error: unknown) {
+        if (axios.isAxiosError(error) && error.response?.status === 404) {
+            throw new Error('AI budget analysis data not found');
+        }
+        if (axios.isAxiosError(error) && error.response?.status === 401) {
+            throw new Error('Unauthorized access to fetch AI budget analysis data');
+        }
+        if (axios.isAxiosError(error) && error.response?.status === 500) {
+            throw new Error('Server error while fetching AI budget analysis data');
+        }
+        throw new Error('Failed to fetch AI budget analysis data');
     }
 };

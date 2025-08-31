@@ -23,14 +23,18 @@ from backend.src.ai.model import (
     SuggestCategoryRequest,
     SmartSavingTipRequest,
     SmartSavingTipResponse,
-    FinancialContext
+    FinancialContext,
+    BudgetContext,
+    BudgetAnalysisRequest,
+    BudgetAnalysisResponse
 )
 
 from backend.src.entities.category_suggestions import CategoryTraining
 from backend.src.insights.service import get_monthly_income, get_monthly_expense
 
 from backend.src.ai.config import client
-from backend.src.entities.enums import TransactionType, TipDifficulty
+from backend.src.entities.enums import TransactionType, TipDifficulty, BudgetAnalysisPriority
+from backend.src.entities.budgets import Budget
 
 def get_openai_client() -> OpenAI:
     return client
@@ -513,6 +517,305 @@ def _format_recent_transactions(transactions: List[dict]) -> str:
     
     return '\n'.join(formatted_transactions)
 
+
+# Budget AI Analysis
+
+# Gather budget context for the budget analysis generation (This is a helper method)
+# Note: This is specifically for current month budget analysis only
+async def gather_budget_context(
+    db: Session,
+    user_id: UUID,
+) -> BudgetContext:
+    try:
+        # Always use current month/year for budget analysis
+        now = datetime.now(timezone.utc)
+        month = now.month
+        year = now.year
+        
+        # Get the first day of the month at midnight
+        current_month_start = datetime(year, month, 1, tzinfo=timezone.utc)
+        # Get the first day of next month
+        current_month_end = current_month_start.replace(month=month+1 if month < 12 else 1, year=year if month < 12 else year+1)
+        
+        # Get basic financial data
+        try:
+            monthly_income = get_monthly_income(db, user_id, month, year)
+            logging.info(f"Monthly income: {monthly_income}")
+        except Exception as e:
+            logging.error(f"Error getting monthly income: {e}")
+            monthly_income = 0.0
+            
+        try:
+            monthly_expenses = get_monthly_expense(db, user_id, month, year)
+            logging.info(f"Monthly expenses: {monthly_expenses}")
+        except Exception as e:
+            logging.error(f"Error getting monthly expenses: {e}")
+            monthly_expenses = 0.0
+        
+        # Calculate monthly savings
+        monthly_savings = monthly_income - monthly_expenses
+        current_savings_rate = (monthly_savings / monthly_income * 100) if monthly_income > 0 else 0.0
+        
+        # Get budget data for the month
+        budgets_query = db.query(Budget).filter(
+            Budget.user_id == user_id,
+            Budget.budget_month >= current_month_start.date(),
+            Budget.budget_month < current_month_end.date()
+        ).all()
+        
+        total_budgets_amount = sum(budget.budget_amount for budget in budgets_query)
+        
+        # Calculate budget categories with spending data
+        budget_categories = []
+        overspent_categories = []
+        total_spent_on_budgets = 0.0
+        
+        for budget in budgets_query:
+            # Get category information
+            category = db.query(Category).filter(Category.category_id == budget.category_id).first()
+            if not category:
+                continue
+                
+            # Calculate spent amount for this budget category
+            spent_amount = db.query(func.sum(Transaction.amount)).filter(
+                Transaction.user_id == user_id,
+                Transaction.category_id == budget.category_id,
+                Transaction.transaction_date >= current_month_start,
+                Transaction.transaction_date < current_month_end,
+                Transaction.transaction_type == TransactionType.EXPENSE
+            ).scalar() or 0.0
+            
+            total_spent_on_budgets += spent_amount
+            percentage_used = (spent_amount / budget.budget_amount * 100) if budget.budget_amount > 0 else 0.0
+            
+            budget_data = {
+                'category_name': category.category_name,
+                'budget_amount': budget.budget_amount,
+                'spent_amount': spent_amount,
+                'percentage_used': percentage_used
+            }
+            
+            budget_categories.append(budget_data)
+            
+            # Track overspent categories
+            if percentage_used > 100:
+                overspent_categories.append(budget_data)
+        
+        # Get spending trend (current vs previous month)
+        prev_month = month - 1 if month > 1 else 12
+        prev_year = year if month > 1 else year - 1
+        try:
+            previous_month_expenses = get_monthly_expense(db, user_id, prev_month, prev_year)
+        except Exception:
+            previous_month_expenses = 0.0
+        
+        trend_percentage = 0.0
+        if previous_month_expenses > 0:
+            trend_percentage = ((monthly_expenses - previous_month_expenses) / previous_month_expenses * 100)
+        
+        spending_trend = {
+            'current_month': monthly_expenses,
+            'previous_month': previous_month_expenses,
+            'trend_percentage': trend_percentage
+        }
+        
+        # Get recent transactions for context (last 10)
+        recent_transactions_query = db.query(Transaction).filter(
+            Transaction.user_id == user_id,
+            Transaction.transaction_date >= current_month_start,
+            Transaction.transaction_date < current_month_end
+        ).order_by(Transaction.transaction_date.desc()).limit(10).all()
+        
+        recent_transactions = []
+        for transaction in recent_transactions_query:
+            category = db.query(Category).filter(Category.category_id == transaction.category_id).first()
+            recent_transactions.append({
+                'title': transaction.title,
+                'amount': transaction.amount,
+                'category': category.category_name if category else 'Unknown',
+                'location': transaction.location,
+                'merchant': transaction.merchant,
+                'is_subscription': transaction.is_subscription,
+                'subscription_frequency': transaction.subscription_frequency.value if transaction.subscription_frequency else None
+            })
+        
+        return BudgetContext(
+            user_id=user_id,
+            monthly_income=monthly_income,
+            monthly_expenses=monthly_expenses,
+            monthly_savings=monthly_savings,
+            total_budgets_amount=total_budgets_amount,
+            total_spent_on_budgets=total_spent_on_budgets,
+            budget_categories=budget_categories,
+            spending_trend=spending_trend,
+            top_overspent_categories=overspent_categories,
+            recent_transactions=recent_transactions,
+            current_savings_rate=current_savings_rate
+        )
+        
+    except Exception as e:
+        logging.error(f"Error gathering budget context: {str(e)}")
+        raise DatabaseError(str(e))
+
+async def generate_budget_analysis(
+    db: Session,
+    request: BudgetAnalysisRequest,
+) -> BudgetAnalysisResponse:
+    try:
+        context = request.budget_context
+        
+        # If there are no budgets, return a placeholder response
+        if len(context.budget_categories) <= 0:
+            return BudgetAnalysisResponse(
+                analysis_id=uuid.uuid4(),
+                title="No Budgets Found!",
+                analysis="You haven't set up any budgets yet! Creating budgets helps you track your spending and reach your financial goals.",
+                timeframe="This Month",
+                budget_category=None,
+                priority=BudgetAnalysisPriority.UNKNOWN,
+                confidence=1.0,
+                recommendations=["Set up your first budget", "Track your spending categories", "Start with essential categories like food and transportation"],
+            )
+        
+        # Create a comprehensive prompt for generating budget analysis
+        prompt = f"""You are a financial advisor AI assistant specialized in budget analysis. Your task is to analyze the user's budget performance and provide actionable insights.
+
+        USER'S BUDGET CONTEXT:
+        - Monthly Income: ${context.monthly_income:.2f}
+        - Monthly Expenses: ${context.monthly_expenses:.2f}
+        - Monthly Savings: ${context.monthly_savings:.2f}
+        - Current Savings Rate: {context.current_savings_rate:.1f}%
+        - Total Budget Amount: ${context.total_budgets_amount:.2f}
+        - Total Spent on Budgets: ${context.total_spent_on_budgets:.2f}
+
+        BUDGET CATEGORIES PERFORMANCE:
+        {_format_budget_categories(context.budget_categories)}
+
+        SPENDING TREND:
+        - Current Month: ${context.spending_trend['current_month']:.2f}
+        - Previous Month: ${context.spending_trend['previous_month']:.2f}
+        - Trend: {context.spending_trend['trend_percentage']:+.1f}%
+
+        OVERSPENT CATEGORIES:
+        {_format_overspent_categories(context.top_overspent_categories)}
+
+        RECENT TRANSACTIONS (last 10):
+        {_format_recent_transactions(context.recent_transactions[:10])}
+
+        INSTRUCTIONS:
+        1. Analyze the user's budget performance and spending patterns
+        2. Identify the most critical budget issue or opportunity
+        3. Generate ONE specific, actionable analysis focused on budget optimization
+        4. Prioritize overspent categories or concerning trends
+        5. Keep the analysis SHORT and CONCISE - maximum 2-3 sentences for mobile display
+        6. Provide 2-4 specific, actionable recommendations
+        7. Focus on current month budget performance only
+
+        RESPONSE FORMAT:
+        Respond with ONLY a valid JSON object in this exact format:
+        {{
+            "title": "short, descriptive title (max 6 words)",
+            "analysis": "brief budget analysis in 2-3 sentences max",
+            "timeframe": "this month",
+            "budget_category": "Food & Dining",
+            "priority": "HIGH",
+            "confidence": 0.9,
+            "recommendations": ["Specific action 1", "Specific action 2", "Specific action 3"]
+        }}
+
+        IMPORTANT: The priority field must be exactly one of: "HIGH", "MEDIUM", or "LOW".
+
+        Example:
+        {{
+            "title": "Dining Budget Over by 23%",
+            "analysis": "Your Food & Dining budget is 23% over limit this month. Reducing restaurant visits could help you get back on track with your budget goals.",
+            "timeframe": "this month",
+            "budget_category": "Food & Dining",
+            "priority": "HIGH",
+            "confidence": 0.87,
+            "recommendations": ["Meal prep 3 days per week", "Limit dining out to weekends only", "Set weekly grocery budget of $80", "Use grocery apps for coupons"]
+        }}
+
+        Generate an analysis that is specific, actionable, and focused on the most critical budget issue."""
+
+        client = get_openai_client()
+        response = client.chat.completions.create(
+            model="gpt-4o-mini",
+            messages=[{
+                "role": "user", 
+                "content": prompt
+            }],
+            temperature=0.7
+        )
+        
+        content = response.choices[0].message.content.strip()
+        
+        # Parse the JSON response
+        try:
+            import json
+            analysis_data = json.loads(content)
+            
+            # Validate required fields
+            required_fields = ['title', 'analysis', 'timeframe', 'priority', 'confidence', 'recommendations']
+            for field in required_fields:
+                if field not in analysis_data:
+                    logging.warning(f"Missing required field '{field}' in OpenAI response: {content}")
+                    raise OpenAIResponseError()
+            
+            return BudgetAnalysisResponse(
+                analysis_id=uuid.uuid4(),
+                title=analysis_data['title'],
+                analysis=analysis_data['analysis'],
+                timeframe=analysis_data['timeframe'],
+                budget_category=analysis_data.get('budget_category'),  # Optional field
+                priority=BudgetAnalysisPriority(analysis_data['priority']),
+                confidence=float(analysis_data['confidence']),
+                recommendations=analysis_data['recommendations'],
+            )
+            
+        except json.JSONDecodeError as e:
+            logging.warning(f"Invalid JSON response from OpenAI: {content}")
+            raise OpenAIResponseError()
+        except (ValueError, KeyError) as e:
+            logging.warning(f"Error parsing OpenAI response: {str(e)}")
+            raise OpenAIResponseError()
+        
+    except Exception as e:
+        logging.error(f"Error generating budget analysis: {str(e)}")
+        raise OpenAICallError()
+
+# Format budget categories for the GPT prompt
+def _format_budget_categories(categories: List[dict]) -> str:
+    formatted_categories = []
+    for category in categories:
+        category_name = category['category_name']
+        budget_amount = category['budget_amount']
+        spent_amount = category['spent_amount']
+        percentage_used = category['percentage_used']
+        
+        status = "✅ On Track" if percentage_used <= 100 else f"⚠️ Over by {percentage_used - 100:.1f}%"
+        formatted_categories.append(
+            f"- {category_name}: ${spent_amount:.2f} / ${budget_amount:.2f} ({percentage_used:.1f}%) {status}"
+        )
+    return '\n'.join(formatted_categories)
+
+# Format overspent categories for the GPT prompt
+def _format_overspent_categories(categories: List[dict]) -> str:
+    if not categories:
+        return "None - All budgets are on track!"
+    
+    formatted_categories = []
+    for category in categories:
+        category_name = category['category_name']
+        budget_amount = category['budget_amount']
+        spent_amount = category['spent_amount']
+        percentage_used = category['percentage_used']
+        overspent_amount = spent_amount - budget_amount
+        
+        formatted_categories.append(
+            f"- {category_name}: Over by ${overspent_amount:.2f} ({percentage_used:.1f}% of budget)"
+        )
+    return '\n'.join(formatted_categories)
 
 # FastAPI dependency injection
 def get_openai_service() -> OpenAI:

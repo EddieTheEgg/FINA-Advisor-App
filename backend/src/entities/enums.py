@@ -72,6 +72,12 @@ class TipDifficulty(Enum):
     MEDIUM = "MEDIUM"
     HARD = "HARD"
     UNKNOWN = "UNKNOWN"
+
+class BudgetAnalysisPriority(Enum):
+    HIGH = "HIGH"
+    MEDIUM = "MEDIUM"
+    LOW = "LOW"
+    UNKNOWN = "UNKNOWN"
     
     
 class BudgetType(Enum):

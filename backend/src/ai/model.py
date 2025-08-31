@@ -3,7 +3,7 @@ from pydantic import BaseModel
 from typing import List
 from datetime import datetime
 
-from backend.src.entities.enums import TransactionType, TipDifficulty
+from backend.src.entities.enums import TransactionType, TipDifficulty, BudgetAnalysisPriority
 
 class SuggestCategoryRequest(BaseModel):
     amount: float
@@ -90,6 +90,42 @@ class SmartSavingTipResponse(BaseModel):
         from_attributes = True
         arbitrary_types_allowed = True
 
+# Budget Analysis Models
+class BudgetContext(BaseModel):
+    user_id: UUID
+    monthly_income: float
+    monthly_expenses: float
+    monthly_savings: float
+    total_budgets_amount: float
+    total_spent_on_budgets: float
+    budget_categories: List[dict]  # List of {category_name: str, budget_amount: float, spent_amount: float, percentage_used: float}
+    spending_trend: dict  # {current_month: float, previous_month: float, trend_percentage: float}
+    top_overspent_categories: List[dict]  # Categories that are over budget
+    recent_transactions: List[dict]  # Recent transactions for context
+    savings_goal: float | None = None
+    current_savings_rate: float
+    
+    class Config:
+        from_attributes = True
+        arbitrary_types_allowed = True
 
+class BudgetAnalysisRequest(BaseModel):
+    budget_context: BudgetContext
 
+    class Config:
+        from_attributes = True
+        arbitrary_types_allowed = True
 
+class BudgetAnalysisResponse(BaseModel):
+    analysis_id: UUID
+    title: str
+    analysis: str
+    timeframe: str  # e.g., "this month", "per month"
+    budget_category: str | None = None  # Related budget category
+    priority: BudgetAnalysisPriority  # How urgent is this budget issue?
+    confidence: float
+    recommendations: List[str]  # List of actionable recommendations
+
+    class Config:
+        from_attributes = True
+        arbitrary_types_allowed = True

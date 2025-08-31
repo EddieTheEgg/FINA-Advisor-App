@@ -1,7 +1,7 @@
 from uuid import UUID
 from fastapi import APIRouter, Query
 from backend.src.auth.service import CurrentUser
-from backend.src.ai.service import apply_suggestion_to_transaction, suggest_category_from_details, generate_smart_saving_tip, gather_financial_context
+from backend.src.ai.service import apply_suggestion_to_transaction, suggest_category_from_details, generate_smart_saving_tip, gather_financial_context, generate_budget_analysis, gather_budget_context
 from backend.src.ai.model import (
     ApplySuggestionRequest,
     ApplySuggestionResponse,
@@ -9,6 +9,8 @@ from backend.src.ai.model import (
     SuggestCategoryRequest,
     SmartSavingTipRequest,
     SmartSavingTipResponse,
+    BudgetAnalysisRequest,
+    BudgetAnalysisResponse,
 )
 from backend.src.database.core import DbSession
 
@@ -83,6 +85,40 @@ async def get_smart_saving_tip_auto(
     )
     
     return await generate_smart_saving_tip(
+        db=db,
+        request=request
+    )
+
+# Generate budget analysis based on user's budget data
+@router.post("/budget-analysis", response_model=BudgetAnalysisResponse)
+async def get_budget_analysis(
+    request: BudgetAnalysisRequest,
+    current_user: CurrentUser,
+    db: DbSession,
+):
+    return await generate_budget_analysis(
+        db=db,
+        request=request
+    )
+
+# Generate budget analysis with automatic budget context gathering (current month only)
+@router.get("/budget-analysis/auto", response_model=BudgetAnalysisResponse)
+async def get_budget_analysis_auto(
+    current_user: CurrentUser,
+    db: DbSession,
+):
+    # Gather budget context automatically for current month
+    budget_context = await gather_budget_context(
+        db=db,
+        user_id=current_user.get_uuid(),
+    )
+    
+    # Create request with gathered context
+    request = BudgetAnalysisRequest(
+        budget_context=budget_context,
+    )
+    
+    return await generate_budget_analysis(
         db=db,
         request=request
     )

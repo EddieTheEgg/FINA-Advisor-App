@@ -15,6 +15,13 @@ export enum TipDifficulty {
     UNKNOWN = 'UNKNOWN',
 }
 
+export enum BudgetAnalysisPriority {
+    HIGH = 'HIGH',
+    MEDIUM = 'MEDIUM',
+    LOW = 'LOW',
+    UNKNOWN = 'UNKNOWN',
+}
+
 export type MonthlyFinancialHealthResponse = {
     analysisDetail: string;
     icon: string;
@@ -68,4 +75,15 @@ export type AISmartSavingTipResponse = {
     difficulty: TipDifficulty;
     confidence: number;
     clientReference: string | null;
+};
+
+export type AIBudgetAnalysisResponse = {
+    analysisId: string;
+    title: string;
+    analysis: string;
+    timeframe: string;
+    budgetCategory: string | null;
+    priority: BudgetAnalysisPriority;
+    confidence: number;
+    recommendations: string[];
 };
