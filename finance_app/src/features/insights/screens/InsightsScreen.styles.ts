@@ -9,6 +9,12 @@ export const styles = StyleSheet.create({
         flex: 1,
         backgroundColor: colors.background,
     },
+    refreshIconContainer : {
+        flexDirection: 'row',
+        alignItems: 'center',
+        justifyContent: 'space-between',
+        marginHorizontal: spacing.md,
+    },
     scrollViewContent : {
         paddingBottom: spacing.lg,
     },
@@ -19,7 +25,7 @@ export const styles = StyleSheet.create({
     },
     keyInsightsSection : {
         marginHorizontal: spacing.md,
-        marginVertical: spacing.lg,
+        marginVertical: spacing.sm,
     },
     aiInsightsSection: {
         marginHorizontal: spacing.md,
@@ -44,6 +50,27 @@ export const styles = StyleSheet.create({
         borderRadius: 20,
         includeFontPadding: false,
     },
+    refreshIcon : {
+        backgroundColor: colors.white,
+        padding: spacing.sm + 2,
+        borderRadius: 30,
+        boxShadow: '0 2px 2px 0 rgba(0, 0, 0, 0.3)',
+        alignItems: 'center',
+        justifyContent: 'center',
+        minWidth: 42,
+        minHeight: 42,
+    },
+    refreshIconDisabled: {
+        backgroundColor: colors.gray[200],
+        opacity: 0.6,
+    },
+    cooldownText: {
+        fontSize: fontSize.xs,
+        fontFamily: 'Poppins-Medium',
+        color: colors.gray[500],
+        marginTop: 2,
+        textAlign: 'center',
+    },
     keyInsightsCardsContainer : {
         gap: spacing.md,
     },
@@ -63,5 +90,23 @@ export const styles = StyleSheet.create({
     },
     aiInsightsCardContainer : {
         gap: spacing.md,
+    },
+    loadingContainer: {
+        flex: 1,
+        justifyContent: 'center',
+        alignItems: 'center',
+        backgroundColor: colors.background,
+    },
+    image: {
+        width: 200,
+        height: 200,
+        marginLeft: spacing.lg * 2,
+        marginBottom: -spacing.lg,
+    },
+    text: {
+        fontSize: fontSize.xxxl,
+        fontWeight: 'bold',
+        color: colors.black,
+        marginLeft: spacing.lg,
     },
 });

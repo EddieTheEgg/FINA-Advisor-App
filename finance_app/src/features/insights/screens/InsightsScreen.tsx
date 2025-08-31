@@ -1,7 +1,8 @@
-import { View, Text, ScrollView, useWindowDimensions, Platform } from 'react-native';
+import { View, Text, ScrollView, useWindowDimensions, Platform, Image } from 'react-native';
 import { useSafeAreaInsets } from 'react-native-safe-area-context';
 import { styles } from './InsightsScreen.styles';
 import { useGetInsights } from '../hooks/useGetInsights';
+import { useRefreshInsights } from '../hooks/useRefreshInsights';
 import LoadingScreen from '../../../components/LoadingScreen/LoadingScreen';
 import { ErrorScreen } from '../../../components/ErrorScreen/ErrorScreen';
 import { MonthlyFinancialHealthCard } from '../components/MonthlyFinancialHealthCard/MonthlyFinancialHealthCard';
@@ -10,6 +11,11 @@ import { MonthlyTopSpendingCategoryCard } from '../components/MonthlyTopSpending
 import { MonthlySpendingTrendCard } from '../components/MonthlySpendingTrendCard/MonthlySpendingTrendCard';
 import { AISmartSavingTipCard } from '../components/AISmartSavingTipCard/AISmartSavingTipCard';
 import { AIBudgetAnalysisCard } from '../components/AIBudgetAnalysisCard/AIBudgetAnalysisCard';
+import { fontSize } from '../../../styles/fontSizes';
+import { colors } from '../../../styles/colors';
+import FontAwesome6 from 'react-native-vector-icons/FontAwesome6';
+import { AnimatedPressable } from '../../../components/AnimatedPressable/AnimatedPressable';
+import { LoadingDots } from '../../../components/LoadingDots/LoadingDots';
 
 export const InsightsScreen = () => {
 
@@ -17,10 +23,20 @@ export const InsightsScreen = () => {
     const canvasPadding = useWindowDimensions().height * 0.05;
 
     const { data: insightsData, isPending, error} = useGetInsights();
+    const { refreshInsights, isOnCooldown, cooldownTimeLeft, isRefreshing } = useRefreshInsights();
 
 
     if (isPending || !insightsData) {
         return <LoadingScreen />;
+    }
+
+    if (isRefreshing) {
+        return ( <View style={[styles.loadingContainer, {paddingTop: insets.top, paddingBottom: insets.bottom}]}>
+            <View>
+                <Image source={require('../../../assets/images/Loading_Pig.png')} style={styles.image} />
+                <LoadingDots style ={styles.text} loadingText = "Refreshing Insights" />
+            </View>
+        </View>);
     }
 
     if (error) {
@@ -37,7 +53,31 @@ export const InsightsScreen = () => {
         showsVerticalScrollIndicator = {false}
         contentContainerStyle = {[styles.scrollViewContent, {paddingBottom: Platform.OS === 'android' ? insets.bottom + canvasPadding * 3 : insets.bottom + canvasPadding * 2}]}
         >
-            <Text style = {styles.title}>This Month's Insights</Text>
+            <View style = {styles.refreshIconContainer}>
+                <FontAwesome6 name = "empty-space" size = {39} color = {colors.background} />
+                <Text style = {styles.title}>This Month's Insights</Text>
+                <AnimatedPressable
+                    onPress={refreshInsights}
+                    disabled={isOnCooldown || isRefreshing}
+                >
+                    <View style={[
+                        styles.refreshIcon,
+                        (isOnCooldown || isRefreshing) && styles.refreshIconDisabled,
+                    ]}>
+                        <FontAwesome6
+                            name={isRefreshing ? 'spinner' : 'arrows-rotate'}
+                            size={fontSize.lg}
+                            color={(isOnCooldown || isRefreshing) ? colors.gray[500] : colors.black}
+                        />
+                        {isOnCooldown && !isRefreshing && (
+                            <Text style={styles.cooldownText}>{cooldownTimeLeft}s</Text>
+                        )}
+                        {isRefreshing && (
+                            <Text style={styles.cooldownText}>Refreshing...</Text>
+                        )}
+                    </View>
+                </AnimatedPressable>
+            </View>
             <View style = {styles.keyInsightsSection}>
                 <View style = {styles.insightsTitleContainer}>
                     <Text style = {styles.keyInsightsTitleText}>💡 Key Insights</Text>

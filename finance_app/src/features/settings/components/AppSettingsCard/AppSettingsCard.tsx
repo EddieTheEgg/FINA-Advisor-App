@@ -34,7 +34,7 @@ export const AppSettingsCard = ({navigation}: AppSettingsCardProps) => {
                     - Low balance warnings
                     - Monthly spending summaries
                 */}
-                {/* 
+                {/*
                 <View style = {styles.tabsContainer}>
                     <AnimatedPressable
                         style = {styles.tab}
