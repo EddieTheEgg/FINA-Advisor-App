@@ -1,11 +1,11 @@
 from fastapi import FastAPI
-from backend.src.database.core import engine, Base
-from backend.src.entities.user import User
-from backend.src.entities.category import Category
-from backend.src.entities.transaction import Transaction
-from backend.src.entities.audit_logs import AuditLog
-from backend.src.api import register_routes
-from backend.src.logging import configure_logging, LogLevels
+from src.database.core import engine, Base
+from src.entities.user import User
+from src.entities.category import Category
+from src.entities.transaction import Transaction
+from src.entities.audit_logs import AuditLog
+from src.api import register_routes
+from src.logging import configure_logging, LogLevels
 
 configure_logging(LogLevels.info)
 
@@ -24,4 +24,3 @@ def read_root():
 
 # For dev purposes: To run the backend, run
 # uvicorn backend.src.main:app --reload
-# uvicorn backend.src.main:app --reload --host 0.0.0.0 --port 8000

@@ -1,27 +1,27 @@
 import logging
-from enum import Enum
+from enum import StrEnum
 
 
-LOG_FORMAT_DEBUG = "%(levelname)s:%(message)s:%(pathname)s:%(funcName)s:%(lineno)d"
+LOG_FORMAT_DEBUG = "%(levelname)s:%(message):%(pathname)s:%(funcName)s:%(lineno)d"
 
-class LogLevels(str, Enum):
+class LogLevels(StrEnum):
     info = "INFO"
     warn = "WARN"
     error = "ERROR"
     debug = "DEBUG"
 
-def configure_logging(log_level: LogLevels = LogLevels.error):
-    log_level_str = log_level.value.upper()
+def configure_logging(log_level: str = LogLevels.error):
+    log_level = str(log_level).upper()
     log_levels = [level.value for level in LogLevels]
 
-    if log_level_str not in log_levels:
-        logging.basicConfig(level=LogLevels.error.value)
+    if log_level not in log_levels:
+        logging.basicConfig(level=LogLevels.error)
         return
     
-    if log_level_str == LogLevels.debug.value:
-        logging.basicConfig(level=log_level_str, format=LOG_FORMAT_DEBUG)
+    if log_level == LogLevels.debug:
+        logging.basicConfig(level=log_level, format=LOG_FORMAT_DEBUG)
         return
     
-    logging.basicConfig(level=log_level_str)
+    logging.basicConfig(level=log_level)
 
 

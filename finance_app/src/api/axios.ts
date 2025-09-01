@@ -6,11 +6,11 @@ import { accessTokenService } from './accesstokenservice';
 import { refreshToken } from '../features/auth/api/api';
 import { authManager } from '../utils/authManager';
 
-// Create axios instance with base URL and headers
-export const api = axios.create({
-  baseURL: 'https://finance--connection.app',
-  headers: {
-    'Content-Type': 'application/json',
+  // Create axios instance with base URL and headers
+  export const api = axios.create({
+    baseURL: 'http://3.232.108.227:8000',
+    headers: {
+      'Content-Type': 'application/json',
   },
   timeout: 10000, // 10 second timeout instead of 30 minutes
 });

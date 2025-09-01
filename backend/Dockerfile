@@ -3,10 +3,10 @@ FROM python:3.11-slim
 WORKDIR /app
 
 # Copy requirements first for better caching
-COPY pyproject.toml ./
+COPY requirements.txt ./
 
 # Install dependencies
-RUN pip install .
+RUN pip install -r requirements.txt
 
 # Copy application code
 COPY . .
@@ -15,4 +15,4 @@ COPY . .
 EXPOSE 8000
 
 # Run the application
-CMD ["uvicorn", "src.main:app", "--host", "0.0.0.0", "--port", "8000"]
+CMD ["uvicorn", "backend.src.main:app", "--host", "0.0.0.0", "--port", "8000"]
