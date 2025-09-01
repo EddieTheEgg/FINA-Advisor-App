@@ -1,0 +1,51 @@
+version: '3.8'
+
+services:
+  finance-app:
+    build: .
+    container_name: finance-app-backend
+    ports:
+      - "8000:8000"
+    environment:
+      - DATABASE_URL=${DATABASE_URL}
+      - OPENAI_API_KEY=${OPENAI_API_KEY}
+      - ACCESS_TOKEN_SECRET=${ACCESS_TOKEN_SECRET}
+      - REFRESH_TOKEN_SECRET=${REFRESH_TOKEN_SECRET}
+      - ALGORITHM=HS256
+      - ACCESS_TOKEN_EXPIRE_TIME=3600
+      - REFRESH_TOKEN_EXPIRE_TIME=86400
+    restart: unless-stopped
+    healthcheck:
+      test: ["CMD", "curl", "-f", "http://localhost:8000/"]
+      interval: 30s
+      timeout: 10s
+      retries: 3
+      start_period: 40s
+    volumes:
+      - app_logs:/app/logs
+    networks:
+      - finance_network
+
+  nginx:
+    image: nginx:alpine
+    container_name: finance-nginx
+    ports:
+      - "80:80"
+      - "443:443"
+    volumes:
+      - ./nginx/nginx.conf:/etc/nginx/nginx.conf
+      - ./nginx/sites-available:/etc/nginx/sites-available
+      - ./ssl:/etc/nginx/ssl
+      - /etc/letsencrypt:/etc/letsencrypt
+    depends_on:
+      - finance-app
+    restart: unless-stopped
+    networks:
+      - finance_network
+
+volumes:
+  app_logs:
+
+networks:
+  finance_network:
+    driver: bridge
