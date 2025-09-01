@@ -84,16 +84,28 @@ export const EditTransactionDateCard = () => {
                             onDayPress={handleDateSelect}
                             maxDate={maxDate}
                             theme={{
-                                backgroundColor: colors.gray[500],
-                                textDisabledColor: colors.gray[300],
-                                arrowColor: colors.darkerBackground,
-                                textMonthFontWeight: 700,
-                                textMonthFontSize: fontSize.xl,
-                                textMonthFontFamily: 'Poppins-SemiBold',
-                                textDayFontWeight: 500,
-                                textDayFontSize: fontSize.lg,
-                                textDayFontFamily: 'Poppins-Regular',
+                                backgroundColor: colors.white,
+                                calendarBackground: colors.white,
+                                textSectionTitleColor: colors.black,
+                                selectedDayBackgroundColor: colors.darkerBackground,
+                                selectedDayTextColor: colors.white,
                                 todayTextColor: colors.darkerBackground,
+                                dayTextColor: colors.black,
+                                textDisabledColor: colors.gray[400],
+                                dotColor: colors.darkerBackground,
+                                selectedDotColor: colors.white,
+                                arrowColor: colors.darkerBackground,
+                                monthTextColor: colors.black,
+                                indicatorColor: colors.darkerBackground,
+                                textDayFontWeight: '500',
+                                textMonthFontWeight: '700',
+                                textDayHeaderFontWeight: '600',
+                                textDayFontSize: 16,
+                                textMonthFontSize: 18,
+                                textDayHeaderFontSize: 14,
+                                textDayFontFamily: 'System',
+                                textMonthFontFamily: 'System',
+                                textDayHeaderFontFamily: 'System',
                             }}
                         />
                     </View>

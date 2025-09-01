@@ -24,3 +24,4 @@ def read_root():
 
 # For dev purposes: To run the backend, run
 # uvicorn backend.src.main:app --reload
+# uvicorn backend.src.main:app --reload --host 0.0.0.0 --port 8000

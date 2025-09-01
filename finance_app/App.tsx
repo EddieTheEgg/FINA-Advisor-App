@@ -17,6 +17,7 @@ import CreateCategoryScreen from './src/features/categories/screens/CreateCatego
 import { EditTransferScreen } from './src/features/transaction/screens/EditTransferScreen/EditTransferScreen.tsx';
 import { EditSelectTransferAccountScreen } from './src/features/transaction/screens/EditSelectTransferAccountScreen/EditSelectTransferAccountScreen.tsx';
 import { FinalCompleteScreen } from './src/features/auth/screens/FinalCompleteScreen/FinalCompleteScreen.tsx';
+import ErrorBoundary from './src/components/ErrorBoundary/ErrorBoundary';
 
 
 const Stack = createNativeStackNavigator<RootStackParamList>();
@@ -59,13 +60,15 @@ const App = () => {
   const queryClient = new QueryClient();
 
   return (
-    <SafeAreaProvider>
-      <QueryClientProvider client={queryClient}>
-        <AuthProvider>
-          <AppContent />
-        </AuthProvider>
-      </QueryClientProvider>
-    </SafeAreaProvider>
+    <ErrorBoundary>
+      <SafeAreaProvider>
+        <QueryClientProvider client={queryClient}>
+          <AuthProvider>
+            <AppContent />
+          </AuthProvider>
+        </QueryClientProvider>
+      </SafeAreaProvider>
+    </ErrorBoundary>
   );
 };
 

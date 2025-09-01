@@ -46,9 +46,12 @@ export const styles = StyleSheet.create({
         flex: 1,
         alignItems: 'center',
         marginHorizontal: 10,
+        backgroundColor: 'white',
     },
     picker: {
         width: '100%',
+        color: 'black',
+        backgroundColor: 'white',
     },
     setButtonText: {
         color: 'white',

@@ -24,7 +24,20 @@ export const signupUser = async (signupData: CreateAccountRequest): Promise<Toke
     }
 };
 
+export const testConnection = async () => {
+    console.log('🔍 Testing connection to:', api.defaults.baseURL);
+    try {
+        const response = await api.get('/');
+        console.log('✅ Connection test SUCCESS:', response.data);
+        return response.data;
+    } catch (error) {
+        console.log('❌ Connection test FAILED:', error);
+        throw error;
+    }
+};
+
 export const loginUser = async ({ email, password }: { email: string; password: string }) => {
+    console.log('🚀 Attempting login to:', api.defaults.baseURL + '/auth/login');
     const response = await api.post('/auth/login', {email, password});
     return normalizeToken(response.data);
 };

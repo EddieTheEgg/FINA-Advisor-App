@@ -1,8 +1,9 @@
-import {createContext, useEffect, useState} from 'react';
+import {createContext, useEffect, useState, useCallback} from 'react';
 import { TokenStorage } from '../../../utils/tokenStorage';
 import { accessTokenService } from '../../../api/accesstokenservice';
 import { refreshToken } from '../api/api';
 import { useQueryClient } from '@tanstack/react-query';
+import { authManager } from '../../../utils/authManager';
 
 type AuthContextType = {
   isLoading: boolean;
@@ -63,7 +64,7 @@ export function AuthProvider({children}: {children: React.ReactNode}) {
   };
 
   //Reset the auth state when user signs out.
-  const signOut = async () => {
+  const signOut = useCallback(async () => {
     try {
       setIsLoading(true);
       setIsSignedIn(false);
@@ -79,7 +80,15 @@ export function AuthProvider({children}: {children: React.ReactNode}) {
     } finally {
       setIsLoading(false);
     }
-  };
+  }, [queryClient]);
+
+  // Register signOut callback with auth manager for axios interceptor
+  useEffect(() => {
+    authManager.setSignOutCallback(signOut);
+    return () => {
+      authManager.clearSignOutCallback();
+    };
+  }, [signOut]);
 
   return (
     <AuthContext.Provider

@@ -18,17 +18,49 @@ const LoginScreen = ({ navigation }: LoginScreenProps) => {
     const [email, setEmail] = useState('');
     const [password, setPassword] = useState('');
     const [showPassword, setShowPassword] = useState(true);
+    const [validationError, setValidationError] = useState<string | null>(null);
 
     // Use the query login hook to login the user
     const {mutate: loginUser, error, isPending} = useLogin();
 
     const handleLogin = async () => {
-        loginUser({email, password},);
+        // Clear any previous validation errors
+        setValidationError(null);
+        
+        // Basic validation
+        if (!email.trim()) {
+            setValidationError('Email is required');
+            return;
+        }
+        if (!password.trim()) {
+            setValidationError('Password is required');
+            return;
+        }
+        if (!email.includes('@')) {
+            setValidationError('Please enter a valid email address');
+            return;
+        }
+        
+        loginUser({email: email.trim(), password: password.trim()});
     };
 
     const handleForgotPass = () => {
         console.log('Password forgotten text clicked!');
     };
+
+    // Clear validation error when user starts typing
+    const handleEmailChange = (text: string) => {
+        setEmail(text);
+        if (validationError) setValidationError(null);
+    };
+
+    const handlePasswordChange = (text: string) => {
+        setPassword(text);
+        if (validationError) setValidationError(null);
+    };
+
+    // Show validation error first, then API error
+    const displayError = validationError || (error ? 'Invalid email or password' : null);
 
     return (
         <View style={[styles.mainContainer, {paddingTop: insets.top, paddingBottom: insets.bottom}]}>
@@ -50,14 +82,15 @@ const LoginScreen = ({ navigation }: LoginScreenProps) => {
                     autoCapitalize="none"
                     autoCorrect={false}
                     keyboardType="email-address"
-                    onChangeText={setEmail}
+                    onChangeText={handleEmailChange}
                 />
                 <View>
                     <TextInput
                         placeholder="Password"
                         style={styles.input}
+                        placeholderTextColor={colors.gray[400]}
                         value={password}
-                        onChangeText={setPassword}
+                        onChangeText={handlePasswordChange}
                         secureTextEntry={showPassword}
                         autoCapitalize="none"
                         autoCorrect={false}
@@ -70,7 +103,7 @@ const LoginScreen = ({ navigation }: LoginScreenProps) => {
                         }
                     </Pressable>
                 </View>
-                {error && <Text style={styles.errorText}>Login failed</Text>}
+                {displayError && <Text style={styles.errorText}>{displayError}</Text>}
             </View>
             <View style={styles.buttonContainer}>
                 <SignInButton onPress={handleLogin} disabled={isPending} />

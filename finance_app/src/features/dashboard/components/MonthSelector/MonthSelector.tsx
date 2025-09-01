@@ -44,9 +44,11 @@ export default function MonthSelector({ month, year, onPeriodChange }: MonthSele
                                 selectedValue={tempMonth}
                                 onValueChange={(itemValue: string) => setTempMonth(itemValue)}
                                 style={styles.picker}
+                                // eslint-disable-next-line react-native/no-inline-styles
+                                itemStyle={{ color: 'black', fontSize: 18 }}
                             >
                                 {months.map((m) => (
-                                    <Picker.Item key={m} label={m} value={m} />
+                                    <Picker.Item key={m} label={m} value={m} color="black" />
                                 ))}
                             </Picker>
                         </View>
@@ -55,9 +57,11 @@ export default function MonthSelector({ month, year, onPeriodChange }: MonthSele
                                 selectedValue={tempYear}
                                 onValueChange={(itemValue: number) => setTempYear(itemValue)}
                                 style={styles.picker}
+                                // eslint-disable-next-line react-native/no-inline-styles
+                                itemStyle={{ color: 'black', fontSize: 18 }}
                             >
                                 {years.map((y) => (
-                                    <Picker.Item key={y} label={String(y)} value={y} />
+                                    <Picker.Item key={y} label={String(y)} value={y} color="black" />
                                 ))}
                             </Picker>
                         </View>
