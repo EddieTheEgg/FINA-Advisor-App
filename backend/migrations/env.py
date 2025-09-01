@@ -36,6 +36,7 @@ from backend.src.entities.transaction import Transaction
 from backend.src.entities.account import Account
 from backend.src.entities.audit_logs import AuditLog
 from backend.src.entities.budgets import Budget
+from backend.src.entities.password_reset_token import PasswordResetToken
 
 # Set target_metadata for autogenerate
 target_metadata = Base.metadata

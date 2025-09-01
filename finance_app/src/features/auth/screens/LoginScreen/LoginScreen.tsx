@@ -26,7 +26,7 @@ const LoginScreen = ({ navigation }: LoginScreenProps) => {
     const handleLogin = async () => {
         // Clear any previous validation errors
         setValidationError(null);
-        
+
         // Basic validation
         if (!email.trim()) {
             setValidationError('Email is required');
@@ -40,7 +40,7 @@ const LoginScreen = ({ navigation }: LoginScreenProps) => {
             setValidationError('Please enter a valid email address');
             return;
         }
-        
+
         loginUser({email: email.trim(), password: password.trim()});
     };
 
@@ -51,7 +51,7 @@ const LoginScreen = ({ navigation }: LoginScreenProps) => {
     // Clear validation error when user starts typing
     const handleEmailChange = (text: string) => {
         setEmail(text);
-        if (validationError) {  
+        if (validationError) { 
             setValidationError(null);
         }
     };

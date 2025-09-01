@@ -9,7 +9,7 @@ import os
 from sqlalchemy.orm import Session
 from backend.src.entities.user import User
 from backend.src.entities.enums import ACCOUNT_TYPE_COLORS, ACCOUNT_TYPE_ICONS
-from backend.src.auth.model import NewRegisteredUserResponse, Token, TokenData, RegisterUserRequest, LoginRequest, RefreshTokenRequest, EmailAvailabilityRequest, EmailAvailabilityResponse, SignupRequest, PasswordValidationRequest, PasswordValidationResponse
+from backend.src.auth.model import NewRegisteredUserResponse, Token, TokenData, RegisterUserRequest, LoginRequest, RefreshTokenRequest, EmailAvailabilityRequest, EmailAvailabilityResponse, SignupRequest, PasswordValidationRequest, PasswordValidationResponse, ForgotPasswordRequest, ForgotPasswordResponse, ResetPasswordRequest
 from backend.src.accounts.model import AccountCreateRequest
 from backend.src.accounts.service import create_account
 from backend.src.categories.service import create_default_categories
@@ -233,5 +233,105 @@ def validate_user_password(password_request: PasswordValidationRequest, user_id:
     
     return PasswordValidationResponse(is_valid=is_valid)
 
+def forgot_password(forgot_password_request: ForgotPasswordRequest, db: Session) -> ForgotPasswordResponse:
+    logging.info(f"Forgot password request for user {forgot_password_request.email}")
+    
+    user = db.query(User).filter(User.email == forgot_password_request.email).first()
+    if not user:
+        logging.warning(f"User not found: {forgot_password_request.email}")
+        return ForgotPasswordResponse(success=False, message="If an account with this email exists, a password reset link will be sent.")
+    
+    try:
+        # Generate a 6-digit verification code
+        import random
+        verification_code = f"{random.randint(100000, 999999)}"
+        
+        # Set expiration time (15 minutes from now)
+        expires_at = datetime.now(timezone.utc) + timedelta(minutes=15)
+        
+        # Create password reset token record
+        from backend.src.entities.password_reset_token import PasswordResetToken
+        reset_token_record = PasswordResetToken(
+            user_id=user.user_id,
+            token=verification_code,
+            expires_at=expires_at
+        )
+        
+        # Save to database
+        db.add(reset_token_record)
+        db.commit()
+        
+        # Send password reset email
+        from backend.src.email.service import email_service
+        user_name = f"{user.first_name} {user.last_name}".strip() or user.email
+        email_sent = email_service.send_password_reset_email(
+            user.email, 
+            verification_code, 
+            user_name
+        )
+        
+        if email_sent:
+            logging.info(f"Password reset email sent successfully to {user.email}")
+            return ForgotPasswordResponse(
+                success=True, 
+                message="If an account with this email exists, a verification code has been sent."
+            )
+        else:
+            # Rollback the token creation if email fails
+            db.rollback()
+            logging.error(f"Failed to send password reset email to {user.email}")
+            return ForgotPasswordResponse(
+                success=False, 
+                message="Failed to send verification code. Please try again later."
+            )
+            
+    except Exception as e:
+        db.rollback()
+        logging.error(f"Error in forgot_password for {forgot_password_request.email}: {str(e)}")
+        return ForgotPasswordResponse(
+            success=False, 
+            message="An error occurred. Please try again later."
+        )
 
-
+def reset_password(reset_password_request: ResetPasswordRequest, db: Session) -> dict:
+    """Reset user password using a valid verification code"""
+    logging.info("Password reset request received")
+    
+    try:
+        # Find the verification code
+        from backend.src.entities.password_reset_token import PasswordResetToken
+        token_record = db.query(PasswordResetToken).filter(
+            PasswordResetToken.token == reset_password_request.verification_code,
+            PasswordResetToken.used_at.is_(None),
+            PasswordResetToken.expires_at > datetime.now(timezone.utc)
+        ).first()
+        
+        if not token_record:
+            logging.warning("Invalid or expired verification code used")
+            return {"success": False, "message": "Invalid or expired verification code"}
+        
+        # Get the user
+        user = db.query(User).filter(User.user_id == token_record.user_id).first()
+        if not user:
+            logging.error(f"User not found for verification code {reset_password_request.verification_code}")
+            return {"success": False, "message": "User not found"}
+        
+        # Hash the new password
+        new_hashed_password = get_password_hash(reset_password_request.new_password)
+        
+        # Update user's password
+        user.hashed_password = new_hashed_password
+        
+        # Mark verification code as used
+        token_record.used_at = datetime.now(timezone.utc)
+        
+        # Commit changes
+        db.commit()
+        
+        logging.info(f"Password successfully reset for user {user.email}")
+        return {"success": True, "message": "Password reset successfully"}
+        
+    except Exception as e:
+        db.rollback()
+        logging.error(f"Error during password reset: {str(e)}")
+        return {"success": False, "message": "An error occurred during password reset"}

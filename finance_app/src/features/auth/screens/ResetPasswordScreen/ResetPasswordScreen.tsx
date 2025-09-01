@@ -16,14 +16,15 @@ type ResetPasswordScreenProps = {
 }
 
 type RouteParams = {
-    token: string;
+    email: string;
 }
 
 const ResetPasswordScreen = ({ navigation }: ResetPasswordScreenProps) => {
     const insets = useSafeAreaInsets();
     const route = useRoute();
-    const { token } = route.params as RouteParams;
+    const { email } = route.params as RouteParams;
 
+    const [verificationCode, setVerificationCode] = useState('');
     const [newPassword, setNewPassword] = useState('');
     const [confirmPassword, setConfirmPassword] = useState('');
     const [showNewPassword, setShowNewPassword] = useState(false);
@@ -38,6 +39,14 @@ const ResetPasswordScreen = ({ navigation }: ResetPasswordScreenProps) => {
         setValidationError(null);
 
         // Basic validation
+        if (!verificationCode.trim()) {
+            setValidationError('Verification code is required');
+            return;
+        }
+        if (verificationCode.length !== 6) {
+            setValidationError('Verification code must be 6 digits');
+            return;
+        }
         if (!newPassword.trim()) {
             setValidationError('New password is required');
             return;
@@ -52,12 +61,19 @@ const ResetPasswordScreen = ({ navigation }: ResetPasswordScreenProps) => {
         }
 
         resetPassword({ 
-            token: token,
+            verification_code: verificationCode.trim(),
             new_password: newPassword.trim() 
         });
     };
 
     // Clear validation error when user starts typing
+    const handleVerificationCodeChange = (text: string) => {
+        setVerificationCode(text);
+        if (validationError) {
+            setValidationError(null);
+        }
+    };
+
     const handleNewPasswordChange = (text: string) => {
         setNewPassword(text);
         if (validationError) {
@@ -73,7 +89,7 @@ const ResetPasswordScreen = ({ navigation }: ResetPasswordScreenProps) => {
     };
 
     // Show validation error first, then API error
-    const displayError = validationError || (error ? 'Invalid or expired reset link. Please try again.' : null);
+    const displayError = validationError || (error ? 'Invalid or expired verification code. Please try again.' : null);
 
     return (
         <View style={[styles.mainContainer, { paddingTop: insets.top, paddingBottom: insets.bottom }]}>
@@ -85,12 +101,24 @@ const ResetPasswordScreen = ({ navigation }: ResetPasswordScreenProps) => {
             </AnimatedPressable>
 
             <View style={styles.contentContainer}>
-                <Text style={styles.title}>Reset Password</Text>
+                <Text style={styles.title}>Reset Password Confirmation</Text>
                 <Text style={styles.subtitle}>
-                    Enter your new password below.
+                    Enter the verification code sent to {email} and your new password.
                 </Text>
 
                 <View style={styles.inputsContainer}>
+                    <TextInput
+                        placeholder="Verification Code"
+                        style={styles.input}
+                        placeholderTextColor={colors.gray[400]}
+                        value={verificationCode}
+                        onChangeText={handleVerificationCodeChange}
+                        keyboardType="number-pad"
+                        maxLength={6}
+                        autoCapitalize="none"
+                        autoCorrect={false}
+                        editable={!isPending}
+                    />
                     <View style={styles.inputContainer}>
                         <TextInput
                             placeholder="New Password"
@@ -152,7 +180,7 @@ const ResetPasswordScreen = ({ navigation }: ResetPasswordScreenProps) => {
                             <Text style={styles.successText}>
                                 Password reset successfully! You can now login with your new password.
                             </Text>
-                            <Pressable 
+                            <Pressable
                                 style={styles.loginButton}
                                 onPress={() => navigation.navigate('Login')}
                             >

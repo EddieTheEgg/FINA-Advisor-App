@@ -26,6 +26,7 @@ class User(Base):
     monthly_snapshots = relationship("MonthlySnapshot", back_populates="user", cascade="all, delete-orphan")
     audit_logs = relationship("AuditLog", back_populates="user", cascade="all, delete-orphan")
     budgets = relationship("Budget", back_populates="user", cascade="all, delete-orphan")
+    password_reset_tokens = relationship("PasswordResetToken", back_populates="user", cascade="all, delete-orphan", lazy="dynamic")
     
     def __repr__(self):
         return (f"<User(user_id={self.user_id}, "

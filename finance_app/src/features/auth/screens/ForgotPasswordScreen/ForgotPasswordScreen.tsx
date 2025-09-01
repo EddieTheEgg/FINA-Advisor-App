@@ -23,7 +23,7 @@ const ForgotPasswordScreen = ({ navigation }: ForgotPasswordScreenProps) => {
     const handleForgotPassword = async () => {
         // Clear any previous validation errors
         setValidationError(null);
-        
+
         // Basic validation
         if (!email.trim()) {
             setValidationError('Email is required');
@@ -33,14 +33,28 @@ const ForgotPasswordScreen = ({ navigation }: ForgotPasswordScreenProps) => {
             setValidationError('Please enter a valid email address');
             return;
         }
-        
+
         forgotPassword({ email: email.trim() });
     };
+
+    // Navigate to reset screen when email is sent successfully
+    React.useEffect(() => {
+        if (isSuccess) {
+            // Navigate to reset password screen after a short delay
+            const timer = setTimeout(() => {
+                navigation.navigate('ResetPassword', { email: email.trim() });
+            }, 2000); // 2 second delay to show success message
+
+            return () => clearTimeout(timer);
+        }
+    }, [isSuccess, navigation, email]);
 
     // Clear validation error when user starts typing
     const handleEmailChange = (text: string) => {
         setEmail(text);
-        if (validationError) setValidationError(null);
+        if (validationError) {
+            setValidationError(null);
+        }
     };
 
     // Show validation error first, then API error
@@ -54,13 +68,13 @@ const ForgotPasswordScreen = ({ navigation }: ForgotPasswordScreenProps) => {
             >
                 <FontAwesome6 name="arrow-left" size={24} color="black" solid />
             </AnimatedPressable>
-            
+
             <View style={styles.contentContainer}>
                 <Text style={styles.title}>Forgot Password</Text>
                 <Text style={styles.subtitle}>
-                    Enter your email address and we'll send you a link to reset your password.
+                    Enter your email address and we'll send you a verification code to reset your password.
                 </Text>
-                
+
                 <View style={styles.inputsContainer}>
                     <TextInput
                         placeholder="Your Email"
@@ -75,7 +89,7 @@ const ForgotPasswordScreen = ({ navigation }: ForgotPasswordScreenProps) => {
                     />
                     {displayError && <Text style={styles.errorText}>{displayError}</Text>}
                 </View>
-                
+
                 <View style={styles.buttonContainer}>
                     <Pressable 
                         style={[styles.sendButton, isPending && styles.sendButtonDisabled]}
@@ -83,14 +97,14 @@ const ForgotPasswordScreen = ({ navigation }: ForgotPasswordScreenProps) => {
                         disabled={isPending}
                     >
                         <Text style={[styles.sendButtonText, isPending && styles.sendButtonTextDisabled]}>
-                            {isPending ? 'Sending...' : 'Send Reset Link'}
+                            {isPending ? 'Sending...' : 'Send Verification Code'}
                         </Text>
                     </Pressable>
-                    
+
                     {isSuccess && (
                         <View style={styles.successContainer}>
                             <Text style={styles.successText}>
-                                Reset link sent! Check your email for instructions.
+                                Verification code sent! Check your email and enter the code on the next screen.
                             </Text>
                         </View>
                     )}

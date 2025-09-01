@@ -8,7 +8,7 @@ import { authManager } from '../utils/authManager';
 
   // Create axios instance with base URL and headers
   export const api = axios.create({
-    baseURL: 'http://3.232.108.227:8000',
+    baseURL: 'https://finance--connection.app',
     headers: {
       'Content-Type': 'application/json',
   },

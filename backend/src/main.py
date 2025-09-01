@@ -1,11 +1,12 @@
 from fastapi import FastAPI
-from src.database.core import engine, Base
-from src.entities.user import User
-from src.entities.category import Category
-from src.entities.transaction import Transaction
-from src.entities.audit_logs import AuditLog
-from src.api import register_routes
-from src.logging import configure_logging, LogLevels
+from backend.src.database.core import engine, Base
+from backend.src.entities.user import User
+from backend.src.entities.category import Category
+from backend.src.entities.transaction import Transaction
+from backend.src.entities.audit_logs import AuditLog
+from backend.src.entities.password_reset_token import PasswordResetToken
+from backend.src.api import register_routes
+from backend.src.logging import configure_logging, LogLevels
 
 configure_logging(LogLevels.info)
 

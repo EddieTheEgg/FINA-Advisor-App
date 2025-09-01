@@ -117,16 +117,16 @@ export const forgotPassword = async ({ email }: { email: string }) => {
     }
 };
 
-// Reset password with token
-export const resetPassword = async ({ token, new_password }: { token: string; new_password: string }) => {
+// Reset password with verification code
+export const resetPassword = async ({ verification_code, new_password }: { verification_code: string; new_password: string }) => {
     try {
-        const response = await api.post('/auth/reset-password', { token, new_password });
+        const response = await api.post('/auth/reset-password', { verification_code, new_password });
         return response.data;
     } catch (error) {
         if (error instanceof AxiosError && error.response?.status === 400) {
             throw new Error(error.response.data.message);
         } else if (error instanceof AxiosError && error.response?.status === 401) {
-            throw new Error('Invalid or expired reset token');
+            throw new Error('Invalid or expired verification code');
         } else if (error instanceof AxiosError && error.response?.status === 500) {
             throw new Error('Failed to reset password');
         } else {

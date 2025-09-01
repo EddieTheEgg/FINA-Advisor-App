@@ -77,4 +77,15 @@ class PasswordValidationRequest(BaseModel):
 
 class PasswordValidationResponse(BaseModel):
     is_valid: bool    
+
+class ForgotPasswordRequest(BaseModel):
+    email: EmailStr
+
+class ForgotPasswordResponse(BaseModel):
+    message: str
+    success: bool
+
+class ResetPasswordRequest(BaseModel):
+    verification_code: str  # 6-digit code from email   
+    new_password: str
     

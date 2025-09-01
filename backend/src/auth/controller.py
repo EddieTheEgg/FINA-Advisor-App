@@ -2,8 +2,8 @@
 from typing import Annotated
 from fastapi import APIRouter, Depends
 from fastapi.security import OAuth2PasswordRequestForm
-from backend.src.auth.model import NewRegisteredUserResponse, Token, RegisterUserRequest, LoginRequest, RefreshTokenRequest, EmailAvailabilityRequest, EmailAvailabilityResponse, SignupRequest, PasswordValidationRequest, PasswordValidationResponse
-from backend.src.auth.service import register_user, login_user, refresh_access_token, check_email_availability, signup_user_with_account, validate_user_password, CurrentUser
+from backend.src.auth.model import NewRegisteredUserResponse, Token, RegisterUserRequest, LoginRequest, RefreshTokenRequest, EmailAvailabilityRequest, EmailAvailabilityResponse, SignupRequest, PasswordValidationRequest, PasswordValidationResponse, ForgotPasswordRequest, ForgotPasswordResponse, ResetPasswordRequest
+from backend.src.auth.service import register_user, login_user, refresh_access_token, check_email_availability, signup_user_with_account, validate_user_password, CurrentUser, forgot_password, reset_password
 from backend.src.database.core import DbSession
 
 router = APIRouter(
@@ -69,3 +69,17 @@ def validate_password(
 ) -> PasswordValidationResponse:
     return validate_user_password(password_request, current_user.user_id, db)
 
+
+@router.post("/forgot-password", response_model=ForgotPasswordResponse)
+def forgot_password_endpoint(
+    forgot_password_request: ForgotPasswordRequest,
+    db: DbSession
+) -> ForgotPasswordResponse:
+    return forgot_password(forgot_password_request, db)
+
+@router.post("/reset-password")
+def reset_password_endpoint(
+    reset_password_request: ResetPasswordRequest,
+    db: DbSession
+):
+    return reset_password(reset_password_request, db)
