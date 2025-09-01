@@ -5,6 +5,8 @@ import CreateAccountScreen from '../features/auth/screens/CreateAccount/CreateAc
 import { AuthStackParamList } from './types/AuthNavigatorTypes';
 import { SingleAccountSetupScreen } from '../features/auth/screens/SingleAccountSetupScreen/SingleAccountSetupScreen';
 import { SetupCompleteScreen } from '../features/auth/screens/SetupCompleteScreen/SetupCompleteScreen';
+import ForgotPasswordScreen from '../features/auth/screens/ForgotPasswordScreen/ForgotPasswordScreen';
+import ResetPasswordScreen from '../features/auth/screens/ResetPasswordScreen/ResetPasswordScreen';
 
 const Stack = createNativeStackNavigator<AuthStackParamList>();
 
@@ -30,6 +32,8 @@ const AuthNavigator = () => {
       <Stack.Screen name="CreateAccount" component={CreateAccountScreen} />
       <Stack.Screen name="SingleAccount" component={SingleAccountSetupScreen} />
       <Stack.Screen name="SetupComplete" component={SetupCompleteScreen}/>
+      <Stack.Screen name="ForgotPassword" component={ForgotPasswordScreen} />
+      <Stack.Screen name="ResetPassword" component={ResetPasswordScreen} />
     </Stack.Navigator>
   );
 };

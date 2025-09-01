@@ -7,6 +7,8 @@ export type AuthStackParamList = {
   SingleAccount: undefined;
   SetupComplete: undefined;
   WelcomeSuccess: undefined;
+  ForgotPassword: undefined;
+  ResetPassword: { token: string };
 };
 
 export type AuthNavigationProps = NativeStackNavigationProp<AuthStackParamList>;

@@ -45,18 +45,22 @@ const LoginScreen = ({ navigation }: LoginScreenProps) => {
     };
 
     const handleForgotPass = () => {
-        console.log('Password forgotten text clicked!');
+        navigation.navigate('ForgotPassword');
     };
 
     // Clear validation error when user starts typing
     const handleEmailChange = (text: string) => {
         setEmail(text);
-        if (validationError) setValidationError(null);
+        if (validationError) {  
+            setValidationError(null);
+        }
     };
 
     const handlePasswordChange = (text: string) => {
         setPassword(text);
-        if (validationError) setValidationError(null);
+        if (validationError) {
+            setValidationError(null);
+        }
     };
 
     // Show validation error first, then API error

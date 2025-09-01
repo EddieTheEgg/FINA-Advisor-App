@@ -24,18 +24,6 @@ export const signupUser = async (signupData: CreateAccountRequest): Promise<Toke
     }
 };
 
-export const testConnection = async () => {
-    console.log('🔍 Testing connection to:', api.defaults.baseURL);
-    try {
-        const response = await api.get('/');
-        console.log('✅ Connection test SUCCESS:', response.data);
-        return response.data;
-    } catch (error) {
-        console.log('❌ Connection test FAILED:', error);
-        throw error;
-    }
-};
-
 export const loginUser = async ({ email, password }: { email: string; password: string }) => {
     console.log('🚀 Attempting login to:', api.defaults.baseURL + '/auth/login');
     const response = await api.post('/auth/login', {email, password});
@@ -107,6 +95,40 @@ export const updatePassword = async (updatePasswordRequest: UpdatePasswordReques
             throw new Error('Access denied');
         } else if (error instanceof AxiosError && error.response?.status === 500) {
             throw new Error('Failed to update password');
+        } else {
+            throw new Error(`An unexpected error occurred: ${error}`);
+        }
+    }
+};
+
+// Request password reset
+export const forgotPassword = async ({ email }: { email: string }) => {
+    try {
+        const response = await api.post('/auth/forgot-password', { email });
+        return response.data;
+    } catch (error) {
+        if (error instanceof AxiosError && error.response?.status === 400) {
+            throw new Error(error.response.data.message);
+        } else if (error instanceof AxiosError && error.response?.status === 500) {
+            throw new Error('Failed to send password reset email');
+        } else {
+            throw new Error(`An unexpected error occurred: ${error}`);
+        }
+    }
+};
+
+// Reset password with token
+export const resetPassword = async ({ token, new_password }: { token: string; new_password: string }) => {
+    try {
+        const response = await api.post('/auth/reset-password', { token, new_password });
+        return response.data;
+    } catch (error) {
+        if (error instanceof AxiosError && error.response?.status === 400) {
+            throw new Error(error.response.data.message);
+        } else if (error instanceof AxiosError && error.response?.status === 401) {
+            throw new Error('Invalid or expired reset token');
+        } else if (error instanceof AxiosError && error.response?.status === 500) {
+            throw new Error('Failed to reset password');
         } else {
             throw new Error(`An unexpected error occurred: ${error}`);
         }
