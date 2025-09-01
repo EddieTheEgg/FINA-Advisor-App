@@ -13,6 +13,16 @@ run:
     env: PORT
   env:
     - name: DATABASE_URL
-      value: "YOUR_SUPABASE_URL_HERE"
+      value: postgresql://postgres.fachgoyxzvlubbfyxfnn:EddiePogster08262006!@aws-1-us-east-1.pooler.supabase.com:5432/postgres
     - name: OPENAI_API_KEY  
-      value: "YOUR_OPENAI_KEY_HERE"
+      value: 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
+    - name: ACCESS_TOKEN_SECRET
+      value: "f0ca6183c6782962b60e132efc3c3f57f8f8c529b47f3e1a9e1c7fb298f4bc5a"
+    - name: REFRESH_TOKEN_SECRET
+      value: "7c8480f7d62731c5c6f6e80d02e4f29b4483edc60bfc8f39f0f2c0959b8988df"
+    - name: ALGORITHM
+      value: "HS256"
+    - name: ACCESS_TOKEN_EXPIRE_TIME
+      value: "3600"
+    - name: REFRESH_TOKEN_EXPIRE_TIME
+      value: "86400"
