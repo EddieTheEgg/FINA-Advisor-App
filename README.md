@@ -1,179 +1,267 @@
-<div id="top">
+# FINA-Advisor-App 💰
 
-<!-- HEADER STYLE: CLASSIC -->
-<div align="center">
+> **Empower Financial Growth Through Smarter Insights**
 
+A comprehensive personal finance management application with AI-powered insights, built with React Native, FastAPI, and OpenAI integration.
 
-# FINA-ADVISOR-APP
+[![React Native](https://img.shields.io/badge/React%20Native-0.72+-blue.svg)](https://reactnative.dev/)
+[![FastAPI](https://img.shields.io/badge/FastAPI-0.100+-green.svg)](https://fastapi.tiangolo.com/)
+[![Python](https://img.shields.io/badge/Python-3.10+-yellow.svg)](https://python.org/)
+[![Status](https://img.shields.io/badge/Status-Private%20Repository-red.svg)]()
 
-<em>Empower Financial Growth Through Smarter Insights</em>
+## 📱 Screenshots
 
-<!-- BADGES -->
-<img src="https://img.shields.io/github/last-commit/EddieTheEgg/FINA-Advisor-App?style=flat&logo=git&logoColor=white&color=0080ff" alt="last-commit">
-<img src="https://img.shields.io/github/languages/top/EddieTheEgg/FINA-Advisor-App?style=flat&color=0080ff" alt="repo-top-language">
-<img src="https://img.shields.io/github/languages/count/EddieTheEgg/FINA-Advisor-App?style=flat&color=0080ff" alt="repo-language-count">
+*Add screenshots of your app here*
 
-<em>Built with the tools and technologies:</em>
+## ✨ Features
 
-<img src="https://img.shields.io/badge/JSON-000000.svg?style=flat&logo=JSON&logoColor=white" alt="JSON">
-<img src="https://img.shields.io/badge/Markdown-000000.svg?style=flat&logo=Markdown&logoColor=white" alt="Markdown">
-<img src="https://img.shields.io/badge/npm-CB3837.svg?style=flat&logo=npm&logoColor=white" alt="npm">
-<img src="https://img.shields.io/badge/Swift-F05138.svg?style=flat&logo=Swift&logoColor=white" alt="Swift">
-<img src="https://img.shields.io/badge/SQLAlchemy-D71F00.svg?style=flat&logo=SQLAlchemy&logoColor=white" alt="SQLAlchemy">
-<img src="https://img.shields.io/badge/Prettier-F7B93E.svg?style=flat&logo=Prettier&logoColor=black" alt="Prettier">
-<img src="https://img.shields.io/badge/JavaScript-F7DF1E.svg?style=flat&logo=JavaScript&logoColor=black" alt="JavaScript">
-<img src="https://img.shields.io/badge/GNU%20Bash-4EAA25.svg?style=flat&logo=GNU-Bash&logoColor=white" alt="GNU%20Bash">
-<img src="https://img.shields.io/badge/FastAPI-009688.svg?style=flat&logo=FastAPI&logoColor=white" alt="FastAPI">
-<img src="https://img.shields.io/badge/Gradle-02303A.svg?style=flat&logo=Gradle&logoColor=white" alt="Gradle">
-<img src="https://img.shields.io/badge/React-61DAFB.svg?style=flat&logo=React&logoColor=black" alt="React">
-<img src="https://img.shields.io/badge/NumPy-013243.svg?style=flat&logo=NumPy&logoColor=white" alt="NumPy">
-<img src="https://img.shields.io/badge/Pytest-0A9EDC.svg?style=flat&logo=Pytest&logoColor=white" alt="Pytest">
-<img src="https://img.shields.io/badge/Yarn-2C8EBB.svg?style=flat&logo=Yarn&logoColor=white" alt="Yarn">
-<br>
-<img src="https://img.shields.io/badge/Docker-2496ED.svg?style=flat&logo=Docker&logoColor=white" alt="Docker">
-<img src="https://img.shields.io/badge/XML-005FAD.svg?style=flat&logo=XML&logoColor=white" alt="XML">
-<img src="https://img.shields.io/badge/Python-3776AB.svg?style=flat&logo=Python&logoColor=white" alt="Python">
-<img src="https://img.shields.io/badge/TypeScript-3178C6.svg?style=flat&logo=TypeScript&logoColor=white" alt="TypeScript">
-<img src="https://img.shields.io/badge/bat-31369E.svg?style=flat&logo=bat&logoColor=white" alt="bat">
-<img src="https://img.shields.io/badge/ESLint-4B32C3.svg?style=flat&logo=ESLint&logoColor=white" alt="ESLint">
-<img src="https://img.shields.io/badge/pandas-150458.svg?style=flat&logo=pandas&logoColor=white" alt="pandas">
-<img src="https://img.shields.io/badge/OpenAI-412991.svg?style=flat&logo=OpenAI&logoColor=white" alt="OpenAI">
-<img src="https://img.shields.io/badge/Kotlin-7F52FF.svg?style=flat&logo=Kotlin&logoColor=white" alt="Kotlin">
-<img src="https://img.shields.io/badge/Axios-5A29E4.svg?style=flat&logo=Axios&logoColor=white" alt="Axios">
-<img src="https://img.shields.io/badge/Podman-892CA0.svg?style=flat&logo=Podman&logoColor=white" alt="Podman">
-<img src="https://img.shields.io/badge/Pydantic-E92063.svg?style=flat&logo=Pydantic&logoColor=white" alt="Pydantic">
-<img src="https://img.shields.io/badge/Jest-C21325.svg?style=flat&logo=Jest&logoColor=white" alt="Jest">
+### 🔐 **Authentication & Security**
+- Secure user registration and login
+- Password reset functionality
+- JWT-based authentication
+- bcrypt password hashing
 
-</div>
-<br>
+### 💳 **Financial Management**
+- Transaction tracking and categorization
+- Multiple account support
+- Budget creation and monitoring
+- Financial insights and analytics
 
----
+### 🤖 **AI-Powered Insights**
+- Smart transaction categorization
+- Personalized financial advice
+- Budget analysis and recommendations
+- Spending pattern recognition
 
-## Table of Contents
+### 📊 **Analytics & Reporting**
+- Monthly income/expense tracking
+- Visual financial summaries
+- Budget vs. actual spending
+- Trend analysis
 
-- [Overview](#overview)
-- [Getting Started](#getting-started)
-    - [Prerequisites](#prerequisites)
-    - [Installation](#installation)
-    - [Usage](#usage)
-    - [Testing](#testing)
+## 🏗️ Architecture
 
----
+```
+┌─────────────────┐    ┌─────────────────┐    ┌─────────────────┐
+│   React Native  │    │   FastAPI       │    │   Supabase      │
+│   Frontend      │◄──►│   Backend       │◄──►│   Database      │
+│   (iOS/Android) │    │   (Python)      │    │   (PostgreSQL)  │
+└─────────────────┘    └─────────────────┘    └─────────────────┘
+         │                       │                       │
+         │                       │                       │
+         ▼                       ▼                       ▼
+┌─────────────────┐    ┌─────────────────┐    ┌─────────────────┐
+│   RN CLI        │    │   OpenAI API    │    │   AWS EC2       │
+│   Development   │    │   AI Features   │    │   Deployment    │
+└─────────────────┘    └─────────────────┘    └─────────────────┘
+```
 
-## Overview
+## 🚀 Quick Start
 
-FINA-Advisor-App is an all-in-one platform for building secure, scalable, and insightful financial applications. It offers a comprehensive architecture with backend, frontend, and AI integrations, streamlining development workflows.
-
-**Why FINA-Advisor-App?**
-
-This project helps developers create robust finance solutions with:
-
-- 🔧 **Secure Deployment:** Automates SSL setup and renewal, ensuring encrypted communication.
-- 🚀 **Efficient Backend:** Provides deployment scripts, dependency management, and health checks for reliable system operation.
-- 💾 **Data-Driven Insights:** Integrates AI-powered analytics, transaction management, and user profile handling.
-- 📊 **Modular Architecture:** Supports scalable features like budgets, accounts, categories, and transaction workflows.
-- 🧠 **Intelligent Features:** Leverages AI for category suggestions, savings tips, and financial insights.
-- 🔒 **Enhanced Security:** Implements comprehensive authentication, password management, and account controls.
-
----
-
-## Getting Started
+> **Note**: This is a private repository. Contact the owner for access if you'd like to explore the codebase.
 
 ### Prerequisites
 
-This project requires the following dependencies:
-
-- **Programming Language:** TypeScript
-- **Package Manager:** Pip, Yarn, Npm, Bundler, Gradle
-- **Container Runtime:** Docker, Podman
+- **Node.js** 18+ and **npm/yarn**
+- **Python** 3.10+
+- **React Native CLI** (`npm install -g react-native-cli`)
+- **iOS Simulator** (for iOS development)
+- **Android Studio** (for Android development)
+- **Xcode** (for iOS development)
+- **Docker** (optional, for containerized deployment)
 
 ### Installation
 
-Build FINA-Advisor-App from the source and install dependencies:
+1. **Clone the repository** (requires access)
+   ```bash
+   git clone https://github.com/EddieTheEgg/FINA-Advisor-App.git
+   cd FINA-Advisor-App
+   ```
 
-1. **Clone the repository:**
+2. **Backend Setup**
+   ```bash
+   # Create virtual environment
+   python -m venv venv
+   source venv/bin/activate  # On Windows: venv\Scripts\activate
+   
+   # Install dependencies
+   pip install -r requirements.txt
+   pip install -r backend/requirements.txt
+   ```
 
-    ```sh
-    ❯ git clone https://github.com/EddieTheEgg/FINA-Advisor-App
-    ```
+3. **Frontend Setup**
+   ```bash
+   cd finance_app
+   npm install
+   # or
+   yarn install
+   ```
 
-2. **Navigate to the project directory:**
+4. **Environment Configuration**
+   ```bash
+   # Copy environment template
+   cp .env.example .env
+   
+   # Edit .env with your configuration
+   # - Database URL (Supabase)
+   # - OpenAI API Key
+   # - JWT Secret
+   ```
 
-    ```sh
-    ❯ cd FINA-Advisor-App
-    ```
+### Running the Application
 
-3. **Install the dependencies:**
-
-**Using [docker](https://www.docker.com/):**
-
-```sh
-❯ docker build -t EddieTheEgg/FINA-Advisor-App .
-```
-**Using [pip](https://pypi.org/project/pip/):**
-
-```sh
-❯ pip install -r requirements.txt, backend/requirements.txt
-```
-**Using [yarn](https://yarnpkg.com/):**
-
-```sh
-❯ yarn install
-```
-**Using [npm](https://www.npmjs.com/):**
-
-```sh
-❯ npm install
-```
-**Using [bundler](https://www.ruby-lang.org/):**
-
-```sh
-❯ bundle install
-```
-**Using [gradle](https://gradle.org/):**
-
-```sh
-❯ gradle build
+#### Backend (Development)
+```bash
+cd backend
+uvicorn src.main:app --reload --host 0.0.0.0 --port 8000
 ```
 
-### Usage
+#### Frontend (Development)
+```bash
+cd finance_app
 
-Run the project with:
+# iOS
+npx react-native run-ios
 
-**Using [docker](https://www.docker.com/):**
+# Android
+npx react-native run-android
 
-```sh
-docker run -it {image_name}
-```
-**Using [pip](https://pypi.org/project/pip/):**
-
-```sh
-python {entrypoint}
-```
-**Using [yarn](https://yarnpkg.com/):**
-
-```sh
-yarn start
-```
-**Using [npm](https://www.npmjs.com/):**
-
-```sh
-npm start
-```
-**Using [bundler](https://www.ruby-lang.org/):**
-
-```sh
-bundle exec ruby {entrypoint}
-```
-**Using [gradle](https://gradle.org/):**
-
-```sh
-gradle run
+# Metro bundler
+npx react-native start
 ```
 
+#### Production Deployment
+```bash
+# Using Docker
+docker-compose up -d
+
+# Or using deployment scripts
+./scripts/deployment/start-service.sh
+```
+
+## 🧪 Testing
+
+```bash
+# Backend tests
+cd backend
+pytest
+
+# Frontend tests
+cd finance_app
+npm test
+# or
+yarn test
+```
+
+## 📁 Project Structure
+
+```
+FINA-Advisor-App/
+├── backend/                 # FastAPI backend
+│   ├── src/
+│   │   ├── auth/           # Authentication logic
+│   │   ├── transactions/   # Transaction management
+│   │   ├── budgets/        # Budget functionality
+│   │   ├── ai/            # AI integration
+│   │   └── database/      # Database configuration
+│   └── requirements.txt
+├── finance_app/            # React Native frontend
+│   ├── src/
+│   │   ├── features/      # Feature modules
+│   │   ├── components/    # Reusable components
+│   │   ├── navigation/    # Navigation setup
+│   │   └── api/          # API client
+│   └── package.json
+├── scripts/               # Deployment scripts
+│   ├── setup/            # Setup scripts
+│   └── deployment/       # Deployment scripts
+├── docs/                 # Documentation
+│   ├── PRIVACY_POLICY.md
+│   └── privacy-policy.html
+└── docker-compose.yml    # Docker configuration
+```
+
+## 🔧 Configuration
+
+### Environment Variables
+
+| Variable | Description | Required |
+|----------|-------------|----------|
+| `DATABASE_URL` | Supabase PostgreSQL connection string | ✅ |
+| `OPENAI_API_KEY` | OpenAI API key for AI features | ✅ |
+| `JWT_SECRET` | Secret key for JWT token generation | ✅ |
+| `CORS_ORIGINS` | Allowed CORS origins | ✅ |
+
+### Database Setup
+
+1. Create a Supabase project
+2. Run database migrations:
+   ```bash
+   cd backend
+   alembic upgrade head
+   ```
+
+## 🚀 Deployment
+
+### AWS EC2 Deployment
+
+1. **Setup EC2 Instance**
+   ```bash
+   ./scripts/setup/setup-ec2.sh
+   ```
+
+2. **Configure Domain & SSL**
+   ```bash
+   ./scripts/setup/setup-domain.sh
+   ./scripts/setup/setup-ssl.sh
+   ```
+
+3. **Deploy Application**
+   ```bash
+   ./scripts/deployment/start-service.sh
+   ```
+
+### Docker Deployment
+
+```bash
+# Build and run with Docker Compose
+docker-compose up -d
+
+# Or build individual services
+docker build -t fina-advisor-backend ./backend
+docker build -t fina-advisor-frontend ./finance_app
+```
+
+## 📱 App Store Deployment
+
+The app is configured for both iOS and Android deployment:
+
+- **iOS**: Configured with proper app icons, Info.plist, and App Store Connect settings
+- **Android**: Includes signing configuration and Play Store requirements
+
+See `docs/` for detailed deployment guides.
+
+## 🤝 Contributing
+
+This is currently a private project. If you're interested in contributing or have suggestions, please contact the owner directly.
+
+## 📄 License
+
+This project is private and proprietary. All rights reserved.
+
+## 🆘 Support
+
+- **Documentation**: Check the `docs/` directory
+- **Questions**: Contact edditheeggy@gmail.com
+- **Repository Access**: Contact owner for viewing permissions
+
+## 🙏 Acknowledgments
+
+- [React Native](https://reactnative.dev/) for the mobile framework
+- [FastAPI](https://fastapi.tiangolo.com/) for the backend API
+- [Supabase](https://supabase.com/) for the database and authentication
+- [OpenAI](https://openai.com/) for AI-powered features
 
 ---
 
-<div align="left"><a href="#top">⬆ Return</a></div>
-
----
+**Built with ❤️ by [EddieTheEgg](https://github.com/EddieTheEgg)**
