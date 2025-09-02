@@ -8,11 +8,6 @@
 
 <em>Empower Financial Growth Through Smarter Insights</em>
 
-<!-- BADGES -->
-<img src="https://img.shields.io/github/last-commit/EddieTheEgg/FINA-Advisor-App?style=flat&logo=git&logoColor=white&color=0080ff" alt="last-commit">
-<img src="https://img.shields.io/github/languages/top/EddieTheEgg/FINA-Advisor-App?style=flat&color=0080ff" alt="repo-top-language">
-<img src="https://img.shields.io/github/languages/count/EddieTheEgg/FINA-Advisor-App?style=flat&color=0080ff" alt="repo-language-count">
-
 <em>Built with the tools and technologies:</em>
 
 <img src="https://img.shields.io/badge/JSON-000000.svg?style=flat&logo=JSON&logoColor=white" alt="JSON">
