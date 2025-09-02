@@ -171,40 +171,6 @@ bundle exec ruby {entrypoint}
 gradle run
 ```
 
-### Testing
-
-Fina-advisor-app uses the {__test_framework__} test framework. Run the test suite with:
-
-**Using [docker](https://www.docker.com/):**
-
-```sh
-echo 'INSERT-TEST-COMMAND-HERE'
-```
-**Using [pip](https://pypi.org/project/pip/):**
-
-```sh
-pytest
-```
-**Using [yarn](https://yarnpkg.com/):**
-
-```sh
-yarn test
-```
-**Using [npm](https://www.npmjs.com/):**
-
-```sh
-npm test
-```
-**Using [bundler](https://www.ruby-lang.org/):**
-
-```sh
-bundle exec rspec
-```
-**Using [gradle](https://gradle.org/):**
-
-```sh
-gradle test
-```
 
 ---
 
