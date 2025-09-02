@@ -8,36 +8,23 @@
 
 <em>Empower Financial Growth Through Smarter Insights</em>
 
+<!-- BADGES -->
+<img src="https://img.shields.io/github/last-commit/EddieTheEgg/FINA-Advisor-App?style=flat&logo=git&logoColor=white&color=0080ff" alt="last-commit">
+<img src="https://img.shields.io/github/languages/top/EddieTheEgg/FINA-Advisor-App?style=flat&color=0080ff" alt="repo-top-language">
+<img src="https://img.shields.io/github/languages/count/EddieTheEgg/FINA-Advisor-App?style=flat&color=0080ff" alt="repo-language-count">
+
 <em>Built with the tools and technologies:</em>
 
-<img src="https://img.shields.io/badge/JSON-000000.svg?style=flat&logo=JSON&logoColor=white" alt="JSON">
-<img src="https://img.shields.io/badge/Markdown-000000.svg?style=flat&logo=Markdown&logoColor=white" alt="Markdown">
-<img src="https://img.shields.io/badge/npm-CB3837.svg?style=flat&logo=npm&logoColor=white" alt="npm">
-<img src="https://img.shields.io/badge/Swift-F05138.svg?style=flat&logo=Swift&logoColor=white" alt="Swift">
-<img src="https://img.shields.io/badge/SQLAlchemy-D71F00.svg?style=flat&logo=SQLAlchemy&logoColor=white" alt="SQLAlchemy">
-<img src="https://img.shields.io/badge/Prettier-F7B93E.svg?style=flat&logo=Prettier&logoColor=black" alt="Prettier">
-<img src="https://img.shields.io/badge/JavaScript-F7DF1E.svg?style=flat&logo=JavaScript&logoColor=black" alt="JavaScript">
-<img src="https://img.shields.io/badge/GNU%20Bash-4EAA25.svg?style=flat&logo=GNU-Bash&logoColor=white" alt="GNU%20Bash">
-<img src="https://img.shields.io/badge/FastAPI-009688.svg?style=flat&logo=FastAPI&logoColor=white" alt="FastAPI">
-<img src="https://img.shields.io/badge/Gradle-02303A.svg?style=flat&logo=Gradle&logoColor=white" alt="Gradle">
-<img src="https://img.shields.io/badge/React-61DAFB.svg?style=flat&logo=React&logoColor=black" alt="React">
-<img src="https://img.shields.io/badge/NumPy-013243.svg?style=flat&logo=NumPy&logoColor=white" alt="NumPy">
-<img src="https://img.shields.io/badge/Pytest-0A9EDC.svg?style=flat&logo=Pytest&logoColor=white" alt="Pytest">
-<img src="https://img.shields.io/badge/Yarn-2C8EBB.svg?style=flat&logo=Yarn&logoColor=white" alt="Yarn">
-<br>
-<img src="https://img.shields.io/badge/Docker-2496ED.svg?style=flat&logo=Docker&logoColor=white" alt="Docker">
-<img src="https://img.shields.io/badge/XML-005FAD.svg?style=flat&logo=XML&logoColor=white" alt="XML">
 <img src="https://img.shields.io/badge/Python-3776AB.svg?style=flat&logo=Python&logoColor=white" alt="Python">
+<img src="https://img.shields.io/badge/FastAPI-009688.svg?style=flat&logo=FastAPI&logoColor=white" alt="FastAPI">
+<img src="https://img.shields.io/badge/React_Native-61DAFB.svg?style=flat&logo=React&logoColor=black" alt="React Native">
 <img src="https://img.shields.io/badge/TypeScript-3178C6.svg?style=flat&logo=TypeScript&logoColor=white" alt="TypeScript">
-<img src="https://img.shields.io/badge/bat-31369E.svg?style=flat&logo=bat&logoColor=white" alt="bat">
-<img src="https://img.shields.io/badge/ESLint-4B32C3.svg?style=flat&logo=ESLint&logoColor=white" alt="ESLint">
-<img src="https://img.shields.io/badge/pandas-150458.svg?style=flat&logo=pandas&logoColor=white" alt="pandas">
+<img src="https://img.shields.io/badge/PostgreSQL-316192.svg?style=flat&logo=PostgreSQL&logoColor=white" alt="PostgreSQL">
 <img src="https://img.shields.io/badge/OpenAI-412991.svg?style=flat&logo=OpenAI&logoColor=white" alt="OpenAI">
-<img src="https://img.shields.io/badge/Kotlin-7F52FF.svg?style=flat&logo=Kotlin&logoColor=white" alt="Kotlin">
-<img src="https://img.shields.io/badge/Axios-5A29E4.svg?style=flat&logo=Axios&logoColor=white" alt="Axios">
-<img src="https://img.shields.io/badge/Podman-892CA0.svg?style=flat&logo=Podman&logoColor=white" alt="Podman">
-<img src="https://img.shields.io/badge/Pydantic-E92063.svg?style=flat&logo=Pydantic&logoColor=white" alt="Pydantic">
-<img src="https://img.shields.io/badge/Jest-C21325.svg?style=flat&logo=Jest&logoColor=white" alt="Jest">
+<img src="https://img.shields.io/badge/SQLAlchemy-D71F00.svg?style=flat&logo=SQLAlchemy&logoColor=white" alt="SQLAlchemy">
+<img src="https://img.shields.io/badge/Docker-2496ED.svg?style=flat&logo=Docker&logoColor=white" alt="Docker">
+<img src="https://img.shields.io/badge/AWS_EC2-FF9900.svg?style=flat&logo=Amazon-AWS&logoColor=white" alt="AWS EC2">
+<img src="https://img.shields.io/badge/Supabase-3ECF8E.svg?style=flat&logo=Supabase&logoColor=white" alt="Supabase">
 
 </div>
 <br>
@@ -68,70 +55,37 @@ FINA-Advisor-App is a comprehensive personal finance management application with
 - 🔒 **Security**: Implemented JWT authentication and secure password handling
 - 🤖 **AI Integration**: Integrated OpenAI API for smart transaction categorization
 
-## 📱 Screenshots
-
-*Add screenshots of your app here - this is crucial for employers to see your UI/UX skills*
-
-<!-- 
-Screenshots to add:
-- Login/Registration screens
-- Dashboard with financial overview
-- Transaction management interface
-- Budget tracking screens
-- AI insights and recommendations
-- Mobile app on both iOS and Android
--->
-
 ## ✨ Key Features
 
-### 🔐 **Authentication & Security**
-- **JWT-based authentication** with token management
-- **bcrypt password hashing** for secure password storage
-- **Password reset functionality** with email verification
-- **CORS configuration** for secure API access
-- **Input validation** using Pydantic models
-
-### 💳 **Financial Management**
-- **Transaction tracking** with manual and automatic categorization
-- **Account management** for multiple financial accounts
-- **Budget creation** with spending tracking
-- **Basic financial analytics** with expense summaries
-- **Data persistence** with PostgreSQL database
-
-### 🤖 **AI-Powered Features**
-- **OpenAI API integration** for transaction categorization
-- **Smart suggestions** based on transaction history
-- **Natural language processing** for transaction descriptions
-- **Learning from user patterns** to improve suggestions
-
-### 📊 **Analytics & Reporting**
-- **Monthly expense tracking** with basic charts
-- **Budget vs. actual spending** comparison
-- **Transaction history** with filtering and search
-- **Simple financial summaries** and insights
+- **JWT Authentication** with secure password handling
+- **Transaction Management** with AI-powered categorization
+- **Budget Tracking** and spending analytics
+- **Cross-Platform Mobile App** for iOS and Android
+- **OpenAI Integration** for smart financial insights
 
 ## 🏗️ System Architecture
 
 ```
 ┌─────────────────┐    ┌─────────────────┐    ┌─────────────────┐
-│   React Native  │    │   FastAPI       │    │   PostgreSQL    │
-│   Frontend      │◄──►│   Backend       │◄──►│   Database      │
-│   (iOS/Android) │    │   (Python 3.10) │    │   (ACID Compliant)│
+│   React Native  │    │   FastAPI       │    │   Supabase      │
+│   Frontend      │◄──►│   Backend       │◄──►│   PostgreSQL    │
+│   (iOS/Android) │    │   (Python 3.10) │    │   Database      │
 └─────────────────┘    └─────────────────┘    └─────────────────┘
          │                       │                       │
          │                       │                       │
          ▼                       ▼                       ▼
 ┌─────────────────┐    ┌─────────────────┐    ┌─────────────────┐
-│   Metro Bundler │    │   OpenAI API    │    │   Alembic       │
-│   Development   │    │   AI Features   │    │   Migrations    │
+│   Metro Bundler │    │   OpenAI API    │    │   AWS EC2       │
+│   Development   │    │   Finance APIs  │    │   Deployment    │
 └─────────────────┘    └─────────────────┘    └─────────────────┘
 ```
 
 **Technology Choices:**
 - **FastAPI**: Modern Python web framework with automatic API documentation
 - **React Native**: Cross-platform mobile development for iOS and Android
-- **PostgreSQL**: Reliable relational database for data persistence
+- **Supabase**: Cloud PostgreSQL database with built-in authentication
 - **OpenAI API**: Integration with GPT models for AI-powered features
+- **AWS EC2**: Cloud deployment and hosting platform
 
 ---
 
@@ -258,49 +212,13 @@ docker-compose up -d
 
 This will start both backend and database services.
 
-## 📚 API Documentation
-
-The backend provides a comprehensive REST API with automatic OpenAPI documentation.
-
-### Key Endpoints
-
-| Endpoint | Method | Description | Authentication |
-|----------|--------|-------------|----------------|
-| `/auth/register` | POST | User registration | None |
-| `/auth/login` | POST | User authentication | None |
-| `/auth/refresh` | POST | Token refresh | JWT |
-| `/transactions/` | GET/POST | Transaction management | JWT |
-| `/budgets/` | GET/POST | Budget operations | JWT |
-| `/ai/categorize` | POST | AI categorization | JWT |
-| `/insights/` | GET | Financial insights | JWT |
-
-### API Features
-- **Automatic OpenAPI docs** at `/docs` and `/redoc`
-- **Request/Response validation** with Pydantic models
-- **Rate limiting** to prevent abuse
-- **Comprehensive error handling** with detailed error messages
-- **Async support** for high-performance operations
-
-### Example API Usage
-```bash
-# Register a new user
-curl -X POST "http://localhost:8000/auth/register" \
-  -H "Content-Type: application/json" \
-  -d '{"email": "user@example.com", "password": "securepassword"}'
-
-# Get transactions
-curl -X GET "http://localhost:8000/transactions/" \
-  -H "Authorization: Bearer your_jwt_token"
-```
-
-## 📊 Project Metrics
+## 📊 What I Learned
 
 ### Development Achievements
 - **Full-Stack Implementation**: Complete mobile app with backend API
 - **Cross-Platform**: Single codebase for iOS and Android
 - **Database Design**: Proper schema with relationships and migrations
 - **API Design**: RESTful endpoints with proper HTTP methods
-- **Testing**: Unit tests for critical functionality
 
 ### Technical Learning
 - **Modern Frameworks**: FastAPI and React Native development
