@@ -33,4 +33,14 @@ web-build/
 .env.local
 .env.development.local
 .env.test.local
-.env.production.local 
+.env.production.local
+
+# Security & Private Keys
+*.pem
+*.p12
+*.key
+*.keystore
+*.jks
+*.mobileprovision
+*.orig.*
+finance-app-key.pem 
