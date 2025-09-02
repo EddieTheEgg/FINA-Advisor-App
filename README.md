@@ -1,1 +1,1 @@
-# An AI Expense Insights App (more details to come soon)
+# A Finance Tracking App (more details to come soon)
