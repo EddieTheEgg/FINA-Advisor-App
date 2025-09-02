@@ -10,6 +10,7 @@ import { MainAccountTypeCard } from '../../components/SingleAccountSetupComponen
 import { useAccountInfoStore } from '../../store/useSignupStore';
 import { MainAccountDetailsCard } from '../../components/SingleAccountSetupComponents/MainAccountDetailsCard/MainAccountDetailsCard';
 import { AnimatedPressable } from '../../../../components/AnimatedPressable/AnimatedPressable';
+import { useState } from 'react';
 
 type SingleAccountSetupScreenProps = {
     navigation: AuthNavigationProps;
@@ -19,12 +20,16 @@ export const SingleAccountSetupScreen = ({ navigation }: SingleAccountSetupScree
     const insets  = useSafeAreaInsets();
     const { height } = Dimensions.get('window');
     const responsivePadding = height * 0.2;
-    const { validateAccountName } = useAccountInfoStore();
+    const { validateAccountName, validateCreditLimit } = useAccountInfoStore();
+    const [invalidFieldAbove, setInvalidFieldAbove] = useState<string>('');
 
     const handleContinueToStep3 = () => {
-        if (validateAccountName()) {
-            navigation.navigate('SetupComplete');
+        if (!validateAccountName() || !validateCreditLimit()) {
+            setInvalidFieldAbove('There are some invalid fields above');
+            return;
         }
+        setInvalidFieldAbove('');
+        navigation.navigate('SetupComplete');
     };
 
     return (
@@ -49,6 +54,7 @@ export const SingleAccountSetupScreen = ({ navigation }: SingleAccountSetupScree
                 <MainAccountInfoCard/>
                 <MainAccountTypeCard/>
                 <MainAccountDetailsCard/>
+                {invalidFieldAbove && <Text style = {styles.invalidFieldAbove}>{invalidFieldAbove}</Text>}
                 <AnimatedPressable
                     style = {[
                         styles.continueButton,

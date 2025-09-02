@@ -23,6 +23,8 @@ export const AddAccountDetailsCard = () => {
         accountNameError,
         validateAccountName,
         initializeAllAccounts,
+        creditLimitError,
+        validateCreditLimit,
     } = useAddAccountStore();
 
     const {data: allAccounts, isPending, error: fetchAllExistingAccountsError} = useGroupAccounts();
@@ -45,7 +47,13 @@ export const AddAccountDetailsCard = () => {
         setSpendingLimitInput(
             creditLimit == null || creditLimit === 0 ? '' : Math.abs(creditLimit).toFixed(2)
         );
-    }, [creditLimit]);
+        validateCreditLimit();
+    }, [creditLimit, validateCreditLimit]);
+
+    // Validate credit limit when balance changes
+    useEffect(() => {
+        validateCreditLimit();
+    }, [accountBalance, validateCreditLimit]);
 
     // Live validate account name as it changes
     useEffect(() => {
@@ -98,6 +106,8 @@ export const AddAccountDetailsCard = () => {
                 setAccountBalance(numericValue);
             }
         }
+        // Validate credit limit after balance changes
+        validateCreditLimit();
     };
 
     //Update store amount for spending limit input when blurred (when user pressed out)
@@ -117,6 +127,7 @@ export const AddAccountDetailsCard = () => {
                 setCreditLimit(Math.abs(numericValue));
             }
         }
+        validateCreditLimit();
     };
 
     if (fetchAllExistingAccountsError) {
@@ -212,6 +223,7 @@ export const AddAccountDetailsCard = () => {
                         selectTextOnFocus={true}
                     />
                     <Text style={styles.accountBalanceText}>Enter Max Spending Limit</Text>
+                    {creditLimitError && <Text style={styles.errorText}>{creditLimitError}</Text>}
                 </View>
             </View>
         );

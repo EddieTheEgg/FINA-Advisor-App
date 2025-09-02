@@ -59,4 +59,12 @@ export const styles = StyleSheet.create({
         fontFamily: 'Poppins-SemiBold',
         fontSize: fontSize.lg,
     },
+    invalidFieldAbove: {
+        color: colors.red,
+        fontSize: fontSize.base,
+        fontFamily: 'Poppins-Regular',
+        marginTop: spacing.md,
+        marginHorizontal: spacing.md,
+        alignSelf: 'center',
+    },
 });

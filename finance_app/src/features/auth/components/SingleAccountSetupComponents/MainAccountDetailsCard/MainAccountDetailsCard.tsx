@@ -20,6 +20,8 @@ export const MainAccountDetailsCard = () => {
         setCreditLimit,
         validateAccountName,
         accountNameError,
+        validateCreditLimit,
+        creditLimitError,
     } = useAccountInfoStore();
 
     const [inputValue, setInputValue] = useState<string>(
@@ -47,6 +49,11 @@ export const MainAccountDetailsCard = () => {
         }
         validateAccountName();
     },[accountName, validateAccountName]);
+
+    // Validate credit limit when balance or credit limit changes
+    useEffect(() => {
+        validateCreditLimit();
+    }, [accountBalance, creditLimit, validateCreditLimit]);
 
     const handleTextChange = (text: string) => {
         // Allow negative numbers, positive numbers, and decimal points
@@ -83,6 +90,8 @@ export const MainAccountDetailsCard = () => {
                 setAccountBalance(numericValue);
             }
         }
+        // Validate credit limit after balance changes
+        validateCreditLimit();
     };
 
     //Update store amount for spending limit input when blurred (when user pressed out)
@@ -102,6 +111,8 @@ export const MainAccountDetailsCard = () => {
                 setCreditLimit(Math.abs(numericValue));
             }
         }
+        // Validate credit limit after limit changes
+        validateCreditLimit();
     };
 
     const remainingChars = 20 - (accountName.length || 0);
@@ -182,6 +193,7 @@ export const MainAccountDetailsCard = () => {
                     selectTextOnFocus={true}
                 />
                 <Text style = {styles.accountBalanceText}>Enter Max Spending Limit</Text>
+                {creditLimitError && <Text style = {styles.errorText}>{creditLimitError}</Text>}
             </View>
         </View>
         );

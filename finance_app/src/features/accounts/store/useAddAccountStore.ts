@@ -24,6 +24,9 @@ type AddAccountState = {
     validateAccountName: () => boolean;
     accountNameError: string | null;
 
+    validateCreditLimit: () => boolean;
+    creditLimitError: string | null;
+
     //When switching between account types, we need to reset the input fields
     resetAccountDetailsExceptType: () => void;
 
@@ -42,6 +45,7 @@ const initialAddAccountState = {
     routingNumber: null,
     allAccounts: [],
     accountNameError: null,
+    creditLimitError: null,
 };
 
 
@@ -90,6 +94,22 @@ export const useAddAccountStore = create<AddAccountState>((set, get) => ({
         }
 
         set({accountNameError: null});
+        return true;
+    },
+
+    validateCreditLimit: () => {
+        const { creditLimit, accountBalance } = get();
+
+        // Only validate if credit limit is set
+        if (creditLimit && creditLimit > 0) {
+            // Check if debt (negative balance) exceeds credit limit
+            if (accountBalance < 0 && Math.abs(accountBalance) > creditLimit) {
+                set({creditLimitError: 'Your credit balance spending is greater than your credit limit'});
+                return false;
+            }
+        }
+
+        set({creditLimitError: null});
         return true;
     },
 

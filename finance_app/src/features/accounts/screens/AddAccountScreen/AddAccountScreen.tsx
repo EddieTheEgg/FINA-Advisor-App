@@ -21,15 +21,16 @@ type AddAccountScreenProps = {
 
 export const AddAccountScreen = ({navigation}: AddAccountScreenProps) => {
     const insets = useSafeAreaInsets();
-    const {validateAccountName, resetAddAccountStore} = useAddAccountStore();
+    const {validateAccountName, validateCreditLimit, resetAddAccountStore} = useAddAccountStore();
     const [invalidAccountCreationText, setInvalidAccountCreationText] = useState<string>('');
     const {mutate : createAccount, isPending: isCreatingAccount, error: createAccountError, isSuccess: isAccountCreated} = useCreateAccount();
     const [showSuccessCreate, setShowSuccessCreate] = useState(false);
 
 
     const handleCreateAccount = () => {
-        if (!validateAccountName()) {
+        if (!validateAccountName() || !validateCreditLimit()) {
             setInvalidAccountCreationText('There are some invalid fields above');
+            return;
         }
         setInvalidAccountCreationText('');
         createAccount();

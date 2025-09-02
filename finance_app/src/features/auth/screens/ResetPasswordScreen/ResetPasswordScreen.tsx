@@ -1,5 +1,5 @@
 import React, { useEffect, useState } from 'react';
-import { Pressable, Text, TextInput, View } from 'react-native';
+import { Dimensions, Pressable, ScrollView, Text, TextInput, View } from 'react-native';
 
 import FontAwesome6 from 'react-native-vector-icons/FontAwesome6';
 import { useSafeAreaInsets } from 'react-native-safe-area-context';
@@ -23,7 +23,7 @@ const ResetPasswordScreen = ({ navigation }: ResetPasswordScreenProps) => {
     const insets = useSafeAreaInsets();
     const route = useRoute();
     const { email } = route.params as RouteParams;
-
+    const height = Dimensions.get('window').height;
     const [verificationCode, setVerificationCode] = useState('');
     const [newPassword, setNewPassword] = useState('');
     const [confirmPassword, setConfirmPassword] = useState('');
@@ -145,101 +145,106 @@ const ResetPasswordScreen = ({ navigation }: ResetPasswordScreenProps) => {
 
     return (
         <View style={[styles.mainContainer, { paddingTop: insets.top, paddingBottom: insets.bottom }]}>
-            <AnimatedPressable
-                style={styles.backButton}
-                onPress={() => navigation.navigate('Login')}
+            <ScrollView
+                showsVerticalScrollIndicator = {false}
+                contentContainerStyle = {[styles.scrollViewContainer, {paddingBottom: insets.bottom + height * 0.2}]}
             >
-                <FontAwesome6 name="arrow-left" size={24} color="black" solid />
-            </AnimatedPressable>
-
-            <View style={styles.contentContainer}>
-                <Text style={styles.title}>Reset Password</Text>
-                <Text style={styles.subtitle}>
-                    Enter the verification code sent to {email} and your new password.
-                </Text>
-
-                <View style={styles.inputsContainer}>
-                    <TextInput
-                        placeholder="Verification Code"
-                        style={styles.input}
-                        placeholderTextColor={colors.gray[400]}
-                        value={verificationCode}
-                        onChangeText={handleVerificationCodeChange}
-                        keyboardType="number-pad"
-                        maxLength={6}
-                        autoCapitalize="none"
-                        autoCorrect={false}
-                        editable={!isPending}
-                    />
-                   <View style={styles.inputContainer}>
-                        <TextInput
-                            placeholder="New Password"
-                            style={styles.input}
-                            placeholderTextColor={colors.gray[400]}
-                            value={newPassword}
-                            onChangeText={handleNewPasswordChange}
-                            secureTextEntry={!showNewPassword}
-                            autoCapitalize="none"
-                            autoCorrect={false}
-                            keyboardType="default"
-                            editable={!isPending}
-                        />
-                        <Pressable onPress={() => setShowNewPassword(!showNewPassword)}>
-                            {showNewPassword ?
-                                <FontAwesome6 name="eye-slash" solid style={styles.eyeIcon}/> :
-                                <FontAwesome6 name="eye" solid style={styles.eyeIcon}/>
-                            }
-                        </Pressable>
-                    </View>
-                    {passwordError && <Text style={styles.errorText}>{passwordError}</Text>}
-                    <View style={styles.inputContainer}>
-                        <TextInput
-                            placeholder="Confirm New Password"
-                            style={styles.input}
-                            placeholderTextColor={colors.gray[400]}
-                            value={confirmPassword}
-                            onChangeText={handleConfirmPasswordChange}
-                            secureTextEntry={!showConfirmPassword}
-                            autoCapitalize="none"
-                            autoCorrect={false}
-                            keyboardType="default"
-                            editable={!isPending}
-                        />
-                        <Pressable onPress={() => setShowConfirmPassword(!showConfirmPassword)}>
-                            {showConfirmPassword ?
-                                <FontAwesome6 name="eye-slash" solid style={styles.eyeIcon}/> :
-                                <FontAwesome6 name="eye" solid style={styles.eyeIcon}/>
-                            }
-                        </Pressable>
-                        </View>
-                    {displayError && <Text style={styles.errorText}>{displayError}</Text>}
-                </View>
-
-                <View style={styles.buttonContainer}>
                 <AnimatedPressable
-                    style={[styles.resetButton, (isPending || hasResetSuccessfully) && styles.resetButtonDisabled]}
-                    onPress={handleResetPassword}
-                    disabled={isPending || hasResetSuccessfully} // Disable during pending OR permanently after success
+                    style={styles.backButton}
+                    onPress={() => navigation.navigate('Login')}
                 >
-                    <Text style={[styles.resetButtonText, (isPending || hasResetSuccessfully) && styles.resetButtonTextDisabled]}>
-                        {isPending ? 'Resetting...' : hasResetSuccessfully ? 'Password Reset!' : 'Reset Password'}
-                    </Text>
+                    <FontAwesome6 name="arrow-left" size={24} color="black" solid />
                 </AnimatedPressable>
-                {isSuccess && (
-                    <View style={styles.successContainer}>
-                        <Text style={styles.successText}>
-                            Password reset successfully! You can now login with your new password.
-                        </Text>
-                        <Pressable
-                            style={styles.loginButton}
-                            onPress={() => navigation.navigate('Login')}
-                        >
-                            <Text style={styles.loginButtonText}>Go to Login</Text>
-                        </Pressable>
+
+                <View style={styles.contentContainer}>
+                    <Text style={styles.title}>Reset Password</Text>
+                    <Text style={styles.subtitle}>
+                        Enter the verification code sent to {email} and your new password.
+                    </Text>
+
+                    <View style={styles.inputsContainer}>
+                        <TextInput
+                            placeholder="Verification Code"
+                            style={styles.input}
+                            placeholderTextColor={colors.gray[400]}
+                            value={verificationCode}
+                            onChangeText={handleVerificationCodeChange}
+                            keyboardType="number-pad"
+                            maxLength={6}
+                            autoCapitalize="none"
+                            autoCorrect={false}
+                            editable={!isPending}
+                        />
+                    <View style={styles.inputContainer}>
+                            <TextInput
+                                placeholder="New Password"
+                                style={styles.input}
+                                placeholderTextColor={colors.gray[400]}
+                                value={newPassword}
+                                onChangeText={handleNewPasswordChange}
+                                secureTextEntry={!showNewPassword}
+                                autoCapitalize="none"
+                                autoCorrect={false}
+                                keyboardType="default"
+                                editable={!isPending}
+                            />
+                            <Pressable onPress={() => setShowNewPassword(!showNewPassword)}>
+                                {showNewPassword ?
+                                    <FontAwesome6 name="eye-slash" solid style={styles.eyeIcon}/> :
+                                    <FontAwesome6 name="eye" solid style={styles.eyeIcon}/>
+                                }
+                            </Pressable>
+                        </View>
+                        {passwordError && <Text style={styles.errorText}>{passwordError}</Text>}
+                        <View style={styles.inputContainer}>
+                            <TextInput
+                                placeholder="Confirm New Password"
+                                style={styles.input}
+                                placeholderTextColor={colors.gray[400]}
+                                value={confirmPassword}
+                                onChangeText={handleConfirmPasswordChange}
+                                secureTextEntry={!showConfirmPassword}
+                                autoCapitalize="none"
+                                autoCorrect={false}
+                                keyboardType="default"
+                                editable={!isPending}
+                            />
+                            <Pressable onPress={() => setShowConfirmPassword(!showConfirmPassword)}>
+                                {showConfirmPassword ?
+                                    <FontAwesome6 name="eye-slash" solid style={styles.eyeIcon}/> :
+                                    <FontAwesome6 name="eye" solid style={styles.eyeIcon}/>
+                                }
+                            </Pressable>
+                            </View>
+                        {displayError && <Text style={styles.errorText}>{displayError}</Text>}
                     </View>
-                )}
+
+                    <View style={styles.buttonContainer}>
+                    <AnimatedPressable
+                        style={[styles.resetButton, (isPending || hasResetSuccessfully) && styles.resetButtonDisabled]}
+                        onPress={handleResetPassword}
+                        disabled={isPending || hasResetSuccessfully} // Disable during pending OR permanently after success
+                    >
+                        <Text style={[styles.resetButtonText, (isPending || hasResetSuccessfully) && styles.resetButtonTextDisabled]}>
+                            {isPending ? 'Resetting...' : hasResetSuccessfully ? 'Password Reset!' : 'Reset Password'}
+                        </Text>
+                    </AnimatedPressable>
+                    {isSuccess && (
+                        <View style={styles.successContainer}>
+                            <Text style={styles.successText}>
+                                Password reset successfully! You can now login with your new password.
+                            </Text>
+                            <Pressable
+                                style={styles.loginButton}
+                                onPress={() => navigation.navigate('Login')}
+                            >
+                                <Text style={styles.loginButtonText}>Go to Login</Text>
+                            </Pressable>
+                        </View>
+                    )}
+                    </View>
                 </View>
-            </View>
+            </ScrollView>
         </View>
     );
 };

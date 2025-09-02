@@ -42,6 +42,7 @@ export const PasswordInputs = () => {
                     secureTextEntry = {!showPassword}
                     style = {styles.passwordInput}
                     value = {passwordInput}
+                    placeholderTextColor = "#999"
                     maxLength = {128}
                     onChangeText = {setPasswordInput}
                 />

@@ -12,7 +12,7 @@ import { authManager } from '../utils/authManager';
     headers: {
       'Content-Type': 'application/json',
   },
-  timeout: 10000, // 10 second timeout instead of 30 minutes
+  timeout: 30000, // 30 second timeout for complex operations
 });
 
 // Track if we're currently refreshing a token
@@ -117,6 +117,13 @@ api.interceptors.response.use(
         // Show user-friendly network error
         if (error.code === 'ECONNABORTED') {
           console.log('Request timed out - please check your connection');
+          // Add retry logic for timeouts
+          if (!originalRequest._retry && originalRequest._retry !== 0) {
+            originalRequest._retry = 0;
+            // Wait a bit and retry once
+            await new Promise(resolve => setTimeout(resolve, 2000));
+            return api(originalRequest);
+          }
         } else if (error.code === 'ENOTFOUND') {
           console.log('Unable to reach server - please check your connection');
         }

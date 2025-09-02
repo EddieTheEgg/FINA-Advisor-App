@@ -18,6 +18,9 @@ export const styles = StyleSheet.create({
         paddingHorizontal: spacing.md,
         paddingTop: spacing.xxl,
     },
+    scrollViewContainer: {
+        paddingBottom: spacing.xxl,
+    },
     title: {
         fontSize: fontSize.xxxxl,
         fontFamily: 'Poppins-SemiBold',

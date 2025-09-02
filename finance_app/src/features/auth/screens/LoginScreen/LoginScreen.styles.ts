@@ -10,6 +10,7 @@ export const styles = StyleSheet.create({
         paddingTop: Platform.OS === 'android' ? spacing.xxl : 0,
     },
     backButton: {
+        marginTop: Platform.OS === 'android' ? spacing.xxl : 0,
         marginHorizontal: spacing.md,
     },
     title: {

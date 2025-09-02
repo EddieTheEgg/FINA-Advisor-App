@@ -195,6 +195,9 @@ type AccountInfo = {
 
     validateAccountName: () => boolean;
     accountNameError: string | null;
+
+    validateCreditLimit: () => boolean;
+    creditLimitError: string | null;
 }
 
 const initialAccountInfo = {
@@ -206,6 +209,7 @@ const initialAccountInfo = {
     accountNumber: null,
     routingNumber: null,
     accountNameError: null,
+    creditLimitError: null,
 };
 
 export const useAccountInfoStore = create<AccountInfo>((set, get) => ({
@@ -225,6 +229,22 @@ export const useAccountInfoStore = create<AccountInfo>((set, get) => ({
             return false;
         }
         set({accountNameError: null});
+        return true;
+    },
+
+    validateCreditLimit: () => {
+        const { creditLimit, accountBalance } = get();
+
+        // Only validate if credit limit is set
+        if (creditLimit && creditLimit > 0) {
+            // Check if debt (negative balance) exceeds credit limit
+            if (accountBalance < 0 && Math.abs(accountBalance) > creditLimit) {
+                set({creditLimitError: 'Your credit balance spending is greater than your credit limit'});
+                return false;
+            }
+        }
+
+        set({creditLimitError: null});
         return true;
     },
 
