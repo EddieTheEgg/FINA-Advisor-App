@@ -233,6 +233,7 @@ def validate_user_password(password_request: PasswordValidationRequest, user_id:
     
     return PasswordValidationResponse(is_valid=is_valid)
 
+# Forgot password - send verification code to email
 def forgot_password(forgot_password_request: ForgotPasswordRequest, db: Session) -> ForgotPasswordResponse:
     logging.info(f"Forgot password request for user {forgot_password_request.email}")
     
@@ -293,9 +294,8 @@ def forgot_password(forgot_password_request: ForgotPasswordRequest, db: Session)
             message="An error occurred. Please try again later."
         )
 
+# Reset user password using a valid verification code
 def reset_password(reset_password_request: ResetPasswordRequest, db: Session) -> dict:
-    """Reset user password using a valid verification code"""
-    logging.info("Password reset request received")
     
     try:
         # Find the verification code
