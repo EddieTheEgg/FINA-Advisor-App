@@ -16,13 +16,15 @@ if not DATABASE_URL:
 
 engine = create_engine(
     DATABASE_URL,
-    pool_size=5,
-    max_overflow=10,
+    pool_size=10,  # Larger pool size for better performance
+    max_overflow=20,  # More overflow for concurrent requests
     pool_pre_ping=True,
     pool_recycle=300,
+    pool_timeout=30,  # Pool timeout
     connect_args={
-        "connect_timeout": 10,
-        "application_name": "finance_app"
+        "connect_timeout": 30,  # Connection timeout
+        "application_name": "finance_app",
+        "options": "-c statement_timeout=60000"  # 60 second statement timeout
     }
 )
 

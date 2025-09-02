@@ -47,9 +47,10 @@ def get_user_categories(
     #Gets all default and user's possible categories to work with if true
     # else only gets the user self-created categories
     if include_system_default_categories:
-        possibleCategories = possibleCategories.filter(
-            (Category.user_id == user_id) | ((Category.is_custom == False) & (Category.user_id == user_id)))
+        # Include all categories that belong to this user (both custom and default)
+        possibleCategories = possibleCategories.filter(Category.user_id == user_id)
     else:
+        # Only include user's custom categories
         possibleCategories = possibleCategories.filter((Category.user_id == user_id) & (Category.is_custom == True))
     
     # Filter by transaction type if provided (skip if ALL - means no filter)
