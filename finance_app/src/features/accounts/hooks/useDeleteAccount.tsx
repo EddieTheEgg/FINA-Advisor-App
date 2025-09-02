@@ -11,7 +11,7 @@ export const useDeleteAccount = () => {
             queryClient.invalidateQueries({queryKey: ['grouped-accounts']});
         },
         onError: (deleteAccountError: Error) => {
-            console.error('Error deleting account:', deleteAccountError.message);
+            throw new Error('Error deleting account: ' + deleteAccountError.message);
         },
     });
 

@@ -50,12 +50,12 @@ export const styles = StyleSheet.create({
         gap: spacing.lg,
     },
     sendButton: {
-        backgroundColor: colors.primary,
+        backgroundColor: colors.darkerBackground,
         paddingVertical: spacing.md,
-        paddingHorizontal: spacing.xxl,
-        borderRadius: 25,
-        minWidth: 200,
+        paddingHorizontal: spacing.md,
+        borderRadius: 20,
         alignItems: 'center',
+        width: '100%',
     },
     sendButtonDisabled: {
         backgroundColor: colors.gray[400],
@@ -70,9 +70,9 @@ export const styles = StyleSheet.create({
     },
     errorText: {
         alignSelf: 'center',
-        fontSize: fontSize.sm,
+        fontSize: fontSize.base,
         fontFamily: 'Poppins-Regular',
-        color: colors.tertiary,
+        color: colors.red,
         marginTop: spacing.sm,
     },
     successContainer: {

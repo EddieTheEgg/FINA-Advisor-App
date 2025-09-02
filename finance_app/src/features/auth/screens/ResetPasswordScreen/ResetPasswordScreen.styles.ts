@@ -63,12 +63,12 @@ export const styles = StyleSheet.create({
         gap: spacing.lg,
     },
     resetButton: {
-        backgroundColor: colors.primary,
+        backgroundColor: colors.darkerBackground,
         paddingVertical: spacing.md,
-        paddingHorizontal: spacing.xxl,
-        borderRadius: 25,
-        minWidth: 200,
+        borderRadius: 20,
         alignItems: 'center',
+        width: '100%',
+        paddingHorizontal: spacing.xxl * 2,
     },
     resetButtonDisabled: {
         backgroundColor: colors.gray[400],
@@ -85,8 +85,8 @@ export const styles = StyleSheet.create({
         alignSelf: 'center',
         fontSize: fontSize.sm,
         fontFamily: 'Poppins-Regular',
-        color: colors.tertiary,
-        marginTop: spacing.sm,
+        color: colors.red,
+        marginTop: -spacing.md,
     },
     successContainer: {
         backgroundColor: colors.veryLightGreen,
@@ -105,7 +105,7 @@ export const styles = StyleSheet.create({
         marginBottom: spacing.md,
     },
     loginButton: {
-        backgroundColor: colors.primary,
+        backgroundColor: colors.darkerBackground,
         paddingVertical: spacing.sm,
         paddingHorizontal: spacing.lg,
         borderRadius: 20,
@@ -114,5 +114,10 @@ export const styles = StyleSheet.create({
         fontSize: fontSize.base,
         fontFamily: 'Poppins-SemiBold',
         color: colors.white,
+    },
+    passwordHint: {
+        fontSize: fontSize.sm,
+        fontFamily: 'Poppins-Regular',
+        color: colors.red,
     },
 });

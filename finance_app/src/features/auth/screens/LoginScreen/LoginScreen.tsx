@@ -51,7 +51,7 @@ const LoginScreen = ({ navigation }: LoginScreenProps) => {
     // Clear validation error when user starts typing
     const handleEmailChange = (text: string) => {
         setEmail(text);
-        if (validationError) { 
+        if (validationError) {
             setValidationError(null);
         }
     };

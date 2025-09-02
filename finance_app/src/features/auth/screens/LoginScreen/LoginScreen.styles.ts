@@ -63,9 +63,9 @@ export const styles = StyleSheet.create({
     },
     errorText: {
         alignSelf: 'center',
-        fontSize: fontSize.sm,
+        fontSize: fontSize.base,
         fontFamily: 'Poppins-Regular',
-        color: colors.tertiary,
+        color: colors.red,
     },
 });
 

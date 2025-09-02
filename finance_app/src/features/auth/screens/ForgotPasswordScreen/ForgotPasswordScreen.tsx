@@ -1,5 +1,5 @@
 import React, { useState } from 'react';
-import { Pressable, Text, TextInput, View } from 'react-native';
+import { Text, TextInput, View } from 'react-native';
 import { styles } from './ForgotPasswordScreen.styles';
 import FontAwesome6 from 'react-native-vector-icons/FontAwesome6';
 import { useSafeAreaInsets } from 'react-native-safe-area-context';
@@ -19,6 +19,8 @@ const ForgotPasswordScreen = ({ navigation }: ForgotPasswordScreenProps) => {
 
     // Use the forgot password hook
     const { mutate: forgotPassword, error, isPending, isSuccess } = useForgotPassword();
+
+    const [showSuccessMessage, setShowSuccessMessage] = useState(false);
 
     const handleForgotPassword = async () => {
         // Clear any previous validation errors
@@ -40,10 +42,12 @@ const ForgotPasswordScreen = ({ navigation }: ForgotPasswordScreenProps) => {
     // Navigate to reset screen when email is sent successfully
     React.useEffect(() => {
         if (isSuccess) {
-            // Navigate to reset password screen after a short delay
+            setShowSuccessMessage(true);
+
             const timer = setTimeout(() => {
+                setShowSuccessMessage(false);
                 navigation.navigate('ResetPassword', { email: email.trim() });
-            }, 2000); // 2 second delay to show success message
+            }, 2000);
 
             return () => clearTimeout(timer);
         }
@@ -72,7 +76,7 @@ const ForgotPasswordScreen = ({ navigation }: ForgotPasswordScreenProps) => {
             <View style={styles.contentContainer}>
                 <Text style={styles.title}>Forgot Password</Text>
                 <Text style={styles.subtitle}>
-                    Enter your email address and we'll send you a verification code to reset your password.
+                    If you have an email address registered with us, we'll send you a verification code to reset your password.
                 </Text>
 
                 <View style={styles.inputsContainer}>
@@ -91,15 +95,15 @@ const ForgotPasswordScreen = ({ navigation }: ForgotPasswordScreenProps) => {
                 </View>
 
                 <View style={styles.buttonContainer}>
-                    <Pressable 
-                        style={[styles.sendButton, isPending && styles.sendButtonDisabled]}
-                        onPress={handleForgotPassword}
-                        disabled={isPending}
-                    >
-                        <Text style={[styles.sendButtonText, isPending && styles.sendButtonTextDisabled]}>
-                            {isPending ? 'Sending...' : 'Send Verification Code'}
-                        </Text>
-                    </Pressable>
+                <AnimatedPressable
+                    style={[styles.sendButton, (isPending || showSuccessMessage) && styles.sendButtonDisabled]}
+                    onPress={handleForgotPassword}
+                    disabled={isPending || showSuccessMessage} // Use local state instead of isSuccess
+                >
+                    <Text style={[styles.sendButtonText, (isPending || showSuccessMessage) && styles.sendButtonTextDisabled]}>
+                        {isPending ? 'Sending...' : showSuccessMessage ? 'Code Sent!' : 'Send Verification Code'}
+                    </Text>
+                </AnimatedPressable>
 
                     {isSuccess && (
                         <View style={styles.successContainer}>

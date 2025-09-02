@@ -9,8 +9,13 @@ interface ResetPasswordRequest {
 export const useResetPassword = () => {
     return useMutation({
         mutationFn: (data: ResetPasswordRequest) => resetPassword(data),
+        onSuccess: (data) => {
+            if (!data.success) {
+                throw new Error(data.message || 'Password reset failed');
+            }
+        },
         onError: (error) => {
-            console.error('Reset password error:', error);
+            throw new Error(error.message || 'Password reset failed');
         },
     });
 };
