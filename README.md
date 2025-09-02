@@ -82,7 +82,7 @@ FINA-Advisor-App is a comprehensive personal finance management application with
 ### Key Achievements
 - **Full-Stack Implementation**: Built complete mobile app with backend API, database, and deployment pipeline
 - **Cross-Platform Development**: Single React Native codebase deployed to both iOS App Store and Google Play Store
-- **Production Deployment**: Deployed to AWS EC2 with Docker containerization, Nginx reverse proxy, and SSL certificates
+- **Production Deployment**: Deployed to AWS EC2 with Docker containerization, custom domain, and SSL certificates
 - **AI Integration**: Successfully integrated OpenAI GPT for intelligent financial analysis and insights
 - **Problem Solving**: Built complete financial tracking solution from concept to production deployment
 
@@ -96,7 +96,6 @@ FINA-Advisor-App is a comprehensive personal finance management application with
 ### Backend Deployment
 - **AWS EC2**: Deployed FastAPI backend to cloud infrastructure
 - **Docker Containerization**: Created Docker containers for consistent deployment
-- **Nginx Configuration**: Set up reverse proxy and load balancing with Nginx
 - **Domain Management**: Connected custom domain to AWS EC2 instance
 - **SSL/HTTPS**: Configured secure connections with SSL certificates
 
