@@ -19,11 +19,13 @@ export const RecurringTransactionFrequencySelector = ({ onFrequencySelect, value
             <Picker
                 selectedValue={value ?? 'DAILY'}
                 onValueChange={handleFrequencySelect}
+                style={styles.picker}
+                itemStyle={styles.pickerItem}
             >
-                <Picker.Item label="Daily" value="DAILY" />
-                <Picker.Item label="Weekly" value="WEEKLY" />
-                <Picker.Item label="Monthly" value="MONTHLY" />
-                <Picker.Item label="Yearly" value="YEARLY" />
+                <Picker.Item label="Daily" value="DAILY" color="black" />
+                <Picker.Item label="Weekly" value="WEEKLY" color="black" />
+                <Picker.Item label="Monthly" value="MONTHLY" color="black" />
+                <Picker.Item label="Yearly" value="YEARLY" color="black" />
             </Picker>
         </View>
     );

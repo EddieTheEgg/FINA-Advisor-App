@@ -15,4 +15,13 @@ export const styles = StyleSheet.create({
         color: colors.black,
         marginBottom:  Platform.OS === 'ios' ? -spacing.xxl : 0,
     },
+    picker: {
+        width: '100%',
+        color: colors.black,
+        backgroundColor: 'transparent',
+    },
+    pickerItem: {
+        color: colors.black,
+        fontSize: fontSize.lg,
+    },
 });
