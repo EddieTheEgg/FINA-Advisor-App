@@ -5,16 +5,18 @@ import { DashboardData } from '../../types';
 import { styles } from './AccountCircle.styles';
 import FontAwesome6 from 'react-native-vector-icons/FontAwesome6';
 import { colors } from '../../../../styles/colors';
+import { DashboardNavigationProps } from '../../../../navigation/types/DashboardNavigatorTypes';
 
 type AccountCircleProps = {
   accounts: DashboardData['accounts'];
+  navigation: DashboardNavigationProps;
 }
 
-export default function AccountCircle({accounts}: AccountCircleProps) {
+export default function AccountCircle({accounts, navigation}: AccountCircleProps) {
 
-  //Need to add navigation to the accounts screen
   const navAccountsScreen = () => {
-    console.log('Navigate to account screen');
+    // Navigate from Dashboard stack to Accounts tab
+    navigation.getParent()?.navigate('Accounts');
   };
 
 

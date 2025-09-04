@@ -103,7 +103,7 @@ export const DashboardScreen = ({ navigation }: DashboardScreenProps) => {
                             <BalanceBadge dashboard={dashboard} />
                         </View>
                         <View>
-                            <AccountCircle accounts={dashboard.accounts} />
+                            <AccountCircle accounts={dashboard.accounts} navigation={navigation} />
                         </View>
                     </View>
                     <IncomeExpense dashboard={dashboard} />
