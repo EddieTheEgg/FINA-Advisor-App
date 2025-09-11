@@ -24,6 +24,10 @@
 </div>
 <br>
 
+# Preview of App
+<img width="1707" height="1034" alt="Screenshot 2025-09-11 at 4 24 34 PM" src="https://github.com/user-attachments/assets/42c14305-fb7e-44ab-8e26-e1674d5a8a46" />
+
+
 ---
 
 ## Table of Contents
