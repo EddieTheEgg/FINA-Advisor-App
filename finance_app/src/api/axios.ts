@@ -6,14 +6,32 @@ import { accessTokenService } from './accesstokenservice';
 import { refreshToken } from '../features/auth/api/api';
 import { authManager } from '../utils/authManager';
 
-  // Create axios instance with base URL and headers
-  export const api = axios.create({
-    baseURL: 'https://finance--connection.app',
-    headers: {
-      'Content-Type': 'application/json',
+// Use localhost for development, production URL for production
+const getBaseURL = () => {
+  // Check if we're in development mode
+  if (__DEV__) {
+    // For iOS simulator, use localhost
+    // For Android emulator, use 10.0.2.2
+    // For physical device, use your computer's IP address
+    return 'http://localhost:8000';
+  }
+  // Production URL
+  return 'https://finance--connection.app';
+};
+
+// Create axios instance with base URL and headers
+export const api = axios.create({
+  baseURL: getBaseURL(),
+  headers: {
+    'Content-Type': 'application/json',
   },
   timeout: 30000, // 30 second timeout for complex operations
 });
+
+// Log the base URL on initialization (only in dev)
+if (__DEV__) {
+  console.log('🌐 Axios baseURL configured:', api.defaults.baseURL);
+}
 
 // Track if we're currently refreshing a token
 let isRefreshing = false;
@@ -37,16 +55,36 @@ const processQueue = (error: any, token: string | null = null) => {
 // Add access token to headers (which is used for any authenticated requests) using singleton pattern
 api.interceptors.request.use((config: InternalAxiosRequestConfig) => {
   const token = accessTokenService.getAccessToken();
+  if (__DEV__) {
+    console.log(`🤖 AI Request: { method: ${config.method}, url: ${config.url}, fullURL: ${config.baseURL}${config.url}, hasToken: ${!!token} }`);
+  }
   if (token) {
     config.headers.Authorization = `Bearer ${token}`;
+  } else {
+    if (__DEV__) {
+      console.warn('⚠️ No auth token found for request:', config.url);
+    }
   }
   return config;
+}, (error) => {
+  if (__DEV__) {
+    console.error('❌ AI Request Error (Interceptor):', error.message);
+  }
+  return Promise.reject(error);
 });
 
 // Handle responses and errors
 api.interceptors.response.use(
-    (response: AxiosResponse) => response,
+    (response: AxiosResponse) => {
+      if (__DEV__) {
+        console.log(`✅ AI Response: { url: ${response.config.url}, status: ${response.status} }`);
+      }
+      return response;
+    },
     async (error: AxiosError) => {
+      if (__DEV__) {
+        console.error(`❌ AI Request Error: { url: ${error.config?.url}, status: ${error.response?.status}, message: ${error.message} }`);
+      }
       const originalRequest = error.config as any;
 
       // Skip token refresh for login endpoint
@@ -94,7 +132,9 @@ api.interceptors.response.use(
 
         } catch (refreshError) {
           // Refresh failed - clear tokens and redirect to login
-          console.log('Token refresh failed, redirecting to login');
+          if (__DEV__) {
+            console.log('Token refresh failed, redirecting to login');
+          }
           processQueue(refreshError, null);
 
           // Clear tokens and sign out
@@ -113,10 +153,14 @@ api.interceptors.response.use(
       // Handle other errors
       const status = error.response?.status;
       if (!error.response) {
-        console.error('Network error:', error.message);
+        if (__DEV__) {
+          console.error('Network error:', error.message);
+        }
         // Show user-friendly network error
         if (error.code === 'ECONNABORTED') {
-          console.log('Request timed out - please check your connection');
+          if (__DEV__) {
+            console.log('Request timed out - please check your connection');
+          }
           // Add retry logic for timeouts
           if (!originalRequest._retry && originalRequest._retry !== 0) {
             originalRequest._retry = 0;
@@ -125,14 +169,22 @@ api.interceptors.response.use(
             return api(originalRequest);
           }
         } else if (error.code === 'ENOTFOUND') {
-          console.log('Unable to reach server - please check your connection');
+          if (__DEV__) {
+            console.log('Unable to reach server - please check your connection');
+          }
         }
       } else if (status === 403) {
-        console.warn('Access denied');
+        if (__DEV__) {
+          console.warn('Access denied');
+        }
       } else if (status === 404) {
-        console.warn('Resource not found');
+        if (__DEV__) {
+          console.warn('Resource not found');
+        }
       } else if (status && status >= 500) {
-        console.error('Server error:', status);
+        if (__DEV__) {
+          console.error('Server error:', status);
+        }
       }
 
       return Promise.reject(error);

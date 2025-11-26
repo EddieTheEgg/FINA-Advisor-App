@@ -13,7 +13,9 @@ export const useRefreshInsights = () => {
         }
 
         try {
-            console.log('🔄 Starting insights refresh...');
+            if (__DEV__) {
+                console.log('🔄 Starting insights refresh...');
+            }
             setIsRefreshing(true);
 
             // Force complete refresh of all insights-related queries
@@ -43,7 +45,9 @@ export const useRefreshInsights = () => {
                 }),
             ]);
 
-            console.log('✅ All insights queries refreshed successfully');
+            if (__DEV__) {
+                console.log('✅ All insights queries refreshed successfully');
+            }
 
             // Start cooldown
             setIsOnCooldown(true);
@@ -63,7 +67,9 @@ export const useRefreshInsights = () => {
             }, 1000);
 
         } catch (error) {
-            console.error('Error refreshing insights:', error);
+            if (__DEV__) {
+                console.error('Error refreshing insights:', error);
+            }
             // Reset states on error
             setIsOnCooldown(false);
             setCooldownTimeLeft(0);
