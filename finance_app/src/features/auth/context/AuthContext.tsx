@@ -26,20 +26,32 @@ export function AuthProvider({children}: {children: React.ReactNode}) {
   const queryClient = useQueryClient();
 
   const checkAuthStatus = async () => {
+    console.log('🔐🔐🔐 AUTH: Starting checkAuthStatus...');
     try {
+      console.log('🔐🔐🔐 AUTH: Getting stored refresh token...');
       const storedRefreshToken = await TokenStorage.getRefreshToken();
+      console.log('🔐🔐🔐 AUTH: Has stored refresh token?', !!storedRefreshToken);
+      
       if (storedRefreshToken) {
+        console.log('🔐🔐🔐 AUTH: Calling refreshToken API...');
         const response = await refreshToken(storedRefreshToken);
+        console.log('🔐🔐🔐 AUTH: Refresh token API SUCCESS!');
         setAccessToken(response.accessToken);
         accessTokenService.setAccessToken(response.accessToken);
         setIsSignedIn(true);
+        console.log('🔐🔐🔐 AUTH: User signed in successfully');
+      } else {
+        console.log('🔐🔐🔐 AUTH: No stored refresh token, user needs to login');
       }
     } catch (error) {
+      console.error('🔐🔐🔐 AUTH ERROR:', error);
+      console.log('🔐🔐🔐 AUTH: Clearing tokens due to error');
       setIsSignedIn(false);
       setAccessToken(null);
       accessTokenService.setAccessToken(null);
       await TokenStorage.clearRefreshToken();
     } finally {
+      console.log('🔐🔐🔐 AUTH: Setting isLoading to FALSE');
       setIsLoading(false);
     }
   };

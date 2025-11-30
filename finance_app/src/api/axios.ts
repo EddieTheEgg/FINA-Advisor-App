@@ -10,7 +10,11 @@ import { authManager } from '../utils/authManager';
 const getBaseURL = () => {
   // TEMPORARY FIX: Force production URL for now
   // Sometimes __DEV__ doesn't work correctly in production builds
-  return 'https://finance--connection.app';
+  const url = 'https://finance--connection.app';
+  console.log('🌐🌐🌐 AXIOS BASE URL:', url);
+  console.log('🌐🌐🌐 __DEV__ FLAG:', __DEV__);
+  console.log('🌐🌐🌐 This should appear in Xcode console!');
+  return url;
   
   // Check if we're in development mode
   // if (__DEV__) {
@@ -32,10 +36,13 @@ const getBaseURL = () => {
   timeout: 30000, // 30 second timeout for complex operations
 });
 
-// Log the base URL on initialization (only in dev)
-if (__DEV__) {
-  console.log('🌐 Axios baseURL configured:', api.defaults.baseURL);
-}
+// Log the base URL on initialization (ALWAYS for debugging)
+console.log('🌐🌐🌐 Axios baseURL configured:', api.defaults.baseURL);
+console.log('🌐🌐🌐 Full Axios config:', JSON.stringify({
+  baseURL: api.defaults.baseURL,
+  timeout: api.defaults.timeout,
+  headers: api.defaults.headers,
+}));
 
 // Track if we're currently refreshing a token
 let isRefreshing = false;
