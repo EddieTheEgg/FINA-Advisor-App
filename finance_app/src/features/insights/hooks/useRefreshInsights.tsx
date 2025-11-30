@@ -13,18 +13,13 @@ export const useRefreshInsights = () => {
         }
 
         try {
-            if (__DEV__) {
-            console.log('🔄 Starting insights refresh...');
-            }
             setIsRefreshing(true);
 
             // Force complete refresh of all insights-related queries
-            // First invalidate everything
             await queryClient.invalidateQueries({ queryKey: ['insights'] });
             await queryClient.invalidateQueries({ queryKey: ['ai-insights'] });
             await queryClient.invalidateQueries({ queryKey: ['ai-budget-analysis'] });
 
-            // Then remove from cache to force fresh fetch
             queryClient.removeQueries({ queryKey: ['insights', 'monthly'] });
             queryClient.removeQueries({ queryKey: ['ai-insights'] });
             queryClient.removeQueries({ queryKey: ['ai-budget-analysis'] });
@@ -45,10 +40,6 @@ export const useRefreshInsights = () => {
                 }),
             ]);
 
-            if (__DEV__) {
-            console.log('✅ All insights queries refreshed successfully');
-            }
-
             // Start cooldown
             setIsOnCooldown(true);
             setCooldownTimeLeft(60);
@@ -67,9 +58,6 @@ export const useRefreshInsights = () => {
             }, 1000);
 
         } catch (error) {
-            if (__DEV__) {
-            console.error('Error refreshing insights:', error);
-            }
             // Reset states on error
             setIsOnCooldown(false);
             setCooldownTimeLeft(0);
