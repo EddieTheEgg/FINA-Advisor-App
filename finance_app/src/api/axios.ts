@@ -8,22 +8,26 @@ import { authManager } from '../utils/authManager';
 
 // Use localhost for development, production URL for production
 const getBaseURL = () => {
-  // Check if we're in development mode
-  if (__DEV__) {
-    // For iOS simulator, use localhost
-    // For Android emulator, use 10.0.2.2
-    // For physical device, use your computer's IP address
-    return 'http://localhost:8000';
-  }
-  // Production URL
+  // TEMPORARY FIX: Force production URL for now
+  // Sometimes __DEV__ doesn't work correctly in production builds
   return 'https://finance--connection.app';
+  
+  // Check if we're in development mode
+  // if (__DEV__) {
+  //   // For iOS simulator, use localhost
+  //   // For Android emulator, use 10.0.2.2
+  //   // For physical device, use your computer's IP address
+  //   return 'http://localhost:8000';
+  // }
+  // // Production URL
+  // return 'https://finance--connection.app';
 };
 
-// Create axios instance with base URL and headers
-export const api = axios.create({
+  // Create axios instance with base URL and headers
+  export const api = axios.create({
   baseURL: getBaseURL(),
-  headers: {
-    'Content-Type': 'application/json',
+    headers: {
+      'Content-Type': 'application/json',
   },
   timeout: 30000, // 30 second timeout for complex operations
 });
@@ -133,7 +137,7 @@ api.interceptors.response.use(
         } catch (refreshError) {
           // Refresh failed - clear tokens and redirect to login
           if (__DEV__) {
-            console.log('Token refresh failed, redirecting to login');
+          console.log('Token refresh failed, redirecting to login');
           }
           processQueue(refreshError, null);
 
@@ -154,12 +158,12 @@ api.interceptors.response.use(
       const status = error.response?.status;
       if (!error.response) {
         if (__DEV__) {
-          console.error('Network error:', error.message);
+        console.error('Network error:', error.message);
         }
         // Show user-friendly network error
         if (error.code === 'ECONNABORTED') {
           if (__DEV__) {
-            console.log('Request timed out - please check your connection');
+          console.log('Request timed out - please check your connection');
           }
           // Add retry logic for timeouts
           if (!originalRequest._retry && originalRequest._retry !== 0) {
@@ -170,20 +174,20 @@ api.interceptors.response.use(
           }
         } else if (error.code === 'ENOTFOUND') {
           if (__DEV__) {
-            console.log('Unable to reach server - please check your connection');
+          console.log('Unable to reach server - please check your connection');
           }
         }
       } else if (status === 403) {
         if (__DEV__) {
-          console.warn('Access denied');
+        console.warn('Access denied');
         }
       } else if (status === 404) {
         if (__DEV__) {
-          console.warn('Resource not found');
+        console.warn('Resource not found');
         }
       } else if (status && status >= 500) {
         if (__DEV__) {
-          console.error('Server error:', status);
+        console.error('Server error:', status);
         }
       }
 

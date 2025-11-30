@@ -14,7 +14,7 @@ export const useRefreshInsights = () => {
 
         try {
             if (__DEV__) {
-                console.log('🔄 Starting insights refresh...');
+            console.log('🔄 Starting insights refresh...');
             }
             setIsRefreshing(true);
 
@@ -46,7 +46,7 @@ export const useRefreshInsights = () => {
             ]);
 
             if (__DEV__) {
-                console.log('✅ All insights queries refreshed successfully');
+            console.log('✅ All insights queries refreshed successfully');
             }
 
             // Start cooldown
@@ -68,7 +68,7 @@ export const useRefreshInsights = () => {
 
         } catch (error) {
             if (__DEV__) {
-                console.error('Error refreshing insights:', error);
+            console.error('Error refreshing insights:', error);
             }
             // Reset states on error
             setIsOnCooldown(false);
