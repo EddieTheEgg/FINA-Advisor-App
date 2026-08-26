@@ -32,12 +32,43 @@ from backend.src.ai.model import (
 from backend.src.entities.category_suggestions import CategoryTraining
 from backend.src.insights.service import get_monthly_income, get_monthly_expense
 
-from backend.src.ai.config import client
+from backend.src.ai.config import client, OPENAI_MODEL
 from backend.src.entities.enums import TransactionType, TipDifficulty, BudgetAnalysisPriority
 from backend.src.entities.budgets import Budget
 
 def get_openai_client() -> OpenAI:
     return client
+
+
+def _chat_completion(
+    prompt: str,
+    *,
+    temperature: float,
+    reasoning_effort: str = "none",
+) -> str:
+    client = get_openai_client()
+    response = client.chat.completions.create(
+        model=OPENAI_MODEL,
+        messages=[{
+            "role": "user",
+            "content": prompt
+        }],
+        temperature=temperature,
+        extra_body={"reasoning_effort": reasoning_effort},
+    )
+    content = response.choices[0].message.content
+    if not content or not content.strip():
+        logging.warning("OpenAI returned empty content")
+        raise OpenAIResponseError()
+    return content.strip()
+
+
+def _extract_json(content: str) -> str:
+    stripped = content.strip()
+    if stripped.startswith("```"):
+        stripped = re.sub(r"^```(?:json)?\s*", "", stripped, flags=re.IGNORECASE)
+        stripped = re.sub(r"\s*```$", "", stripped)
+    return stripped.strip()
 
 # Suggest a category based on transaction details
 async def suggest_category_from_details(
@@ -96,17 +127,7 @@ async def suggest_category_from_details(
 
         Note: If suggesting a new category, do not include a category ID."""
         
-        client = get_openai_client()
-        response = client.chat.completions.create(
-            model="gpt-4o-mini",
-            messages=[{
-                "role": "user", 
-                "content": prompt
-            }],
-            temperature=0.3
-        )
-        
-        content = response.choices[0].message.content.strip()
+        content = _chat_completion(prompt, temperature=0.3, reasoning_effort="none")
         
         # Parse the response using regex
         category_match = re.search(r'Category ID of the best match:\s*(.*?)(?:\n|$)', content, re.IGNORECASE)
@@ -160,7 +181,7 @@ async def suggest_category_from_details(
             suggested_category_name = suggested_category_name,
             confidence = confidence_score,
             client_reference = request.client_reference,
-            model = "gpt-4o-mini",
+            model=OPENAI_MODEL,
         )
 
         db.add(suggestion)
@@ -427,22 +448,12 @@ async def generate_smart_saving_tip(
 
         Generate a tip that is specific, actionable, and personalized to this user's financial situation."""
 
-        client = get_openai_client()
-        response = client.chat.completions.create(
-            model="gpt-4o-mini",
-            messages=[{
-                "role": "user", 
-                "content": prompt
-            }],
-            temperature=0.7
-        )
-        
-        content = response.choices[0].message.content.strip()
+        content = _chat_completion(prompt, temperature=0.7, reasoning_effort="none")
         
         # Parse the JSON response
         try:
             import json
-            tip_data = json.loads(content)
+            tip_data = json.loads(_extract_json(content))
             
             # Validate required fields
             required_fields = ['title', 'description', 'potential_savings', 'timeframe', 'difficulty', 'confidence']
@@ -738,22 +749,12 @@ async def generate_budget_analysis(
 
         Generate an analysis that is specific, actionable, and focused on the most critical budget issue."""
 
-        client = get_openai_client()
-        response = client.chat.completions.create(
-            model="gpt-4o-mini",
-            messages=[{
-                "role": "user", 
-                "content": prompt
-            }],
-            temperature=0.7
-        )
-        
-        content = response.choices[0].message.content.strip()
+        content = _chat_completion(prompt, temperature=0.7, reasoning_effort="none")
         
         # Parse the JSON response
         try:
             import json
-            analysis_data = json.loads(content)
+            analysis_data = json.loads(_extract_json(content))
             
             # Validate required fields
             required_fields = ['title', 'analysis', 'timeframe', 'priority', 'confidence', 'recommendations']
